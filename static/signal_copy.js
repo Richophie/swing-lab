@@ -1,0 +1,28 @@
+(()=>{
+  const LABEL={confirmed_pullback:'확인형 눌림반등',rsi2_trend_reversion:'RSI2 추세내 과매도',momentum_pullback:'모멘텀 눌림 지속',volatility_breakout:'변동성 수축 돌파'};
+  const n=v=>Number.isFinite(Number(v))?Number(v):null;
+  const f=(v,d=2)=>n(v)==null?'—':Number(v).toFixed(d);
+  const pct=v=>n(v)==null?'—':`${Number(v)>=0?'+':''}${Number(v).toFixed(2)}%`;
+  async function json(url){const r=await fetch(url,{cache:'no-store'});const t=await r.text();let d;try{d=JSON.parse(t)}catch{throw new Error('응답 형식 오류')}if(!r.ok||d.error)throw new Error(d.error||`서버 ${r.status}`);return d}
+  function findRow(scan,symbol){return (scan.results||[]).find(r=>String(r.symbol).toUpperCase()===String(symbol).toUpperCase())}
+  function planLine(p={}){if(!p||p.signal_active===false)return `현재 매수신호: 없음\n재평가 조건: ${p.wait_condition||p.entry_reference||'—'}`;return [`BUY: ${f(p.entry_low)} ~ ${f(p.entry_high)}`,`TARGET: ${f(p.target)} (${pct(p.target_pct)})`,`STOP: ${f(p.stop)} (-${Math.abs(Number(p.stop_pct||0)).toFixed(2)}%)`,`손익비: 1:${f(p.risk_reward)}`,`예상 보유: ${p.days_min??p.target_days?.days_low??'—'}~${p.days_max??p.target_days?.days_high??'—'} 거래일`].join('\n')}
+  function signalLines(row){const plans=row?.strategy_trade_plans||{};return (row?.strategy_signals||[]).map(s=>{const p=plans[s.strategy_id]||{};return [`[${s.strategy_name||LABEL[s.strategy_id]||s.strategy_id}]`,`활성 신호: ${s.strategy_score>=85?'S 후보':'아님'} / 점수 ${s.strategy_score??'—'}`,`판정 이유: ${s.evidence||s.why||'—'}`,`엄선 통과: ${s.elite_pass?'예':'아니오'}`,s.selection_reason?`엄선 판단: ${s.selection_reason}`:'',planLine(p)].filter(Boolean).join('\n')}).join('\n\n')}
+  function backtestText(bt){if(!bt)return '백테스트: 불러오지 않음';const one=(name,x)=>x?`${name}: 거래 ${x.trades??'—'}회 / 승률 ${x.win_rate??'—'}% / 평균거래 ${x.avg_trade??'—'}% / 총수익 ${x.return_pct??'—'}% / PF ${x.profit_factor??'—'} / MDD ${x.max_drawdown??'—'}%`:'';return [one('10년',bt.full_10y),one('최근2년',bt.recent_2y)].filter(Boolean).join('\n')||'백테스트: 데이터 없음'}
+  async function build(symbol,strategy){
+    const [scan,market]=await Promise.all([json('/api/latest'),json('/api/market').catch(()=>({}))]);
+    const row=findRow(scan,symbol);
+    let detail=null,bt=null;
+    try{detail=await json(`/api/detail/${encodeURIComponent(symbol)}${strategy?`?strategy=${encodeURIComponent(strategy)}`:''}`)}catch{}
+    const sid=strategy||detail?.strategy_id||row?.strategy_id;
+    try{if(sid)bt=await json(`/api/backtest/${encodeURIComponent(symbol)}?strategy=${encodeURIComponent(sid)}`)}catch{}
+    const p=detail?.trade_plan||row?.trade_plan||{};const sig=detail?.signal||{};const flow=row?.flow||detail?.flow||{};
+    const now=(row?.sparkline||[]).slice(-1)[0]??p.current_price??null;
+    return [`[Swing Lab AI 재검증용 데이터]`,`종목: ${detail?.name_ko||row?.name_ko||row?.security_name||symbol} (${symbol})`,`데이터 스캔시각: ${scan.scanned_at||'—'}`,`현재가: $${f(now)}`,`선택 전략: ${detail?.strategy_name||row?.strategy_name||LABEL[sid]||sid||'—'}`,`현재 신호 점수: ${sig.score??row?.score??'—'}`,`RSI14: ${sig.rsi??row?.rsi??'—'}`,`120일선 거리: ${sig.d120??row?.d120??'—'}%`,`볼린저 위치: ${sig.bb_pos??row?.bb_pos??'—'}%`,`ATR: ${sig.atr_pct??row?.atr_pct??'—'}%`,`시장 상태: ${market.state||scan.market?.state||'—'} / ${market.brief||scan.market?.brief||'—'}`,``, `[수급]`,`상대거래량: ${flow.relative_volume??'—'}배`,`5일/20일 거래량: ${flow.volume_5d_vs_20d??'—'}배`,`반전일 거래량: ${flow.reversal_volume??'—'}배`,`상승/하락 거래량 비율: ${flow.up_down_volume_ratio??'—'}배`,`20일 평균 거래대금: ${flow.avg_dollar_volume_20d??'—'}`,``,`[현재 선택 전략 매매계획]`,planLine(p),``,`[이 종목의 전체 전략 판정]`,row?signalLines(row):'자동 스캔 저장 데이터 없음',``,`[백테스트 · 참고자료]`,backtestText(bt),``,`[AI에게 요청]`,`위 데이터와 최신 공개 시장정보를 독립적으로 검증해줘. 이 엔진의 결론을 그대로 믿지 말고, 현재 진입이 타당한지·놓친 위험요인·진입가/목표가/손절가의 적절성·수급과 시장환경·백테스트 표본의 신뢰도를 비판적으로 검토해줘. 필요하면 최신 뉴스/실적/밸류에이션/거시환경도 확인하고, 최종적으로 매수 / 대기 / 패스 중 하나로 이유와 함께 결론 내려줘.`].join('\n');
+  }
+  async function copy(symbol,strategy,btn){
+    const old=btn?.textContent;try{if(btn)btn.textContent='복사 중…';const text=await build(symbol,strategy);await navigator.clipboard.writeText(text);if(btn)btn.textContent='✓ 복사됨';setTimeout(()=>{if(btn)btn.textContent=old||'AI 검증용 복사'},1200)}catch(e){if(btn)btn.textContent='복사 실패';setTimeout(()=>{if(btn)btn.textContent=old||'AI 검증용 복사'},1400);console.error(e)}
+  }
+  function decorate(root=document){root.querySelectorAll('.pick[data-symbol]').forEach(card=>{if(card.querySelector('.ai-copy'))return;const top=card.querySelector('.picktop');if(!top)return;const b=document.createElement('button');b.className='btn ai-copy';b.type='button';b.textContent='AI 검증용 복사';b.style.marginLeft='8px';b.onclick=e=>{e.stopPropagation();copy(card.dataset.symbol,card.dataset.strategy,b)};top.appendChild(b)})}
+  const obs=new MutationObserver(()=>decorate());obs.observe(document.documentElement,{childList:true,subtree:true});
+  document.addEventListener('DOMContentLoaded',()=>{decorate();const b=document.getElementById('copySignal');if(b)b.onclick=()=>{const ticker=document.getElementById('detailTicker')?.textContent||'';const symbol=ticker.split('·')[0].trim();const strategy=document.querySelector('.pick[data-symbol="'+symbol+'"]')?.dataset.strategy;if(symbol)copy(symbol,strategy,b)}});
+})();
