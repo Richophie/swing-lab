@@ -10,15 +10,14 @@ if errorlevel 1 (
 )
 
 if not exist .git (
-  echo 아직 GitHub 저장소와 연결되지 않았습니다.
-  echo 먼저 GITHUB_FIRST_UPLOAD.bat 을 한 번 실행하세요.
+  echo 이 폴더는 Git 저장소가 아닙니다.
+  echo GitHub에서 Richophie/swing-lab 저장소를 clone한 폴더에서 실행하세요.
   pause
   exit /b
 )
 
 echo 최신 버전을 확인합니다...
 git pull --ff-only origin main
-
 if errorlevel 1 (
   echo 업데이트 중 충돌 또는 로그인 문제가 발생했습니다.
   pause
