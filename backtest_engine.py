@@ -15,16 +15,17 @@ def _market_ok_index(index):
 
 def signal_frame(d,strategy_id):
     ind=indicators(d);close=d['Close'].astype(float);open_=d['Open'].astype(float);high=d['High'].astype(float);low=d['Low'].astype(float);volume=d['Volume'].astype(float) if 'Volume' in d else pd.Series(0,index=d.index)
-    s50,s120,s200=ind['sma50'],ind['sma120'],ind['sma200'];rsi,bb,atr,mh=ind['rsi'],ind['bb_pos'],ind['atr14'],ind['macd_hist'];vol20=ind['vol20'];market_ok=_market_ok_index(d.index);trend_ok=(close>s200)&(s50>=s120);d120=close/s120-1;d200=close/s200-1;vr=volume/vol20.replace(0,np.nan)
+    s50,s120,s200=ind['sma50'],ind['sma120'],ind['sma200'];rsi,bb,atr,mh=ind['rsi'],ind['bb_pos'],ind['atr14'],ind['macd_hist'];vol20=ind['vol20'];market_ok=_market_ok_index(d.index);trend_ok=(close>s200)&(s50>=s120);d120=close/s120-1;d200=close/s200-1;vr=volume/vol20.replace(0,np.nan);atrp=atr/close
     if strategy_id=='rsi2_trend_reversion':
-        rsi2=wilder_rsi(close,2);signal=trend_ok&market_ok&(rsi2<5)&(rsi<=55)&(bb<=.65)&(d120<=.20)&(d200<=.35)
+        rsi2=wilder_rsi(close,2);signal=trend_ok&market_ok&(rsi2<3)&(rsi<=50)&(bb<=.45)&d120.between(-.03,.12)&(d200<=.25)&(atrp<=.05)
     elif strategy_id=='momentum_pullback':
-        ret20=close/close.shift(20)-1;ret5=close/close.shift(5)-1;signal=trend_ok&market_ok&(ret20>.04)&ret5.between(-.06,.01)&(mh>mh.shift(1))&(rsi<65)
+        ret20=close/close.shift(20)-1;ret5=close/close.shift(5)-1;signal=trend_ok&market_ok&ret20.between(.05,.20)&ret5.between(-.05,-.005)&(mh>mh.shift(1))&rsi.between(42,60)&d120.between(0,.20)&(bb<=.80)&(atrp<=.06)
     elif strategy_id=='volatility_breakout':
-        tr10=(high-low).rolling(10).mean()/close;tr_prev=(high-low).shift(10).rolling(20).mean()/close.shift(20);signal=trend_ok&market_ok&(tr_prev>0)&((tr10/tr_prev)<.72)&(close>high.shift(1).rolling(20).max())&(vr>=1.0)&(rsi<72)
+        tr10=(high-low).rolling(10).mean()/close;tr_prev=(high-low).shift(10).rolling(20).mean()/close.shift(20);signal=trend_ok&market_ok&(tr_prev>0)&((tr10/tr_prev)<.72)&(close>high.shift(1).rolling(20).max())&(vr>=1.2)&rsi.between(45,68,inclusive='left')&(atrp<=.07)
     else:
-        atrp=atr/close;rsiS=np.select([(rsi>=30)&(rsi<=42),(rsi>=25)&(rsi<30),rsi<=50,rsi<=60],[100,70,75,45],default=20);bbS=np.select([bb<=.12,bb<=.30,bb<=.50,bb<=.75],[100,85,60,35],default=15);sS=np.select([d120.abs()<=.025,(d120>-.06)&(d120<.05),(d120>=.05)&(d120<.12)],[100,78,42],default=20);macdS=np.where(mh>0,82,30);trendS=np.where(s50>=s120,85,45);riskS=np.select([atrp<=.025,atrp<=.04,atrp<=.06],[85,70,45],default=20);volS=np.select([(vr>=1.1)&(vr<=2.5),vr>.75],[85,65],default=40);score=rsiS*.18+bbS*.17+sS*.22+macdS*.16+trendS*.12+volS*.07+riskS*.08
-        rsi_turn=(rsi-rsi.shift(3))>=0;macd_up=mh>mh.shift(1);price_rev=(close>close.shift(1))|(close>open_);slope120=s120/s120.shift(20)-1;trend_floor=(close>=s200*.97)&(slope120>=-.01);score=score-np.where((rsi-rsi.shift(3))<-3,7,0)-np.where(~macd_up.fillna(False),5,0)-np.where(slope120<-.01,8,0)-np.where(close<s200*.97,10,0)-np.where(~price_rev.fillna(False),5,0);confirm=rsi_turn.fillna(False).astype(int)+macd_up.fillna(False).astype(int)+price_rev.fillna(False).astype(int)+trend_floor.fillna(False).astype(int);signal=(score>=72)&(confirm>=3)&trend_floor&market_ok
+        rsiS=np.select([(rsi>=30)&(rsi<=42),(rsi>=25)&(rsi<30),rsi<=50,rsi<=60],[100,70,75,45],default=20);bbS=np.select([bb<=.12,bb<=.30,bb<=.50,bb<=.75],[100,85,60,35],default=15);sS=np.select([d120.abs()<=.025,(d120>-.06)&(d120<.05),(d120>=.05)&(d120<.12)],[100,78,42],default=20);macdS=np.where(mh>0,82,30);trendS=np.where(s50>=s120,85,45);riskS=np.select([atrp<=.025,atrp<=.04,atrp<=.06],[85,70,45],default=20);volS=np.select([(vr>=1.1)&(vr<=2.5),vr>.75],[85,65],default=40);score=rsiS*.18+bbS*.17+sS*.22+macdS*.16+trendS*.12+volS*.07+riskS*.08
+        rsi_turn=(rsi-rsi.shift(3))>=0;macd_up=mh>mh.shift(1);price_rev=(close>close.shift(1))|(close>open_);slope120=s120/s120.shift(20)-1;trend_floor=(close>=s200*.97)&(slope120>=-.01);score=score-np.where((rsi-rsi.shift(3))<-3,7,0)-np.where(~macd_up.fillna(False),5,0)-np.where(slope120<-.01,8,0)-np.where(close<s200*.97,10,0)-np.where(~price_rev.fillna(False),5,0);confirm=rsi_turn.fillna(False).astype(int)+macd_up.fillna(False).astype(int)+price_rev.fillna(False).astype(int)+trend_floor.fillna(False).astype(int)
+        signal=(score>=72)&(confirm==4)&trend_floor&market_ok&rsi.between(30,43)&(bb<=.40)&(d120.abs()<=.035)&(atrp<=.045)
     return pd.DataFrame({'signal':signal.fillna(False),'atr':atr,'close':close},index=d.index)
 
 
@@ -58,5 +59,9 @@ def stats(d,trades):
     return {'return_pct':round((equity[-1]-1)*100,2),'buy_hold_pct':round((float(d['Close'].iloc[-1])/float(d['Close'].iloc[0])-1)*100,2),'win_rate':round(float((r>0).mean()*100),1),'trades':len(r),'max_drawdown':round(float(dd.min()*100),2),'profit_factor':None if losses<=0 else round(float(gains/losses),2),'sharpe':None if len(r)<2 or r.std(ddof=1)==0 else round(float(r.mean()/r.std(ddof=1)*math.sqrt(len(r))),2),'avg_trade':round(float(r.mean()*100),2)}
 
 
+def run_backtest_on_frame(d,strategy_id):
+    recent=d.tail(504).copy();return {'full_10y':stats(d,simulate(d,strategy_id)),'recent_2y':stats(recent,simulate(recent,strategy_id)) if len(recent)>220 else None}
+
+
 def run_backtest(symbol,strategy_id):
-    d=load_price_history(symbol,'10y');recent=d.tail(504).copy();return {'symbol':symbol,'strategy_id':strategy_id,'engine':'Swing Lab Fast Vector Engine','full_10y':stats(d,simulate(d,strategy_id)),'recent_2y':stats(recent,simulate(recent,strategy_id)) if len(recent)>220 else None,'assumptions':{'commission_pct':0.1,'entry':'signal next-day open','exit':'strategy-specific target/stop'}}
+    d=load_price_history(symbol,'10y');result=run_backtest_on_frame(d,strategy_id);return {'symbol':symbol,'strategy_id':strategy_id,'engine':'Swing Lab Fast Vector Engine','full_10y':result['full_10y'],'recent_2y':result['recent_2y'],'assumptions':{'commission_pct':0.1,'entry':'signal next-day open','exit':'strategy-specific target/stop','rules':'same conservative live filters as Core 4.2'}}
