@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>오늘의 스윙자리</title>
 <link rel="stylesheet" href="/static/dashboard.css">
+<link rel="stylesheet" href="/static/detail_overlay.css">
 </head>
 <body>
 <main class="shell">
@@ -14,7 +15,18 @@
   </header>
   <nav class="nav" aria-label="주요 메뉴"><button class="on" data-page="today">오늘 추천</button><button data-page="search">원하는 종목 확인</button><button data-page="state">엔진 상태</button></nav>
   <section id="today">
-    <article class="panel"><div class="panel-head"><div><div class="eyebrow">시장 분위기</div><h2 id="marketTitle">시장 확인 중</h2></div></div><div class="market"><div class="market-grade" id="marketGrade">—</div><div class="market-text" id="marketBrief">SPY와 QQQ를 확인하고 있어요.</div></div></article>
+    <article class="panel market-panel">
+      <div class="market-panel-inner">
+        <div class="market-state-zone">
+          <div>
+            <div class="market-kicker"><span class="market-live-dot"></span> MARKET PULSE</div>
+            <h2 id="marketTitle">시장 확인 중</h2>
+          </div>
+          <div class="market-grade-wrap"><div class="market-orb">M</div><div class="market-grade" id="marketGrade">—</div></div>
+        </div>
+        <div class="market-copy-zone"><div class="eyebrow">시장 분위기 · SPY / QQQ</div><div class="market-text" id="marketBrief">SPY와 QQQ를 확인하고 있어요.</div></div>
+      </div>
+    </article>
     <article class="panel">
       <div class="panel-head"><div><div class="eyebrow">엄선 · 현재 자리의 질</div><h2>오늘 눈여겨볼 자리</h2></div><div class="actions"><button class="btn" id="reload">최신 저장 결과</button><button class="btn primary" id="refresh">시장 다시 확인</button></div></div>
       <div class="seg" id="todayTabs" aria-label="추천 전략"></div><div class="grid" id="todayGrid"></div><div class="status" id="status">추천을 불러오는 중…</div>
@@ -34,5 +46,6 @@
 </main>
 <script src="/static/dashboard.js" defer></script>
 <script src="/static/signal_copy.js" defer></script>
+<script src="/static/detail_overlay.js" defer></script>
 </body>
 </html>
