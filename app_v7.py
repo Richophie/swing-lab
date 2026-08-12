@@ -59,7 +59,7 @@ def _live_refresh():
     return {
         **base,
         "status": "ready",
-        "version": "7.0",
+        "version": "7.1",
         "market": market,
         "results": refreshed,
         "live_refreshed_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
@@ -70,9 +70,8 @@ def _live_refresh():
 
 
 def index_v7():
-    return app.send_static_file("v7.html")
+    return app.send_static_file("v71.html")
 
-# Replace the v6 root view while keeping its proven analysis/detail APIs.
 app.view_functions["index"] = index_v7
 
 
@@ -97,4 +96,4 @@ def live_refresh():
 
 @app.route("/api/version")
 def version():
-    return {"version": "7.0", "mode": "cached-full-scan + live-candidate-refresh"}
+    return {"version": "7.1", "mode": "cached-full-scan + live-candidate-refresh", "ui": "v71.html"}
