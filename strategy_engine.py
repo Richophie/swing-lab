@@ -54,37 +54,33 @@ def _quality(points: float,max_points: float,active: bool)->float:
 def evaluate_strategies(df: pd.DataFrame, market_state: str|None=None) -> dict:
     z=_context(df);close=z['close'];s50=z['s50'];s120=z['s120'];s200=z['s200'];rsi=z['rsi'];bb=z['bb'];mh=z['mh'];mh1=z['mh1'];vr=z['vr'];ret20=z['ret20'];ret5=z['ret5'];high20=z['high20'];tr=z['tr'];tr_prev=z['tr_prev'];rsi2=z['rsi2'];d120=z['d120'];d200=z['d200'];atrp=z['atrp']
     market_ok=market_state!='조심';trend_ok=close>s200 and s50>=s120
-
     base=_pullback_base(z,market_state)
     pullback_strict=bool(base['eligible'] and base['confirm_count']==4 and 30<=rsi<=43 and bb<=.40 and abs(d120)<=.035 and atrp<=.045)
     pp=(2 if 30<=rsi<=42 else 1 if rsi<=45 else 0)+(2 if abs(d120)<=.02 else 1 if abs(d120)<=.035 else 0)+min(4,base['confirm_count'])+(1 if bb<=.30 else 0)+(1 if atrp<=.035 else 0)
     pullback={'id':'confirmed_pullback','name':'확인형 눌림반등','score':_quality(pp,10,pullback_strict),'active':pullback_strict,'strict':pullback_strict,'why':f"RSI {rsi:.1f} · 120일선 {d120*100:+.2f}% · 볼린저 {bb*100:.1f}% · 반전확인 {base['confirm_count']}/4",'evidence':'120일선 근처에서 충분히 눌린 뒤 네 가지 반전 확인이 모두 나온 자리'}
-
     rsi2_strict=bool(trend_ok and market_ok and rsi2<3 and rsi<=50 and bb<=.45 and -.03<=d120<=.12 and d200<=.25 and atrp<=.05)
     cp=(3 if rsi2<2 else 2 if rsi2<3 else 0)+(2 if rsi<42 else 1 if rsi<=50 else 0)+(2 if bb<=.25 else 1 if bb<=.45 else 0)+(1 if abs(d120)<=.06 else 0)+(1 if trend_ok else 0)+(1 if atrp<=.04 else 0)
     rsi2s={'id':'rsi2_trend_reversion','name':'RSI2 추세내 과매도','score':_quality(cp,10,rsi2_strict),'active':rsi2_strict,'strict':rsi2_strict,'why':f"RSI2 {rsi2:.1f} · RSI14 {rsi:.1f} · 120일선 {d120*100:+.1f}% · 볼린저 {bb*100:.1f}%",'evidence':'장기 상승추세는 유지하면서 단기 과매도와 가격 눌림이 동시에 강한 자리'}
-
     momentum_strict=bool(trend_ok and market_ok and .05<=ret20<=.20 and -.05<=ret5<=-.005 and mh>mh1 and 42<=rsi<=60 and 0<=d120<=.20 and bb<=.80 and atrp<=.06)
     mp=(2 if trend_ok else 0)+(2 if .08<=ret20<=.16 else 1 if .05<=ret20<=.20 else 0)+(2 if -.04<=ret5<=-.01 else 1 if -.05<=ret5<=-.005 else 0)+(2 if mh>mh1 else 0)+(1 if 45<=rsi<=58 else 0)+(1 if d120<=.12 else 0)
     momentum={'id':'momentum_pullback','name':'모멘텀 눌림 지속','score':_quality(mp,10,momentum_strict),'active':momentum_strict,'strict':momentum_strict,'why':f"20일 {ret20*100:+.1f}% · 5일 {ret5*100:+.1f}% · RSI {rsi:.1f} · 120일선 {d120*100:+.1f}%",'evidence':'과열 추격이 아니라 강한 상승 뒤 1~5일 조정을 거치고 모멘텀이 다시 개선되는 자리'}
-
     contraction=tr_prev>0 and tr/tr_prev<.72;breakout=close>high20;va=bool(trend_ok and market_ok and contraction and breakout and vr>=1.2 and 45<=rsi<68 and atrp<=.07);vp=(2 if trend_ok else 0)+(2 if contraction else 0)+(3 if breakout else 0)+(2 if vr>=1.5 else 1 if vr>=1.2 else 0)+(1 if 50<=rsi<=65 else 0)
     vcp={'id':'volatility_breakout','name':'변동성 수축 돌파','score':_quality(vp,10,va),'active':va,'strict':va,'why':f"변동성 {tr/tr_prev:.2f}배 · 20일 고점 돌파 {'✓' if breakout else '×'} · 거래량 {vr:.2f}배",'evidence':'변동성이 줄어든 뒤 거래량과 함께 고점을 돌파하는 자리'}
-
     strategies=[pullback,rsi2s,momentum,vcp];strategies.sort(key=lambda q:(q['active'],q['score']),reverse=True);best=strategies[0]
     flow={'relative_volume':round(vr,2),'volume_5d_vs_20d':round(z['vol5'],2),'reversal_volume':round(z['reversal_vol'],2),'up_down_volume_ratio':round(z['sell_dry'],2) if z['sell_dry'] else None,'avg_dollar_volume_20d':round(z['dollar_vol20'],0)}
     return {'best_strategy':best,'strategies':strategies,'agreement':sum(q['active'] for q in strategies),'ensemble_score':best['score'],'recommend':bool(best['active'] and best['score']>=S_THRESHOLD),'metrics':{'rsi':round(rsi,1),'bb_pos':round(bb*100,1),'d120':round(d120*100,2),'atr_pct':round(atrp*100,2),'rsi2':round(rsi2,1),'ret20_pct':round(ret20*100,2),'ret5_pct':round(ret5*100,2)},'flow':flow}
 
 
 def trade_plan(df: pd.DataFrame,strategy_id: str)->dict:
-    z=_context(df);close=z['close'];atr=max(z['atr'],close*.005);recent_low=z['recent_low'];recent_high=z['recent_high'];h=df['High'].astype(float);s20=z['s20'];s60=z['s60'];s120=z['s120'];bb_low=z['bb_low']
+    z=_context(df);close=z['close'];atr=max(z['atr'],close*.005);recent_low=z['recent_low'];recent_high=z['recent_high'];h=df['High'].astype(float);s20=z['s20'];s120=z['s120']
     ev=evaluate_strategies(df,None);chosen=next((s for s in ev['strategies'] if s['id']==strategy_id),None);active=bool(chosen and chosen['active'])
+    if not active:
+        reference='120일선 재회복 후 반전 확인' if strategy_id in {'confirmed_pullback','rsi2_trend_reversion'} else '20일선 눌림 후 추세 재개 확인' if strategy_id=='momentum_pullback' else '돌파 조건 재형성 확인'
+        return {'entry_low':None,'entry_high':None,'target':None,'stop':None,'target_pct':None,'stop_pct':None,'risk_reward':None,'days_min':None,'days_max':None,'target_days':{'days_low':None,'days_high':None,'method':'현재 매수 신호 없음'},'basis':reference,'target_reason':'현재 매수 신호 없음','stop_reason':'현재 매수 신호 없음','strategy_id':strategy_id,'entry_reference':reference,'entry_status':'현재 매수 신호 없음','signal_active':False,'current_vs_entry_pct':None,'current_price':round(close,2)}
     if strategy_id=='confirmed_pullback':
         anchor=s120;buy_low=anchor-.18*atr;buy_high=anchor+.22*atr;stop=min(recent_low,anchor-.95*atr);target=max(recent_high,anchor+1.8*atr);days=(2,8);basis='120일선 지지/최근 고점';entry_reference='120일선 지지구간'
     elif strategy_id=='rsi2_trend_reversion':
-        if active:anchor=close
-        else:anchor=s120*.985
-        buy_low=anchor-.12*atr;buy_high=anchor+.12*atr;stop=min(recent_low,anchor-1.15*atr);target=max(anchor+1.3*atr,s20 if s20>anchor else anchor+1.3*atr);days=(1,5);basis='단기 평균회귀/추세 복귀';entry_reference='현재 과매도 구간' if active else '120일선 재진입 확인구간'
+        anchor=close;buy_low=anchor-.12*atr;buy_high=anchor+.12*atr;stop=min(recent_low,anchor-1.15*atr);target=max(anchor+1.3*atr,s20 if s20>anchor else anchor+1.3*atr);days=(1,5);basis='단기 평균회귀/추세 복귀';entry_reference='현재 과매도 구간'
     elif strategy_id=='momentum_pullback':
         anchor=s20 if np.isfinite(s20) else close;buy_low=anchor-.20*atr;buy_high=anchor+.18*atr;stop=min(recent_low,anchor-1.05*atr);target=max(recent_high,anchor+2.0*atr);days=(3,10);basis='20일선 눌림/추세 재개';entry_reference='20일선 눌림구간'
     elif strategy_id=='volatility_breakout':
@@ -95,8 +91,8 @@ def trade_plan(df: pd.DataFrame,strategy_id: str)->dict:
     if target<=entry:target=entry+1.5*atr
     risk=entry-stop;reward=target-entry;rr=reward/risk if risk>0 else 0
     current_vs_entry=(close/entry-1)*100 if entry else 0
-    entry_status='진입 적정' if buy_low<=close<=buy_high and active else '조건 미충족' if not active else '진입구간 대기'
-    return {'entry_low':round(buy_low,2),'entry_high':round(buy_high,2),'target':round(target,2),'stop':round(stop,2),'target_pct':round((target/entry-1)*100,2),'stop_pct':round((entry-stop)/entry*100,2),'risk_reward':round(rr,2),'days_min':days[0],'days_max':days[1],'target_days':{'days_low':days[0],'days_high':days[1],'method':'전략별 예상 보유기간'},'basis':basis,'target_reason':basis,'stop_reason':basis,'strategy_id':strategy_id,'entry_reference':entry_reference,'entry_status':entry_status,'signal_active':active,'current_vs_entry_pct':round(current_vs_entry,2),'current_price':round(close,2)}
+    entry_status='진입 적정' if buy_low<=close<=buy_high else '진입구간 대기'
+    return {'entry_low':round(buy_low,2),'entry_high':round(buy_high,2),'target':round(target,2),'stop':round(stop,2),'target_pct':round((target/entry-1)*100,2),'stop_pct':round((entry-stop)/entry*100,2),'risk_reward':round(rr,2),'days_min':days[0],'days_max':days[1],'target_days':{'days_low':days[0],'days_high':days[1],'method':'전략별 예상 보유기간'},'basis':basis,'target_reason':basis,'stop_reason':basis,'strategy_id':strategy_id,'entry_reference':entry_reference,'entry_status':entry_status,'signal_active':True,'current_vs_entry_pct':round(current_vs_entry,2),'current_price':round(close,2)}
 
 
 def public_s_signals(evaluation: dict)->list[dict]:return [s for s in evaluation['strategies'] if s['id'] in PUBLIC_STRATEGIES and s['active'] and s.get('strict') and float(s['score'])>=S_THRESHOLD]
