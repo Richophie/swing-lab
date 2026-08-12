@@ -5,6 +5,7 @@ import pandas as pd
 import yfinance as yf
 
 from app_v6 import app, CACHE_FILE, swing_score, trade_plan, market_live
+from calibration import apply_calibration, calibrated_grade
 
 LIVE_TTL_SECONDS = 120
 _live_cache = {"at": 0.0, "payload": None}
@@ -40,13 +41,19 @@ def _live_refresh():
             sig = swing_score(d)
             plan = trade_plan(d)
             prev = old.get(symbol, {})
+            raw=float(sig['score'])
+            cal=apply_calibration(raw)
             sig.update({
                 "symbol": symbol,
+                "raw_score": round(raw,1),
+                "score": cal['calibrated_score'],
+                "grade": calibrated_grade(cal['calibrated_score']),
+                "calibration": cal,
                 "sparkline": [round(float(x), 2) for x in d["Close"].tail(35).tolist()],
                 "trade_plan": plan,
                 "history_stats": prev.get("history_stats", {}),
                 "previous_score": prev.get("score"),
-                "score_delta": round(float(sig["score"]) - float(prev.get("score", sig["score"])), 1),
+                "score_delta": round(float(cal['calibrated_score']) - float(prev.get("score", cal['calibrated_score'])), 1),
             })
             refreshed.append(sig)
         except Exception as exc:
@@ -59,13 +66,13 @@ def _live_refresh():
     return {
         **base,
         "status": "ready",
-        "version": "7.1",
+        "version": "8.1",
         "market": market,
         "results": refreshed,
         "live_refreshed_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "live_count": len(symbols),
         "live_failed": failures,
-        "message": "전체 시장은 저장된 스캔을 사용하고 현재 후보만 최신 시세로 재검증했습니다.",
+        "message": "전체 시장은 저장된 스캔을 사용하고 현재 후보만 최신 시세+보정점수로 재검증했습니다.",
     }
 
 
@@ -96,4 +103,4 @@ def live_refresh():
 
 @app.route("/api/version")
 def version():
-    return {"version": "7.1", "mode": "cached-full-scan + live-candidate-refresh", "ui": "v71.html"}
+    return {"version": "8.1", "mode": "cached-full-scan + live-candidate-refresh + statistical-calibration", "ui": "v71.html"}
