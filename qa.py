@@ -17,8 +17,7 @@ def check_scan(path=ROOT/'static'/'latest_scan.json'):
     rows=data.get('results') or [];symbols=[]
     for row in rows:
         symbol=row.get('symbol');assert symbol;symbols.append(symbol)
-        name=row.get('name_ko') or ''
-        assert HANGUL.search(name),f'Korean display name missing: {symbol} -> {name!r}'
+        name=row.get('name_ko') or '';assert HANGUL.search(name),f'Korean display name missing: {symbol} -> {name!r}'
         sigs=row.get('strategy_signals') or [];assert sigs,symbol;plans=row.get('strategy_trade_plans') or {}
         for sig in sigs:
             score=float(sig.get('strategy_score',0));assert 0<=score<=95
@@ -48,4 +47,16 @@ def check_routes():
     routes={r.rule for r in app.url_map.iter_rules()};required={'/','/health','/api/version','/api/latest','/api/history','/api/market','/api/detail/<symbol>','/api/chart/<symbol>','/api/backtest/<symbol>'};assert required<=routes,required-routes;return sorted(required)
 
 
-if __name__=='__main__':print('imports',check_imports());print('routes',check_routes());print('scan',check_scan())
+def check_frontend():
+    html=(ROOT/'static'/'dashboard.html').read_text(encoding='utf-8');css=ROOT/'static'/'dashboard.css';js=ROOT/'static'/'dashboard.js'
+    assert css.exists() and js.exists(),'dashboard css/js missing'
+    assert '<style' not in html.lower(),'inline style block returned to dashboard.html'
+    assert '<script>' not in html.lower(),'inline script block returned to dashboard.html'
+    assert '/static/dashboard.css' in html and '/static/dashboard.js' in html
+    assert 'app_v' not in html and 'PRO LIVE v' not in html
+    assert 'todayTabs' in html,'today strategy tabs missing from DOM'
+    return ['dashboard.html','dashboard.css','dashboard.js']
+
+
+if __name__=='__main__':
+    print('imports',check_imports());print('routes',check_routes());print('frontend',check_frontend());print('scan',check_scan())
