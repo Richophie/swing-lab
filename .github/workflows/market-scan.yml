@@ -1,0 +1,33 @@
+name: Market Scan Cache
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '20 12,15,18,21 * * 1-5'
+
+permissions:
+  contents: write
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: pip install -r requirements.txt
+      - run: python scanner_v6.py
+      - name: Commit latest scan
+        run: |
+          git config user.name "swing-lab-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add static/latest_scan.json
+          if git diff --cached --quiet; then
+            echo "No scan changes"
+          else
+            git commit -m "data: refresh market scan cache"
+            git push
+          fi
