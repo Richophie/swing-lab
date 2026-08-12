@@ -12,7 +12,7 @@
     <div class="brand">
       <small>SWING LAB</small>
       <h1>오늘의 스윙자리</h1>
-      <p>좋은 자리만 빠르게 보고, 근거와 과거 성과는 깊게 확인합니다.</p>
+      <p>전략 조건과 과거 성과를 함께 통과한 자리만 보수적으로 골라봅니다.</p>
     </div>
     <div class="version" id="version">불러오는 중</div>
   </header>
@@ -31,13 +31,13 @@
 
     <article class="panel">
       <div class="panel-head">
-        <div><div class="eyebrow">자동 추천</div><h2>오늘 눈여겨볼 자리</h2></div>
+        <div><div class="eyebrow">엄격 선별 · 종합 최대 5개</div><h2>오늘 눈여겨볼 자리</h2></div>
         <div class="actions"><button class="btn" id="reload">최신 저장 결과</button><button class="btn primary" id="refresh">시장 다시 확인</button></div>
       </div>
       <div class="seg" id="todayTabs" aria-label="추천 전략"></div>
       <div class="grid" id="todayGrid"></div>
       <div class="status" id="status">추천을 불러오는 중…</div>
-      <div class="note">종목 전체 추천은 자동 스캔 결과를 사용하고, ‘시장 다시 확인’은 SPY·QQQ 시장 상태만 현재 데이터로 갱신합니다.</div>
+      <div class="note">종목 전체 추천은 자동 스캔 결과를 사용합니다. 종합은 전략별 하드필터·10년/최근2년 백테스트·손익비를 모두 통과한 종목만 최대 5개 표시합니다. 금액은 원화를 먼저, 달러를 함께 표기합니다.</div>
     </article>
 
     <article class="panel">
@@ -62,7 +62,7 @@
   <section class="panel detail" id="detail">
     <div class="detail-top"><div><div class="detail-name" id="detailName">—</div><div class="detail-ticker" id="detailTicker">—</div></div><div class="detail-score" id="detailScore">—</div></div>
     <div class="detail-copy" id="detailReason">—</div>
-    <div class="plan-grid"><div class="plan-box"><span>BUY 진입구간</span><b id="dBuy">—</b></div><div class="plan-box target"><span>TARGET 목표가</span><b id="dTarget">—</b></div><div class="plan-box stop"><span>STOP 손절가</span><b id="dStop">—</b></div></div>
+    <div class="plan-grid"><div class="plan-box"><span>BUY 진입구간</span><b id="dBuy">—</b></div><div class="plan-box target"><span>TARGET 목표가 · 예상수익률</span><b id="dTarget">—</b></div><div class="plan-box stop"><span>STOP 손절가 · 예상손실률</span><b id="dStop">—</b></div></div>
     <div class="chart-wrap" id="bigChart">차트 불러오는 중…</div>
     <div class="legend"><span><i class="dot" style="background:#111"></i>종가</span><span><i class="dot" style="background:#4b75c7"></i>120일선</span><span><i class="dot" style="background:#d3d7d2"></i>볼린저 상/하단</span><span><i class="boxdot" style="background:#e8f6ed"></i>BUY 구간</span><span><i class="dot" style="background:#17845d"></i>TARGET</span><span><i class="dot" style="background:#c45151"></i>STOP</span><span><i class="dot" style="background:#7867a7"></i>RSI 30/70</span></div>
     <div class="detail-copy" id="metricsCopy">—</div>
@@ -72,8 +72,8 @@
 
     <div class="panel-head" style="margin-top:24px"><div><div class="eyebrow">내 돈으로 계산</div><h2>필요 투자금을 바로 계산해요</h2></div></div>
     <div class="calc-grid">
-      <div><div class="field"><label for="capital">투자금</label><input id="capital" value="3,000,000" inputmode="numeric"></div><div class="resultbox" id="capitalOut">—</div></div>
-      <div><div class="field"><label for="wanted">원하는 수익금</label><input id="wanted" value="50,000" inputmode="numeric"></div><div class="resultbox" id="wantedOut">—</div></div>
+      <div><div class="field"><label for="capital">투자금 · 원화 입력</label><input id="capital" value="3,000,000" inputmode="numeric"></div><div class="resultbox" id="capitalOut">—</div></div>
+      <div><div class="field"><label for="wanted">원하는 수익금 · 원화 입력</label><input id="wanted" value="50,000" inputmode="numeric"></div><div class="resultbox" id="wantedOut">—</div></div>
     </div>
   </section>
 </main>
