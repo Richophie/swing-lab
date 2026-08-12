@@ -53,16 +53,22 @@ def _flow_quality(flow):
     return max(0,min(100,score))
 
 
-def _current_selection(signal_score,plan,flow,overlay=False,market_state=None):
+def _current_selection(signal_score,plan,flow,overlay=False,market_state=None,strategy_id=None):
     rr=float(plan.get('risk_reward') or 0);fq=_flow_quality(flow);score=float(signal_score)*.68+fq*.22+min(100,rr/3*100)*.10
     if overlay:score+=6
     if market_state=='중립':score-=2
     if market_state=='조심':score-=8
-    hard_ok=rr>=1.20 and fq>=42 and market_state!='조심'
+    entry_ok=bool(plan.get('entry_viable',True))
+    stop_ok=float(plan.get('stop_atr_multiple') or 0)>=float(plan.get('min_stop_atr') or 1.5)
+    if not entry_ok:score-=18
+    if not stop_ok:score-=12
+    hard_ok=rr>=1.20 and fq>=42 and market_state!='조심' and entry_ok and stop_ok
     score=round(max(0,min(99,score)),1)
     reason=f"현재 자리 {float(signal_score):.0f} · 수급 {fq:.0f} · 손익비 {rr:.2f}:1"
+    if not entry_ok:reason+=f" · {plan.get('entry_status','진입구간 이탈')}"
+    if not stop_ok:reason+=' · ATR 손절여유 부족'
     if overlay:reason+=' · 20일선 첫 눌림 교집합 ✓'
-    return {'elite_pass':bool(hard_ok and score>=72),'elite_score':score,'selection_reason':reason,'flow_score':round(fq,1),'checks':{'current_signal':float(signal_score)>=S_THRESHOLD,'flow':fq>=42,'risk_reward':rr>=1.20,'market':market_state!='조심','first_20d_overlay':bool(overlay)}}
+    return {'elite_pass':bool(hard_ok and score>=72),'elite_score':score,'selection_reason':reason,'flow_score':round(fq,1),'checks':{'current_signal':float(signal_score)>=S_THRESHOLD,'flow':fq>=42,'risk_reward':rr>=1.20,'market':market_state!='조심','entry_viable':entry_ok,'atr_stop_margin':stop_ok,'first_20d_overlay':bool(overlay)}}
 
 
 def scan_candidates(symbols,market,security_names):
@@ -93,8 +99,7 @@ def enrich_plans(rows,market_state=None):
                 if sig.get('experimental'):
                     sig.update({'elite_pass':False,'elite_score':sig['strategy_score'],'selection_reason':'실험 전략 · 엄선에서 제외'});continue
                 overlay_bonus=bool(overlay['active'] and sid in {'confirmed_pullback','momentum_pullback'})
-                assessment=_current_selection(sig['strategy_score'],plan,row.get('flow'),overlay_bonus,market_state);sig.update(assessment);sig['first_20d_overlay']=overlay_bonus
-                # Backtest is deliberately informational only. It never decides today's eligibility.
+                assessment=_current_selection(sig['strategy_score'],plan,row.get('flow'),overlay_bonus,market_state,sid);sig.update(assessment);sig['first_20d_overlay']=overlay_bonus
                 try:sig['backtest']=run_backtest_on_frame(d,sid)
                 except Exception as exc:sig['backtest_error']=str(exc)
                 if assessment['elite_pass']:elite.append(sig)
@@ -110,7 +115,7 @@ def enrich_plans(rows,market_state=None):
 def main():
     universe=load_us_universe();names={x['symbol']:x['security_name'] for x in universe};symbols=prefilter_symbols(universe,SCAN_CANDIDATE_LIMIT);market=market_snapshot();rows,failed=scan_candidates(symbols,market,names);rows=_dedupe_share_classes(rows);rows=enrich_plans(rows,market.get('state'));rows.sort(key=lambda r:(bool(r.get('elite_pass')),float(r.get('elite_score') or r.get('score') or 0)),reverse=True)
     public_count=sum(any(not s.get('experimental') and float(s.get('strategy_score',0))>=S_THRESHOLD for s in r['strategy_signals']) for r in rows);aggregate_count=sum(any(not s.get('experimental') and s.get('elite_pass') for s in r['strategy_signals']) for r in rows);experimental_count=sum(any(s.get('experimental') for s in r['strategy_signals']) for r in rows)
-    payload={'status':'ready','version':APP_VERSION,'core_version':CORE_VERSION,'scanned_at':datetime.now(timezone.utc).isoformat(timespec='seconds'),'universe_count':len(universe),'candidate_count':len(symbols),'failed_count':len(failed),'failed':failed[:100],'market':market,'results':rows,'public_s_count':public_count,'aggregate_eligible_count':aggregate_count,'experimental_s_count':experimental_count,'display_filter':'strategy tabs show raw public S; aggregate ranks current signal + flow + risk/reward; no count cap','s_threshold':S_THRESHOLD,'elite_policy':'backtest is informational only; aggregate uses current setup, flow/liquidity, risk-reward, market regime and first-20DMA overlay'}
+    payload={'status':'ready','version':APP_VERSION,'core_version':CORE_VERSION,'scanned_at':datetime.now(timezone.utc).isoformat(timespec='seconds'),'universe_count':len(universe),'candidate_count':len(symbols),'failed_count':len(failed),'failed':failed[:100],'market':market,'results':rows,'public_s_count':public_count,'aggregate_eligible_count':aggregate_count,'experimental_s_count':experimental_count,'display_filter':'strategy tabs show raw public S; aggregate ranks current signal + flow + risk/reward + entry viability + ATR stop margin; no count cap','s_threshold':S_THRESHOLD,'elite_policy':'backtest is informational only; aggregate uses current setup, flow/liquidity, risk-reward, market regime, entry viability, ATR stop margin and first-20DMA overlay'}
     OUT.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding='utf-8');print('saved',OUT,len(rows),'rows','public S',public_count,'aggregate eligible',aggregate_count)
 
 if __name__=='__main__':main()
