@@ -6,26 +6,26 @@
 #todayGrid .pick:hover{transform:translateY(-3px);border-color:rgba(19,24,31,.14);box-shadow:0 16px 36px rgba(17,24,39,.075)}
 #todayGrid .rank,#todayGrid .badge{display:none!important}
 
-/* Status comes first. */
-#todayGrid .status-hero{display:flex;align-items:center;gap:12px;margin:0 0 10px}
-#todayGrid .grade-orb{width:46px;height:46px;flex:0 0 46px;border-radius:15px;display:grid;place-items:center;background:#23272d;color:#fff;font-size:16px;font-weight:900;box-shadow:none}
+#todayGrid .status-hero{display:flex;align-items:center;gap:10px;margin:0 0 10px}
+#todayGrid .grade-orb{width:36px;height:36px;flex:0 0 36px;border-radius:12px;display:grid;place-items:center;background:#23272d;color:#fff;font-size:13px;font-weight:900;box-shadow:none}
 #todayGrid .status-copy{min-width:0;flex:1}
 #todayGrid .status-title{display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-size:16px;line-height:1.2;font-weight:850;letter-spacing:-.035em;color:#1d2126}
 #todayGrid .status-solid{display:inline-flex;align-items:center;min-height:30px;padding:0 11px;border-radius:9px;background:#23272d;color:#fff;font-size:12px;font-weight:850;letter-spacing:-.02em}
+#todayGrid .pick.life-entry .status-solid{background:#16865f;color:#fff}
 #todayGrid .status-return{font-size:14px;font-weight:850;letter-spacing:-.025em}
 #todayGrid .status-return.up{color:#d83b42}
 #todayGrid .status-return.down{color:#3267c8}
 #todayGrid .status-sub{margin-top:5px;color:#9aa0a7;font-size:10px;line-height:1.35}
 #todayGrid .card-divider{height:1px;background:#eceef1;margin:12px 0 15px}
 
-/* Stock identity below the divider. */
 #todayGrid .picktop{align-items:center;gap:14px;min-width:0;margin:0 0 2px}
 #todayGrid .picktop>div:first-child{min-width:0;flex:1}
 #todayGrid .stock-name{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:20px;line-height:1.18;font-weight:820;letter-spacing:-.045em;color:#15181c}
 #todayGrid .ticker{margin-top:5px;font-size:11px;line-height:1;font-weight:800;color:#a0a6ad;letter-spacing:.055em;text-transform:uppercase}
 
-#todayGrid .mini{height:136px;margin:16px -2px 16px;border:1px solid #f0f1f3;border-radius:18px;background:#fff;box-shadow:none}
+#todayGrid .mini{position:relative;height:136px;margin:16px -2px 16px;border:1px solid #f0f1f3;border-radius:18px;background:#fff;box-shadow:none;overflow:hidden}
 #todayGrid .mini svg{filter:none}
+#todayGrid .entry-marker-label{pointer-events:none}
 #todayGrid .levels{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid #eceef1;border-radius:17px;overflow:hidden;background:#fff}
 #todayGrid .level{position:relative;min-width:0;border-radius:0;padding:12px 13px;background:#fff}
 #todayGrid .level:nth-child(odd){border-right:1px solid #eceef1}
@@ -55,7 +55,7 @@
 @media(max-width:720px){
   #todayGrid{grid-template-columns:1fr;gap:13px}
   #todayGrid .pick{padding:17px;border-radius:21px}
-  #todayGrid .grade-orb{width:42px;height:42px;flex-basis:42px;border-radius:14px;font-size:15px}
+  #todayGrid .grade-orb{width:32px;height:32px;flex-basis:32px;border-radius:10px;font-size:12px}
   #todayGrid .status-title{font-size:15px}
   #todayGrid .status-solid{min-height:28px;font-size:11px}
   #todayGrid .status-return{font-size:13px}
