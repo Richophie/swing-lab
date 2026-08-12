@@ -12,6 +12,7 @@ SCAN_FILE = ROOT / 'static' / 'latest_scan.json'
 JOURNAL_FILE = ROOT / 'static' / 'trade_history.json'
 NY = ZoneInfo('America/New_York')
 CLOSED_CODES = {'SUCCESS', 'STOP', 'EXPIRED_GAIN', 'EXPIRED_LOSS', 'EXPIRED_FLAT'}
+JOURNAL_VERSION = '2.1'
 
 
 def load_json(path, default):
@@ -160,9 +161,13 @@ def summary(journal):
 
 
 def main():
-    scan = load_json(SCAN_FILE, {}); journal = load_json(JOURNAL_FILE, {'version': '2.0', 'days': []})
+    scan = load_json(SCAN_FILE, {})
+    journal = load_json(JOURNAL_FILE, {'version': JOURNAL_VERSION, 'days': []})
+    # One-time safety gate: discard any journal created before the corrected RSI2 core.
+    if journal.get('version') != JOURNAL_VERSION:
+        journal = {'version': JOURNAL_VERSION, 'days': []}
     append_today(scan, journal); evaluate_all(journal)
-    journal['version'] = '2.0'; journal['updated_at'] = datetime.now(timezone.utc).isoformat(timespec='seconds'); journal['summary'] = summary(journal)
+    journal['version'] = JOURNAL_VERSION; journal['updated_at'] = datetime.now(timezone.utc).isoformat(timespec='seconds'); journal['summary'] = summary(journal)
     save_json(JOURNAL_FILE, journal); print('saved', JOURNAL_FILE, journal['summary'])
 
 
