@@ -8,6 +8,9 @@ import numpy as np
 import pandas as pd
 import yfinance as yf
 
+from config import MAIN_MIN_MARKET_CAP, MAIN_MIN_AVG_DAILY_VOLUME, MAIN_MIN_PRICE
+from stock_names import canonical_symbol
+
 
 def indicators(df: pd.DataFrame) -> pd.DataFrame:
     c=df['Close'].astype(float); h=df['High'].astype(float); l=df['Low'].astype(float)
@@ -42,11 +45,11 @@ def _normalize_history(d: pd.DataFrame) -> pd.DataFrame:
 
 @lru_cache(maxsize=512)
 def load_price_history(symbol: str, period: str='10y') -> pd.DataFrame:
-    return _normalize_history(yf.Ticker(symbol.upper().strip()).history(period=period,auto_adjust=False))
+    return _normalize_history(yf.Ticker(canonical_symbol(symbol)).history(period=period,auto_adjust=False))
 
 
 def fresh_price_history(symbol: str, period: str='2y') -> pd.DataFrame:
-    return _normalize_history(yf.Ticker(symbol.upper().strip()).history(period=period,auto_adjust=False))
+    return _normalize_history(yf.Ticker(canonical_symbol(symbol)).history(period=period,auto_adjust=False))
 
 
 def market_snapshot() -> dict:
@@ -85,23 +88,37 @@ def load_us_universe() -> list[dict]:
             symbol=row.get('Symbol') if kind=='nasdaq' else row.get('ACT Symbol');name=str(row.get('Security Name',''))
             if str(row.get('ETF','N'))!='N' or str(row.get('Test Issue','N'))!='N':continue
             if kind=='other' and str(row.get('Exchange','')) not in {'A','N','P','Z'}:continue
-            if clean_symbol(symbol) and security_name_ok(name):rows.append({'symbol':str(symbol).upper(),'security_name':name})
+            symbol=canonical_symbol(symbol)
+            if clean_symbol(symbol) and security_name_ok(name):rows.append({'symbol':symbol,'security_name':name})
     dedup={r['symbol']:r for r in rows};return [dedup[k] for k in sorted(dedup)]
 
 
-def prefilter_symbols(universe: list[dict], limit: int=700) -> list[str]:
+def prefilter_symbols(universe: list[dict], limit: int=500) -> list[str]:
+    """Main universe: established, liquid US-listed operating companies.
+
+    This intentionally avoids scanning thousands of micro/small caps. Selection is
+    objective rather than hand-picked: market cap, price and sustained liquidity.
+    """
     uset={x['symbol'] for x in universe};found=[]
     try:
-        q=yf.EquityQuery('and',[yf.EquityQuery('eq',['region','us']),yf.EquityQuery('is-in',['exchange','NMS','NGM','NCM','NYQ','ASE']),yf.EquityQuery('gte',['intradayprice',2]),yf.EquityQuery('gte',['avgdailyvol3m',200000]),yf.EquityQuery('gte',['intradaymarketcap',50000000])]);offset=0
+        q=yf.EquityQuery('and',[
+            yf.EquityQuery('eq',['region','us']),
+            yf.EquityQuery('is-in',['exchange','NMS','NGM','NCM','NYQ','ASE']),
+            yf.EquityQuery('gte',['intradayprice',MAIN_MIN_PRICE]),
+            yf.EquityQuery('gte',['avgdailyvol3m',MAIN_MIN_AVG_DAILY_VOLUME]),
+            yf.EquityQuery('gte',['intradaymarketcap',MAIN_MIN_MARKET_CAP]),
+        ])
+        offset=0
         while offset<5000 and len(found)<limit:
-            resp=yf.screen(q,offset=offset,size=250,sortField='avgdailyvol3m',sortAsc=False);quotes=resp.get('quotes',[]) if isinstance(resp,dict) else []
+            resp=yf.screen(q,offset=offset,size=250,sortField='intradaymarketcap',sortAsc=False);quotes=resp.get('quotes',[]) if isinstance(resp,dict) else []
             if not quotes:break
             for x in quotes:
-                s=str(x.get('symbol','')).upper()
+                s=canonical_symbol(x.get('symbol',''))
                 if s in uset:found.append(s)
             offset+=len(quotes)
             if len(quotes)<250:break
     except Exception:pass
-    fallback=['AAPL','MSFT','NVDA','AMZN','META','GOOGL','AVGO','TSLA','JPM','V','WMT','MA','NFLX','COST','HD','PG','JNJ','BAC','CRM','AMD','PLTR','CSCO','CVX','IBM','GE','CAT','KO','PEP','DIS','QCOM','MU','UBER','SOFI','RBLX','COIN','SHOP','PYPL','NKE','F','GM']
+    # Recognizable liquid names retained as a resilient fallback if screener is rate-limited.
+    fallback=['AAPL','MSFT','NVDA','AMZN','META','GOOGL','AVGO','TSLA','JPM','V','WMT','MA','NFLX','COST','HD','PG','JNJ','BAC','CRM','AMD','PLTR','CSCO','CVX','IBM','GE','CAT','KO','PEP','DIS','QCOM','MU','UBER','SOFI','RBLX','COIN','SHOP','PYPL','NKE','F','GM','O','PLD','DOC','HST','LLY','UNH','XOM','RTX','LMT','AMT']
     if len(found)<100:found.extend([s for s in fallback if s in uset])
     return list(dict.fromkeys(found))[:limit]
