@@ -9,8 +9,9 @@ on:
   push:
     branches: [main]
     paths:
-      - 'app_v6.py'
-      - 'scanner_v6.py'
+      - 'core_v2.py'
+      - 'scanner_v9.py'
+      - 'app_v9.py'
       - '.github/workflows/market-scan.yml'
 
 permissions:
@@ -31,7 +32,7 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
       - run: pip install -r requirements.txt
-      - run: python scanner_v6.py
+      - run: python scanner_v9.py
       - name: Commit latest scan
         run: |
           git config user.name "swing-lab-bot"
@@ -40,7 +41,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "No scan changes"
           else
-            git commit -m "data: refresh market scan cache"
+            git commit -m "data: refresh v9 market scan cache"
             git pull --rebase origin main
             git push
           fi
