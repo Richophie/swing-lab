@@ -67,14 +67,31 @@ def history(symbol,period='10y'):
     if d is None or d.empty:raise ValueError('가격 데이터를 찾지 못했습니다')
     return d.dropna(subset=['Open','High','Low','Close']).copy()
 
+def _market_frame(symbol,bulk=None):
+    d=None
+    try:
+        if bulk is not None and not bulk.empty:
+            d=bulk[symbol].copy() if isinstance(bulk.columns,pd.MultiIndex) else bulk.copy()
+    except Exception:d=None
+    if d is None or d.empty:
+        d=yf.Ticker(symbol).history(period='18mo',auto_adjust=False)
+    if d is None or d.empty:return pd.DataFrame()
+    return d.dropna(subset=['Open','High','Low','Close']).copy()
+
 def market_live():
     try:
-        bulk=yf.download('SPY QQQ',period='1y',interval='1d',auto_adjust=False,group_by='ticker',threads=True,progress=False); total=0; details={}
+        try:bulk=yf.download('SPY QQQ',period='18mo',interval='1d',auto_adjust=False,group_by='ticker',threads=True,progress=False,timeout=20)
+        except Exception:bulk=None
+        total=0;details={}
         for s in ['SPY','QQQ']:
-            d=bulk[s].dropna(subset=['Open','High','Low','Close']); x=indicators(d).iloc[-1]; above120=bool(x['close']>x['sma120']); above200=bool(x['close']>x['sma200']); rsi=float(x['rsi']); sc=int(above120)+int(above200)+int(rsi>45); total+=sc; details[s]={'score':sc,'rsi':round(rsi,1),'above120':above120,'above200':above200}
-        state='좋음' if total>=5 else '중립' if total>=3 else '조심'; reasons=[]
+            d=_market_frame(s,bulk)
+            if len(d)<205:raise ValueError(f'{s} 시장 데이터 부족 ({len(d)}일)')
+            ind=indicators(d);x=ind.iloc[-1]
+            if pd.isna(x['sma120']) or pd.isna(x['sma200']) or pd.isna(x['rsi']):raise ValueError(f'{s} 시장 지표 계산 실패')
+            above120=bool(x['close']>x['sma120']);above200=bool(x['close']>x['sma200']);rsi=float(x['rsi']);sc=int(above120)+int(above200)+int(rsi>45);total+=sc;details[s]={'score':sc,'rsi':round(rsi,1),'above120':above120,'above200':above200}
+        state='좋음' if total>=5 else '중립' if total>=3 else '조심';reasons=[]
         for s in ['SPY','QQQ']:
-            q=details[s]; reasons.append(f"{s} {'120·200일선 위' if q['above120'] and q['above200'] else '장기선 일부 이탈'} · RSI {q['rsi']}")
+            q=details[s];reasons.append(f"{s} {'120·200일선 위' if q['above120'] and q['above200'] else '장기선 일부 이탈'} · RSI {q['rsi']}")
         action='눌림목 후보를 적극 관찰하되 추격매수는 자제' if state=='좋음' else '조건이 겹치는 종목만 선별' if state=='중립' else '현금 비중과 손절 기준을 더 보수적으로'
         return {'state':state,'score':total,'details':details,'brief':' / '.join(reasons),'action':action}
     except Exception as e:return {'state':'확인 실패','brief':str(e),'action':'저장된 후보는 보되 시장 확인 후 진입'}
