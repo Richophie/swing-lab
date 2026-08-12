@@ -5,6 +5,7 @@ import json, re, requests
 import pandas as pd
 import yfinance as yf
 from app_v6 import swing_score, trade_plan, historical_stats, market_live, history
+from calibration import apply_calibration, calibrated_grade
 
 OUT=Path(__file__).parent/'static'/'latest_scan.json'
 
@@ -65,14 +66,15 @@ def main():
     universe=load_universe(); candidates=prefilter(universe); market=market_live(); base,failed=batch_score(candidates,market); final=[]
     for r in base[:24]:
         try:
-            d=history(r['symbol'],'10y'); p=trade_plan(d); h=historical_stats(d); score=float(r['score'])
-            if p['rr_quality']=='좋음':score+=3
-            elif p['rr_quality']=='나쁨':score-=7
-            if h['trades']>=8 and h['win_rate'] is not None:score+=max(-4,min(4,(h['win_rate']-50)/5))
-            r['score']=round(max(0,min(100,score)),1); r['grade']='S' if r['score']>=82 else 'A' if r['score']>=72 else 'B' if r['score']>=58 else 'C'; r['trade_plan']=p; r['history_stats']=h; final.append(r)
+            d=history(r['symbol'],'10y'); p=trade_plan(d); h=historical_stats(d); raw=float(r['score'])
+            if p['rr_quality']=='좋음':raw+=3
+            elif p['rr_quality']=='나쁨':raw-=7
+            if h['trades']>=8 and h['win_rate'] is not None:raw+=max(-4,min(4,(h['win_rate']-50)/5))
+            raw=max(0,min(100,raw)); cal=apply_calibration(raw)
+            r['raw_score']=round(raw,1); r['score']=cal['calibrated_score']; r['grade']=calibrated_grade(r['score']); r['calibration']=cal; r['trade_plan']=p; r['history_stats']=h; final.append(r)
         except Exception as e:r['detail_error']=str(e); final.append(r)
     final.sort(key=lambda x:x['score'],reverse=True)
-    payload={'status':'ready','version':'6.0','scanned_at':datetime.now(timezone.utc).isoformat(timespec='seconds'),'universe_count':len(universe),'candidate_count':len(candidates),'failed_count':failed,'market':market,'results':final}
+    payload={'status':'ready','version':'8.1','scanned_at':datetime.now(timezone.utc).isoformat(timespec='seconds'),'universe_count':len(universe),'candidate_count':len(candidates),'failed_count':failed,'market':market,'results':final}
     OUT.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding='utf-8'); print('saved',OUT,len(final))
 
 if __name__=='__main__':main()
