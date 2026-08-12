@@ -1,150 +1,17 @@
 {
   "status": "ready",
-  "version": "11.3",
+  "version": "13.0",
   "core_version": "4.0",
-  "scanned_at": "2026-08-12T17:28:53+00:00",
+  "scanned_at": "2026-08-12T17:33:38+00:00",
   "universe_count": 5762,
   "candidate_count": 700,
   "failed_count": 16,
   "market": {
-    "state": "좋음",
-    "score": 6,
-    "details": {
-      "SPY": {
-        "score": 3,
-        "rsi": 64.7,
-        "above120": true,
-        "above200": true
-      },
-      "QQQ": {
-        "score": 3,
-        "rsi": 57.6,
-        "above120": true,
-        "above200": true
-      }
-    },
-    "brief": "SPY 120·200일선 위 · RSI 64.7 / QQQ 120·200일선 위 · RSI 57.6",
-    "action": "눌림목 후보를 적극 관찰하되 추격매수는 자제"
+    "state": "확인 실패",
+    "brief": "single positional indexer is out-of-bounds",
+    "action": "저장된 후보는 보되 시장 확인 후 진입"
   },
   "results": [
-    {
-      "symbol": "NBIS",
-      "score": 95,
-      "grade": "S",
-      "eligible": true,
-      "strategy_name": "변동성 수축 돌파",
-      "strategy_id": "volatility_breakout",
-      "strategy_reason": "변동성 수축 돌파 신호 · 변동성이 줄어든 뒤 거래량과 함께 고점을 돌파하는 자리",
-      "strategy_agreement": 1,
-      "confidence": "높음",
-      "ensemble": {
-        "best_strategy": {
-          "id": "volatility_breakout",
-          "name": "변동성 수축 돌파",
-          "score": 95,
-          "active": true,
-          "why": "변동성 0.72배 · 20일 고점 돌파 ✓ · 거래량 1.64배",
-          "evidence": "변동성이 줄어든 뒤 거래량과 함께 고점을 돌파하는 자리"
-        },
-        "strategies": [
-          {
-            "id": "volatility_breakout",
-            "name": "변동성 수축 돌파",
-            "score": 95,
-            "active": true,
-            "why": "변동성 0.72배 · 20일 고점 돌파 ✓ · 거래량 1.64배",
-            "evidence": "변동성이 줄어든 뒤 거래량과 함께 고점을 돌파하는 자리"
-          },
-          {
-            "id": "confirmed_pullback",
-            "name": "확인형 눌림반등",
-            "score": 69.0,
-            "active": false,
-            "why": "RSI 60.0 · 120일선 +39.73% · 반전확인 4/4",
-            "evidence": "지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
-          },
-          {
-            "id": "momentum_pullback",
-            "name": "모멘텀 눌림 지속",
-            "score": 69.0,
-            "active": false,
-            "why": "20일 +24.0% · 5일 +13.0% · RSI 60.0 · MACD 개선 ✓",
-            "evidence": "강한 상승 흐름이 짧게 쉬었다가 다시 힘을 받는 자리"
-          },
-          {
-            "id": "rsi2_trend_reversion",
-            "name": "RSI2 추세내 과매도",
-            "score": 63.0,
-            "active": false,
-            "why": "RSI2 94.8 · RSI14 60.0 · 120일선 +39.7% · 상승추세 ✓",
-            "evidence": "큰 상승추세 안에서 단기 과매도가 생긴 평균회귀 자리"
-          }
-        ],
-        "agreement": 1,
-        "ensemble_score": 95,
-        "confidence": "높음",
-        "recommend": true,
-        "reason": "변동성 수축 돌파 신호 · 변동성이 줄어든 뒤 거래량과 함께 고점을 돌파하는 자리"
-      },
-      "rsi": 60.0,
-      "d120": 39.73,
-      "bb_pos": 106.2,
-      "sparkline": [
-        259.66,
-        256.63,
-        240.3,
-        261.15,
-        276.17,
-        229.18,
-        215.62,
-        213.02,
-        195.19,
-        216.48,
-        216.2,
-        219.65,
-        210.51,
-        194.09,
-        199.51,
-        171.77,
-        177.71,
-        182.62,
-        216.92,
-        218.16,
-        220.97,
-        187.77,
-        187.88,
-        169.69,
-        148.22,
-        188.43,
-        190.41,
-        212.58,
-        225.74,
-        218.99,
-        189.88,
-        187.97,
-        184.11,
-        193.23,
-        247.41
-      ],
-      "trade_plan": {
-        "buy_low": 247.47,
-        "buy_high": 254.21,
-        "target": 306.77,
-        "stop": 207.39,
-        "target_pct": 22.3,
-        "stop_pct": -17.32,
-        "rr": 1.29,
-        "days_min": 2,
-        "days_max": 10,
-        "basis": "돌파선 재이탈/ATR 확장",
-        "strategy_id": "volatility_breakout"
-      },
-      "history_stats": {
-        "trades": 2,
-        "win_rate": 100.0,
-        "avg_return": 17.52
-      }
-    },
     {
       "symbol": "O",
       "score": 95,
@@ -155,13 +22,22 @@
       "strategy_reason": "확인형 눌림반등 신호 · 지지선까지 눌린 뒤 실제 반전이 확인되는 자리",
       "strategy_agreement": 1,
       "confidence": "높음",
+      "strategy_signals": [
+        {
+          "strategy_id": "confirmed_pullback",
+          "strategy_name": "확인형 눌림반등",
+          "strategy_score": 95,
+          "why": "RSI 43.3 · 120일선 -0.92% · 반전확인 4/4",
+          "evidence": "지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
+        }
+      ],
       "ensemble": {
         "best_strategy": {
           "id": "confirmed_pullback",
           "name": "확인형 눌림반등",
           "score": 95,
           "active": true,
-          "why": "RSI 43.2 · 120일선 -0.93% · 반전확인 4/4",
+          "why": "RSI 43.3 · 120일선 -0.92% · 반전확인 4/4",
           "evidence": "지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
         },
         "strategies": [
@@ -170,7 +46,7 @@
             "name": "확인형 눌림반등",
             "score": 95,
             "active": true,
-            "why": "RSI 43.2 · 120일선 -0.93% · 반전확인 4/4",
+            "why": "RSI 43.3 · 120일선 -0.92% · 반전확인 4/4",
             "evidence": "지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
           },
           {
@@ -178,7 +54,7 @@
             "name": "RSI2 추세내 과매도",
             "score": 69.0,
             "active": false,
-            "why": "RSI2 76.9 · RSI14 43.2 · 120일선 -0.9% · 상승추세 ×",
+            "why": "RSI2 77.1 · RSI14 43.3 · 120일선 -0.9% · 상승추세 ×",
             "evidence": "큰 상승추세 안에서 단기 과매도가 생긴 평균회귀 자리"
           },
           {
@@ -186,7 +62,7 @@
             "name": "모멘텀 눌림 지속",
             "score": 69.0,
             "active": false,
-            "why": "20일 -1.1% · 5일 -0.3% · RSI 43.2 · MACD 개선 ✓",
+            "why": "20일 -1.1% · 5일 -0.3% · RSI 43.3 · MACD 개선 ✓",
             "evidence": "강한 상승 흐름이 짧게 쉬었다가 다시 힘을 받는 자리"
           },
           {
@@ -204,8 +80,8 @@
         "recommend": true,
         "reason": "확인형 눌림반등 신호 · 지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
       },
-      "rsi": 43.2,
-      "d120": -0.93,
+      "rsi": 43.3,
+      "d120": -0.92,
       "bb_pos": 21.8,
       "sparkline": [
         61.99,
@@ -242,20 +118,55 @@
         62.51,
         61.89,
         61.89,
-        62.53
+        62.54
       ],
       "trade_plan": {
-        "buy_low": 62.21,
-        "buy_high": 62.7,
+        "buy_low": 62.23,
+        "buy_high": 62.73,
+        "entry_low": 62.23,
+        "entry_high": 62.73,
         "target": 67.15,
         "stop": 61.27,
-        "target_pct": 7.52,
-        "stop_pct": -1.89,
-        "rr": 3.97,
+        "target_pct": 7.48,
+        "stop_pct": 1.93,
+        "rr": 3.87,
+        "risk_reward": 3.87,
         "days_min": 2,
         "days_max": 8,
+        "target_days": {
+          "days_low": 2,
+          "days_high": 8,
+          "method": "전략별 예상 보유기간"
+        },
         "basis": "지지선 반전폭/최근 고점",
+        "target_reason": "지지선 반전폭/최근 고점",
+        "stop_reason": "지지선 반전폭/최근 고점",
         "strategy_id": "confirmed_pullback"
+      },
+      "strategy_trade_plans": {
+        "confirmed_pullback": {
+          "buy_low": 62.23,
+          "buy_high": 62.73,
+          "entry_low": 62.23,
+          "entry_high": 62.73,
+          "target": 67.15,
+          "stop": 61.27,
+          "target_pct": 7.48,
+          "stop_pct": 1.93,
+          "rr": 3.87,
+          "risk_reward": 3.87,
+          "days_min": 2,
+          "days_max": 8,
+          "target_days": {
+            "days_low": 2,
+            "days_high": 8,
+            "method": "전략별 예상 보유기간"
+          },
+          "basis": "지지선 반전폭/최근 고점",
+          "target_reason": "지지선 반전폭/최근 고점",
+          "stop_reason": "지지선 반전폭/최근 고점",
+          "strategy_id": "confirmed_pullback"
+        }
       },
       "history_stats": {
         "trades": 88,
@@ -273,13 +184,22 @@
       "strategy_reason": "RSI2 추세내 과매도 신호 · 큰 상승추세 안에서 단기 과매도가 생긴 평균회귀 자리",
       "strategy_agreement": 1,
       "confidence": "높음",
+      "strategy_signals": [
+        {
+          "strategy_id": "rsi2_trend_reversion",
+          "strategy_name": "RSI2 추세내 과매도",
+          "strategy_score": 95,
+          "why": "RSI2 2.6 · RSI14 38.6 · 120일선 +6.4% · 상승추세 ✓",
+          "evidence": "큰 상승추세 안에서 단기 과매도가 생긴 평균회귀 자리"
+        }
+      ],
       "ensemble": {
         "best_strategy": {
           "id": "rsi2_trend_reversion",
           "name": "RSI2 추세내 과매도",
           "score": 95,
           "active": true,
-          "why": "RSI2 2.5 · RSI14 38.9 · 120일선 +6.9% · 상승추세 ✓",
+          "why": "RSI2 2.6 · RSI14 38.6 · 120일선 +6.4% · 상승추세 ✓",
           "evidence": "큰 상승추세 안에서 단기 과매도가 생긴 평균회귀 자리"
         },
         "strategies": [
@@ -288,7 +208,7 @@
             "name": "RSI2 추세내 과매도",
             "score": 95,
             "active": true,
-            "why": "RSI2 2.5 · RSI14 38.9 · 120일선 +6.9% · 상승추세 ✓",
+            "why": "RSI2 2.6 · RSI14 38.6 · 120일선 +6.4% · 상승추세 ✓",
             "evidence": "큰 상승추세 안에서 단기 과매도가 생긴 평균회귀 자리"
           },
           {
@@ -296,7 +216,7 @@
             "name": "확인형 눌림반등",
             "score": 69.0,
             "active": false,
-            "why": "RSI 38.9 · 120일선 +6.88% · 반전확인 1/4",
+            "why": "RSI 38.6 · 120일선 +6.37% · 반전확인 1/4",
             "evidence": "지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
           },
           {
@@ -304,7 +224,7 @@
             "name": "모멘텀 눌림 지속",
             "score": 67.0,
             "active": false,
-            "why": "20일 -7.7% · 5일 -7.8% · RSI 38.9 · MACD 개선 ×",
+            "why": "20일 -7.5% · 5일 -7.7% · RSI 38.6 · MACD 개선 ×",
             "evidence": "강한 상승 흐름이 짧게 쉬었다가 다시 힘을 받는 자리"
           },
           {
@@ -312,7 +232,7 @@
             "name": "변동성 수축 돌파",
             "score": 67.0,
             "active": false,
-            "why": "변동성 1.27배 · 20일 고점 돌파 × · 거래량 0.40배",
+            "why": "변동성 1.32배 · 20일 고점 돌파 × · 거래량 0.40배",
             "evidence": "변동성이 줄어든 뒤 거래량과 함께 고점을 돌파하는 자리"
           }
         ],
@@ -322,12 +242,10 @@
         "recommend": true,
         "reason": "RSI2 추세내 과매도 신호 · 큰 상승추세 안에서 단기 과매도가 생긴 평균회귀 자리"
       },
-      "rsi": 38.9,
-      "d120": 6.88,
-      "bb_pos": 0.6,
+      "rsi": 38.6,
+      "d120": 6.37,
+      "bb_pos": 2.3,
       "sparkline": [
-        27.94,
-        28.08,
         27.9,
         27.76,
         28.35,
@@ -346,6 +264,8 @@
         31.22,
         30.59,
         30.6,
+        30.29,
+        29.83,
         29.87,
         29.8,
         31.22,
@@ -360,20 +280,55 @@
         29.91,
         28.78,
         28.51,
-        28.32
+        28.34
       ],
       "trade_plan": {
-        "buy_low": 28.21,
-        "buy_high": 28.42,
-        "target": 29.67,
-        "stop": 27.06,
-        "target_pct": 4.8,
-        "stop_pct": -4.42,
+        "buy_low": 28.25,
+        "buy_high": 28.47,
+        "entry_low": 28.25,
+        "entry_high": 28.47,
+        "target": 29.72,
+        "stop": 27.11,
+        "target_pct": 4.79,
+        "stop_pct": 4.41,
         "rr": 1.09,
+        "risk_reward": 1.09,
         "days_min": 1,
         "days_max": 5,
+        "target_days": {
+          "days_low": 1,
+          "days_high": 5,
+          "method": "전략별 예상 보유기간"
+        },
         "basis": "단기 평균회귀 ATR",
+        "target_reason": "단기 평균회귀 ATR",
+        "stop_reason": "단기 평균회귀 ATR",
         "strategy_id": "rsi2_trend_reversion"
+      },
+      "strategy_trade_plans": {
+        "rsi2_trend_reversion": {
+          "buy_low": 28.25,
+          "buy_high": 28.47,
+          "entry_low": 28.25,
+          "entry_high": 28.47,
+          "target": 29.72,
+          "stop": 27.11,
+          "target_pct": 4.79,
+          "stop_pct": 4.41,
+          "rr": 1.09,
+          "risk_reward": 1.09,
+          "days_min": 1,
+          "days_max": 5,
+          "target_days": {
+            "days_low": 1,
+            "days_high": 5,
+            "method": "전략별 예상 보유기간"
+          },
+          "basis": "단기 평균회귀 ATR",
+          "target_reason": "단기 평균회귀 ATR",
+          "stop_reason": "단기 평균회귀 ATR",
+          "strategy_id": "rsi2_trend_reversion"
+        }
       },
       "history_stats": {
         "trades": 52,
@@ -391,13 +346,22 @@
       "strategy_reason": "RSI2 추세내 과매도 신호 · 큰 상승추세 안에서 단기 과매도가 생긴 평균회귀 자리",
       "strategy_agreement": 1,
       "confidence": "높음",
+      "strategy_signals": [
+        {
+          "strategy_id": "rsi2_trend_reversion",
+          "strategy_name": "RSI2 추세내 과매도",
+          "strategy_score": 95,
+          "why": "RSI2 1.1 · RSI14 40.7 · 120일선 +4.3% · 상승추세 ✓",
+          "evidence": "큰 상승추세 안에서 단기 과매도가 생긴 평균회귀 자리"
+        }
+      ],
       "ensemble": {
         "best_strategy": {
           "id": "rsi2_trend_reversion",
           "name": "RSI2 추세내 과매도",
           "score": 95,
           "active": true,
-          "why": "RSI2 0.8 · RSI14 41.3 · 120일선 +4.5% · 상승추세 ✓",
+          "why": "RSI2 1.1 · RSI14 40.7 · 120일선 +4.3% · 상승추세 ✓",
           "evidence": "큰 상승추세 안에서 단기 과매도가 생긴 평균회귀 자리"
         },
         "strategies": [
@@ -406,7 +370,7 @@
             "name": "RSI2 추세내 과매도",
             "score": 95,
             "active": true,
-            "why": "RSI2 0.8 · RSI14 41.3 · 120일선 +4.5% · 상승추세 ✓",
+            "why": "RSI2 1.1 · RSI14 40.7 · 120일선 +4.3% · 상승추세 ✓",
             "evidence": "큰 상승추세 안에서 단기 과매도가 생긴 평균회귀 자리"
           },
           {
@@ -414,7 +378,7 @@
             "name": "확인형 눌림반등",
             "score": 69.0,
             "active": false,
-            "why": "RSI 41.3 · 120일선 +4.46% · 반전확인 2/4",
+            "why": "RSI 40.7 · 120일선 +4.26% · 반전확인 2/4",
             "evidence": "지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
           },
           {
@@ -422,7 +386,7 @@
             "name": "모멘텀 눌림 지속",
             "score": 69.0,
             "active": false,
-            "why": "20일 -0.7% · 5일 -3.7% · RSI 41.3 · MACD 개선 ×",
+            "why": "20일 -3.6% · 5일 -3.9% · RSI 40.7 · MACD 개선 ×",
             "evidence": "강한 상승 흐름이 짧게 쉬었다가 다시 힘을 받는 자리"
           },
           {
@@ -430,7 +394,7 @@
             "name": "변동성 수축 돌파",
             "score": 67.0,
             "active": false,
-            "why": "변동성 0.82배 · 20일 고점 돌파 × · 거래량 0.43배",
+            "why": "변동성 0.79배 · 20일 고점 돌파 × · 거래량 0.44배",
             "evidence": "변동성이 줄어든 뒤 거래량과 함께 고점을 돌파하는 자리"
           }
         ],
@@ -440,12 +404,10 @@
         "recommend": true,
         "reason": "RSI2 추세내 과매도 신호 · 큰 상승추세 안에서 단기 과매도가 생긴 평균회귀 자리"
       },
-      "rsi": 41.3,
-      "d120": 4.46,
-      "bb_pos": -2.2,
+      "rsi": 40.7,
+      "d120": 4.26,
+      "bb_pos": -5.2,
       "sparkline": [
-        24.11,
-        24.72,
         25.55,
         26.02,
         26.51,
@@ -465,12 +427,14 @@
         25.39,
         25.28,
         25.11,
+        25.21,
         25.02,
         25.31,
         26.05,
         25.56,
         25.8,
         25.37,
+        25.01,
         25.23,
         25.34,
         25.23,
@@ -478,20 +442,55 @@
         25.02,
         24.7,
         24.3,
-        24.29
+        24.25
       ],
       "trade_plan": {
-        "buy_low": 24.23,
-        "buy_high": 24.35,
-        "target": 25.01,
-        "stop": 23.63,
-        "target_pct": 2.95,
-        "stop_pct": -2.72,
+        "buy_low": 24.2,
+        "buy_high": 24.32,
+        "entry_low": 24.2,
+        "entry_high": 24.32,
+        "target": 24.98,
+        "stop": 23.6,
+        "target_pct": 2.97,
+        "stop_pct": 2.74,
         "rr": 1.09,
+        "risk_reward": 1.09,
         "days_min": 1,
         "days_max": 5,
+        "target_days": {
+          "days_low": 1,
+          "days_high": 5,
+          "method": "전략별 예상 보유기간"
+        },
         "basis": "단기 평균회귀 ATR",
+        "target_reason": "단기 평균회귀 ATR",
+        "stop_reason": "단기 평균회귀 ATR",
         "strategy_id": "rsi2_trend_reversion"
+      },
+      "strategy_trade_plans": {
+        "rsi2_trend_reversion": {
+          "buy_low": 24.2,
+          "buy_high": 24.32,
+          "entry_low": 24.2,
+          "entry_high": 24.32,
+          "target": 24.98,
+          "stop": 23.6,
+          "target_pct": 2.97,
+          "stop_pct": 2.74,
+          "rr": 1.09,
+          "risk_reward": 1.09,
+          "days_min": 1,
+          "days_max": 5,
+          "target_days": {
+            "days_low": 1,
+            "days_high": 5,
+            "method": "전략별 예상 보유기간"
+          },
+          "basis": "단기 평균회귀 ATR",
+          "target_reason": "단기 평균회귀 ATR",
+          "stop_reason": "단기 평균회귀 ATR",
+          "strategy_id": "rsi2_trend_reversion"
+        }
       },
       "history_stats": {
         "trades": 61,
@@ -509,13 +508,22 @@
       "strategy_reason": "확인형 눌림반등 신호 · 지지선까지 눌린 뒤 실제 반전이 확인되는 자리",
       "strategy_agreement": 1,
       "confidence": "높음",
+      "strategy_signals": [
+        {
+          "strategy_id": "confirmed_pullback",
+          "strategy_name": "확인형 눌림반등",
+          "strategy_score": 95,
+          "why": "RSI 43.9 · 120일선 -0.34% · 반전확인 4/4",
+          "evidence": "지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
+        }
+      ],
       "ensemble": {
         "best_strategy": {
           "id": "confirmed_pullback",
           "name": "확인형 눌림반등",
           "score": 95,
           "active": true,
-          "why": "RSI 43.9 · 120일선 -0.31% · 반전확인 4/4",
+          "why": "RSI 43.9 · 120일선 -0.34% · 반전확인 4/4",
           "evidence": "지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
         },
         "strategies": [
@@ -524,7 +532,7 @@
             "name": "확인형 눌림반등",
             "score": 95,
             "active": true,
-            "why": "RSI 43.9 · 120일선 -0.31% · 반전확인 4/4",
+            "why": "RSI 43.9 · 120일선 -0.34% · 반전확인 4/4",
             "evidence": "지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
           },
           {
@@ -532,7 +540,7 @@
             "name": "RSI2 추세내 과매도",
             "score": 69.0,
             "active": false,
-            "why": "RSI2 66.3 · RSI14 43.9 · 120일선 -0.3% · 상승추세 ✓",
+            "why": "RSI2 68.2 · RSI14 43.9 · 120일선 -0.3% · 상승추세 ✓",
             "evidence": "큰 상승추세 안에서 단기 과매도가 생긴 평균회귀 자리"
           },
           {
@@ -540,7 +548,7 @@
             "name": "모멘텀 눌림 지속",
             "score": 69.0,
             "active": false,
-            "why": "20일 -1.5% · 5일 -0.5% · RSI 43.9 · MACD 개선 ✓",
+            "why": "20일 -2.3% · 5일 -0.5% · RSI 43.9 · MACD 개선 ✓",
             "evidence": "강한 상승 흐름이 짧게 쉬었다가 다시 힘을 받는 자리"
           },
           {
@@ -548,7 +556,7 @@
             "name": "변동성 수축 돌파",
             "score": 67.0,
             "active": false,
-            "why": "변동성 0.75배 · 20일 고점 돌파 × · 거래량 0.21배",
+            "why": "변동성 0.76배 · 20일 고점 돌파 × · 거래량 0.22배",
             "evidence": "변동성이 줄어든 뒤 거래량과 함께 고점을 돌파하는 자리"
           }
         ],
@@ -559,11 +567,9 @@
         "reason": "확인형 눌림반등 신호 · 지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
       },
       "rsi": 43.9,
-      "d120": -0.31,
-      "bb_pos": 23.2,
+      "d120": -0.34,
+      "bb_pos": 22.4,
       "sparkline": [
-        143.83,
-        145.25,
         140.87,
         140.53,
         139.97,
@@ -582,6 +588,8 @@
         150.06,
         149.79,
         147.48,
+        149.94,
+        144.7,
         145.12,
         147.63,
         147.26,
@@ -596,20 +604,55 @@
         140.16,
         138.76,
         139.5,
-        140.01
+        140.11
       ],
       "trade_plan": {
-        "buy_low": 139.28,
-        "buy_high": 140.46,
+        "buy_low": 139.37,
+        "buy_high": 140.55,
+        "entry_low": 139.37,
+        "entry_high": 140.55,
         "target": 153.35,
         "stop": 137.22,
-        "target_pct": 9.64,
-        "stop_pct": -1.89,
-        "rr": 5.09,
+        "target_pct": 9.57,
+        "stop_pct": 1.96,
+        "rr": 4.88,
+        "risk_reward": 4.88,
         "days_min": 2,
         "days_max": 8,
+        "target_days": {
+          "days_low": 2,
+          "days_high": 8,
+          "method": "전략별 예상 보유기간"
+        },
         "basis": "지지선 반전폭/최근 고점",
+        "target_reason": "지지선 반전폭/최근 고점",
+        "stop_reason": "지지선 반전폭/최근 고점",
         "strategy_id": "confirmed_pullback"
+      },
+      "strategy_trade_plans": {
+        "confirmed_pullback": {
+          "buy_low": 139.37,
+          "buy_high": 140.55,
+          "entry_low": 139.37,
+          "entry_high": 140.55,
+          "target": 153.35,
+          "stop": 137.22,
+          "target_pct": 9.57,
+          "stop_pct": 1.96,
+          "rr": 4.88,
+          "risk_reward": 4.88,
+          "days_min": 2,
+          "days_max": 8,
+          "target_days": {
+            "days_low": 2,
+            "days_high": 8,
+            "method": "전략별 예상 보유기간"
+          },
+          "basis": "지지선 반전폭/최근 고점",
+          "target_reason": "지지선 반전폭/최근 고점",
+          "stop_reason": "지지선 반전폭/최근 고점",
+          "strategy_id": "confirmed_pullback"
+        }
       },
       "history_stats": {
         "trades": 58,
@@ -627,13 +670,22 @@
       "strategy_reason": "RSI2 추세내 과매도 신호 · 큰 상승추세 안에서 단기 과매도가 생긴 평균회귀 자리",
       "strategy_agreement": 1,
       "confidence": "높음",
+      "strategy_signals": [
+        {
+          "strategy_id": "rsi2_trend_reversion",
+          "strategy_name": "RSI2 추세내 과매도",
+          "strategy_score": 95,
+          "why": "RSI2 1.0 · RSI14 26.2 · 120일선 -4.3% · 상승추세 ✓",
+          "evidence": "큰 상승추세 안에서 단기 과매도가 생긴 평균회귀 자리"
+        }
+      ],
       "ensemble": {
         "best_strategy": {
           "id": "rsi2_trend_reversion",
           "name": "RSI2 추세내 과매도",
           "score": 95,
           "active": true,
-          "why": "RSI2 1.0 · RSI14 26.5 · 120일선 -3.4% · 상승추세 ✓",
+          "why": "RSI2 1.0 · RSI14 26.2 · 120일선 -4.3% · 상승추세 ✓",
           "evidence": "큰 상승추세 안에서 단기 과매도가 생긴 평균회귀 자리"
         },
         "strategies": [
@@ -642,15 +694,15 @@
             "name": "RSI2 추세내 과매도",
             "score": 95,
             "active": true,
-            "why": "RSI2 1.0 · RSI14 26.5 · 120일선 -3.4% · 상승추세 ✓",
+            "why": "RSI2 1.0 · RSI14 26.2 · 120일선 -4.3% · 상승추세 ✓",
             "evidence": "큰 상승추세 안에서 단기 과매도가 생긴 평균회귀 자리"
           },
           {
             "id": "confirmed_pullback",
             "name": "확인형 눌림반등",
-            "score": 69.0,
+            "score": 68.3,
             "active": false,
-            "why": "RSI 26.5 · 120일선 -3.42% · 반전확인 1/4",
+            "why": "RSI 26.2 · 120일선 -4.31% · 반전확인 1/4",
             "evidence": "지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
           },
           {
@@ -658,7 +710,7 @@
             "name": "모멘텀 눌림 지속",
             "score": 67.0,
             "active": false,
-            "why": "20일 -13.3% · 5일 -10.0% · RSI 26.5 · MACD 개선 ×",
+            "why": "20일 -16.2% · 5일 -9.9% · RSI 26.2 · MACD 개선 ×",
             "evidence": "강한 상승 흐름이 짧게 쉬었다가 다시 힘을 받는 자리"
           },
           {
@@ -666,7 +718,7 @@
             "name": "변동성 수축 돌파",
             "score": 67.0,
             "active": false,
-            "why": "변동성 1.18배 · 20일 고점 돌파 × · 거래량 0.60배",
+            "why": "변동성 1.26배 · 20일 고점 돌파 × · 거래량 0.71배",
             "evidence": "변동성이 줄어든 뒤 거래량과 함께 고점을 돌파하는 자리"
           }
         ],
@@ -676,13 +728,10 @@
         "recommend": true,
         "reason": "RSI2 추세내 과매도 신호 · 큰 상승추세 안에서 단기 과매도가 생긴 평균회귀 자리"
       },
-      "rsi": 26.5,
-      "d120": -3.42,
-      "bb_pos": -13.4,
+      "rsi": 26.2,
+      "d120": -4.31,
+      "bb_pos": -13.5,
       "sparkline": [
-        15.49,
-        15.21,
-        15.0,
         15.34,
         15.82,
         16.4,
@@ -701,12 +750,15 @@
         13.62,
         13.88,
         13.69,
+        13.52,
+        13.85,
         13.4,
         13.34,
         13.27,
         13.25,
         13.06,
         13.38,
+        13.28,
         13.24,
         13.02,
         12.98,
@@ -714,20 +766,55 @@
         12.97,
         12.36,
         11.87,
-        11.68
+        11.69
       ],
       "trade_plan": {
-        "buy_low": 11.62,
-        "buy_high": 11.74,
-        "target": 12.41,
-        "stop": 11.01,
-        "target_pct": 6.22,
-        "stop_pct": -5.72,
+        "buy_low": 11.64,
+        "buy_high": 11.75,
+        "entry_low": 11.64,
+        "entry_high": 11.75,
+        "target": 12.39,
+        "stop": 11.06,
+        "target_pct": 5.94,
+        "stop_pct": 5.46,
         "rr": 1.09,
+        "risk_reward": 1.09,
         "days_min": 1,
         "days_max": 5,
+        "target_days": {
+          "days_low": 1,
+          "days_high": 5,
+          "method": "전략별 예상 보유기간"
+        },
         "basis": "단기 평균회귀 ATR",
+        "target_reason": "단기 평균회귀 ATR",
+        "stop_reason": "단기 평균회귀 ATR",
         "strategy_id": "rsi2_trend_reversion"
+      },
+      "strategy_trade_plans": {
+        "rsi2_trend_reversion": {
+          "buy_low": 11.64,
+          "buy_high": 11.75,
+          "entry_low": 11.64,
+          "entry_high": 11.75,
+          "target": 12.39,
+          "stop": 11.06,
+          "target_pct": 5.94,
+          "stop_pct": 5.46,
+          "rr": 1.09,
+          "risk_reward": 1.09,
+          "days_min": 1,
+          "days_max": 5,
+          "target_days": {
+            "days_low": 1,
+            "days_high": 5,
+            "method": "전략별 예상 보유기간"
+          },
+          "basis": "단기 평균회귀 ATR",
+          "target_reason": "단기 평균회귀 ATR",
+          "stop_reason": "단기 평균회귀 ATR",
+          "strategy_id": "rsi2_trend_reversion"
+        }
       },
       "history_stats": {
         "trades": 9,
@@ -745,13 +832,22 @@
       "strategy_reason": "확인형 눌림반등 신호 · 지지선까지 눌린 뒤 실제 반전이 확인되는 자리",
       "strategy_agreement": 1,
       "confidence": "높음",
+      "strategy_signals": [
+        {
+          "strategy_id": "confirmed_pullback",
+          "strategy_name": "확인형 눌림반등",
+          "strategy_score": 95,
+          "why": "RSI 41.1 · 120일선 -1.70% · 반전확인 4/4",
+          "evidence": "지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
+        }
+      ],
       "ensemble": {
         "best_strategy": {
           "id": "confirmed_pullback",
           "name": "확인형 눌림반등",
           "score": 95,
           "active": true,
-          "why": "RSI 42.5 · 120일선 -1.14% · 반전확인 4/4",
+          "why": "RSI 41.1 · 120일선 -1.70% · 반전확인 4/4",
           "evidence": "지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
         },
         "strategies": [
@@ -760,7 +856,7 @@
             "name": "확인형 눌림반등",
             "score": 95,
             "active": true,
-            "why": "RSI 42.5 · 120일선 -1.14% · 반전확인 4/4",
+            "why": "RSI 41.1 · 120일선 -1.70% · 반전확인 4/4",
             "evidence": "지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
           },
           {
@@ -768,7 +864,7 @@
             "name": "RSI2 추세내 과매도",
             "score": 69.0,
             "active": false,
-            "why": "RSI2 76.3 · RSI14 42.5 · 120일선 -1.1% · 상승추세 ✓",
+            "why": "RSI2 75.8 · RSI14 41.1 · 120일선 -1.7% · 상승추세 ✓",
             "evidence": "큰 상승추세 안에서 단기 과매도가 생긴 평균회귀 자리"
           },
           {
@@ -776,7 +872,7 @@
             "name": "모멘텀 눌림 지속",
             "score": 69.0,
             "active": false,
-            "why": "20일 -1.6% · 5일 -3.2% · RSI 42.5 · MACD 개선 ✓",
+            "why": "20일 -5.6% · 5일 -3.3% · RSI 41.1 · MACD 개선 ✓",
             "evidence": "강한 상승 흐름이 짧게 쉬었다가 다시 힘을 받는 자리"
           },
           {
@@ -784,7 +880,7 @@
             "name": "변동성 수축 돌파",
             "score": 67.0,
             "active": false,
-            "why": "변동성 1.03배 · 20일 고점 돌파 × · 거래량 0.65배",
+            "why": "변동성 1.33배 · 20일 고점 돌파 × · 거래량 0.66배",
             "evidence": "변동성이 줄어든 뒤 거래량과 함께 고점을 돌파하는 자리"
           }
         ],
@@ -794,13 +890,10 @@
         "recommend": true,
         "reason": "확인형 눌림반등 신호 · 지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
       },
-      "rsi": 42.5,
-      "d120": -1.14,
-      "bb_pos": 24.6,
+      "rsi": 41.1,
+      "d120": -1.7,
+      "bb_pos": 21.5,
       "sparkline": [
-        12.05,
-        12.08,
-        12.56,
         12.65,
         12.11,
         11.45,
@@ -819,12 +912,15 @@
         11.4,
         11.3,
         11.19,
+        11.35,
+        11.51,
         11.59,
         11.65,
         11.79,
         11.97,
         11.77,
         11.68,
+        11.52,
         11.39,
         11.11,
         10.96,
@@ -832,20 +928,55 @@
         10.35,
         10.29,
         10.16,
-        10.61
+        10.6
       ],
       "trade_plan": {
-        "buy_low": 10.53,
-        "buy_high": 10.67,
+        "buy_low": 10.51,
+        "buy_high": 10.65,
+        "entry_low": 10.51,
+        "entry_high": 10.65,
         "target": 12.07,
         "stop": 10.14,
-        "target_pct": 13.9,
-        "stop_pct": -4.31,
-        "rr": 3.22,
+        "target_pct": 14.07,
+        "stop_pct": 4.17,
+        "rr": 3.37,
+        "risk_reward": 3.37,
         "days_min": 2,
         "days_max": 8,
+        "target_days": {
+          "days_low": 2,
+          "days_high": 8,
+          "method": "전략별 예상 보유기간"
+        },
         "basis": "지지선 반전폭/최근 고점",
+        "target_reason": "지지선 반전폭/최근 고점",
+        "stop_reason": "지지선 반전폭/최근 고점",
         "strategy_id": "confirmed_pullback"
+      },
+      "strategy_trade_plans": {
+        "confirmed_pullback": {
+          "buy_low": 10.51,
+          "buy_high": 10.65,
+          "entry_low": 10.51,
+          "entry_high": 10.65,
+          "target": 12.07,
+          "stop": 10.14,
+          "target_pct": 14.07,
+          "stop_pct": 4.17,
+          "rr": 3.37,
+          "risk_reward": 3.37,
+          "days_min": 2,
+          "days_max": 8,
+          "target_days": {
+            "days_low": 2,
+            "days_high": 8,
+            "method": "전략별 예상 보유기간"
+          },
+          "basis": "지지선 반전폭/최근 고점",
+          "target_reason": "지지선 반전폭/최근 고점",
+          "stop_reason": "지지선 반전폭/최근 고점",
+          "strategy_id": "confirmed_pullback"
+        }
       },
       "history_stats": {
         "trades": 35,
@@ -863,13 +994,22 @@
       "strategy_reason": "확인형 눌림반등 신호 · 지지선까지 눌린 뒤 실제 반전이 확인되는 자리",
       "strategy_agreement": 1,
       "confidence": "높음",
+      "strategy_signals": [
+        {
+          "strategy_id": "confirmed_pullback",
+          "strategy_name": "확인형 눌림반등",
+          "strategy_score": 90.6,
+          "why": "RSI 47.0 · 120일선 +1.70% · 반전확인 4/4",
+          "evidence": "지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
+        }
+      ],
       "ensemble": {
         "best_strategy": {
           "id": "confirmed_pullback",
           "name": "확인형 눌림반등",
           "score": 90.6,
           "active": true,
-          "why": "RSI 46.8 · 120일선 +1.45% · 반전확인 4/4",
+          "why": "RSI 47.0 · 120일선 +1.70% · 반전확인 4/4",
           "evidence": "지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
         },
         "strategies": [
@@ -878,7 +1018,7 @@
             "name": "확인형 눌림반등",
             "score": 90.6,
             "active": true,
-            "why": "RSI 46.8 · 120일선 +1.45% · 반전확인 4/4",
+            "why": "RSI 47.0 · 120일선 +1.70% · 반전확인 4/4",
             "evidence": "지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
           },
           {
@@ -886,7 +1026,7 @@
             "name": "RSI2 추세내 과매도",
             "score": 69.0,
             "active": false,
-            "why": "RSI2 68.6 · RSI14 46.8 · 120일선 +1.5% · 상승추세 ✓",
+            "why": "RSI2 69.8 · RSI14 47.0 · 120일선 +1.7% · 상승추세 ✓",
             "evidence": "큰 상승추세 안에서 단기 과매도가 생긴 평균회귀 자리"
           },
           {
@@ -894,7 +1034,7 @@
             "name": "모멘텀 눌림 지속",
             "score": 69.0,
             "active": false,
-            "why": "20일 +2.8% · 5일 -3.9% · RSI 46.8 · MACD 개선 ✓",
+            "why": "20일 +3.1% · 5일 -3.6% · RSI 47.0 · MACD 개선 ✓",
             "evidence": "강한 상승 흐름이 짧게 쉬었다가 다시 힘을 받는 자리"
           },
           {
@@ -912,9 +1052,9 @@
         "recommend": true,
         "reason": "확인형 눌림반등 신호 · 지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
       },
-      "rsi": 46.8,
-      "d120": 1.45,
-      "bb_pos": 45.7,
+      "rsi": 47.0,
+      "d120": 1.7,
+      "bb_pos": 46.5,
       "sparkline": [
         27.42,
         27.76,
@@ -950,20 +1090,55 @@
         20.52,
         19.4,
         20.24,
-        20.67
+        20.72
       ],
       "trade_plan": {
-        "buy_low": 20.51,
-        "buy_high": 21.04,
+        "buy_low": 20.57,
+        "buy_high": 21.1,
+        "entry_low": 20.57,
+        "entry_high": 21.1,
         "target": 25.17,
-        "stop": 18.51,
-        "target_pct": 21.17,
-        "stop_pct": -10.88,
-        "rr": 1.95,
+        "stop": 18.57,
+        "target_pct": 20.82,
+        "stop_pct": 10.84,
+        "rr": 1.92,
+        "risk_reward": 1.92,
         "days_min": 2,
         "days_max": 8,
+        "target_days": {
+          "days_low": 2,
+          "days_high": 8,
+          "method": "전략별 예상 보유기간"
+        },
         "basis": "지지선 반전폭/최근 고점",
+        "target_reason": "지지선 반전폭/최근 고점",
+        "stop_reason": "지지선 반전폭/최근 고점",
         "strategy_id": "confirmed_pullback"
+      },
+      "strategy_trade_plans": {
+        "confirmed_pullback": {
+          "buy_low": 20.57,
+          "buy_high": 21.1,
+          "entry_low": 20.57,
+          "entry_high": 21.1,
+          "target": 25.17,
+          "stop": 18.57,
+          "target_pct": 20.82,
+          "stop_pct": 10.84,
+          "rr": 1.92,
+          "risk_reward": 1.92,
+          "days_min": 2,
+          "days_max": 8,
+          "target_days": {
+            "days_low": 2,
+            "days_high": 8,
+            "method": "전략별 예상 보유기간"
+          },
+          "basis": "지지선 반전폭/최근 고점",
+          "target_reason": "지지선 반전폭/최근 고점",
+          "stop_reason": "지지선 반전폭/최근 고점",
+          "strategy_id": "confirmed_pullback"
+        }
       },
       "history_stats": {
         "trades": 13,
@@ -981,13 +1156,22 @@
       "strategy_reason": "확인형 눌림반등 신호 · 지지선까지 눌린 뒤 실제 반전이 확인되는 자리",
       "strategy_agreement": 1,
       "confidence": "높음",
+      "strategy_signals": [
+        {
+          "strategy_id": "confirmed_pullback",
+          "strategy_name": "확인형 눌림반등",
+          "strategy_score": 90.6,
+          "why": "RSI 46.6 · 120일선 -1.62% · 반전확인 4/4",
+          "evidence": "지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
+        }
+      ],
       "ensemble": {
         "best_strategy": {
           "id": "confirmed_pullback",
           "name": "확인형 눌림반등",
           "score": 90.6,
           "active": true,
-          "why": "RSI 46.5 · 120일선 -1.79% · 반전확인 4/4",
+          "why": "RSI 46.6 · 120일선 -1.62% · 반전확인 4/4",
           "evidence": "지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
         },
         "strategies": [
@@ -996,7 +1180,7 @@
             "name": "확인형 눌림반등",
             "score": 90.6,
             "active": true,
-            "why": "RSI 46.5 · 120일선 -1.79% · 반전확인 4/4",
+            "why": "RSI 46.6 · 120일선 -1.62% · 반전확인 4/4",
             "evidence": "지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
           },
           {
@@ -1004,7 +1188,7 @@
             "name": "RSI2 추세내 과매도",
             "score": 69.0,
             "active": false,
-            "why": "RSI2 75.5 · RSI14 46.5 · 120일선 -1.8% · 상승추세 ✓",
+            "why": "RSI2 75.9 · RSI14 46.6 · 120일선 -1.6% · 상승추세 ✓",
             "evidence": "큰 상승추세 안에서 단기 과매도가 생긴 평균회귀 자리"
           },
           {
@@ -1012,7 +1196,7 @@
             "name": "모멘텀 눌림 지속",
             "score": 69.0,
             "active": false,
-            "why": "20일 -7.3% · 5일 -3.2% · RSI 46.5 · MACD 개선 ✓",
+            "why": "20일 -7.1% · 5일 -3.1% · RSI 46.6 · MACD 개선 ✓",
             "evidence": "강한 상승 흐름이 짧게 쉬었다가 다시 힘을 받는 자리"
           },
           {
@@ -1020,7 +1204,7 @@
             "name": "변동성 수축 돌파",
             "score": 67.0,
             "active": false,
-            "why": "변동성 0.99배 · 20일 고점 돌파 × · 거래량 0.49배",
+            "why": "변동성 0.98배 · 20일 고점 돌파 × · 거래량 0.49배",
             "evidence": "변동성이 줄어든 뒤 거래량과 함께 고점을 돌파하는 자리"
           }
         ],
@@ -1030,9 +1214,9 @@
         "recommend": true,
         "reason": "확인형 눌림반등 신호 · 지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
       },
-      "rsi": 46.5,
-      "d120": -1.79,
-      "bb_pos": 42.2,
+      "rsi": 46.6,
+      "d120": -1.62,
+      "bb_pos": 42.8,
       "sparkline": [
         27.79,
         27.27,
@@ -1068,20 +1252,55 @@
         21.01,
         19.44,
         19.76,
-        21.07
+        21.1
       ],
       "trade_plan": {
-        "buy_low": 20.92,
-        "buy_high": 21.38,
+        "buy_low": 20.94,
+        "buy_high": 21.4,
+        "entry_low": 20.94,
+        "entry_high": 21.4,
         "target": 24.66,
-        "stop": 19.31,
-        "target_pct": 16.6,
-        "stop_pct": -8.71,
-        "rr": 1.91,
+        "stop": 19.33,
+        "target_pct": 16.49,
+        "stop_pct": 8.7,
+        "rr": 1.9,
+        "risk_reward": 1.9,
         "days_min": 2,
         "days_max": 8,
+        "target_days": {
+          "days_low": 2,
+          "days_high": 8,
+          "method": "전략별 예상 보유기간"
+        },
         "basis": "지지선 반전폭/최근 고점",
+        "target_reason": "지지선 반전폭/최근 고점",
+        "stop_reason": "지지선 반전폭/최근 고점",
         "strategy_id": "confirmed_pullback"
+      },
+      "strategy_trade_plans": {
+        "confirmed_pullback": {
+          "buy_low": 20.94,
+          "buy_high": 21.4,
+          "entry_low": 20.94,
+          "entry_high": 21.4,
+          "target": 24.66,
+          "stop": 19.33,
+          "target_pct": 16.49,
+          "stop_pct": 8.7,
+          "rr": 1.9,
+          "risk_reward": 1.9,
+          "days_min": 2,
+          "days_max": 8,
+          "target_days": {
+            "days_low": 2,
+            "days_high": 8,
+            "method": "전략별 예상 보유기간"
+          },
+          "basis": "지지선 반전폭/최근 고점",
+          "target_reason": "지지선 반전폭/최근 고점",
+          "stop_reason": "지지선 반전폭/최근 고점",
+          "strategy_id": "confirmed_pullback"
+        }
       },
       "history_stats": {
         "trades": 4,
@@ -1099,13 +1318,22 @@
       "strategy_reason": "확인형 눌림반등 신호 · 지지선까지 눌린 뒤 실제 반전이 확인되는 자리",
       "strategy_agreement": 1,
       "confidence": "높음",
+      "strategy_signals": [
+        {
+          "strategy_id": "confirmed_pullback",
+          "strategy_name": "확인형 눌림반등",
+          "strategy_score": 90.6,
+          "why": "RSI 34.3 · 120일선 +0.13% · 반전확인 3/4",
+          "evidence": "지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
+        }
+      ],
       "ensemble": {
         "best_strategy": {
           "id": "confirmed_pullback",
           "name": "확인형 눌림반등",
           "score": 90.6,
           "active": true,
-          "why": "RSI 35.5 · 120일선 +0.38% · 반전확인 3/4",
+          "why": "RSI 34.3 · 120일선 +0.13% · 반전확인 3/4",
           "evidence": "지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
         },
         "strategies": [
@@ -1114,7 +1342,7 @@
             "name": "확인형 눌림반등",
             "score": 90.6,
             "active": true,
-            "why": "RSI 35.5 · 120일선 +0.38% · 반전확인 3/4",
+            "why": "RSI 34.3 · 120일선 +0.13% · 반전확인 3/4",
             "evidence": "지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
           },
           {
@@ -1122,7 +1350,7 @@
             "name": "RSI2 추세내 과매도",
             "score": 69.0,
             "active": false,
-            "why": "RSI2 45.3 · RSI14 35.5 · 120일선 +0.4% · 상승추세 ✓",
+            "why": "RSI2 45.2 · RSI14 34.3 · 120일선 +0.1% · 상승추세 ✓",
             "evidence": "큰 상승추세 안에서 단기 과매도가 생긴 평균회귀 자리"
           },
           {
@@ -1130,7 +1358,7 @@
             "name": "모멘텀 눌림 지속",
             "score": 69.0,
             "active": false,
-            "why": "20일 -3.9% · 5일 -3.0% · RSI 35.5 · MACD 개선 ✓",
+            "why": "20일 -3.8% · 5일 -3.0% · RSI 34.3 · MACD 개선 ✓",
             "evidence": "강한 상승 흐름이 짧게 쉬었다가 다시 힘을 받는 자리"
           },
           {
@@ -1138,7 +1366,7 @@
             "name": "변동성 수축 돌파",
             "score": 67.0,
             "active": false,
-            "why": "변동성 1.38배 · 20일 고점 돌파 × · 거래량 0.24배",
+            "why": "변동성 1.45배 · 20일 고점 돌파 × · 거래량 0.24배",
             "evidence": "변동성이 줄어든 뒤 거래량과 함께 고점을 돌파하는 자리"
           }
         ],
@@ -1148,12 +1376,10 @@
         "recommend": true,
         "reason": "확인형 눌림반등 신호 · 지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
       },
-      "rsi": 35.5,
-      "d120": 0.38,
-      "bb_pos": 10.9,
+      "rsi": 34.3,
+      "d120": 0.13,
+      "bb_pos": 9.5,
       "sparkline": [
-        24.69,
-        25.19,
         25.42,
         25.52,
         25.89,
@@ -1172,6 +1398,8 @@
         26.03,
         26.12,
         26.03,
+        26.1,
+        26.14,
         25.74,
         26.1,
         26.38,
@@ -1191,138 +1419,55 @@
       "trade_plan": {
         "buy_low": 24.0,
         "buy_high": 24.21,
+        "entry_low": 24.0,
+        "entry_high": 24.21,
         "target": 26.65,
         "stop": 23.67,
         "target_pct": 10.56,
-        "stop_pct": -1.8,
+        "stop_pct": 1.8,
         "rr": 5.87,
+        "risk_reward": 5.87,
         "days_min": 2,
         "days_max": 8,
+        "target_days": {
+          "days_low": 2,
+          "days_high": 8,
+          "method": "전략별 예상 보유기간"
+        },
         "basis": "지지선 반전폭/최근 고점",
+        "target_reason": "지지선 반전폭/최근 고점",
+        "stop_reason": "지지선 반전폭/최근 고점",
         "strategy_id": "confirmed_pullback"
+      },
+      "strategy_trade_plans": {
+        "confirmed_pullback": {
+          "buy_low": 24.0,
+          "buy_high": 24.21,
+          "entry_low": 24.0,
+          "entry_high": 24.21,
+          "target": 26.65,
+          "stop": 23.67,
+          "target_pct": 10.56,
+          "stop_pct": 1.8,
+          "rr": 5.87,
+          "risk_reward": 5.87,
+          "days_min": 2,
+          "days_max": 8,
+          "target_days": {
+            "days_low": 2,
+            "days_high": 8,
+            "method": "전략별 예상 보유기간"
+          },
+          "basis": "지지선 반전폭/최근 고점",
+          "target_reason": "지지선 반전폭/최근 고점",
+          "stop_reason": "지지선 반전폭/최근 고점",
+          "strategy_id": "confirmed_pullback"
+        }
       },
       "history_stats": {
         "trades": 56,
         "win_rate": 67.9,
         "avg_return": 0.8
-      }
-    },
-    {
-      "symbol": "JNJ",
-      "score": 87.0,
-      "grade": "S",
-      "eligible": true,
-      "strategy_name": "모멘텀 눌림 지속",
-      "strategy_id": "momentum_pullback",
-      "strategy_reason": "모멘텀 눌림 지속 신호 · 강한 상승 흐름이 짧게 쉬었다가 다시 힘을 받는 자리",
-      "strategy_agreement": 1,
-      "confidence": "높음",
-      "ensemble": {
-        "best_strategy": {
-          "id": "momentum_pullback",
-          "name": "모멘텀 눌림 지속",
-          "score": 87.0,
-          "active": true,
-          "why": "20일 +5.3% · 5일 +1.0% · RSI 55.7 · MACD 개선 ✓",
-          "evidence": "강한 상승 흐름이 짧게 쉬었다가 다시 힘을 받는 자리"
-        },
-        "strategies": [
-          {
-            "id": "momentum_pullback",
-            "name": "모멘텀 눌림 지속",
-            "score": 87.0,
-            "active": true,
-            "why": "20일 +5.3% · 5일 +1.0% · RSI 55.7 · MACD 개선 ✓",
-            "evidence": "강한 상승 흐름이 짧게 쉬었다가 다시 힘을 받는 자리"
-          },
-          {
-            "id": "confirmed_pullback",
-            "name": "확인형 눌림반등",
-            "score": 69.0,
-            "active": false,
-            "why": "RSI 55.7 · 120일선 +7.79% · 반전확인 4/4",
-            "evidence": "지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
-          },
-          {
-            "id": "rsi2_trend_reversion",
-            "name": "RSI2 추세내 과매도",
-            "score": 69.0,
-            "active": false,
-            "why": "RSI2 55.7 · RSI14 55.7 · 120일선 +7.8% · 상승추세 ✓",
-            "evidence": "큰 상승추세 안에서 단기 과매도가 생긴 평균회귀 자리"
-          },
-          {
-            "id": "volatility_breakout",
-            "name": "변동성 수축 돌파",
-            "score": 67.0,
-            "active": false,
-            "why": "변동성 0.90배 · 20일 고점 돌파 × · 거래량 0.24배",
-            "evidence": "변동성이 줄어든 뒤 거래량과 함께 고점을 돌파하는 자리"
-          }
-        ],
-        "agreement": 1,
-        "ensemble_score": 87.0,
-        "confidence": "높음",
-        "recommend": true,
-        "reason": "모멘텀 눌림 지속 신호 · 강한 상승 흐름이 짧게 쉬었다가 다시 힘을 받는 자리"
-      },
-      "rsi": 55.7,
-      "d120": 7.79,
-      "bb_pos": 61.5,
-      "sparkline": [
-        241.0,
-        244.88,
-        254.66,
-        258.51,
-        253.97,
-        253.98,
-        263.04,
-        259.33,
-        267.24,
-        263.4,
-        259.1,
-        256.98,
-        257.77,
-        253.85,
-        247.02,
-        249.97,
-        253.04,
-        248.82,
-        250.61,
-        255.63,
-        259.27,
-        263.4,
-        265.95,
-        266.73,
-        265.53,
-        255.82,
-        256.35,
-        254.41,
-        254.93,
-        257.59,
-        256.98,
-        259.24,
-        261.81,
-        259.8,
-        260.14
-      ],
-      "trade_plan": {
-        "buy_low": 258.98,
-        "buy_high": 261.1,
-        "target": 274.9,
-        "stop": 250.44,
-        "target_pct": 5.72,
-        "stop_pct": -3.69,
-        "rr": 1.55,
-        "days_min": 3,
-        "days_max": 10,
-        "basis": "추세 재개/직전 고점",
-        "strategy_id": "momentum_pullback"
-      },
-      "history_stats": {
-        "trades": 69,
-        "win_rate": 49.3,
-        "avg_return": -0.17
       }
     },
     {
@@ -1335,13 +1480,22 @@
       "strategy_reason": "RSI2 추세내 과매도 신호 · 큰 상승추세 안에서 단기 과매도가 생긴 평균회귀 자리",
       "strategy_agreement": 1,
       "confidence": "높음",
+      "strategy_signals": [
+        {
+          "strategy_id": "rsi2_trend_reversion",
+          "strategy_name": "RSI2 추세내 과매도",
+          "strategy_score": 87.0,
+          "why": "RSI2 3.3 · RSI14 47.1 · 120일선 +6.3% · 상승추세 ✓",
+          "evidence": "큰 상승추세 안에서 단기 과매도가 생긴 평균회귀 자리"
+        }
+      ],
       "ensemble": {
         "best_strategy": {
           "id": "rsi2_trend_reversion",
           "name": "RSI2 추세내 과매도",
           "score": 87.0,
           "active": true,
-          "why": "RSI2 3.4 · RSI14 47.1 · 120일선 +6.3% · 상승추세 ✓",
+          "why": "RSI2 3.3 · RSI14 47.1 · 120일선 +6.3% · 상승추세 ✓",
           "evidence": "큰 상승추세 안에서 단기 과매도가 생긴 평균회귀 자리"
         },
         "strategies": [
@@ -1350,7 +1504,7 @@
             "name": "RSI2 추세내 과매도",
             "score": 87.0,
             "active": true,
-            "why": "RSI2 3.4 · RSI14 47.1 · 120일선 +6.3% · 상승추세 ✓",
+            "why": "RSI2 3.3 · RSI14 47.1 · 120일선 +6.3% · 상승추세 ✓",
             "evidence": "큰 상승추세 안에서 단기 과매도가 생긴 평균회귀 자리"
           },
           {
@@ -1358,7 +1512,7 @@
             "name": "확인형 눌림반등",
             "score": 69.0,
             "active": false,
-            "why": "RSI 47.1 · 120일선 +6.30% · 반전확인 2/4",
+            "why": "RSI 47.1 · 120일선 +6.28% · 반전확인 2/4",
             "evidence": "지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
           },
           {
@@ -1366,7 +1520,7 @@
             "name": "모멘텀 눌림 지속",
             "score": 69.0,
             "active": false,
-            "why": "20일 -1.2% · 5일 -2.4% · RSI 47.1 · MACD 개선 ×",
+            "why": "20일 -1.2% · 5일 -2.5% · RSI 47.1 · MACD 개선 ×",
             "evidence": "강한 상승 흐름이 짧게 쉬었다가 다시 힘을 받는 자리"
           },
           {
@@ -1374,7 +1528,7 @@
             "name": "변동성 수축 돌파",
             "score": 67.0,
             "active": false,
-            "why": "변동성 1.25배 · 20일 고점 돌파 × · 거래량 0.20배",
+            "why": "변동성 1.25배 · 20일 고점 돌파 × · 거래량 0.21배",
             "evidence": "변동성이 줄어든 뒤 거래량과 함께 고점을 돌파하는 자리"
           }
         ],
@@ -1385,8 +1539,8 @@
         "reason": "RSI2 추세내 과매도 신호 · 큰 상승추세 안에서 단기 과매도가 생긴 평균회귀 자리"
       },
       "rsi": 47.1,
-      "d120": 6.3,
-      "bb_pos": 28.2,
+      "d120": 6.28,
+      "bb_pos": 27.8,
       "sparkline": [
         28.44,
         29.05,
@@ -1427,256 +1581,55 @@
       "trade_plan": {
         "buy_low": 29.7,
         "buy_high": 29.81,
+        "entry_low": 29.7,
+        "entry_high": 29.81,
         "target": 30.44,
         "stop": 29.12,
         "target_pct": 2.31,
-        "stop_pct": -2.13,
+        "stop_pct": 2.13,
         "rr": 1.09,
+        "risk_reward": 1.09,
         "days_min": 1,
         "days_max": 5,
+        "target_days": {
+          "days_low": 1,
+          "days_high": 5,
+          "method": "전략별 예상 보유기간"
+        },
         "basis": "단기 평균회귀 ATR",
+        "target_reason": "단기 평균회귀 ATR",
+        "stop_reason": "단기 평균회귀 ATR",
         "strategy_id": "rsi2_trend_reversion"
+      },
+      "strategy_trade_plans": {
+        "rsi2_trend_reversion": {
+          "buy_low": 29.7,
+          "buy_high": 29.81,
+          "entry_low": 29.7,
+          "entry_high": 29.81,
+          "target": 30.44,
+          "stop": 29.12,
+          "target_pct": 2.31,
+          "stop_pct": 2.13,
+          "rr": 1.09,
+          "risk_reward": 1.09,
+          "days_min": 1,
+          "days_max": 5,
+          "target_days": {
+            "days_low": 1,
+            "days_high": 5,
+            "method": "전략별 예상 보유기간"
+          },
+          "basis": "단기 평균회귀 ATR",
+          "target_reason": "단기 평균회귀 ATR",
+          "stop_reason": "단기 평균회귀 ATR",
+          "strategy_id": "rsi2_trend_reversion"
+        }
       },
       "history_stats": {
         "trades": 56,
         "win_rate": 51.8,
         "avg_return": 0.06
-      }
-    },
-    {
-      "symbol": "CFG",
-      "score": 87.0,
-      "grade": "S",
-      "eligible": true,
-      "strategy_name": "모멘텀 눌림 지속",
-      "strategy_id": "momentum_pullback",
-      "strategy_reason": "모멘텀 눌림 지속 신호 · 강한 상승 흐름이 짧게 쉬었다가 다시 힘을 받는 자리",
-      "strategy_agreement": 1,
-      "confidence": "높음",
-      "ensemble": {
-        "best_strategy": {
-          "id": "momentum_pullback",
-          "name": "모멘텀 눌림 지속",
-          "score": 87.0,
-          "active": true,
-          "why": "20일 +4.4% · 5일 -0.2% · RSI 59.8 · MACD 개선 ✓",
-          "evidence": "강한 상승 흐름이 짧게 쉬었다가 다시 힘을 받는 자리"
-        },
-        "strategies": [
-          {
-            "id": "momentum_pullback",
-            "name": "모멘텀 눌림 지속",
-            "score": 87.0,
-            "active": true,
-            "why": "20일 +4.4% · 5일 -0.2% · RSI 59.8 · MACD 개선 ✓",
-            "evidence": "강한 상승 흐름이 짧게 쉬었다가 다시 힘을 받는 자리"
-          },
-          {
-            "id": "confirmed_pullback",
-            "name": "확인형 눌림반등",
-            "score": 69.0,
-            "active": false,
-            "why": "RSI 59.8 · 120일선 +13.07% · 반전확인 4/4",
-            "evidence": "지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
-          },
-          {
-            "id": "volatility_breakout",
-            "name": "변동성 수축 돌파",
-            "score": 67.0,
-            "active": false,
-            "why": "변동성 0.78배 · 20일 고점 돌파 × · 거래량 0.17배",
-            "evidence": "변동성이 줄어든 뒤 거래량과 함께 고점을 돌파하는 자리"
-          },
-          {
-            "id": "rsi2_trend_reversion",
-            "name": "RSI2 추세내 과매도",
-            "score": 63.0,
-            "active": false,
-            "why": "RSI2 90.0 · RSI14 59.8 · 120일선 +13.1% · 상승추세 ✓",
-            "evidence": "큰 상승추세 안에서 단기 과매도가 생긴 평균회귀 자리"
-          }
-        ],
-        "agreement": 1,
-        "ensemble_score": 87.0,
-        "confidence": "높음",
-        "recommend": true,
-        "reason": "모멘텀 눌림 지속 신호 · 강한 상승 흐름이 짧게 쉬었다가 다시 힘을 받는 자리"
-      },
-      "rsi": 59.8,
-      "d120": 13.07,
-      "bb_pos": 78.7,
-      "sparkline": [
-        67.99,
-        68.99,
-        69.46,
-        70.66,
-        70.4,
-        70.43,
-        70.07,
-        71.82,
-        70.98,
-        72.11,
-        71.78,
-        68.56,
-        69.86,
-        70.34,
-        70.36,
-        70.32,
-        71.12,
-        74.4,
-        72.39,
-        71.5,
-        71.8,
-        71.88,
-        71.1,
-        72.94,
-        71.31,
-        71.73,
-        71.65,
-        72.7,
-        73.68,
-        73.6,
-        72.43,
-        72.67,
-        72.67,
-        72.99,
-        73.47
-      ],
-      "trade_plan": {
-        "buy_low": 73.19,
-        "buy_high": 73.7,
-        "target": 76.36,
-        "stop": 70.04,
-        "target_pct": 3.97,
-        "stop_pct": -4.63,
-        "rr": 0.86,
-        "days_min": 3,
-        "days_max": 10,
-        "basis": "추세 재개/직전 고점",
-        "strategy_id": "momentum_pullback"
-      },
-      "history_stats": {
-        "trades": 46,
-        "win_rate": 56.5,
-        "avg_return": -0.08
-      }
-    },
-    {
-      "symbol": "EBC",
-      "score": 87.0,
-      "grade": "S",
-      "eligible": true,
-      "strategy_name": "모멘텀 눌림 지속",
-      "strategy_id": "momentum_pullback",
-      "strategy_reason": "모멘텀 눌림 지속 신호 · 강한 상승 흐름이 짧게 쉬었다가 다시 힘을 받는 자리",
-      "strategy_agreement": 1,
-      "confidence": "높음",
-      "ensemble": {
-        "best_strategy": {
-          "id": "momentum_pullback",
-          "name": "모멘텀 눌림 지속",
-          "score": 87.0,
-          "active": true,
-          "why": "20일 +4.5% · 5일 +0.5% · RSI 60.0 · MACD 개선 ✓",
-          "evidence": "강한 상승 흐름이 짧게 쉬었다가 다시 힘을 받는 자리"
-        },
-        "strategies": [
-          {
-            "id": "momentum_pullback",
-            "name": "모멘텀 눌림 지속",
-            "score": 87.0,
-            "active": true,
-            "why": "20일 +4.5% · 5일 +0.5% · RSI 60.0 · MACD 개선 ✓",
-            "evidence": "강한 상승 흐름이 짧게 쉬었다가 다시 힘을 받는 자리"
-          },
-          {
-            "id": "confirmed_pullback",
-            "name": "확인형 눌림반등",
-            "score": 69.0,
-            "active": false,
-            "why": "RSI 60.0 · 120일선 +12.65% · 반전확인 4/4",
-            "evidence": "지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
-          },
-          {
-            "id": "volatility_breakout",
-            "name": "변동성 수축 돌파",
-            "score": 69.0,
-            "active": false,
-            "why": "변동성 0.67배 · 20일 고점 돌파 × · 거래량 0.16배",
-            "evidence": "변동성이 줄어든 뒤 거래량과 함께 고점을 돌파하는 자리"
-          },
-          {
-            "id": "rsi2_trend_reversion",
-            "name": "RSI2 추세내 과매도",
-            "score": 63.0,
-            "active": false,
-            "why": "RSI2 88.2 · RSI14 60.0 · 120일선 +12.7% · 상승추세 ✓",
-            "evidence": "큰 상승추세 안에서 단기 과매도가 생긴 평균회귀 자리"
-          }
-        ],
-        "agreement": 1,
-        "ensemble_score": 87.0,
-        "confidence": "높음",
-        "recommend": true,
-        "reason": "모멘텀 눌림 지속 신호 · 강한 상승 흐름이 짧게 쉬었다가 다시 힘을 받는 자리"
-      },
-      "rsi": 60.0,
-      "d120": 12.65,
-      "bb_pos": 74.5,
-      "sparkline": [
-        20.6,
-        20.74,
-        20.98,
-        21.43,
-        21.85,
-        22.09,
-        22.07,
-        22.24,
-        22.63,
-        22.36,
-        22.71,
-        22.52,
-        21.66,
-        22.18,
-        22.31,
-        22.27,
-        22.44,
-        22.68,
-        23.46,
-        23.0,
-        22.65,
-        22.62,
-        22.92,
-        23.1,
-        23.55,
-        23.04,
-        23.11,
-        23.09,
-        23.39,
-        23.2,
-        23.01,
-        22.84,
-        22.94,
-        23.13,
-        23.31
-      ],
-      "trade_plan": {
-        "buy_low": 23.22,
-        "buy_high": 23.37,
-        "target": 24.19,
-        "stop": 22.64,
-        "target_pct": 3.84,
-        "stop_pct": -2.81,
-        "rr": 1.37,
-        "days_min": 3,
-        "days_max": 10,
-        "basis": "추세 재개/직전 고점",
-        "strategy_id": "momentum_pullback"
-      },
-      "history_stats": {
-        "trades": 37,
-        "win_rate": 56.8,
-        "avg_return": 0.74
       }
     },
     {
@@ -1689,13 +1642,22 @@
       "strategy_reason": "확인형 눌림반등 신호 · 지지선까지 눌린 뒤 실제 반전이 확인되는 자리",
       "strategy_agreement": 1,
       "confidence": "높음",
+      "strategy_signals": [
+        {
+          "strategy_id": "confirmed_pullback",
+          "strategy_name": "확인형 눌림반등",
+          "strategy_score": 86.1,
+          "why": "RSI 37.7 · 120일선 +3.32% · 반전확인 3/4",
+          "evidence": "지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
+        }
+      ],
       "ensemble": {
         "best_strategy": {
           "id": "confirmed_pullback",
           "name": "확인형 눌림반등",
           "score": 86.1,
           "active": true,
-          "why": "RSI 38.1 · 120일선 +3.49% · 반전확인 3/4",
+          "why": "RSI 37.7 · 120일선 +3.32% · 반전확인 3/4",
           "evidence": "지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
         },
         "strategies": [
@@ -1704,7 +1666,7 @@
             "name": "확인형 눌림반등",
             "score": 86.1,
             "active": true,
-            "why": "RSI 38.1 · 120일선 +3.49% · 반전확인 3/4",
+            "why": "RSI 37.7 · 120일선 +3.32% · 반전확인 3/4",
             "evidence": "지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
           },
           {
@@ -1712,7 +1674,7 @@
             "name": "RSI2 추세내 과매도",
             "score": 69.0,
             "active": false,
-            "why": "RSI2 50.1 · RSI14 38.1 · 120일선 +3.5% · 상승추세 ✓",
+            "why": "RSI2 50.1 · RSI14 37.7 · 120일선 +3.3% · 상승추세 ✓",
             "evidence": "큰 상승추세 안에서 단기 과매도가 생긴 평균회귀 자리"
           },
           {
@@ -1720,7 +1682,7 @@
             "name": "모멘텀 눌림 지속",
             "score": 69.0,
             "active": false,
-            "why": "20일 -2.7% · 5일 -9.5% · RSI 38.1 · MACD 개선 ✓",
+            "why": "20일 -4.4% · 5일 -9.5% · RSI 37.7 · MACD 개선 ✓",
             "evidence": "강한 상승 흐름이 짧게 쉬었다가 다시 힘을 받는 자리"
           },
           {
@@ -1728,7 +1690,7 @@
             "name": "변동성 수축 돌파",
             "score": 67.0,
             "active": false,
-            "why": "변동성 1.16배 · 20일 고점 돌파 × · 거래량 0.31배",
+            "why": "변동성 1.13배 · 20일 고점 돌파 × · 거래량 0.32배",
             "evidence": "변동성이 줄어든 뒤 거래량과 함께 고점을 돌파하는 자리"
           }
         ],
@@ -1738,11 +1700,10 @@
         "recommend": true,
         "reason": "확인형 눌림반등 신호 · 지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
       },
-      "rsi": 38.1,
-      "d120": 3.49,
-      "bb_pos": 11.9,
+      "rsi": 37.7,
+      "d120": 3.32,
+      "bb_pos": 10.9,
       "sparkline": [
-        24.82,
         24.58,
         24.98,
         25.06,
@@ -1761,6 +1722,7 @@
         23.67,
         23.94,
         24.06,
+        24.44,
         24.5,
         23.96,
         24.5,
@@ -1779,17 +1741,52 @@
         22.75
       ],
       "trade_plan": {
-        "buy_low": 22.57,
-        "buy_high": 22.84,
+        "buy_low": 22.58,
+        "buy_high": 22.86,
+        "entry_low": 22.58,
+        "entry_high": 22.86,
         "target": 25.71,
-        "stop": 22.12,
-        "target_pct": 13.23,
-        "stop_pct": -2.59,
-        "rr": 5.1,
+        "stop": 22.13,
+        "target_pct": 13.16,
+        "stop_pct": 2.59,
+        "rr": 5.08,
+        "risk_reward": 5.08,
         "days_min": 2,
         "days_max": 8,
+        "target_days": {
+          "days_low": 2,
+          "days_high": 8,
+          "method": "전략별 예상 보유기간"
+        },
         "basis": "지지선 반전폭/최근 고점",
+        "target_reason": "지지선 반전폭/최근 고점",
+        "stop_reason": "지지선 반전폭/최근 고점",
         "strategy_id": "confirmed_pullback"
+      },
+      "strategy_trade_plans": {
+        "confirmed_pullback": {
+          "buy_low": 22.58,
+          "buy_high": 22.86,
+          "entry_low": 22.58,
+          "entry_high": 22.86,
+          "target": 25.71,
+          "stop": 22.13,
+          "target_pct": 13.16,
+          "stop_pct": 2.59,
+          "rr": 5.08,
+          "risk_reward": 5.08,
+          "days_min": 2,
+          "days_max": 8,
+          "target_days": {
+            "days_low": 2,
+            "days_high": 8,
+            "method": "전략별 예상 보유기간"
+          },
+          "basis": "지지선 반전폭/최근 고점",
+          "target_reason": "지지선 반전폭/최근 고점",
+          "stop_reason": "지지선 반전폭/최근 고점",
+          "strategy_id": "confirmed_pullback"
+        }
       },
       "history_stats": {
         "trades": 58,
@@ -1798,7 +1795,7 @@
       }
     },
     {
-      "symbol": "VSH",
+      "symbol": "CNP",
       "score": 86.1,
       "grade": "S",
       "eligible": true,
@@ -1807,13 +1804,22 @@
       "strategy_reason": "확인형 눌림반등 신호 · 지지선까지 눌린 뒤 실제 반전이 확인되는 자리",
       "strategy_agreement": 1,
       "confidence": "높음",
+      "strategy_signals": [
+        {
+          "strategy_id": "confirmed_pullback",
+          "strategy_name": "확인형 눌림반등",
+          "strategy_score": 86.1,
+          "why": "RSI 34.0 · 120일선 -5.71% · 반전확인 4/4",
+          "evidence": "지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
+        }
+      ],
       "ensemble": {
         "best_strategy": {
           "id": "confirmed_pullback",
           "name": "확인형 눌림반등",
           "score": 86.1,
           "active": true,
-          "why": "RSI 41.9 · 120일선 -2.27% · 반전확인 3/4",
+          "why": "RSI 34.0 · 120일선 -5.71% · 반전확인 4/4",
           "evidence": "지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
         },
         "strategies": [
@@ -1822,7 +1828,7 @@
             "name": "확인형 눌림반등",
             "score": 86.1,
             "active": true,
-            "why": "RSI 41.9 · 120일선 -2.27% · 반전확인 3/4",
+            "why": "RSI 34.0 · 120일선 -5.71% · 반전확인 4/4",
             "evidence": "지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
           },
           {
@@ -1830,7 +1836,7 @@
             "name": "RSI2 추세내 과매도",
             "score": 69.0,
             "active": false,
-            "why": "RSI2 61.0 · RSI14 41.9 · 120일선 -2.3% · 상승추세 ✓",
+            "why": "RSI2 62.7 · RSI14 34.0 · 120일선 -5.7% · 상승추세 ×",
             "evidence": "큰 상승추세 안에서 단기 과매도가 생긴 평균회귀 자리"
           },
           {
@@ -1838,15 +1844,15 @@
             "name": "모멘텀 눌림 지속",
             "score": 69.0,
             "active": false,
-            "why": "20일 -18.5% · 5일 +2.5% · RSI 41.9 · MACD 개선 ✓",
+            "why": "20일 -5.3% · 5일 -0.5% · RSI 34.0 · MACD 개선 ✓",
             "evidence": "강한 상승 흐름이 짧게 쉬었다가 다시 힘을 받는 자리"
           },
           {
             "id": "volatility_breakout",
             "name": "변동성 수축 돌파",
-            "score": 67.0,
+            "score": 59.0,
             "active": false,
-            "why": "변동성 1.01배 · 20일 고점 돌파 × · 거래량 0.22배",
+            "why": "변동성 1.15배 · 20일 고점 돌파 × · 거래량 0.22배",
             "evidence": "변동성이 줄어든 뒤 거래량과 함께 고점을 돌파하는 자리"
           }
         ],
@@ -1856,184 +1862,110 @@
         "recommend": true,
         "reason": "확인형 눌림반등 신호 · 지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
       },
-      "rsi": 41.9,
-      "d120": -2.27,
-      "bb_pos": 33.5,
+      "rsi": 34.0,
+      "d120": -5.71,
+      "bb_pos": 17.7,
       "sparkline": [
-        58.96,
-        55.59,
-        59.91,
-        56.35,
-        56.28,
-        53.78,
-        51.21,
-        45.92,
-        46.17,
-        42.19,
-        42.19,
+        43.86,
+        44.22,
+        45.04,
+        44.79,
         44.04,
-        44.67,
-        41.94,
-        41.74,
-        40.45,
-        36.44,
-        37.81,
-        37.37,
-        39.78,
-        39.89,
-        40.8,
-        38.21,
-        37.18,
-        32.72,
-        29.96,
-        33.79,
-        35.4,
-        38.85,
-        33.18,
-        32.78,
-        35.41,
-        33.14,
-        33.29,
-        34.03
+        43.73,
+        44.61,
+        44.0,
+        44.48,
+        44.05,
+        43.32,
+        43.54,
+        44.13,
+        43.76,
+        42.72,
+        43.34,
+        43.13,
+        42.99,
+        42.72,
+        43.68,
+        44.23,
+        44.56,
+        44.01,
+        44.1,
+        42.93,
+        42.15,
+        42.04,
+        41.92,
+        41.58,
+        40.65,
+        40.67,
+        40.68,
+        40.03,
+        40.18,
+        40.44
       ],
       "trade_plan": {
-        "buy_low": 33.78,
-        "buy_high": 34.57,
-        "target": 42.28,
-        "stop": 29.68,
-        "target_pct": 23.72,
-        "stop_pct": -13.15,
-        "rr": 1.8,
+        "buy_low": 40.18,
+        "buy_high": 40.6,
+        "entry_low": 40.18,
+        "entry_high": 40.6,
+        "target": 45.26,
+        "stop": 39.49,
+        "target_pct": 12.06,
+        "stop_pct": 2.21,
+        "rr": 5.46,
+        "risk_reward": 5.46,
         "days_min": 2,
         "days_max": 8,
+        "target_days": {
+          "days_low": 2,
+          "days_high": 8,
+          "method": "전략별 예상 보유기간"
+        },
         "basis": "지지선 반전폭/최근 고점",
+        "target_reason": "지지선 반전폭/최근 고점",
+        "stop_reason": "지지선 반전폭/최근 고점",
         "strategy_id": "confirmed_pullback"
       },
-      "history_stats": {
-        "trades": 49,
-        "win_rate": 42.9,
-        "avg_return": -1.33
-      }
-    },
-    {
-      "symbol": "M",
-      "score": 83.0,
-      "grade": "A",
-      "eligible": true,
-      "strategy_name": "RSI2 추세내 과매도",
-      "strategy_id": "rsi2_trend_reversion",
-      "strategy_reason": "RSI2 추세내 과매도 신호 · 큰 상승추세 안에서 단기 과매도가 생긴 평균회귀 자리",
-      "strategy_agreement": 1,
-      "confidence": "보통",
-      "ensemble": {
-        "best_strategy": {
-          "id": "rsi2_trend_reversion",
-          "name": "RSI2 추세내 과매도",
-          "score": 83.0,
-          "active": true,
-          "why": "RSI2 3.9 · RSI14 45.1 · 120일선 +12.0% · 상승추세 ✓",
-          "evidence": "큰 상승추세 안에서 단기 과매도가 생긴 평균회귀 자리"
-        },
-        "strategies": [
-          {
-            "id": "rsi2_trend_reversion",
-            "name": "RSI2 추세내 과매도",
-            "score": 83.0,
-            "active": true,
-            "why": "RSI2 3.9 · RSI14 45.1 · 120일선 +12.0% · 상승추세 ✓",
-            "evidence": "큰 상승추세 안에서 단기 과매도가 생긴 평균회귀 자리"
+      "strategy_trade_plans": {
+        "confirmed_pullback": {
+          "buy_low": 40.18,
+          "buy_high": 40.6,
+          "entry_low": 40.18,
+          "entry_high": 40.6,
+          "target": 45.26,
+          "stop": 39.49,
+          "target_pct": 12.06,
+          "stop_pct": 2.21,
+          "rr": 5.46,
+          "risk_reward": 5.46,
+          "days_min": 2,
+          "days_max": 8,
+          "target_days": {
+            "days_low": 2,
+            "days_high": 8,
+            "method": "전략별 예상 보유기간"
           },
-          {
-            "id": "momentum_pullback",
-            "name": "모멘텀 눌림 지속",
-            "score": 69.0,
-            "active": false,
-            "why": "20일 +2.1% · 5일 -7.1% · RSI 45.1 · MACD 개선 ×",
-            "evidence": "강한 상승 흐름이 짧게 쉬었다가 다시 힘을 받는 자리"
-          },
-          {
-            "id": "confirmed_pullback",
-            "name": "확인형 눌림반등",
-            "score": 68.3,
-            "active": false,
-            "why": "RSI 45.1 · 120일선 +12.00% · 반전확인 1/4",
-            "evidence": "지지선까지 눌린 뒤 실제 반전이 확인되는 자리"
-          },
-          {
-            "id": "volatility_breakout",
-            "name": "변동성 수축 돌파",
-            "score": 67.0,
-            "active": false,
-            "why": "변동성 1.04배 · 20일 고점 돌파 × · 거래량 0.52배",
-            "evidence": "변동성이 줄어든 뒤 거래량과 함께 고점을 돌파하는 자리"
-          }
-        ],
-        "agreement": 1,
-        "ensemble_score": 83.0,
-        "confidence": "보통",
-        "recommend": true,
-        "reason": "RSI2 추세내 과매도 신호 · 큰 상승추세 안에서 단기 과매도가 생긴 평균회귀 자리"
-      },
-      "rsi": 45.1,
-      "d120": 12.0,
-      "bb_pos": 25.6,
-      "sparkline": [
-        23.95,
-        25.34,
-        25.7,
-        25.96,
-        24.46,
-        23.55,
-        23.43,
-        23.25,
-        23.68,
-        23.13,
-        22.7,
-        22.68,
-        22.64,
-        22.78,
-        23.21,
-        23.76,
-        24.12,
-        23.68,
-        23.31,
-        23.8,
-        24.33,
-        23.33,
-        23.38,
-        24.96,
-        25.15,
-        24.76,
-        24.93,
-        25.95,
-        26.21,
-        25.51,
-        25.13,
-        25.4,
-        24.9,
-        24.52,
-        23.7
-      ],
-      "trade_plan": {
-        "buy_low": 23.6,
-        "buy_high": 23.8,
-        "target": 24.9,
-        "stop": 22.59,
-        "target_pct": 5.08,
-        "stop_pct": -4.67,
-        "rr": 1.09,
-        "days_min": 1,
-        "days_max": 5,
-        "basis": "단기 평균회귀 ATR",
-        "strategy_id": "rsi2_trend_reversion"
+          "basis": "지지선 반전폭/최근 고점",
+          "target_reason": "지지선 반전폭/최근 고점",
+          "stop_reason": "지지선 반전폭/최근 고점",
+          "strategy_id": "confirmed_pullback"
+        }
       },
       "history_stats": {
-        "trades": 19,
-        "win_rate": 42.1,
-        "avg_return": -0.24
+        "trades": 73,
+        "win_rate": 53.4,
+        "avg_return": 0.05
       }
     }
   ],
-  "ranking_note": "A/S만 공개 · 4개 전략을 동일 품질척도로 정규화 · 전략별 BUY/TARGET/STOP 적용",
+  "shadow_a_count": 2,
+  "display_filter": "S only",
+  "strategy_tabs": [
+    "all",
+    "confirmed_pullback",
+    "rsi2_trend_reversion",
+    "momentum_pullback",
+    "volatility_breakout"
+  ],
+  "ranking_note": "종합은 4개 전략의 S 신호를 통합해 최고 품질순으로 정렬하며 동일 종목은 1회만 노출합니다.",
   "journal_quality": "experimental_until_strategy_backtests_pass"
 }
