@@ -4,7 +4,7 @@ import json
 import yfinance as yf
 
 from scanner_v6 import load_universe, prefilter
-from app_v6 import historical_stats, market_live, history
+from app_v6 import historical_stats, market_live, history, indicators
 from core_v4 import playbooks, _series, trade_plan_for
 
 OUT = Path(__file__).parent / 'static' / 'latest_scan.json'
@@ -41,9 +41,10 @@ def batch_score(symbols, market):
             try:
                 d=bulk.copy() if len(chunk)==1 else bulk[symbol].copy(); d=d.dropna(subset=['Open','High','Low','Close'])
                 if len(d)<205: failed+=1; continue
-                ens=playbooks(d,state); best=ens['best_strategy']; grade=grade_for(ens); z=_series(d)
+                ens=playbooks(d,state); best=ens['best_strategy']; grade=grade_for(ens); z=_series(d); ind=indicators(d)
                 s_signals=[{'strategy_id':q['id'],'strategy_name':q['name'],'strategy_score':q['score'],'why':q['why'],'evidence':q['evidence']} for q in ens['strategies'] if q.get('active') and float(q.get('score',0))>=S_THRESHOLD]
-                results.append({'symbol':symbol,'score':ens['ensemble_score'],'grade':grade,'eligible':bool(ens.get('recommend')),'strategy_name':best['name'],'strategy_id':best['id'],'strategy_reason':ens['reason'],'strategy_agreement':ens['agreement'],'confidence':ens['confidence'],'strategy_signals':s_signals,'ensemble':ens,'rsi':round(float(z['rsi']),1),'d120':round((float(d['Close'].iloc[-1])/float(z['s120'])-1)*100,2),'bb_pos':round(float(z['bb'])*100,1),'sparkline':[round(float(x),2) for x in d['Close'].tail(35).tolist()]})
+                tail=ind.tail(35)
+                results.append({'symbol':symbol,'score':ens['ensemble_score'],'grade':grade,'eligible':bool(ens.get('recommend')),'strategy_name':best['name'],'strategy_id':best['id'],'strategy_reason':ens['reason'],'strategy_agreement':ens['agreement'],'confidence':ens['confidence'],'strategy_signals':s_signals,'ensemble':ens,'rsi':round(float(z['rsi']),1),'d120':round((float(d['Close'].iloc[-1])/float(z['s120'])-1)*100,2),'bb_pos':round(float(z['bb'])*100,1),'sparkline':[round(float(x),2) for x in d['Close'].tail(35).tolist()],'bb_high_spark':[None if x!=x else round(float(x),2) for x in tail['bb_high'].tolist()],'bb_low_spark':[None if x!=x else round(float(x),2) for x in tail['bb_low'].tolist()]})
             except Exception:
                 failed+=1
     results.sort(key=lambda x:(1 if x['grade']=='S' else 0,x['score']),reverse=True)
@@ -52,14 +53,12 @@ def batch_score(symbols, market):
 
 def main():
     universe=load_universe(); candidates=prefilter(universe); market=market_live(); base,failed=batch_score(candidates,market)
-    # Public recommendation feed now contains S only. A remains measurable as shadow statistics.
     s_rows=dedupe_share_classes([r for r in base if r.get('grade')=='S' and r.get('eligible') and r.get('strategy_signals')])
     shadow_a_count=sum(1 for r in base if r.get('grade')=='A' and r.get('eligible'))
     final=[]
     for r in s_rows[:60]:
         try:
             d=history(r['symbol'],'10y')
-            # Default card uses the best S strategy. Each strategy tab can override presentation using strategy_signals.
             r['trade_plan']=trade_plan_for(d,r['strategy_id'])
             r['strategy_trade_plans']={sig['strategy_id']:trade_plan_for(d,sig['strategy_id']) for sig in r.get('strategy_signals',[])}
             r['history_stats']=historical_stats(d)
