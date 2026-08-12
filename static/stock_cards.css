@@ -6,25 +6,22 @@
 #todayGrid .pick:hover{transform:translateY(-3px);border-color:rgba(19,24,31,.14);box-shadow:0 16px 36px rgba(17,24,39,.075)}
 #todayGrid .picktop{align-items:center;gap:14px;min-width:0;margin-bottom:2px}
 #todayGrid .picktop>div:first-child{min-width:0;flex:1}
-#todayGrid .rank{display:inline-flex;align-items:center;height:22px;margin:0 0 8px;padding:0 8px;border-radius:999px;background:#f3f4f6;color:#8a9199;font-size:10px;font-weight:800;letter-spacing:.02em}
+#todayGrid .rank,#todayGrid .badge{display:none!important}
 #todayGrid .stock-name{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:20px;line-height:1.18;font-weight:820;letter-spacing:-.045em;color:#15181c}
 #todayGrid .ticker{margin-top:5px;font-size:11px;line-height:1;font-weight:800;color:#a0a6ad;letter-spacing:.055em;text-transform:uppercase}
-#todayGrid .badge{flex:0 0 auto;display:grid;place-items:center;min-width:42px;height:42px;padding:0 12px;border:1px solid #e5e7eb;border-radius:14px;background:#fff;color:#25292e;font-size:13px;font-weight:900;box-shadow:none}
 
-/* Lifecycle state: neutral surfaces, state communicated by text only. */
-#todayGrid .life-row{display:flex;align-items:center;gap:8px;margin-top:14px}
-#todayGrid .life-pill{display:inline-flex;align-items:center;min-height:28px;padding:0 10px;border:1px solid #e7e9ec;border-radius:999px;background:#fff;color:#59616a;font-size:10.5px;font-weight:850;letter-spacing:-.01em}
-#todayGrid .life-new,#todayGrid .life-entry,#todayGrid .life-target-near{color:#d83b42}
-#todayGrid .life-entry-missed{color:#8b650f}
-#todayGrid .life-below-entry,#todayGrid .life-stop-zone{color:#3267c8}
-#todayGrid .life-return{font-size:11px;font-weight:850}
-#todayGrid .life-return.up{color:#d83b42}
-#todayGrid .life-return.down{color:#3267c8}
-#todayGrid .life-note{margin-top:6px;color:#8c939b;font-size:10px;line-height:1.4}
+/* Primary status signal — styled to echo the MARKET PULSE M orb. */
+#todayGrid .status-hero{display:flex;align-items:center;gap:13px;margin:16px 0 4px}
+#todayGrid .grade-orb{width:52px;height:52px;flex:0 0 52px;border-radius:17px;display:grid;place-items:center;background:linear-gradient(145deg,#23272d,#4d545d);box-shadow:inset 0 1px rgba(255,255,255,.22),0 8px 22px rgba(24,29,35,.12);color:#fff;font-size:17px;font-weight:900}
+#todayGrid .status-copy{min-width:0;flex:1}
+#todayGrid .status-title{display:flex;align-items:baseline;flex-wrap:wrap;gap:7px;font-size:17px;line-height:1.25;font-weight:850;letter-spacing:-.04em;color:#1d2126}
+#todayGrid .status-return{font-size:14px;font-weight:850;letter-spacing:-.025em}
+#todayGrid .status-return.up{color:#d83b42}
+#todayGrid .status-return.down{color:#3267c8}
+#todayGrid .status-sub{margin-top:5px;color:#8c939b;font-size:10px;line-height:1.45}
 
 #todayGrid .mini{height:136px;margin:16px -2px 16px;border:1px solid #f0f1f3;border-radius:18px;background:#fff;box-shadow:none}
 #todayGrid .mini svg{filter:none}
-/* Inline SVG colors from the chart renderer are remapped here to the Korean convention. */
 #todayGrid .mini [stroke="#17845d"]{stroke:#d83b42!important}
 #todayGrid .mini [stroke="#c45151"]{stroke:#3267c8!important}
 
@@ -48,7 +45,6 @@
 #todayGrid .reason span{color:#8b9198}
 #todayGrid .pick:focus-visible{outline:3px solid rgba(50,103,200,.16);outline-offset:3px}
 
-/* Detail chart follows the same market convention. */
 .chart-wrap [stroke="#17845d"]{stroke:#d83b42!important}
 .chart-wrap [stroke="#c45151"]{stroke:#3267c8!important}
 
@@ -56,7 +52,9 @@
   #todayGrid{grid-template-columns:1fr;gap:13px}
   #todayGrid .pick{padding:17px;border-radius:21px}
   #todayGrid .stock-name{font-size:19px}
-  #todayGrid .badge{min-width:38px;height:38px;border-radius:13px}
+  #todayGrid .grade-orb{width:48px;height:48px;flex-basis:48px;border-radius:15px;font-size:16px}
+  #todayGrid .status-title{font-size:16px}
+  #todayGrid .status-return{font-size:13px}
   #todayGrid .mini{height:124px;margin:14px -1px}
   #todayGrid .level{padding:11px}
   #todayGrid .level b{font-size:12px}
