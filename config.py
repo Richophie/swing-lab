@@ -1,7 +1,6 @@
-APP_VERSION = "16.2"
-CORE_VERSION = "4.2"
+APP_VERSION = "16.3"
+CORE_VERSION = "4.3"
 S_THRESHOLD = 85.0
-ELITE_MAX = 9999
 PUBLIC_STRATEGIES = (
     "confirmed_pullback",
     "rsi2_trend_reversion",
