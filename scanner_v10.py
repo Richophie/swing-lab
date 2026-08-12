@@ -16,6 +16,18 @@ def grade_for(ens):
     return 'S' if float(ens.get('ensemble_score', 0)) >= 82 else 'A'
 
 
+def dedupe_share_classes(rows):
+    # Public dashboard should not show economically equivalent share classes twice.
+    prefer_groups = [({'GOOG','GOOGL'}, 'GOOGL')]
+    out=list(rows)
+    for group, preferred in prefer_groups:
+        present=[r for r in out if r.get('symbol') in group]
+        if len(present)>1:
+            keep=next((r for r in present if r.get('symbol')==preferred), max(present,key=lambda r:r.get('score',0)))
+            out=[r for r in out if r.get('symbol') not in group or r is keep]
+    return out
+
+
 def batch_score(symbols, market):
     results = []
     failed = 0
@@ -68,6 +80,7 @@ def main():
     base, failed = batch_score(candidates, market)
 
     promoted = [r for r in base if r.get('grade') in {'S', 'A'} and r.get('eligible')]
+    promoted = dedupe_share_classes(promoted)
     final = []
     for r in promoted[:30]:
         try:
@@ -82,15 +95,15 @@ def main():
     final.sort(key=lambda x: (1 if x.get('grade') == 'S' else 0, x.get('score', 0)), reverse=True)
     payload = {
         'status': 'ready',
-        'version': '11.0',
-        'core_version': '3.1',
+        'version': '11.2',
+        'core_version': '3.2',
         'scanned_at': datetime.now(timezone.utc).isoformat(timespec='seconds'),
         'universe_count': len(universe),
         'candidate_count': len(candidates),
         'failed_count': failed,
         'market': market,
         'results': final,
-        'ranking_note': 'A/S 등급만 공개합니다. 각 전략을 독립 판정한 뒤 현재 가장 강한 전략으로 순위를 냅니다.'
+        'ranking_note': 'A/S 등급만 공개합니다. RSI2 포화 버그를 수정했고 동일 기업의 중복 주식 클래스는 하나만 보여줍니다.'
     }
     OUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding='utf-8')
     print('saved', OUT, len(final))
