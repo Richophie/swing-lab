@@ -13,7 +13,7 @@ from strategy_engine import evaluate_strategies, trade_plan
 from backtest_engine import run_backtest
 from stock_names import korean_name
 
-ROOT=Path(__file__).parent;STATIC=ROOT/'static';SCAN_FILE=STATIC/'latest_scan.json';HISTORY_FILE=STATIC/'trade_history.json';app=Flask(__name__,static_folder='static')
+ROOT=Path(__file__).parent;STATIC=ROOT/'static';SCAN_FILE=STATIC/'latest_scan.json';HISTORY_FILE=STATIC/'trade_history.json';FX_FILE=STATIC/'fx_cache.json';app=Flask(__name__,static_folder='static')
 
 
 def load_json(path,default):
@@ -28,12 +28,9 @@ def normalize_plan(plan):
     return p
 
 def public_row(raw):
-    row=dict(raw)
-    # Strategy tabs must retain their raw S signals. Aggregate filtering happens in the UI from elite_pass.
-    signals=[s for s in row.get('strategy_signals',[]) if s.get('strategy_id') in PUBLIC_STRATEGIES and float(s.get('strategy_score',0))>=S_THRESHOLD]
+    row=dict(raw);signals=[s for s in row.get('strategy_signals',[]) if s.get('strategy_id') in PUBLIC_STRATEGIES and float(s.get('strategy_score',0))>=S_THRESHOLD]
     if not signals:return None
-    signals.sort(key=lambda x:(bool(x.get('elite_pass')),float(x.get('elite_score',x.get('strategy_score',0)))),reverse=True)
-    best=signals[0];plans=row.get('strategy_trade_plans') or {}
+    signals.sort(key=lambda x:(bool(x.get('elite_pass')),float(x.get('elite_score',x.get('strategy_score',0)))),reverse=True);best=signals[0];plans=row.get('strategy_trade_plans') or {}
     row['strategy_signals']=signals;row['strategy_id']=best['strategy_id'];row['strategy_name']=best['strategy_name'];row['strategy_reason']=best.get('evidence') or best.get('why');row['selection_reason']=best.get('selection_reason');row['score']=float(best.get('elite_score',best.get('strategy_score',0)));row['trade_plan']=normalize_plan(plans.get(best['strategy_id']) or row.get('trade_plan'));row['aggregate_eligible']=any(bool(s.get('elite_pass')) for s in signals);row['name_ko']=row.get('name_ko') or korean_name(row.get('symbol'),row.get('security_name'));return row
 
 def quote_name(symbol):
@@ -41,10 +38,26 @@ def quote_name(symbol):
         info=yf.Ticker(symbol).get_info();return info.get('longName') or info.get('shortName') or symbol
     except Exception:return symbol
 
+def _valid_fx(v):
+    try:return 500<float(v)<3000
+    except Exception:return False
+
 def usdkrw_rate():
+    value=None
     try:
-        d=fresh_price_history('KRW=X','5d');return round(float(d['Close'].dropna().iloc[-1]),2)
-    except Exception:return None
+        d=fresh_price_history('KRW=X','5d');value=float(d['Close'].dropna().iloc[-1])
+    except Exception:
+        try:
+            d=yf.download('KRW=X',period='5d',interval='1d',auto_adjust=False,progress=False,timeout=12)
+            if not d.empty:value=float(d['Close'].dropna().iloc[-1])
+        except Exception:pass
+    if _valid_fx(value):
+        value=round(value,2)
+        try:FX_FILE.write_text(json.dumps({'usdkrw':value},ensure_ascii=False),encoding='utf-8')
+        except Exception:pass
+        return value
+    cached=load_json(FX_FILE,{})
+    return float(cached['usdkrw']) if _valid_fx(cached.get('usdkrw')) else None
 
 def chart_payload(symbol,strategy_id,days=180):
     d=fresh_price_history(symbol,'2y');ind=indicators(d);plan=normalize_plan(trade_plan(d,strategy_id));x=d.join(ind[['sma120','rsi','bb_low','bb_high']],how='left').tail(days);series=[]
