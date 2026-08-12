@@ -6,6 +6,11 @@ import pandas as pd
 from config import S_THRESHOLD, PUBLIC_STRATEGIES, EXPERIMENTAL_STRATEGIES
 from market_data import indicators, wilder_rsi
 
+MIN_STOP_ATR = 1.5
+ENTRY_GAP_ATR = 0.75
+ENTRY_GAP_PCT = 0.01
+CONFIRM_REVERSAL_VOL_MIN = 1.0
+
 
 def _f(v, default=np.nan):
     try:return default if pd.isna(v) else float(v)
@@ -52,12 +57,15 @@ def _quality(points: float,max_points: float,active: bool)->float:
 
 
 def evaluate_strategies(df: pd.DataFrame, market_state: str|None=None) -> dict:
-    z=_context(df);close=z['close'];s50=z['s50'];s120=z['s120'];s200=z['s200'];rsi=z['rsi'];bb=z['bb'];mh=z['mh'];mh1=z['mh1'];vr=z['vr'];ret20=z['ret20'];ret5=z['ret5'];high20=z['high20'];tr=z['tr'];tr_prev=z['tr_prev'];rsi2=z['rsi2'];d120=z['d120'];d200=z['d200'];atrp=z['atrp']
+    z=_context(df);close=z['close'];s50=z['s50'];s120=z['s120'];s200=z['s200'];rsi=z['rsi'];bb=z['bb'];mh=z['mh'];mh1=z['mh1'];vr=z['vr'];ret20=z['ret20'];ret5=z['ret5'];high20=z['high20'];tr=z['tr'];tr_prev=z['tr_prev'];rsi2=z['rsi2'];d120=z['d120'];d200=z['d200'];atrp=z['atrp'];revvol=z['reversal_vol']
     market_ok=market_state!='조심';trend_ok=close>s200 and s50>=s120
     base=_pullback_base(z,market_state)
-    pullback_strict=bool(base['eligible'] and base['confirm_count']==4 and 30<=rsi<=43 and bb<=.40 and abs(d120)<=.035 and atrp<=.045)
+    # 확인형은 가격 반전뿐 아니라 최소 평균 수준의 반전일 거래량을 필수로 요구한다.
+    pullback_volume_ok=revvol>=CONFIRM_REVERSAL_VOL_MIN
+    pullback_strict=bool(base['eligible'] and base['confirm_count']==4 and pullback_volume_ok and 30<=rsi<=43 and bb<=.40 and abs(d120)<=.035 and atrp<=.045)
     pp=(2 if 30<=rsi<=42 else 1 if rsi<=45 else 0)+(2 if abs(d120)<=.02 else 1 if abs(d120)<=.035 else 0)+min(4,base['confirm_count'])+(1 if bb<=.30 else 0)+(1 if atrp<=.035 else 0)
-    pullback={'id':'confirmed_pullback','name':'확인형 눌림반등','score':_quality(pp,10,pullback_strict),'active':pullback_strict,'strict':pullback_strict,'why':f"RSI {rsi:.1f} · 120일선 {d120*100:+.2f}% · 볼린저 {bb*100:.1f}% · 반전확인 {base['confirm_count']}/4",'evidence':'120일선 근처에서 충분히 눌린 뒤 네 가지 반전 확인이 모두 나온 자리'}
+    if not pullback_volume_ok:pp=max(0,pp-2)
+    pullback={'id':'confirmed_pullback','name':'확인형 눌림반등','score':_quality(pp,10,pullback_strict),'active':pullback_strict,'strict':pullback_strict,'why':f"RSI {rsi:.1f} · 120일선 {d120*100:+.2f}% · 볼린저 {bb*100:.1f}% · 반전확인 {base['confirm_count']}/4 · 반전거래량 {revvol:.2f}배",'evidence':'120일선 근처에서 충분히 눌린 뒤 가격 반전과 평균 이상 거래량이 함께 확인된 자리'}
     rsi2_strict=bool(trend_ok and market_ok and rsi2<3 and rsi<=50 and bb<=.45 and -.03<=d120<=.12 and d200<=.25 and atrp<=.05)
     cp=(3 if rsi2<2 else 2 if rsi2<3 else 0)+(2 if rsi<42 else 1 if rsi<=50 else 0)+(2 if bb<=.25 else 1 if bb<=.45 else 0)+(1 if abs(d120)<=.06 else 0)+(1 if trend_ok else 0)+(1 if atrp<=.04 else 0)
     rsi2s={'id':'rsi2_trend_reversion','name':'RSI2 추세내 과매도','score':_quality(cp,10,rsi2_strict),'active':rsi2_strict,'strict':rsi2_strict,'why':f"RSI2 {rsi2:.1f} · RSI14 {rsi:.1f} · 120일선 {d120*100:+.1f}% · 볼린저 {bb*100:.1f}%",'evidence':'장기 상승추세는 유지하면서 단기 과매도와 가격 눌림이 동시에 강한 자리'}
@@ -76,23 +84,31 @@ def trade_plan(df: pd.DataFrame,strategy_id: str)->dict:
     ev=evaluate_strategies(df,None);chosen=next((s for s in ev['strategies'] if s['id']==strategy_id),None);active=bool(chosen and chosen['active'])
     if not active:
         reference='120일선 재회복 후 반전 확인' if strategy_id in {'confirmed_pullback','rsi2_trend_reversion'} else '20일선 눌림 후 추세 재개 확인' if strategy_id=='momentum_pullback' else '돌파 조건 재형성 확인'
-        return {'entry_low':None,'entry_high':None,'target':None,'stop':None,'target_pct':None,'stop_pct':None,'risk_reward':None,'days_min':None,'days_max':None,'target_days':{'days_low':None,'days_high':None,'method':'현재 매수 신호 없음'},'basis':reference,'target_reason':'현재 매수 신호 없음','stop_reason':'현재 매수 신호 없음','strategy_id':strategy_id,'entry_reference':reference,'entry_status':'현재 매수 신호 없음','signal_active':False,'current_vs_entry_pct':None,'current_price':round(close,2)}
+        return {'entry_low':None,'entry_high':None,'target':None,'stop':None,'target_pct':None,'stop_pct':None,'risk_reward':None,'days_min':None,'days_max':None,'target_days':{'days_low':None,'days_high':None,'method':'현재 매수 신호 없음'},'basis':reference,'target_reason':'현재 매수 신호 없음','stop_reason':'현재 매수 신호 없음','strategy_id':strategy_id,'entry_reference':reference,'entry_status':'현재 매수 신호 없음','signal_active':False,'entry_viable':False,'current_vs_entry_pct':None,'current_price':round(close,2)}
     if strategy_id=='confirmed_pullback':
-        anchor=s120;buy_low=anchor-.18*atr;buy_high=anchor+.22*atr;stop=min(recent_low,anchor-.95*atr);target=max(recent_high,anchor+1.8*atr);days=(2,8);basis='120일선 지지/최근 고점';entry_reference='120일선 지지구간'
+        anchor=s120;buy_low=anchor-.18*atr;buy_high=anchor+.22*atr;raw_stop=min(recent_low,anchor-.95*atr);target=max(recent_high,anchor+1.8*atr);days=(2,8);basis='120일선 지지/최근 고점';entry_reference='120일선 지지구간'
     elif strategy_id=='rsi2_trend_reversion':
-        anchor=close;buy_low=anchor-.12*atr;buy_high=anchor+.12*atr;stop=min(recent_low,anchor-1.15*atr);target=max(anchor+1.3*atr,s20 if s20>anchor else anchor+1.3*atr);days=(1,5);basis='단기 평균회귀/추세 복귀';entry_reference='현재 과매도 구간'
+        anchor=close;buy_low=anchor-.12*atr;buy_high=anchor+.12*atr;raw_stop=min(recent_low,anchor-1.15*atr);target=max(anchor+1.3*atr,s20 if s20>anchor else anchor+1.3*atr);days=(1,5);basis='단기 평균회귀/추세 복귀';entry_reference='현재 과매도 구간'
     elif strategy_id=='momentum_pullback':
-        anchor=s20 if np.isfinite(s20) else close;buy_low=anchor-.20*atr;buy_high=anchor+.18*atr;stop=min(recent_low,anchor-1.05*atr);target=max(recent_high,anchor+2.0*atr);days=(3,10);basis='20일선 눌림/추세 재개';entry_reference='20일선 눌림구간'
+        anchor=s20 if np.isfinite(s20) else close;buy_low=anchor-.20*atr;buy_high=anchor+.18*atr;raw_stop=min(recent_low,anchor-1.05*atr);target=max(recent_high,anchor+2.0*atr);days=(3,10);basis='20일선 눌림/추세 재개';entry_reference='20일선 눌림구간'
     elif strategy_id=='volatility_breakout':
-        breakout=float(h.tail(21).iloc[:-1].max());buy_low=breakout;buy_high=breakout+.25*atr;stop=breakout-.85*atr;target=breakout+2.2*atr;days=(2,10);basis='돌파선 재이탈/ATR 확장';entry_reference='20일 고점 돌파구간'
+        breakout=float(h.tail(21).iloc[:-1].max());buy_low=breakout;buy_high=breakout+.25*atr;raw_stop=breakout-.85*atr;target=breakout+2.2*atr;days=(2,10);basis='돌파선 재이탈/ATR 확장';entry_reference='20일 고점 돌파구간'
     else:raise ValueError('알 수 없는 전략')
     entry=(buy_low+buy_high)/2
-    if stop>=entry:stop=entry-atr
+    # 정상 일간 노이즈에 손절되지 않도록 최소 ATR 마진을 강제한다.
+    atr_stop=entry-MIN_STOP_ATR*atr
+    stop=min(raw_stop,atr_stop)
     if target<=entry:target=entry+1.5*atr
     risk=entry-stop;reward=target-entry;rr=reward/risk if risk>0 else 0
     current_vs_entry=(close/entry-1)*100 if entry else 0
-    entry_status='진입 적정' if buy_low<=close<=buy_high else '진입구간 대기'
-    return {'entry_low':round(buy_low,2),'entry_high':round(buy_high,2),'target':round(target,2),'stop':round(stop,2),'target_pct':round((target/entry-1)*100,2),'stop_pct':round((entry-stop)/entry*100,2),'risk_reward':round(rr,2),'days_min':days[0],'days_max':days[1],'target_days':{'days_low':days[0],'days_high':days[1],'method':'전략별 예상 보유기간'},'basis':basis,'target_reason':basis,'stop_reason':basis,'strategy_id':strategy_id,'entry_reference':entry_reference,'entry_status':entry_status,'signal_active':True,'current_vs_entry_pct':round(current_vs_entry,2),'current_price':round(close,2)}
+    gap_guard=max(ENTRY_GAP_ATR*atr,ENTRY_GAP_PCT*close)
+    too_below=close<buy_low-gap_guard;too_above=close>buy_high+gap_guard
+    entry_viable=not (too_below or too_above)
+    if buy_low<=close<=buy_high:entry_status='진입 적정'
+    elif too_below:entry_status='진입구간 하방 이탈 · 신호 보류'
+    elif too_above:entry_status='진입구간 상방 이탈 · 추격 금지'
+    else:entry_status='진입구간 대기'
+    return {'entry_low':round(buy_low,2),'entry_high':round(buy_high,2),'target':round(target,2),'stop':round(stop,2),'target_pct':round((target/entry-1)*100,2),'stop_pct':round((entry-stop)/entry*100,2),'risk_reward':round(rr,2),'stop_atr_multiple':round((entry-stop)/atr,2),'min_stop_atr':MIN_STOP_ATR,'days_min':days[0],'days_max':days[1],'target_days':{'days_low':days[0],'days_high':days[1],'method':'전략별 예상 보유기간'},'basis':basis,'target_reason':basis,'stop_reason':f'{basis} · 최소 {MIN_STOP_ATR:.1f} ATR 손절여유','strategy_id':strategy_id,'entry_reference':entry_reference,'entry_status':entry_status,'signal_active':True,'entry_viable':bool(entry_viable),'current_vs_entry_pct':round(current_vs_entry,2),'current_price':round(close,2)}
 
 
 def public_s_signals(evaluation: dict)->list[dict]:return [s for s in evaluation['strategies'] if s['id'] in PUBLIC_STRATEGIES and s['active'] and s.get('strict') and float(s['score'])>=S_THRESHOLD]
