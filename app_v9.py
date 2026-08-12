@@ -2,9 +2,11 @@ import pandas as pd
 import yfinance as yf
 from backtesting import Backtest, Strategy
 from flask import Response
+from datetime import datetime, timezone
+import json
 
 from app_v8 import app, load_df, chart_payload, stats_dict
-from app_v6 import trade_plan, historical_stats
+from app_v6 import trade_plan, historical_stats, CACHE_FILE, market_live
 from core_v2 import score_v2, point_in_time_levels
 
 
@@ -62,7 +64,6 @@ def detail_v2(symbol):
     try:
         s=symbol.upper().strip(); d=load_df(s,'10y')
         try:
-            from app_v6 import market_live
             market=market_live(); state=market.get('state')
         except Exception:
             market={}; state=None
@@ -93,8 +94,42 @@ def backtest_v2(symbol):
     except Exception as e:
         return {'error':str(e)},400
 
+
+def live_refresh_v2():
+    try:
+        if not CACHE_FILE.exists():
+            return {'status':'pending','results':[],'message':'자동 스캔 결과를 준비 중입니다.'}
+        base=json.loads(CACHE_FILE.read_text(encoding='utf-8')); rows=base.get('results') or []
+        symbols=[r.get('symbol') for r in rows if r.get('symbol')][:40]
+        if not symbols: return base
+        market=market_live(); state=market.get('state')
+        bulk=yf.download(' '.join(symbols),period='14mo',interval='1d',auto_adjust=False,group_by='ticker',threads=True,progress=False,timeout=20)
+        old={r.get('symbol'):r for r in rows}; refreshed=[]; failures=[]
+        for s in symbols:
+            try:
+                d=bulk.copy() if len(symbols)==1 else bulk[s].copy(); d=d.dropna(subset=['Open','High','Low','Close'])
+                sig=score_v2(d,state); p=trade_plan(d); prev=old.get(s,{})
+                sig.update({'symbol':s,'sparkline':[round(float(x),2) for x in d['Close'].tail(35).tolist()],
+                            'trade_plan':p,'history_stats':prev.get('history_stats',{}),'previous_score':prev.get('score'),
+                            'score_delta':round(float(sig['score'])-float(prev.get('score',sig['score'])),1)})
+                refreshed.append(sig)
+            except Exception as e:
+                failures.append({'symbol':s,'reason':str(e)})
+                if s in old: refreshed.append(old[s])
+        refreshed.sort(key=lambda x:(1 if x.get('eligible') else 0,x.get('score',0)),reverse=True)
+        return {**base,'status':'ready','version':'9.0','core_version':'2.0','market':market,'results':refreshed,
+                'live_refreshed_at':datetime.now(timezone.utc).isoformat(timespec='seconds'),'live_count':len(symbols),'live_failed':failures,
+                'message':'현재 후보를 v9 확인형 코어로 최신 재검증했습니다.'}
+    except Exception as e:
+        try:
+            base=json.loads(CACHE_FILE.read_text(encoding='utf-8')) if CACHE_FILE.exists() else {'results':[]}
+        except Exception: base={'results':[]}
+        base['live_error']=str(e); base['message']='실시간 재검증 실패 · 마지막 저장 결과 유지'; return base
+
 app.view_functions['detail']=detail_v2
 app.view_functions['backtest']=backtest_v2
+if 'live_refresh' in app.view_functions:
+    app.view_functions['live_refresh']=live_refresh_v2
 
 
 def index_v9():
@@ -108,4 +143,4 @@ app.view_functions['index']=index_v9
 
 @app.route('/api/version-v9')
 def version_v9():
-    return {'version':'9.0','core':'2.0','changes':['full-score backtest alignment','reversal confirmation','trend gate','historical SPY regime filter','point-in-time target/stop']}
+    return {'version':'9.0','core':'2.0','changes':['full-score backtest alignment','reversal confirmation','trend gate','historical SPY regime filter','point-in-time target/stop','live refresh alignment']}
