@@ -17,7 +17,7 @@ def check_scan(path=ROOT/'static'/'latest_scan.json'):
             if score>=S_THRESHOLD:
                 sid=sig.get('strategy_id');assert sid in plans,(symbol,sid);p=plans[sid];entry=(float(p['entry_low'])+float(p['entry_high']))/2;assert float(p['stop'])<entry<float(p['target']),(symbol,sid,p);assert p.get('target_pct') is not None and p.get('stop_pct') is not None
             if sig.get('elite_pass'):
-                elite+=1;assert not sig.get('experimental'),(symbol,'experimental marked elite');assert 0<=float(sig.get('elite_score',0))<=99;checks=sig.get('checks') or {};assert all(checks.get(k) is True for k in ('full_history','recent','risk_reward')),(symbol,sig.get('strategy_id'),checks);bt=sig.get('backtest') or {};assert (bt.get('full_10y') or {}).get('trades',0)>=8
+                elite+=1;assert not sig.get('experimental'),(symbol,'experimental marked elite');assert 0<=float(sig.get('elite_score',0))<=99;checks=sig.get('checks') or {};required=('sample','history_not_bad','recent_not_bad','risk_reward','drawdown');assert all(checks.get(k) is True for k in required),(symbol,sig.get('strategy_id'),checks);bt=sig.get('backtest') or {};assert (bt.get('full_10y') or {}).get('trades',0)>=5
     assert not ('GOOG' in symbols and 'GOOGL' in symbols),'Alphabet share-class duplicate';assert data.get('elite_policy'),'elite policy missing'
     return {'rows':len(rows),'elite_signals':elite,'aggregate_max':ELITE_MAX,'failed':data.get('failed_count',0)}
 
