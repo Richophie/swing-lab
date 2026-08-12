@@ -1,6 +1,7 @@
 import pandas as pd
 import yfinance as yf
 from backtesting import Backtest, Strategy
+from flask import Response
 
 from app_v8 import app, load_df, chart_payload, stats_dict
 from app_v6 import trade_plan, historical_stats
@@ -60,7 +61,6 @@ def run_bt_v2(d, market):
 def detail_v2(symbol):
     try:
         s=symbol.upper().strip(); d=load_df(s,'10y')
-        # Current market state is evaluated independently; '조심' blocks A/S.
         try:
             from app_v6 import market_live
             market=market_live(); state=market.get('state')
@@ -93,12 +93,17 @@ def backtest_v2(symbol):
     except Exception as e:
         return {'error':str(e)},400
 
-# Replace the inherited v6 detail endpoint and v8 backtest endpoint in-place.
 app.view_functions['detail']=detail_v2
 app.view_functions['backtest']=backtest_v2
 
 
-def index_v9(): return app.send_static_file('v8.html')
+def index_v9():
+    html=(app.static_folder and open(app.static_folder+'/v8.html',encoding='utf-8').read())
+    html=html.replace('오늘의 스윙자리 v8','오늘의 스윙자리 v9')
+    html=html.replace('PRO LIVE v8.0','PRO LIVE v9.0')
+    html=html.replace('TECH CHART + BACKTEST','CONFIRMED CORE + BACKTEST')
+    html=html.replace('현재 엔진 규칙을 과거 봉에 그대로 적용합니다.','현재 추천과 동일한 전체점수·반전확인·시장필터로 과거를 검증합니다.')
+    return Response(html,mimetype='text/html')
 app.view_functions['index']=index_v9
 
 @app.route('/api/version-v9')
