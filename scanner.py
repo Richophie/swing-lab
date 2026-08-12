@@ -37,13 +37,25 @@ def _pf(value):
 
 def _elite_assessment(signal_score,plan,bt):
     full=bt.get('full_10y') or {};recent=bt.get('recent_2y') or {};ft=int(full.get('trades') or 0);rt=int(recent.get('trades') or 0);favg=float(full.get('avg_trade') or 0);ravg=float(recent.get('avg_trade') or 0);fpf=_pf(full.get('profit_factor'));rpf=_pf(recent.get('profit_factor'));fwin=float(full.get('win_rate') or 0);rwin=float(recent.get('win_rate') or 0);mdd=float(full.get('max_drawdown') or 0);rr=float(plan.get('risk_reward') or 0)
-    full_ok=ft>=8 and favg>.10 and fpf>=1.08 and (fwin>=45 or favg>=.35) and mdd>=-35
-    recent_ok=(rt>=3 and ravg>0 and rpf>=1.0 and rwin>=40) or (rt<3 and ft>=15 and favg>=.25 and fpf>=1.20)
-    risk_ok=rr>=1.25
-    passed=bool(full_ok and recent_ok and risk_ok)
-    score=float(signal_score)+max(-5,min(5,favg*5))+max(-4,min(4,(fpf-1)*7))+(max(-3,min(3,ravg*4)) if rt else 0)+max(0,min(2,(rr-1.2)*2));score=round(max(0,min(99,score)),1)
+    # Backtest is a quality/ranking layer, not a requirement that every historical metric be perfect.
+    # Only clearly poor historical behavior or weak reward/risk hard-rejects a live signal.
+    enough_sample=ft>=5
+    clearly_bad_history=ft>=5 and favg<=-.15 and fpf<.90
+    clearly_bad_recent=rt>=4 and ravg<=-.35 and rpf<.80
+    risk_bad=rr<1.20
+    drawdown_bad=mdd<-45
+    passed=bool(enough_sample and not clearly_bad_history and not clearly_bad_recent and not risk_bad and not drawdown_bad)
+    score=float(signal_score)
+    score+=max(-6,min(5,favg*6))
+    score+=max(-5,min(4,(fpf-1)*7))
+    if rt>=3:score+=max(-4,min(3,ravg*4))+max(-2,min(2,(rpf-1)*3))
+    if fwin>=50:score+=1
+    if rwin>=50 and rt>=3:score+=1
+    score+=max(-2,min(2,(rr-1.2)*2))
+    score=round(max(0,min(99,score)),1)
     reason=f"10년 {ft}회 · 평균 {favg:+.2f}% · PF {full.get('profit_factor') if full.get('profit_factor') is not None else '∞'} · 최근2년 {rt}회/{ravg:+.2f}% · 손익비 {rr:.2f}:1"
-    return {'elite_pass':passed,'elite_score':score,'selection_reason':reason,'checks':{'full_history':full_ok,'recent':recent_ok,'risk_reward':risk_ok}}
+    checks={'sample':enough_sample,'history_not_bad':not clearly_bad_history,'recent_not_bad':not clearly_bad_recent,'risk_reward':not risk_bad,'drawdown':not drawdown_bad}
+    return {'elite_pass':passed,'elite_score':score,'selection_reason':reason,'checks':checks}
 
 
 def scan_candidates(symbols,market,security_names):
@@ -78,8 +90,7 @@ def enrich_plans(rows):
             row['strategy_trade_plans']=plans
             if elite:
                 elite.sort(key=lambda s:s['elite_score'],reverse=True);best=elite[0];row.update({'strategy_id':best['strategy_id'],'strategy_name':best['strategy_name'],'strategy_reason':best['evidence'],'score':best['elite_score'],'elite_pass':True,'elite_score':best['elite_score'],'trade_plan':plans[best['strategy_id']]})
-            else:
-                row['elite_pass']=False;row['trade_plan']=plans.get(row['strategy_id'])
+            else:row['elite_pass']=False;row['trade_plan']=plans.get(row['strategy_id'])
             out.append(row)
         except Exception as exc:row['detail_error']=str(exc);row['elite_pass']=False;out.append(row)
     return out
@@ -88,7 +99,7 @@ def enrich_plans(rows):
 def main():
     universe=load_us_universe();names={x['symbol']:x['security_name'] for x in universe};symbols=prefilter_symbols(universe,SCAN_CANDIDATE_LIMIT);market=market_snapshot();rows,failed=scan_candidates(symbols,market,names);rows=_dedupe_share_classes(rows);rows=enrich_plans(rows);rows.sort(key=lambda r:(bool(r.get('elite_pass')),float(r.get('elite_score') or r.get('score') or 0)),reverse=True)
     public_count=sum(any(not s.get('experimental') and s.get('elite_pass') for s in r['strategy_signals']) for r in rows);experimental_count=sum(any(s.get('experimental') for s in r['strategy_signals']) for r in rows)
-    payload={'status':'ready','version':APP_VERSION,'core_version':CORE_VERSION,'scanned_at':datetime.now(timezone.utc).isoformat(timespec='seconds'),'universe_count':len(universe),'candidate_count':len(symbols),'failed_count':len(failed),'failed':failed[:100],'market':market,'results':rows,'public_s_count':public_count,'experimental_s_count':experimental_count,'display_filter':'elite public signals only; breakout retained as experimental data','s_threshold':S_THRESHOLD,'elite_policy':'strategy hard filter + 10y/recent2y backtest + risk/reward; aggregate max 5'}
+    payload={'status':'ready','version':APP_VERSION,'core_version':CORE_VERSION,'scanned_at':datetime.now(timezone.utc).isoformat(timespec='seconds'),'universe_count':len(universe),'candidate_count':len(symbols),'failed_count':len(failed),'failed':failed[:100],'market':market,'results':rows,'public_s_count':public_count,'experimental_s_count':experimental_count,'display_filter':'elite public signals only; breakout retained as experimental data','s_threshold':S_THRESHOLD,'elite_policy':'strict live signal + reject clearly bad backtest + backtest-weighted ranking; aggregate max 5'}
     OUT.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding='utf-8');print('saved',OUT,len(rows),'rows','elite',public_count)
 
 if __name__=='__main__':main()
