@@ -29,6 +29,19 @@ def _series(df):
     return locals()
 
 
+def _wilder_rsi(series, period=2):
+    delta=series.diff()
+    gain=delta.clip(lower=0)
+    loss=-delta.clip(upper=0)
+    avg_gain=gain.ewm(alpha=1/period,adjust=False,min_periods=period).mean()
+    avg_loss=loss.ewm(alpha=1/period,adjust=False,min_periods=period).mean()
+    rs=avg_gain/avg_loss.replace(0,np.nan)
+    out=100-100/(1+rs)
+    out=out.where(avg_loss.ne(0),100)
+    out=out.where(avg_gain.ne(0),0)
+    return out.clip(0,100)
+
+
 def playbooks(df, market_state=None):
     z=_series(df); x=z['x']; close=z['close']; s200=z['s200']; s120=z['s120']; s50=z['s50']; rsi=z['rsi']; bb=z['bb']; atr=z['atr']; mh=z['mh']; mh1=z['mh1']; vr=z['vr']; ret20=z['ret20']; ret5=z['ret5']; high20=z['high20']; tr=z['tr']; tr_prev=z['tr_prev']
     trend_ok=close>s200 and s50>=s120
@@ -40,12 +53,26 @@ def playbooks(df, market_state=None):
               'why':f"RSI {rsi:.1f}, 120일선 거리 {base['d120']:.2f}%, 반전확인 {base['confirm_count']}/4",
               'evidence':'사용자 코어 + 반전확인/장기추세/시장필터'}
 
-    # 2) Connors-style RSI(2) trend mean reversion. RSI2 calculated separately.
-    delta=z['c'].diff(); up=delta.clip(lower=0).rolling(2).mean(); dn=(-delta.clip(upper=0)).rolling(2).mean(); rs=up/dn.replace(0,np.nan); rsi2=float((100-100/(1+rs)).iloc[-1]) if not pd.isna(rs.iloc[-1]) else 100.0
-    cscore=45 + (25 if trend_ok else -20) + (25 if rsi2<10 else 12 if rsi2<20 else -10) + (8 if market_ok else -12) + (5 if vr>=.7 else 0)
-    connors={'id':'rsi2_trend_reversion','name':'RSI2 추세내 과매도','score':_clip(cscore),'active':bool(trend_ok and market_ok and rsi2<10),
-             'why':f"200일선 위 {'✓' if close>s200 else '×'} · RSI2 {rsi2:.1f} · 50/120 추세 {'✓' if s50>=s120 else '×'}",
-             'evidence':'Connors RSI(2) 계열: 장기 상승추세 안의 단기 과매도'}
+    # 2) Connors-style RSI(2) mean reversion inside an established uptrend.
+    # Use Wilder-style RSI(2), not a 2-bar simple average that collapses to 0/100 too easily.
+    rsi2s=_wilder_rsi(z['c'],2); rsi2=_f(rsi2s.iloc[-1],100.0)
+    d120=close/s120-1 if s120 and not pd.isna(s120) else 99
+    d200=close/s200-1 if s200 and not pd.isna(s200) else 99
+    cooling=(rsi<=55 and bb<=0.65 and d120<=0.20 and d200<=0.35)
+    extreme= rsi2<5
+    cscore=52
+    cscore += 12 if trend_ok else -22
+    cscore += 16 if rsi2<3 else 12 if rsi2<5 else 6 if rsi2<10 else -10
+    cscore += 8 if rsi<45 else 4 if rsi<=55 else -10
+    cscore += 5 if bb<=.35 else 2 if bb<=.65 else -6
+    cscore += 4 if abs(d120)<=.10 else 1 if d120<=.20 else -8
+    cscore += 3 if market_ok else -10
+    cscore += 2 if vr>=.7 else 0
+    cscore=min(cscore,88)
+    connors_active=bool(trend_ok and market_ok and extreme and cooling)
+    connors={'id':'rsi2_trend_reversion','name':'RSI2 추세내 과매도','score':_clip(cscore),'active':connors_active,
+             'why':f"RSI2 {rsi2:.1f} · RSI14 {rsi:.1f} · 120일선 {d120*100:+.1f}% · 상승추세 {'✓' if trend_ok else '×'}",
+             'evidence':'장기 상승추세 안에서 단기 과매도 후 반등을 노리는 RSI(2) 계열'}
 
     # 3) Momentum continuation after a controlled pullback: medium-term strength + short-term cooling.
     mscore=45 + (20 if trend_ok else -15) + (18 if ret20>0.04 else 8 if ret20>0 else -10) + (12 if -0.06<=ret5<=0.01 else 0) + (8 if mh>mh1 else 0) + (5 if market_ok else -10)
@@ -63,12 +90,11 @@ def playbooks(df, market_state=None):
 
     arr=[pullback,connors,momentum,vcp]
     arr.sort(key=lambda q:(1 if q['active'] else 0,q['score']),reverse=True)
-    active=[q for q in arr if q['active']]
     best=arr[0]
     agreement=sum(q['active'] for q in arr)
-    # Agreement is supporting evidence, not additive double-counting. Cap bonus deliberately small.
-    ensemble=_clip(best['score'] + min(6,max(0,agreement-1)*2))
-    confidence='높음' if agreement>=2 and ensemble>=78 else '보통' if best['active'] else '낮음'
+    # Agreement is context only; it cannot turn a mediocre strategy into an S grade.
+    ensemble=_clip(best['score'] + min(3,max(0,agreement-1)))
+    confidence='높음' if best['active'] and best['score']>=82 else '보통' if best['active'] else '낮음'
     return {'best_strategy':best,'strategies':arr,'agreement':agreement,'ensemble_score':ensemble,'confidence':confidence,
             'recommend':bool(best['active'] and ensemble>=72),
             'reason':f"오늘 가장 강한 독립 전략은 ‘{best['name']}’입니다. {best['why']}" if best['active'] else '현재 4개 독립 전략 중 완성된 진입 신호가 없습니다.',
