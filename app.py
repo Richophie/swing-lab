@@ -7,18 +7,24 @@ import pandas as pd
 import yfinance as yf
 from flask import Flask, jsonify, request, send_from_directory
 
-from config import APP_VERSION, CORE_VERSION, PUBLIC_STRATEGIES, ELITE_MAX, S_THRESHOLD
-from market_data import load_price_history, fresh_price_history, indicators, market_snapshot
+from config import APP_VERSION, CORE_VERSION, PUBLIC_STRATEGIES, S_THRESHOLD
+from market_data import fresh_price_history, indicators, market_snapshot
 from strategy_engine import evaluate_strategies, trade_plan
 from backtest_engine import run_backtest
 from stock_names import korean_name
 
-ROOT=Path(__file__).parent;STATIC=ROOT/'static';SCAN_FILE=STATIC/'latest_scan.json';HISTORY_FILE=STATIC/'trade_history.json';FX_FILE=STATIC/'fx_cache.json';app=Flask(__name__,static_folder='static')
+ROOT=Path(__file__).parent
+STATIC=ROOT/'static'
+SCAN_FILE=STATIC/'latest_scan.json'
+HISTORY_FILE=STATIC/'trade_history.json'
+FX_FILE=STATIC/'fx_cache.json'
+app=Flask(__name__,static_folder='static')
 
 
-def load_json(path,default):
+def load_json(path, default):
     try:return json.loads(path.read_text(encoding='utf-8'))
     except Exception:return default
+
 
 def normalize_plan(plan):
     p=dict(plan or {})
@@ -27,28 +33,40 @@ def normalize_plan(plan):
         except Exception:p[key]=None
     return p
 
-def public_row(raw):
-    row=dict(raw);signals=[s for s in row.get('strategy_signals',[]) if s.get('strategy_id') in PUBLIC_STRATEGIES and float(s.get('strategy_score',0))>=S_THRESHOLD]
-    if not signals:return None
-    signals.sort(key=lambda x:(bool(x.get('elite_pass')),float(x.get('elite_score',x.get('strategy_score',0)))),reverse=True);best=signals[0];plans=row.get('strategy_trade_plans') or {}
-    row['strategy_signals']=signals;row['strategy_id']=best['strategy_id'];row['strategy_name']=best['strategy_name'];row['strategy_reason']=best.get('evidence') or best.get('why');row['selection_reason']=best.get('selection_reason');row['score']=float(best.get('elite_score',best.get('strategy_score',0)));row['trade_plan']=normalize_plan(plans.get(best['strategy_id']) or row.get('trade_plan'));row['aggregate_eligible']=any(bool(s.get('elite_pass')) for s in signals);row['name_ko']=row.get('name_ko') or korean_name(row.get('symbol'),row.get('security_name'));return row
 
-def quote_name(symbol):
-    try:
-        info=yf.Ticker(symbol).get_info();return info.get('longName') or info.get('shortName') or symbol
-    except Exception:return symbol
+def public_row(raw):
+    row=dict(raw)
+    signals=[s for s in row.get('strategy_signals',[]) if s.get('strategy_id') in PUBLIC_STRATEGIES and float(s.get('strategy_score',0))>=S_THRESHOLD]
+    if not signals:return None
+    signals.sort(key=lambda x:(bool(x.get('elite_pass')),float(x.get('elite_score',x.get('strategy_score',0)))),reverse=True)
+    best=signals[0];plans=row.get('strategy_trade_plans') or {}
+    row['strategy_signals']=signals
+    row['strategy_id']=best['strategy_id'];row['strategy_name']=best['strategy_name']
+    row['strategy_reason']=best.get('evidence') or best.get('why')
+    row['selection_reason']=best.get('selection_reason')
+    row['score']=float(best.get('elite_score',best.get('strategy_score',0)))
+    row['trade_plan']=normalize_plan(plans.get(best['strategy_id']) or row.get('trade_plan'))
+    row['aggregate_eligible']=any(bool(s.get('elite_pass')) for s in signals)
+    row['name_ko']=row.get('name_ko') or korean_name(row.get('symbol'),row.get('security_name'))
+    return row
+
 
 def _valid_fx(v):
     try:return 500<float(v)<3000
     except Exception:return False
 
+
 def usdkrw_rate():
+    cached=load_json(FX_FILE,{})
+    cached_value=cached.get('usdkrw')
+    # Prefer the last known good rate. Yahoo FX is a convenience refresh, not a page-blocking dependency.
+    if _valid_fx(cached_value):return float(cached_value)
     value=None
     try:
         d=fresh_price_history('KRW=X','5d');value=float(d['Close'].dropna().iloc[-1])
     except Exception:
         try:
-            d=yf.download('KRW=X',period='5d',interval='1d',auto_adjust=False,progress=False,timeout=12)
+            d=yf.download('KRW=X',period='5d',interval='1d',auto_adjust=False,progress=False,timeout=8)
             if not d.empty:value=float(d['Close'].dropna().iloc[-1])
         except Exception:pass
     if _valid_fx(value):
@@ -56,27 +74,118 @@ def usdkrw_rate():
         try:FX_FILE.write_text(json.dumps({'usdkrw':value},ensure_ascii=False),encoding='utf-8')
         except Exception:pass
         return value
-    cached=load_json(FX_FILE,{})
-    return float(cached['usdkrw']) if _valid_fx(cached.get('usdkrw')) else None
+    return None
+
+
+def _find_scan(symbol, strategy_id=None):
+    data=load_json(SCAN_FILE,{'results':[]})
+    for raw in data.get('results') or []:
+        if str(raw.get('symbol','')).upper()!=symbol:return_row=None
+        else:return_row=raw
+        if return_row is None:continue
+        signals=return_row.get('strategy_signals') or []
+        sig=next((s for s in signals if s.get('strategy_id')==strategy_id),None) if strategy_id else None
+        if sig is None:
+            pub=[s for s in signals if s.get('strategy_id') in PUBLIC_STRATEGIES]
+            pub.sort(key=lambda s:(bool(s.get('elite_pass')),float(s.get('elite_score',s.get('strategy_score',0)))),reverse=True)
+            sig=pub[0] if pub else (signals[0] if signals else None)
+        return return_row,sig
+    return None,None
+
+
+def _find_history(symbol, strategy_id=None):
+    data=load_json(HISTORY_FILE,{'days':[]})
+    for day in data.get('days') or []:
+        for item in day.get('items') or []:
+            if str(item.get('symbol','')).upper()!=symbol:continue
+            if strategy_id and item.get('strategy_id')!=strategy_id:continue
+            return item
+    return None
+
+
+def _plan_from_history(item):
+    if not item:return {}
+    return normalize_plan({
+        'entry_low':item.get('entry_low'),'entry_high':item.get('entry_high'),
+        'target':item.get('target'),'stop':item.get('stop'),
+        'target_pct':item.get('target_pct'),'stop_pct':item.get('stop_pct'),
+        'risk_reward':item.get('risk_reward'),
+        'days_min':item.get('target_days_low'),'days_max':item.get('target_days_high'),
+        'target_days':{'days_low':item.get('target_days_low'),'days_high':item.get('target_days_high')},
+        'strategy_id':item.get('strategy_id')
+    })
+
+
+def _cached_detail(symbol,strategy_id=None):
+    row,sig=_find_scan(symbol,strategy_id)
+    if row and sig:
+        sid=sig.get('strategy_id');plans=row.get('strategy_trade_plans') or {};plan=normalize_plan(plans.get(sid) or row.get('trade_plan'))
+        return {
+            'symbol':symbol,'name_ko':row.get('name_ko') or korean_name(symbol,row.get('security_name')),
+            'security_name':row.get('security_name'),'strategy_id':sid,'strategy_name':sig.get('strategy_name'),
+            'strategy_reason':sig.get('evidence') or sig.get('why') or row.get('strategy_reason'),
+            'signal':{'score':sig.get('elite_score',sig.get('strategy_score',row.get('score',0))),'active':True,
+                      'rsi':row.get('rsi'),'d120':row.get('d120'),'bb_pos':row.get('bb_pos'),'atr_pct':row.get('atr_pct')},
+            'trade_plan':plan,'usdkrw':usdkrw_rate(),'source':'saved_scan'
+        }
+    item=_find_history(symbol,strategy_id)
+    if item:
+        return {
+            'symbol':symbol,'name_ko':item.get('name_ko') or korean_name(symbol,item.get('security_name')),
+            'security_name':item.get('security_name'),'strategy_id':item.get('strategy_id'),'strategy_name':item.get('strategy_name'),
+            'strategy_reason':item.get('strategy_reason'),'signal':{'score':item.get('score',0),'active':True,'rsi':item.get('rsi'),'d120':item.get('d120'),'bb_pos':item.get('bb_pos'),'atr_pct':item.get('atr_pct')},
+            'trade_plan':_plan_from_history(item),'usdkrw':usdkrw_rate(),'source':'saved_history'
+        }
+    return None
+
+
+def _cached_chart(symbol,strategy_id):
+    row,_=_find_scan(symbol,strategy_id)
+    if row:
+        closes=row.get('sparkline') or [];hi=row.get('bb_high_spark') or [];lo=row.get('bb_low_spark') or []
+        plans=row.get('strategy_trade_plans') or {};plan=normalize_plan(plans.get(strategy_id) or row.get('trade_plan'))
+        series=[]
+        for i,c in enumerate(closes):
+            series.append({'date':str(i+1),'close':c,'sma120':None,'bb_low':lo[i] if i<len(lo) else None,'bb_high':hi[i] if i<len(hi) else None,'rsi':None})
+        return {'symbol':symbol,'strategy_id':strategy_id,'series':series,'trade_plan':plan,'current_price':closes[-1] if closes else None,'source':'saved_scan'}
+    item=_find_history(symbol,strategy_id)
+    if item:
+        closes=item.get('sparkline') or [];series=[{'date':str(i+1),'close':c,'sma120':None,'bb_low':None,'bb_high':None,'rsi':None} for i,c in enumerate(closes)]
+        return {'symbol':symbol,'strategy_id':strategy_id,'series':series,'trade_plan':_plan_from_history(item),'current_price':closes[-1] if closes else None,'source':'saved_history'}
+    return None
+
+
+def _cached_backtest(symbol,strategy_id):
+    row,sig=_find_scan(symbol,strategy_id)
+    if row and sig and sig.get('backtest'):return sig['backtest']
+    return None
+
 
 def chart_payload(symbol,strategy_id,days=180):
     d=fresh_price_history(symbol,'2y');ind=indicators(d);plan=normalize_plan(trade_plan(d,strategy_id));x=d.join(ind[['sma120','rsi','bb_low','bb_high']],how='left').tail(days);series=[]
-    for idx,row in x.iterrows():series.append({'date':idx.strftime('%Y-%m-%d'),'close':round(float(row['Close']),2),'sma120':None if pd.isna(row['sma120']) else round(float(row['sma120']),2),'bb_low':None if pd.isna(row['bb_low']) else round(float(row['bb_low']),2),'bb_high':None if pd.isna(row['bb_high']) else round(float(row['bb_high']),2),'rsi':None if pd.isna(row['rsi']) else round(float(row['rsi']),1)})
-    return {'symbol':symbol,'strategy_id':strategy_id,'series':series,'trade_plan':plan,'current_price':series[-1]['close'] if series else None}
+    for idx,row in x.iterrows():
+        series.append({'date':idx.strftime('%Y-%m-%d'),'close':round(float(row['Close']),2),'sma120':None if pd.isna(row['sma120']) else round(float(row['sma120']),2),'bb_low':None if pd.isna(row['bb_low']) else round(float(row['bb_low']),2),'bb_high':None if pd.isna(row['bb_high']) else round(float(row['bb_high']),2),'rsi':None if pd.isna(row['rsi']) else round(float(row['rsi']),1)})
+    return {'symbol':symbol,'strategy_id':strategy_id,'series':series,'trade_plan':plan,'current_price':series[-1]['close'] if series else None,'source':'live'}
+
 
 @app.route('/')
 def index():return send_from_directory('static','dashboard.html')
+
 @app.route('/health')
 def health():return jsonify({'ok':True,'version':APP_VERSION,'core':CORE_VERSION,'architecture':'clean'})
+
 @app.route('/api/version')
-def version():return jsonify({'version':APP_VERSION,'core':CORE_VERSION,'architecture':'standalone','public_strategies':list(PUBLIC_STRATEGIES),'elite_max':ELITE_MAX})
+def version():return jsonify({'version':APP_VERSION,'core':CORE_VERSION,'architecture':'standalone','public_strategies':list(PUBLIC_STRATEGIES),'aggregate_cap':None})
+
 @app.route('/api/latest')
 def latest():
     data=load_json(SCAN_FILE,{'status':'pending','results':[]});rows=[]
     for raw in data.get('results') or []:
         row=public_row(raw)
         if row:rows.append(row)
-    rows.sort(key=lambda x:(bool(x.get('aggregate_eligible')),x['score']),reverse=True);data['results']=rows;data['ui_version']=APP_VERSION;data['display_filter']='strategy tabs: raw S / aggregate: conservative top 5';data['elite_max']=ELITE_MAX;data['usdkrw']=usdkrw_rate();return jsonify(data)
+    rows.sort(key=lambda x:(bool(x.get('aggregate_eligible')),x['score']),reverse=True)
+    data['results']=rows;data['ui_version']=APP_VERSION;data['display_filter']='strategy tabs: raw S / aggregate: conservative ranking without count cap';data['usdkrw']=usdkrw_rate();return jsonify(data)
+
 @app.route('/api/history')
 def history():
     data=load_json(HISTORY_FILE,{'days':[],'summary':{}})
@@ -88,29 +197,40 @@ def history():
     for day in days[start:end]:
         for item in day.get('items') or []:item['name_ko']=item.get('name_ko') or korean_name(item.get('symbol'),item.get('security_name'))
     return jsonify({'version':data.get('version'),'updated_at':data.get('updated_at'),'summary':data.get('summary') or {},'days':days[start:end],'page':page,'size':size,'has_more':end<len(days),'total_days':len(days),'usdkrw':usdkrw_rate(),'legacy_entries_repaired':data.get('legacy_entries_repaired',0)})
+
 @app.route('/api/market')
 def market():return jsonify(market_snapshot())
+
 @app.route('/api/detail/<symbol>')
 def detail(symbol):
+    s=symbol.upper().strip();requested=request.args.get('strategy');sid=requested if requested in PUBLIC_STRATEGIES else requested
+    cached=_cached_detail(s,sid)
+    if cached:return jsonify(cached)
     try:
-        s=symbol.upper().strip();d=fresh_price_history(s,'10y');market=market_snapshot();ev=evaluate_strategies(d,market.get('state'));public=[x for x in ev['strategies'] if x['id'] in PUBLIC_STRATEGIES];public.sort(key=lambda x:(x['active'],x['score']),reverse=True);requested=request.args.get('strategy');sid=requested if requested in PUBLIC_STRATEGIES else public[0]['id'];chosen=next(x for x in ev['strategies'] if x['id']==sid);plan=normalize_plan(trade_plan(d,sid));official=quote_name(s)
-        return jsonify({'symbol':s,'name_ko':korean_name(s,official),'security_name':official,'strategy_id':sid,'strategy_name':chosen['name'],'strategy_reason':chosen['evidence'],'signal':{'score':chosen['score'],'active':chosen['active'],**ev['metrics']},'strategies':public,'trade_plan':plan,'usdkrw':usdkrw_rate(),'market':market})
+        d=fresh_price_history(s,'10y');market=market_snapshot();ev=evaluate_strategies(d,market.get('state'));public=[x for x in ev['strategies'] if x['id'] in PUBLIC_STRATEGIES];public.sort(key=lambda x:(x['active'],x['score']),reverse=True);sid=requested if requested in PUBLIC_STRATEGIES else public[0]['id'];chosen=next(x for x in ev['strategies'] if x['id']==sid);plan=normalize_plan(trade_plan(d,sid))
+        return jsonify({'symbol':s,'name_ko':korean_name(s,s),'security_name':s,'strategy_id':sid,'strategy_name':chosen['name'],'strategy_reason':chosen['evidence'],'signal':{'score':chosen['score'],'active':chosen['active'],**ev['metrics']},'strategies':public,'trade_plan':plan,'usdkrw':usdkrw_rate(),'market':market,'source':'live'})
     except Exception as exc:return jsonify({'error':str(exc)}),400
+
 @app.route('/api/chart/<symbol>')
 def chart(symbol):
-    try:
-        sid=request.args.get('strategy') or 'confirmed_pullback'
-        if sid not in PUBLIC_STRATEGIES:sid='confirmed_pullback'
-        return jsonify(chart_payload(symbol.upper().strip(),sid))
-    except Exception as exc:return jsonify({'error':str(exc)}),400
+    s=symbol.upper().strip();sid=request.args.get('strategy') or 'confirmed_pullback'
+    cached=_cached_chart(s,sid)
+    try:return jsonify(chart_payload(s,sid))
+    except Exception as exc:
+        if cached:
+            cached['warning']='최신 차트 호출이 제한되어 저장된 추천 차트를 표시합니다.'
+            return jsonify(cached)
+        return jsonify({'error':str(exc)}),400
+
 @lru_cache(maxsize=256)
-def cached_backtest(symbol,strategy_id):return run_backtest(symbol,strategy_id)
+def live_backtest(symbol,strategy_id):return run_backtest(symbol,strategy_id)
+
 @app.route('/api/backtest/<symbol>')
 def backtest(symbol):
-    try:
-        sid=request.args.get('strategy') or 'confirmed_pullback'
-        if sid not in PUBLIC_STRATEGIES:sid='confirmed_pullback'
-        return jsonify(cached_backtest(symbol.upper().strip(),sid))
+    s=symbol.upper().strip();sid=request.args.get('strategy') or 'confirmed_pullback'
+    cached=_cached_backtest(s,sid)
+    if cached:return jsonify(cached)
+    try:return jsonify(live_backtest(s,sid))
     except Exception as exc:return jsonify({'error':str(exc)}),400
 
 if __name__=='__main__':app.run(host='0.0.0.0',port=8766,debug=False)
