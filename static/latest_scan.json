@@ -1,8 +1,8 @@
 {
   "status": "ready",
-  "version": "16.1",
-  "core_version": "4.2",
-  "scanned_at": "2026-08-12T18:45:38+00:00",
+  "version": "16.3",
+  "core_version": "4.3",
+  "scanned_at": "2026-08-12T19:08:37+00:00",
   "universe_count": 5762,
   "candidate_count": 700,
   "failed_count": 16,
@@ -78,34 +78,273 @@
     "details": {
       "SPY": {
         "score": 3,
-        "rsi": 65.0,
+        "rsi": 64.9,
         "above120": true,
         "above200": true
       },
       "QQQ": {
         "score": 3,
-        "rsi": 57.7,
+        "rsi": 57.5,
         "above120": true,
         "above200": true
       }
     },
-    "brief": "SPY 120·200일선 위 · RSI 65.0 / QQQ 120·200일선 위 · RSI 57.7",
+    "brief": "SPY 120·200일선 위 · RSI 64.9 / QQQ 120·200일선 위 · RSI 57.5",
     "action": "눌림 후보를 관찰하되 추격매수는 자제",
     "panic_setup": {
       "active": false,
       "triggered": false,
-      "rsi": 65.0,
-      "rebound_from_low_pct": 0.29,
+      "rsi": 64.9,
+      "rebound_from_low_pct": 0.27,
       "label": "평상시",
-      "message": "SPY RSI 65.0 · 당일 저가 대비 +0.29%"
+      "message": "SPY RSI 64.9 · 당일 저가 대비 +0.27%"
     }
   },
   "results": [
     {
+      "symbol": "HR",
+      "name_ko": "헬스피크 프로퍼티스",
+      "security_name": "Healthcare Realty Trust Incorporated Common Stock",
+      "score": 92.2,
+      "grade": "S",
+      "eligible": true,
+      "strategy_id": "rsi2_trend_reversion",
+      "strategy_name": "RSI2 추세내 과매도",
+      "strategy_reason": "장기 상승추세는 유지하면서 단기 과매도와 가격 눌림이 동시에 강한 자리",
+      "strategy_signals": [
+        {
+          "strategy_id": "rsi2_trend_reversion",
+          "strategy_name": "RSI2 추세내 과매도",
+          "strategy_score": 95,
+          "why": "RSI2 1.1 · RSI14 28.5 · 120일선 -1.2% · 볼린저 -8.6%",
+          "evidence": "장기 상승추세는 유지하면서 단기 과매도와 가격 눌림이 동시에 강한 자리",
+          "experimental": false,
+          "strict": true,
+          "elite_pass": true,
+          "elite_score": 92.2,
+          "selection_reason": "현재 자리 95 · 수급 80 · 손익비 3.33:1",
+          "flow_score": 80,
+          "checks": {
+            "current_signal": true,
+            "flow": true,
+            "risk_reward": true,
+            "market": true,
+            "first_20d_overlay": false
+          },
+          "first_20d_overlay": false,
+          "backtest": {
+            "full_10y": {
+              "return_pct": -3.21,
+              "buy_hold_pct": -46.43,
+              "win_rate": 50.0,
+              "trades": 10,
+              "max_drawdown": -4.45,
+              "profit_factor": 0.73,
+              "sharpe": -0.45,
+              "avg_trade": -0.3
+            },
+            "recent_2y": {
+              "return_pct": -2.43,
+              "buy_hold_pct": 8.82,
+              "win_rate": 40.0,
+              "trades": 5,
+              "max_drawdown": -2.75,
+              "profit_factor": 0.65,
+              "sharpe": -0.42,
+              "avg_trade": -0.47
+            }
+          }
+        }
+      ],
+      "rsi": 28.5,
+      "d120": -1.19,
+      "bb_pos": -8.6,
+      "atr_pct": 2.31,
+      "flow": {
+        "relative_volume": 0.3,
+        "volume_5d_vs_20d": 0.9,
+        "reversal_volume": 0,
+        "up_down_volume_ratio": 1.17,
+        "avg_dollar_volume_20d": 80980272.0
+      },
+      "sparkline": [
+        20.3,
+        20.42,
+        20.31,
+        20.5,
+        20.64,
+        20.17,
+        20.29,
+        20.61,
+        20.4,
+        20.65,
+        20.63,
+        20.69,
+        20.69,
+        20.81,
+        20.89,
+        20.65,
+        21.29,
+        21.32,
+        21.25,
+        21.47,
+        21.28,
+        21.14,
+        21.4,
+        21.53,
+        21.87,
+        21.81,
+        21.53,
+        21.01,
+        20.54,
+        20.27,
+        20.39,
+        20.2,
+        19.97,
+        19.64,
+        19.18
+      ],
+      "bb_high_spark": [
+        20.89,
+        20.86,
+        20.88,
+        20.92,
+        20.98,
+        20.97,
+        20.96,
+        20.95,
+        20.92,
+        20.91,
+        20.85,
+        20.88,
+        20.91,
+        20.95,
+        20.98,
+        21.0,
+        21.15,
+        21.27,
+        21.31,
+        21.43,
+        21.5,
+        21.53,
+        21.6,
+        21.69,
+        21.85,
+        21.93,
+        21.95,
+        21.94,
+        21.93,
+        21.97,
+        21.99,
+        22.03,
+        22.1,
+        22.2,
+        22.34
+      ],
+      "bb_low_spark": [
+        19.25,
+        19.26,
+        19.26,
+        19.26,
+        19.26,
+        19.35,
+        19.42,
+        19.55,
+        19.67,
+        19.77,
+        19.95,
+        19.95,
+        19.94,
+        19.93,
+        19.91,
+        19.91,
+        19.84,
+        19.85,
+        19.96,
+        19.97,
+        20.0,
+        20.03,
+        20.08,
+        20.09,
+        20.05,
+        20.13,
+        20.24,
+        20.29,
+        20.32,
+        20.24,
+        20.2,
+        20.1,
+        19.97,
+        19.75,
+        19.44
+      ],
+      "first_20d_pullback": {
+        "active": false,
+        "aligned": false,
+        "recent_52w_high": true,
+        "first_touch": false,
+        "reason": "20일선 첫 눌림 교집합 미완성"
+      },
+      "strategy_trade_plans": {
+        "rsi2_trend_reversion": {
+          "entry_low": 19.14,
+          "entry_high": 19.25,
+          "target": 20.89,
+          "stop": 18.69,
+          "target_pct": 8.82,
+          "stop_pct": 2.65,
+          "risk_reward": 3.33,
+          "days_min": 1,
+          "days_max": 5,
+          "target_days": {
+            "days_low": 1,
+            "days_high": 5,
+            "method": "전략별 예상 보유기간"
+          },
+          "basis": "단기 평균회귀/추세 복귀",
+          "target_reason": "단기 평균회귀/추세 복귀",
+          "stop_reason": "단기 평균회귀/추세 복귀",
+          "strategy_id": "rsi2_trend_reversion",
+          "entry_reference": "현재 과매도 구간",
+          "entry_status": "진입 적정",
+          "signal_active": true,
+          "current_vs_entry_pct": 0.0,
+          "current_price": 19.19
+        }
+      },
+      "elite_pass": true,
+      "elite_score": 92.2,
+      "trade_plan": {
+        "entry_low": 19.14,
+        "entry_high": 19.25,
+        "target": 20.89,
+        "stop": 18.69,
+        "target_pct": 8.82,
+        "stop_pct": 2.65,
+        "risk_reward": 3.33,
+        "days_min": 1,
+        "days_max": 5,
+        "target_days": {
+          "days_low": 1,
+          "days_high": 5,
+          "method": "전략별 예상 보유기간"
+        },
+        "basis": "단기 평균회귀/추세 복귀",
+        "target_reason": "단기 평균회귀/추세 복귀",
+        "stop_reason": "단기 평균회귀/추세 복귀",
+        "strategy_id": "rsi2_trend_reversion",
+        "entry_reference": "현재 과매도 구간",
+        "entry_status": "진입 적정",
+        "signal_active": true,
+        "current_vs_entry_pct": 0.0,
+        "current_price": 19.19
+      }
+    },
+    {
       "symbol": "O",
       "name_ko": "리얼티 인컴",
       "security_name": "Realty Income Corporation Common Stock",
-      "score": 95,
+      "score": 89.8,
       "grade": "S",
       "eligible": true,
       "strategy_id": "confirmed_pullback",
@@ -116,24 +355,26 @@
           "strategy_id": "confirmed_pullback",
           "strategy_name": "확인형 눌림반등",
           "strategy_score": 95,
-          "why": "RSI 41.6 · 120일선 -1.23% · 볼린저 18.8% · 반전확인 4/4",
+          "why": "RSI 41.1 · 120일선 -1.31% · 볼린저 17.9% · 반전확인 4/4",
           "evidence": "120일선 근처에서 충분히 눌린 뒤 네 가지 반전 확인이 모두 나온 자리",
           "experimental": false,
           "strict": true,
-          "elite_pass": false,
-          "elite_score": 93.4,
-          "selection_reason": "10년 13회 · 평균 -0.32% · PF 0.67 · 최근2년 2회/-1.38% · 손익비 4.64:1",
+          "elite_pass": true,
+          "elite_score": 89.8,
+          "selection_reason": "현재 자리 95 · 수급 82 · 손익비 2.14:1",
+          "flow_score": 82,
           "checks": {
-            "history_not_bad": false,
-            "recent_not_bad": true,
+            "current_signal": true,
+            "flow": true,
             "risk_reward": true,
-            "drawdown": true,
+            "market": true,
             "first_20d_overlay": false
           },
+          "first_20d_overlay": false,
           "backtest": {
             "full_10y": {
               "return_pct": -4.25,
-              "buy_hold_pct": -6.26,
+              "buy_hold_pct": -6.35,
               "win_rate": 38.5,
               "trades": 13,
               "max_drawdown": -9.17,
@@ -143,7 +384,7 @@
             },
             "recent_2y": {
               "return_pct": -2.75,
-              "buy_hold_pct": 3.53,
+              "buy_hold_pct": 3.44,
               "win_rate": 0.0,
               "trades": 2,
               "max_drawdown": -1.22,
@@ -151,14 +392,20 @@
               "sharpe": -8.43,
               "avg_trade": -1.38
             }
-          },
-          "first_20d_overlay": false
+          }
         }
       ],
-      "rsi": 41.6,
-      "d120": -1.23,
-      "bb_pos": 18.8,
+      "rsi": 41.1,
+      "d120": -1.31,
+      "bb_pos": 17.9,
       "atr_pct": 1.98,
+      "flow": {
+        "relative_volume": 1.88,
+        "volume_5d_vs_20d": 1.18,
+        "reversal_volume": 1.88,
+        "up_down_volume_ratio": 1.26,
+        "avg_dollar_volume_20d": 333019276.0
+      },
       "sparkline": [
         61.99,
         62.04,
@@ -194,7 +441,7 @@
         62.51,
         61.89,
         61.89,
-        62.35
+        62.29
       ],
       "bb_high_spark": [
         63.07,
@@ -268,7 +515,7 @@
         62.06,
         61.71,
         61.42,
-        61.28
+        61.27
       ],
       "first_20d_pullback": {
         "active": false,
@@ -279,13 +526,13 @@
       },
       "strategy_trade_plans": {
         "confirmed_pullback": {
-          "entry_low": 62.04,
-          "entry_high": 62.53,
+          "entry_low": 62.9,
+          "entry_high": 63.39,
           "target": 67.15,
-          "stop": 61.23,
-          "target_pct": 7.81,
-          "stop_pct": 1.69,
-          "risk_reward": 4.64,
+          "stop": 61.27,
+          "target_pct": 6.34,
+          "stop_pct": 2.97,
+          "risk_reward": 2.14,
           "days_min": 2,
           "days_max": 8,
           "target_days": {
@@ -293,21 +540,27 @@
             "days_high": 8,
             "method": "전략별 예상 보유기간"
           },
-          "basis": "지지선 반전폭/최근 고점",
-          "target_reason": "지지선 반전폭/최근 고점",
-          "stop_reason": "지지선 반전폭/최근 고점",
-          "strategy_id": "confirmed_pullback"
+          "basis": "120일선 지지/최근 고점",
+          "target_reason": "120일선 지지/최근 고점",
+          "stop_reason": "120일선 지지/최근 고점",
+          "strategy_id": "confirmed_pullback",
+          "entry_reference": "120일선 지지구간",
+          "entry_status": "진입구간 대기",
+          "signal_active": true,
+          "current_vs_entry_pct": -1.35,
+          "current_price": 62.29
         }
       },
-      "elite_pass": false,
+      "elite_pass": true,
+      "elite_score": 89.8,
       "trade_plan": {
-        "entry_low": 62.04,
-        "entry_high": 62.53,
+        "entry_low": 62.9,
+        "entry_high": 63.39,
         "target": 67.15,
-        "stop": 61.23,
-        "target_pct": 7.81,
-        "stop_pct": 1.69,
-        "risk_reward": 4.64,
+        "stop": 61.27,
+        "target_pct": 6.34,
+        "stop_pct": 2.97,
+        "risk_reward": 2.14,
         "days_min": 2,
         "days_max": 8,
         "target_days": {
@@ -315,17 +568,22 @@
           "days_high": 8,
           "method": "전략별 예상 보유기간"
         },
-        "basis": "지지선 반전폭/최근 고점",
-        "target_reason": "지지선 반전폭/최근 고점",
-        "stop_reason": "지지선 반전폭/최근 고점",
-        "strategy_id": "confirmed_pullback"
+        "basis": "120일선 지지/최근 고점",
+        "target_reason": "120일선 지지/최근 고점",
+        "stop_reason": "120일선 지지/최근 고점",
+        "strategy_id": "confirmed_pullback",
+        "entry_reference": "120일선 지지구간",
+        "entry_status": "진입구간 대기",
+        "signal_active": true,
+        "current_vs_entry_pct": -1.35,
+        "current_price": 62.29
       }
     },
     {
       "symbol": "HRL",
       "name_ko": "호멜 푸즈",
       "security_name": "Hormel Foods Corporation Common Stock",
-      "score": 95,
+      "score": 85.7,
       "grade": "S",
       "eligible": true,
       "strategy_id": "rsi2_trend_reversion",
@@ -336,24 +594,26 @@
           "strategy_id": "rsi2_trend_reversion",
           "strategy_name": "RSI2 추세내 과매도",
           "strategy_score": 95,
-          "why": "RSI2 1.0 · RSI14 40.3 · 120일선 +4.1% · 볼린저 -6.9%",
+          "why": "RSI2 1.0 · RSI14 40.5 · 120일선 +4.2% · 볼린저 -6.1%",
           "evidence": "장기 상승추세는 유지하면서 단기 과매도와 가격 눌림이 동시에 강한 자리",
           "experimental": false,
           "strict": true,
-          "elite_pass": false,
-          "elite_score": 97.8,
-          "selection_reason": "10년 5회 · 평균 +0.16% · PF 1.18 · 최근2년 0회/+0.00% · 손익비 1.09:1",
+          "elite_pass": true,
+          "elite_score": 85.7,
+          "selection_reason": "현재 자리 95 · 수급 74 · 손익비 1.45:1",
+          "flow_score": 74,
           "checks": {
-            "history_not_bad": true,
-            "recent_not_bad": true,
-            "risk_reward": false,
-            "drawdown": true,
+            "current_signal": true,
+            "flow": true,
+            "risk_reward": true,
+            "market": true,
             "first_20d_overlay": false
           },
+          "first_20d_overlay": false,
           "backtest": {
             "full_10y": {
               "return_pct": 0.68,
-              "buy_hold_pct": -34.66,
+              "buy_hold_pct": -34.61,
               "win_rate": 60.0,
               "trades": 5,
               "max_drawdown": -4.33,
@@ -363,7 +623,7 @@
             },
             "recent_2y": {
               "return_pct": 0,
-              "buy_hold_pct": -24.26,
+              "buy_hold_pct": -24.19,
               "win_rate": 0,
               "trades": 0,
               "max_drawdown": 0,
@@ -371,14 +631,20 @@
               "sharpe": null,
               "avg_trade": 0
             }
-          },
-          "first_20d_overlay": false
+          }
         }
       ],
-      "rsi": 40.3,
-      "d120": 4.09,
-      "bb_pos": -6.9,
+      "rsi": 40.5,
+      "d120": 4.18,
+      "bb_pos": -6.1,
       "atr_pct": 2.38,
+      "flow": {
+        "relative_volume": 0.54,
+        "volume_5d_vs_20d": 0.79,
+        "reversal_volume": 0.54,
+        "up_down_volume_ratio": 0.95,
+        "avg_dollar_volume_20d": 81375341.0
+      },
       "sparkline": [
         25.55,
         26.02,
@@ -414,7 +680,7 @@
         25.02,
         24.7,
         24.3,
-        24.22
+        24.24
       ],
       "bb_high_spark": [
         25.72,
@@ -488,7 +754,7 @@
         24.57,
         24.64,
         24.51,
-        24.33
+        24.34
       ],
       "first_20d_pullback": {
         "active": false,
@@ -499,13 +765,13 @@
       },
       "strategy_trade_plans": {
         "rsi2_trend_reversion": {
-          "entry_low": 24.16,
-          "entry_high": 24.27,
-          "target": 24.94,
-          "stop": 23.55,
-          "target_pct": 2.98,
+          "entry_low": 24.17,
+          "entry_high": 24.3,
+          "target": 25.2,
+          "stop": 23.57,
+          "target_pct": 3.97,
           "stop_pct": 2.74,
-          "risk_reward": 1.09,
+          "risk_reward": 1.45,
           "days_min": 1,
           "days_max": 5,
           "target_days": {
@@ -513,241 +779,27 @@
             "days_high": 5,
             "method": "전략별 예상 보유기간"
           },
-          "basis": "단기 평균회귀 ATR",
-          "target_reason": "단기 평균회귀 ATR",
-          "stop_reason": "단기 평균회귀 ATR",
-          "strategy_id": "rsi2_trend_reversion"
-        }
-      },
-      "elite_pass": false,
-      "trade_plan": {
-        "entry_low": 24.16,
-        "entry_high": 24.27,
-        "target": 24.94,
-        "stop": 23.55,
-        "target_pct": 2.98,
-        "stop_pct": 2.74,
-        "risk_reward": 1.09,
-        "days_min": 1,
-        "days_max": 5,
-        "target_days": {
-          "days_low": 1,
-          "days_high": 5,
-          "method": "전략별 예상 보유기간"
-        },
-        "basis": "단기 평균회귀 ATR",
-        "target_reason": "단기 평균회귀 ATR",
-        "stop_reason": "단기 평균회귀 ATR",
-        "strategy_id": "rsi2_trend_reversion"
-      }
-    },
-    {
-      "symbol": "HR",
-      "name_ko": "헬스피크 프로퍼티스",
-      "security_name": "Healthcare Realty Trust Incorporated Common Stock",
-      "score": 95,
-      "grade": "S",
-      "eligible": true,
-      "strategy_id": "rsi2_trend_reversion",
-      "strategy_name": "RSI2 추세내 과매도",
-      "strategy_reason": "장기 상승추세는 유지하면서 단기 과매도와 가격 눌림이 동시에 강한 자리",
-      "strategy_signals": [
-        {
+          "basis": "단기 평균회귀/추세 복귀",
+          "target_reason": "단기 평균회귀/추세 복귀",
+          "stop_reason": "단기 평균회귀/추세 복귀",
           "strategy_id": "rsi2_trend_reversion",
-          "strategy_name": "RSI2 추세내 과매도",
-          "strategy_score": 95,
-          "why": "RSI2 1.1 · RSI14 28.7 · 120일선 -1.0% · 볼린저 -7.9%",
-          "evidence": "장기 상승추세는 유지하면서 단기 과매도와 가격 눌림이 동시에 강한 자리",
-          "experimental": false,
-          "strict": true,
-          "elite_pass": false,
-          "elite_score": 90.5,
-          "selection_reason": "10년 10회 · 평균 -0.30% · PF 0.73 · 최근2년 5회/-0.47% · 손익비 1.09:1",
-          "checks": {
-            "history_not_bad": false,
-            "recent_not_bad": false,
-            "risk_reward": false,
-            "drawdown": true,
-            "first_20d_overlay": false
-          },
-          "backtest": {
-            "full_10y": {
-              "return_pct": -3.21,
-              "buy_hold_pct": -46.37,
-              "win_rate": 50.0,
-              "trades": 10,
-              "max_drawdown": -4.45,
-              "profit_factor": 0.73,
-              "sharpe": -0.45,
-              "avg_trade": -0.3
-            },
-            "recent_2y": {
-              "return_pct": -2.43,
-              "buy_hold_pct": 8.93,
-              "win_rate": 40.0,
-              "trades": 5,
-              "max_drawdown": -2.75,
-              "profit_factor": 0.65,
-              "sharpe": -0.42,
-              "avg_trade": -0.47
-            }
-          },
-          "first_20d_overlay": false
-        }
-      ],
-      "rsi": 28.7,
-      "d120": -1.04,
-      "bb_pos": -7.9,
-      "atr_pct": 2.3,
-      "sparkline": [
-        20.3,
-        20.42,
-        20.31,
-        20.5,
-        20.64,
-        20.17,
-        20.29,
-        20.61,
-        20.4,
-        20.65,
-        20.63,
-        20.69,
-        20.69,
-        20.81,
-        20.89,
-        20.65,
-        21.29,
-        21.32,
-        21.25,
-        21.47,
-        21.28,
-        21.14,
-        21.4,
-        21.53,
-        21.87,
-        21.81,
-        21.53,
-        21.01,
-        20.54,
-        20.27,
-        20.39,
-        20.2,
-        19.97,
-        19.64,
-        19.22
-      ],
-      "bb_high_spark": [
-        20.89,
-        20.86,
-        20.88,
-        20.92,
-        20.98,
-        20.97,
-        20.96,
-        20.95,
-        20.92,
-        20.91,
-        20.85,
-        20.88,
-        20.91,
-        20.95,
-        20.98,
-        21.0,
-        21.15,
-        21.27,
-        21.31,
-        21.43,
-        21.5,
-        21.53,
-        21.6,
-        21.69,
-        21.85,
-        21.93,
-        21.95,
-        21.94,
-        21.93,
-        21.97,
-        21.99,
-        22.03,
-        22.1,
-        22.2,
-        22.33
-      ],
-      "bb_low_spark": [
-        19.25,
-        19.26,
-        19.26,
-        19.26,
-        19.26,
-        19.35,
-        19.42,
-        19.55,
-        19.67,
-        19.77,
-        19.95,
-        19.95,
-        19.94,
-        19.93,
-        19.91,
-        19.91,
-        19.84,
-        19.85,
-        19.96,
-        19.97,
-        20.0,
-        20.03,
-        20.08,
-        20.09,
-        20.05,
-        20.13,
-        20.24,
-        20.29,
-        20.32,
-        20.24,
-        20.2,
-        20.1,
-        19.97,
-        19.75,
-        19.44
-      ],
-      "first_20d_pullback": {
-        "active": false,
-        "aligned": false,
-        "recent_52w_high": true,
-        "first_touch": false,
-        "reason": "20일선 첫 눌림 교집합 미완성"
-      },
-      "strategy_trade_plans": {
-        "rsi2_trend_reversion": {
-          "entry_low": 19.17,
-          "entry_high": 19.26,
-          "target": 19.77,
-          "stop": 18.71,
-          "target_pct": 2.87,
-          "stop_pct": 2.64,
-          "risk_reward": 1.09,
-          "days_min": 1,
-          "days_max": 5,
-          "target_days": {
-            "days_low": 1,
-            "days_high": 5,
-            "method": "전략별 예상 보유기간"
-          },
-          "basis": "단기 평균회귀 ATR",
-          "target_reason": "단기 평균회귀 ATR",
-          "stop_reason": "단기 평균회귀 ATR",
-          "strategy_id": "rsi2_trend_reversion"
+          "entry_reference": "현재 과매도 구간",
+          "entry_status": "진입 적정",
+          "signal_active": true,
+          "current_vs_entry_pct": 0.0,
+          "current_price": 24.24
         }
       },
-      "elite_pass": false,
+      "elite_pass": true,
+      "elite_score": 85.7,
       "trade_plan": {
-        "entry_low": 19.17,
-        "entry_high": 19.26,
-        "target": 19.77,
-        "stop": 18.71,
-        "target_pct": 2.87,
-        "stop_pct": 2.64,
-        "risk_reward": 1.09,
+        "entry_low": 24.17,
+        "entry_high": 24.3,
+        "target": 25.2,
+        "stop": 23.57,
+        "target_pct": 3.97,
+        "stop_pct": 2.74,
+        "risk_reward": 1.45,
         "days_min": 1,
         "days_max": 5,
         "target_days": {
@@ -755,17 +807,22 @@
           "days_high": 5,
           "method": "전략별 예상 보유기간"
         },
-        "basis": "단기 평균회귀 ATR",
-        "target_reason": "단기 평균회귀 ATR",
-        "stop_reason": "단기 평균회귀 ATR",
-        "strategy_id": "rsi2_trend_reversion"
+        "basis": "단기 평균회귀/추세 복귀",
+        "target_reason": "단기 평균회귀/추세 복귀",
+        "stop_reason": "단기 평균회귀/추세 복귀",
+        "strategy_id": "rsi2_trend_reversion",
+        "entry_reference": "현재 과매도 구간",
+        "entry_status": "진입 적정",
+        "signal_active": true,
+        "current_vs_entry_pct": 0.0,
+        "current_price": 24.24
       }
     },
     {
       "symbol": "LION",
       "name_ko": "라이온 그룹 홀딩",
       "security_name": "Lionsgate Studios Corp Common Shares",
-      "score": 91.0,
+      "score": 82.6,
       "grade": "S",
       "eligible": true,
       "strategy_id": "rsi2_trend_reversion",
@@ -776,24 +833,26 @@
           "strategy_id": "rsi2_trend_reversion",
           "strategy_name": "RSI2 추세내 과매도",
           "strategy_score": 91.0,
-          "why": "RSI2 1.5 · RSI14 28.0 · 120일선 -2.3% · 볼린저 -19.0%",
+          "why": "RSI2 1.5 · RSI14 28.2 · 120일선 -2.1% · 볼린저 -18.5%",
           "evidence": "장기 상승추세는 유지하면서 단기 과매도와 가격 눌림이 동시에 강한 자리",
           "experimental": false,
           "strict": true,
-          "elite_pass": false,
-          "elite_score": 90.9,
-          "selection_reason": "10년 2회 · 평균 +0.11% · PF ∞ · 최근2년 0회/+0.00% · 손익비 1.09:1",
+          "elite_pass": true,
+          "elite_score": 82.6,
+          "selection_reason": "현재 자리 91 · 수급 60 · 손익비 2.25:1",
+          "flow_score": 60,
           "checks": {
-            "history_not_bad": true,
-            "recent_not_bad": true,
-            "risk_reward": false,
-            "drawdown": true,
+            "current_signal": true,
+            "flow": true,
+            "risk_reward": true,
+            "market": true,
             "first_20d_overlay": false
           },
+          "first_20d_overlay": false,
           "backtest": {
             "full_10y": {
               "return_pct": 0.22,
-              "buy_hold_pct": 22.89,
+              "buy_hold_pct": 23.04,
               "win_rate": 100.0,
               "trades": 2,
               "max_drawdown": 0.0,
@@ -803,7 +862,7 @@
             },
             "recent_2y": {
               "return_pct": 0,
-              "buy_hold_pct": 63.29,
+              "buy_hold_pct": 63.49,
               "win_rate": 0,
               "trades": 0,
               "max_drawdown": 0,
@@ -811,14 +870,20 @@
               "sharpe": null,
               "avg_trade": 0
             }
-          },
-          "first_20d_overlay": false
+          }
         }
       ],
-      "rsi": 28.0,
-      "d120": -2.27,
-      "bb_pos": -19.0,
-      "atr_pct": 4.25,
+      "rsi": 28.2,
+      "d120": -2.13,
+      "bb_pos": -18.5,
+      "atr_pct": 4.24,
+      "flow": {
+        "relative_volume": 1.03,
+        "volume_5d_vs_20d": 0.96,
+        "reversal_volume": 0,
+        "up_down_volume_ratio": 0.71,
+        "avg_dollar_volume_20d": 33882540.0
+      },
       "sparkline": [
         15.0,
         15.34,
@@ -854,7 +919,7 @@
         12.93,
         12.97,
         12.36,
-        11.92
+        11.94
       ],
       "bb_high_spark": [
         15.91,
@@ -891,7 +956,7 @@
         13.96,
         13.96,
         14.06,
-        14.21
+        14.2
       ],
       "bb_low_spark": [
         12.7,
@@ -940,12 +1005,12 @@
       "strategy_trade_plans": {
         "rsi2_trend_reversion": {
           "entry_low": 11.87,
-          "entry_high": 11.97,
-          "target": 12.55,
-          "stop": 11.34,
-          "target_pct": 5.31,
+          "entry_high": 12.0,
+          "target": 13.25,
+          "stop": 11.35,
+          "target_pct": 10.99,
           "stop_pct": 4.88,
-          "risk_reward": 1.09,
+          "risk_reward": 2.25,
           "days_min": 1,
           "days_max": 5,
           "target_days": {
@@ -953,21 +1018,27 @@
             "days_high": 5,
             "method": "전략별 예상 보유기간"
           },
-          "basis": "단기 평균회귀 ATR",
-          "target_reason": "단기 평균회귀 ATR",
-          "stop_reason": "단기 평균회귀 ATR",
-          "strategy_id": "rsi2_trend_reversion"
+          "basis": "단기 평균회귀/추세 복귀",
+          "target_reason": "단기 평균회귀/추세 복귀",
+          "stop_reason": "단기 평균회귀/추세 복귀",
+          "strategy_id": "rsi2_trend_reversion",
+          "entry_reference": "현재 과매도 구간",
+          "entry_status": "진입 적정",
+          "signal_active": true,
+          "current_vs_entry_pct": 0.0,
+          "current_price": 11.94
         }
       },
-      "elite_pass": false,
+      "elite_pass": true,
+      "elite_score": 82.6,
       "trade_plan": {
         "entry_low": 11.87,
-        "entry_high": 11.97,
-        "target": 12.55,
-        "stop": 11.34,
-        "target_pct": 5.31,
+        "entry_high": 12.0,
+        "target": 13.25,
+        "stop": 11.35,
+        "target_pct": 10.99,
         "stop_pct": 4.88,
-        "risk_reward": 1.09,
+        "risk_reward": 2.25,
         "days_min": 1,
         "days_max": 5,
         "target_days": {
@@ -975,17 +1046,22 @@
           "days_high": 5,
           "method": "전략별 예상 보유기간"
         },
-        "basis": "단기 평균회귀 ATR",
-        "target_reason": "단기 평균회귀 ATR",
-        "stop_reason": "단기 평균회귀 ATR",
-        "strategy_id": "rsi2_trend_reversion"
+        "basis": "단기 평균회귀/추세 복귀",
+        "target_reason": "단기 평균회귀/추세 복귀",
+        "stop_reason": "단기 평균회귀/추세 복귀",
+        "strategy_id": "rsi2_trend_reversion",
+        "entry_reference": "현재 과매도 구간",
+        "entry_status": "진입 적정",
+        "signal_active": true,
+        "current_vs_entry_pct": 0.0,
+        "current_price": 11.94
       }
     },
     {
       "symbol": "SIRI",
       "name_ko": "시리우스XM",
       "security_name": "SiriusXM Holdings Inc. - Common Stock",
-      "score": 87.0,
+      "score": 81.8,
       "grade": "S",
       "eligible": true,
       "strategy_id": "rsi2_trend_reversion",
@@ -996,24 +1072,26 @@
           "strategy_id": "rsi2_trend_reversion",
           "strategy_name": "RSI2 추세내 과매도",
           "strategy_score": 87.0,
-          "why": "RSI2 2.5 · RSI14 38.5 · 120일선 +6.3% · 볼린저 1.9%",
+          "why": "RSI2 2.8 · RSI14 38.9 · 120일선 +6.6% · 볼린저 3.4%",
           "evidence": "장기 상승추세는 유지하면서 단기 과매도와 가격 눌림이 동시에 강한 자리",
           "experimental": false,
           "strict": true,
-          "elite_pass": false,
-          "elite_score": 82.4,
-          "selection_reason": "10년 6회 · 평균 -0.66% · PF 0.63 · 최근2년 0회/+0.00% · 손익비 1.09:1",
+          "elite_pass": true,
+          "elite_score": 81.8,
+          "selection_reason": "현재 자리 87 · 수급 80 · 손익비 1.50:1",
+          "flow_score": 80,
           "checks": {
-            "history_not_bad": false,
-            "recent_not_bad": true,
-            "risk_reward": false,
-            "drawdown": true,
+            "current_signal": true,
+            "flow": true,
+            "risk_reward": true,
+            "market": true,
             "first_20d_overlay": false
           },
+          "first_20d_overlay": false,
           "backtest": {
             "full_10y": {
               "return_pct": -4.18,
-              "buy_hold_pct": -32.76,
+              "buy_hold_pct": -32.54,
               "win_rate": 50.0,
               "trades": 6,
               "max_drawdown": -4.82,
@@ -1023,7 +1101,7 @@
             },
             "recent_2y": {
               "return_pct": 0,
-              "buy_hold_pct": -10.41,
+              "buy_hold_pct": -10.13,
               "win_rate": 0,
               "trades": 0,
               "max_drawdown": 0,
@@ -1031,14 +1109,20 @@
               "sharpe": null,
               "avg_trade": 0
             }
-          },
-          "first_20d_overlay": false
+          }
         }
       ],
-      "rsi": 38.5,
-      "d120": 6.28,
-      "bb_pos": 1.9,
-      "atr_pct": 3.84,
+      "rsi": 38.9,
+      "d120": 6.58,
+      "bb_pos": 3.4,
+      "atr_pct": 3.83,
+      "flow": {
+        "relative_volume": 0.5,
+        "volume_5d_vs_20d": 0.81,
+        "reversal_volume": 0,
+        "up_down_volume_ratio": 1.18,
+        "avg_dollar_volume_20d": 124241399.0
+      },
       "sparkline": [
         27.9,
         27.76,
@@ -1074,7 +1158,7 @@
         29.91,
         28.78,
         28.51,
-        28.32
+        28.4
       ],
       "bb_high_spark": [
         29.7,
@@ -1111,7 +1195,7 @@
         31.99,
         32.1,
         32.22,
-        32.31
+        32.3
       ],
       "bb_low_spark": [
         26.57,
@@ -1148,7 +1232,7 @@
         29.17,
         28.87,
         28.56,
-        28.24
+        28.26
       ],
       "first_20d_pullback": {
         "active": false,
@@ -1159,13 +1243,13 @@
       },
       "strategy_trade_plans": {
         "rsi2_trend_reversion": {
-          "entry_low": 28.2,
-          "entry_high": 28.42,
-          "target": 29.67,
-          "stop": 27.06,
-          "target_pct": 4.8,
-          "stop_pct": 4.42,
-          "risk_reward": 1.09,
+          "entry_low": 28.27,
+          "entry_high": 28.53,
+          "target": 30.28,
+          "stop": 27.15,
+          "target_pct": 6.62,
+          "stop_pct": 4.4,
+          "risk_reward": 1.5,
           "days_min": 1,
           "days_max": 5,
           "target_days": {
@@ -1173,21 +1257,27 @@
             "days_high": 5,
             "method": "전략별 예상 보유기간"
           },
-          "basis": "단기 평균회귀 ATR",
-          "target_reason": "단기 평균회귀 ATR",
-          "stop_reason": "단기 평균회귀 ATR",
-          "strategy_id": "rsi2_trend_reversion"
+          "basis": "단기 평균회귀/추세 복귀",
+          "target_reason": "단기 평균회귀/추세 복귀",
+          "stop_reason": "단기 평균회귀/추세 복귀",
+          "strategy_id": "rsi2_trend_reversion",
+          "entry_reference": "현재 과매도 구간",
+          "entry_status": "진입 적정",
+          "signal_active": true,
+          "current_vs_entry_pct": 0.0,
+          "current_price": 28.4
         }
       },
-      "elite_pass": false,
+      "elite_pass": true,
+      "elite_score": 81.8,
       "trade_plan": {
-        "entry_low": 28.2,
-        "entry_high": 28.42,
-        "target": 29.67,
-        "stop": 27.06,
-        "target_pct": 4.8,
-        "stop_pct": 4.42,
-        "risk_reward": 1.09,
+        "entry_low": 28.27,
+        "entry_high": 28.53,
+        "target": 30.28,
+        "stop": 27.15,
+        "target_pct": 6.62,
+        "stop_pct": 4.4,
+        "risk_reward": 1.5,
         "days_min": 1,
         "days_max": 5,
         "target_days": {
@@ -1195,17 +1285,22 @@
           "days_high": 5,
           "method": "전략별 예상 보유기간"
         },
-        "basis": "단기 평균회귀 ATR",
-        "target_reason": "단기 평균회귀 ATR",
-        "stop_reason": "단기 평균회귀 ATR",
-        "strategy_id": "rsi2_trend_reversion"
+        "basis": "단기 평균회귀/추세 복귀",
+        "target_reason": "단기 평균회귀/추세 복귀",
+        "stop_reason": "단기 평균회귀/추세 복귀",
+        "strategy_id": "rsi2_trend_reversion",
+        "entry_reference": "현재 과매도 구간",
+        "entry_status": "진입 적정",
+        "signal_active": true,
+        "current_vs_entry_pct": 0.0,
+        "current_price": 28.4
       }
     }
   ],
   "public_s_count": 5,
-  "aggregate_eligible_count": 0,
+  "aggregate_eligible_count": 5,
   "experimental_s_count": 0,
-  "display_filter": "strategy tabs show raw public S; aggregate applies conservative ranking and max 5",
+  "display_filter": "strategy tabs show raw public S; aggregate ranks current signal + flow + risk/reward; no count cap",
   "s_threshold": 85.0,
-  "elite_policy": "aggregate only: reject clearly poor backtest/risk, then rank; first-20DMA pullback is a bonus overlay"
+  "elite_policy": "backtest is informational only; aggregate uses current setup, flow/liquidity, risk-reward, market regime and first-20DMA overlay"
 }
