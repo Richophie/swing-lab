@@ -1,0 +1,69 @@
+from __future__ import annotations
+
+import re
+from flask import Response
+
+from app_v14 import app, index_v14
+
+
+def index_v15():
+    base=index_v14()
+    html=base.get_data(as_text=True) if hasattr(base,'get_data') else str(base)
+    html=re.sub(r'<title>.*?</title>','<title>오늘의 스윙자리 · v15.0</title>',html,count=1,flags=re.S)
+    html=re.sub(r'PRO LIVE v\d+(?:\.\d+)?','PRO LIVE v15.0',html)
+
+    css=r'''<style>
+    :root{--v15-bg:#f4f6f8;--v15-card:#fff;--v15-text:#17191c;--v15-sub:#7b828b;--v15-line:#e9edf1;--v15-soft:#f8fafb;--v15-green:#17845d;--v15-red:#c44f4f;--v15-blue:#4b75c7;--v15-purple:#7867a7}
+    body{background:var(--v15-bg)!important;color:var(--v15-text)!important}
+    .wrap{max-width:1180px!important}
+    .card{border:0!important;border-radius:26px!important;box-shadow:0 1px 2px rgba(20,27,35,.04),0 8px 26px rgba(20,27,35,.035)!important;background:#fff!important;padding:24px!important}
+    #todayStrategyTabs{display:block!important;margin:18px 0 18px!important;min-height:46px!important}
+    .strategy-tabs{display:inline-flex!important;gap:4px!important;flex-wrap:wrap!important;padding:4px!important;background:#eef1f4!important;border-radius:16px!important;margin:0!important}
+    .strategy-tab{appearance:none!important;border:0!important;background:transparent!important;color:#747b84!important;border-radius:12px!important;padding:10px 15px!important;font-size:13px!important;font-weight:700!important;letter-spacing:-.02em!important;cursor:pointer!important;transition:.16s ease!important}
+    .strategy-tab:hover{color:#202327!important}.strategy-tab.on{background:#fff!important;color:#111!important;box-shadow:0 1px 4px rgba(20,27,35,.09)!important}
+    .strategy-count{display:inline-flex!important;align-items:center!important;justify-content:center!important;min-width:19px!important;height:19px!important;padding:0 5px!important;margin-left:6px!important;border-radius:10px!important;background:#e9edf1!important;font-size:10px!important;color:#666!important}
+    .strategy-tab.on .strategy-count{background:#111!important;color:#fff!important}
+    .exp-note{border:0!important;background:transparent!important;padding:8px 4px 0!important;margin:0!important;color:#9aa0a7!important;font-size:11px!important}
+    #grid.grid,.day-grid,.history-day .grid{grid-template-columns:repeat(auto-fill,minmax(310px,1fr))!important;gap:16px!important}
+    .pick{border:1px solid var(--v15-line)!important;border-radius:22px!important;background:var(--v15-card)!important;padding:19px!important;box-shadow:none!important;transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease!important;overflow:hidden!important}
+    .pick:hover{transform:translateY(-2px)!important;border-color:#dfe4e9!important;box-shadow:0 10px 28px rgba(27,35,45,.07)!important}
+    .picktop{align-items:flex-start!important;margin-bottom:12px!important}.ticker{font-size:27px!important;letter-spacing:-.04em!important;font-weight:850!important}.picktop .mut{font-size:11px!important;color:#9ca2a9!important;margin-bottom:2px!important}
+    .grade{width:auto!important;min-width:34px!important;height:30px!important;padding:0 10px!important;border-radius:10px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;font-size:12px!important;font-weight:800!important}.grade.good{background:#edf8f3!important;color:#147a55!important}
+    .chartmini{height:128px!important;border-radius:16px!important;overflow:hidden!important;background:#fafbfb!important;border:1px solid #f0f2f4!important;margin:4px 0 15px!important}
+    .levels{display:grid!important;grid-template-columns:repeat(2,1fr)!important;gap:8px!important;margin:0 0 12px!important}.levels>div{background:var(--v15-soft)!important;border-radius:13px!important;padding:10px 11px!important;font-size:10px!important;color:#9299a1!important}.levels b{display:block!important;margin-top:3px!important;font-size:14px!important;color:#222!important;letter-spacing:-.02em!important}.levels>div:nth-child(3) b{color:var(--v15-green)!important}.levels>div:nth-child(4) b{color:var(--v15-red)!important}
+    .metrics{display:flex!important;gap:5px!important;flex-wrap:wrap!important;margin-top:3px!important}.metrics span{background:#fff!important;border:1px solid #edf0f2!important;border-radius:999px!important;padding:5px 8px!important;font-size:10px!important;color:#737a82!important}
+    .pick>.result{border:0!important;background:#f7f8f9!important;border-radius:14px!important;padding:11px 12px!important;margin-top:12px!important;line-height:1.55!important}.pick>.result b{font-size:12px!important}.pick>.result .mut{font-size:11px!important;color:#7f868e!important}
+    .history-day{margin-top:30px!important}.history-day>.head{border-top:1px solid #edf0f2!important;padding-top:26px!important}.day-strategy-wrap{margin:12px 0 16px!important}.history-day .strategy-tabs{display:inline-flex!important}
+    .head h2{letter-spacing:-.04em!important}.status{border-radius:14px!important}
+    .bigchart{border:1px solid #edf0f2!important;border-radius:18px!important;overflow:hidden!important;background:#fbfcfc!important;padding:8px!important}
+    .legend-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;font-size:11px;color:#737a82}.legend-row span{display:inline-flex;align-items:center;gap:5px}.legend-dot{width:16px;height:3px;border-radius:3px;display:inline-block}.legend-box{width:16px;height:8px;border-radius:3px;display:inline-block}
+    @media(max-width:720px){.card{padding:18px!important;border-radius:20px!important}.strategy-tabs{display:flex!important;overflow-x:auto!important;flex-wrap:nowrap!important;width:100%!important}.strategy-tab{white-space:nowrap!important;padding:9px 12px!important}.pick{padding:16px!important}.ticker{font-size:24px!important}#grid.grid,.day-grid,.history-day .grid{grid-template-columns:1fr!important}}
+    </style>'''
+    html=html.replace('</head>',css+'</head>')
+
+    js=r'''<script>
+    const V15_TABS=[['all','종합'],['confirmed_pullback','확인형 눌림반등'],['rsi2_trend_reversion','RSI2'],['momentum_pullback','모멘텀']];
+    function ensureTodayTabs(){
+      let grid=document.getElementById('grid'); if(!grid)return null;
+      let h=document.getElementById('todayStrategyTabs');
+      if(!h){h=document.createElement('div');h.id='todayStrategyTabs';grid.parentNode.insertBefore(h,grid)}
+      if(h.nextElementSibling!==grid)grid.parentNode.insertBefore(h,grid);
+      h.style.display='block'; return h;
+    }
+    function v15Tabs(rows){let active=(window.TODAY_STRATEGY||TODAY_STRATEGY||'all');return `<div class="strategy-tabs">${V15_TABS.map(([id,n])=>{let c=typeof filteredToday==='function'?filteredToday(rows,id).length:0;return `<button type="button" class="strategy-tab ${active===id?'on':''}" data-v15-strategy="${id}">${n}<span class="strategy-count">${c}</span></button>`}).join('')}</div><div class="exp-note">S급만 표시 · 돌파 전략은 기록에서만 검증 중</div>`}
+    function bindV15Tabs(){document.querySelectorAll('[data-v15-strategy]').forEach(b=>b.onclick=e=>{e.preventDefault();e.stopPropagation();TODAY_STRATEGY=b.dataset.v15Strategy;if(window.CUR)window.render(window.CUR)})}
+    const _v14Render=window.render;
+    window.render=function(d){window.CUR=d;let rs=d&&d.results||[];let holder=ensureTodayTabs();if(holder)holder.innerHTML=v15Tabs(rs);let show=typeof filteredToday==='function'?filteredToday(rs,TODAY_STRATEGY||'all'):rs;let grid=document.getElementById('grid');if(grid)grid.innerHTML=show.length?show.map(todayCard).join(''):`<div class="strategy-empty" style="grid-column:1/-1">오늘 이 전략의 S급 신호는 없어요.</div>`;let st=document.getElementById('status');if(st){st.className='status ok';st.textContent=`✓ S급 ${show.length}개 · Core 4.0 · UI v15.0 · 전체 스캔 ${fmt(d.scanned_at)}`}bindV15Tabs()}
+    function colorLegend(){let big=document.getElementById('bigChart');if(!big)return;let parent=big.parentElement;if(!parent||parent.querySelector('.legend-row'))return;let l=document.createElement('div');l.className='legend-row';l.innerHTML=`<span><i class="legend-dot" style="background:#111"></i>종가</span><span><i class="legend-dot" style="background:#4b75c7"></i>120일선</span><span><i class="legend-dot" style="background:#d3d7d2"></i>볼린저</span><span><i class="legend-box" style="background:#e8f6ed"></i>BUY</span><span><i class="legend-dot" style="background:#17845d"></i>TARGET</span><span><i class="legend-dot" style="background:#c44f4f"></i>STOP</span><span><i class="legend-dot" style="background:#7867a7"></i>RSI</span>`;parent.appendChild(l)}
+    const obs=new MutationObserver(()=>{ensureTodayTabs();colorLegend()});
+    document.addEventListener('DOMContentLoaded',()=>{ensureTodayTabs();colorLegend();obs.observe(document.body,{childList:true,subtree:true});setTimeout(()=>{if(window.CUR)window.render(window.CUR)},120)});
+    setTimeout(()=>{ensureTodayTabs();colorLegend();if(window.CUR)window.render(window.CUR)},300);
+    </script>'''
+    html=html.replace('</body>',js+'</body>')
+    return Response(html,mimetype='text/html')
+
+app.view_functions['index']=index_v15
+
+@app.route('/api/version-v15')
+def version_v15():
+    return {'version':'15.0','core':'4.0','ui':['persistent today strategy tabs','premium card hierarchy','responsive segmented controls','unified chart legend']}
