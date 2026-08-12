@@ -1,20 +1,21 @@
-name: Core4 Walk Forward Validation
+name: Walk Forward Validation
 
 on:
   workflow_dispatch:
   push:
     branches: [main]
     paths:
-      - 'core_v4.py'
-      - 'app_v12.py'
-      - 'walkforward_v1.py'
+      - 'strategy_engine.py'
+      - 'market_data.py'
+      - 'backtest_engine.py'
+      - 'walkforward.py'
       - '.github/workflows/walkforward.yml'
 
 permissions:
   contents: write
 
 concurrency:
-  group: core4-walkforward
+  group: walkforward
   cancel-in-progress: true
 
 jobs:
@@ -28,8 +29,10 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
       - run: pip install -r requirements.txt
+      - name: Compile validator
+        run: python -m py_compile market_data.py strategy_engine.py backtest_engine.py walkforward.py
       - name: Run chronological OOS validation
-        run: python walkforward_v1.py
+        run: python walkforward.py
       - name: Commit validation report
         run: |
           git config user.name "swing-lab-bot"
@@ -38,7 +41,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "No report changes"
           else
-            git commit -m "data: refresh core4 walk-forward validation"
+            git commit -m "data: refresh walk-forward validation"
             git pull --rebase origin main
             git push
           fi
