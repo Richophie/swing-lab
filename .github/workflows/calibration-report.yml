@@ -1,0 +1,43 @@
+name: Calibration Suggestion Report
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '30 13 * * 0'
+  push:
+    branches: [main]
+    paths:
+      - 'calibration_report.py'
+      - 'static/trade_history.json'
+      - 'static/walkforward_report.json'
+      - '.github/workflows/calibration-report.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: calibration-report
+  cancel-in-progress: true
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Build guarded calibration suggestions
+        run: python calibration_report.py
+      - name: Commit report
+        run: |
+          git config user.name "swing-lab-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add static/calibration_report.json
+          if git diff --cached --quiet; then
+            echo "No report changes"
+          else
+            git commit -m "data: refresh calibration suggestion report"
+            git pull --rebase origin main
+            git push
+          fi
