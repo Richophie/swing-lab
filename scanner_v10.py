@@ -5,7 +5,7 @@ import yfinance as yf
 
 from scanner_v6 import load_universe, prefilter
 from app_v6 import trade_plan, historical_stats, market_live, history
-from core_v3 import playbooks
+from core_v3 import playbooks, _series
 
 OUT = Path(__file__).parent / 'static' / 'latest_scan.json'
 
@@ -38,6 +38,7 @@ def batch_score(symbols, market):
                 ens = playbooks(d, state)
                 best = ens['best_strategy']
                 grade = grade_for(ens)
+                z = _series(d)
                 results.append({
                     'symbol': symbol,
                     'score': ens['ensemble_score'],
@@ -49,9 +50,9 @@ def batch_score(symbols, market):
                     'strategy_agreement': ens['agreement'],
                     'confidence': ens['confidence'],
                     'ensemble': ens,
-                    'rsi': round(float(playbooks.__globals__['_series'](d)['rsi']), 1),
-                    'd120': round((float(d['Close'].iloc[-1]) / float(playbooks.__globals__['_series'](d)['s120']) - 1) * 100, 2),
-                    'bb_pos': round(float(playbooks.__globals__['_series'](d)['bb']) * 100, 1),
+                    'rsi': round(float(z['rsi']), 1),
+                    'd120': round((float(d['Close'].iloc[-1]) / float(z['s120']) - 1) * 100, 2),
+                    'bb_pos': round(float(z['bb']) * 100, 1),
                     'sparkline': [round(float(x), 2) for x in d['Close'].tail(35).tolist()],
                 })
             except Exception:
@@ -66,7 +67,6 @@ def main():
     market = market_live()
     base, failed = batch_score(candidates, market)
 
-    # Only A/S recommendations are promoted to the public dashboard.
     promoted = [r for r in base if r.get('grade') in {'S', 'A'} and r.get('eligible')]
     final = []
     for r in promoted[:30]:
