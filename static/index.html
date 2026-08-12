@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>오늘의 스윙자리 LIVE FAST</title>
+<style>
+:root{--bg:#f7f7f4;--card:#fff;--ink:#171817;--mut:#747a74;--line:#e1e4de;--green:#177c55;--greenbg:#eaf7f0;--yellow:#946700;--yellowbg:#fff6d8;--red:#b24b46;--redbg:#fff0ee;--black:#171817;--accent:#dcff58}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Arial,"Noto Sans KR",sans-serif;letter-spacing:-.02em}
+.wrap{max-width:1180px;margin:auto;padding:18px 14px 70px}header{display:flex;justify-content:space-between;align-items:center;padding:8px 0 18px;border-bottom:1px solid var(--line)}
+.logo{font-size:22px;font-weight:900}.logo span{display:inline-block;width:9px;height:9px;background:var(--accent);border-radius:50%;border:1px solid #222;margin-left:5px}.small{font-size:11px;color:var(--mut)}
+.hero{padding:30px 0 14px}h1{font-size:clamp(38px,6vw,66px);line-height:1.02;margin:0;letter-spacing:-.055em}.hero p{max-width:700px;color:var(--mut);font-size:14px;line-height:1.7}
+.tabs{display:flex;gap:8px;margin:20px 0;flex-wrap:wrap}.tab{border:1px solid var(--line);background:#fff;border-radius:999px;padding:10px 14px;font-weight:800;font-size:12px;cursor:pointer}.tab.on{background:var(--black);color:#fff;border-color:var(--black)}
+.section{display:none}.section.on{display:block}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:12px}
+.sectionTitle{display:flex;justify-content:space-between;align-items:flex-end;gap:12px}.sectionTitle h2{margin:0;font-size:24px}.help{font-size:11px;color:var(--mut)}
+.cta{height:44px;background:var(--black);color:#fff;border:0;border-radius:12px;padding:0 17px;font-weight:900;cursor:pointer}.cta.light{background:#f0f2ed;color:#111;border:1px solid var(--line)}
+.todayGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}.pick{border:1px solid var(--line);border-radius:16px;padding:16px;background:#fff;cursor:pointer}.pickTop{display:flex;justify-content:space-between;align-items:center}
+.ticker{font-size:22px;font-weight:900}.grade{font-size:20px;font-weight:950}.good{color:var(--green)}.watch{color:var(--yellow)}.bad{color:var(--red)}
+.badge{display:inline-block;border-radius:999px;padding:5px 8px;font-size:10px;font-weight:900}.bgGood{background:var(--greenbg);color:var(--green)}.bgWatch{background:var(--yellowbg);color:var(--yellow)}.bgBad{background:var(--redbg);color:var(--red)}
+.reason{font-size:12px;line-height:1.55;margin-top:10px}.rankline{display:flex;gap:6px;align-items:center;margin-top:11px;font-size:10px;color:var(--mut)}.bar{height:7px;background:#edf0eb;border-radius:99px;overflow:hidden;flex:1}.bar i{display:block;height:100%;background:#111}
+.status{font-size:11px;color:var(--mut);margin-top:10px;line-height:1.5}.failbox{margin-top:12px;padding:12px;border-radius:12px;background:var(--redbg);font-size:11px;line-height:1.55;display:none}
+.searchRow{display:grid;grid-template-columns:1fr auto;gap:8px}input,textarea,select{border:1px solid var(--line);background:#fff;border-radius:12px;padding:13px;font:inherit}
+.summary{display:grid;grid-template-columns:1fr .9fr;gap:12px;margin-top:12px}.bigDecision{padding:22px;border-radius:18px;background:#fff;border:1px solid var(--line)}.bigDecision h3{font-size:32px;margin:6px 0}.bigDecision p{font-size:13px;color:var(--mut);line-height:1.6}
+.scoreBox{display:flex;align-items:center;justify-content:center;flex-direction:column;border:1px solid var(--line);border-radius:18px;background:#fff}.scoreNum{font-size:58px;font-weight:950}.scoreLabel{font-size:11px;color:var(--mut)}
+.easyMetrics{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}.m,.box{background:#f6f7f4;border-radius:14px;padding:13px}.m .k,.box .k{font-size:10px;color:var(--mut)}.m .v,.box .v{font-size:17px;font-weight:900;margin-top:5px}.m .e{font-size:10px;color:var(--mut);line-height:1.45;margin-top:4px}
+.explain{margin-top:12px;display:grid;gap:8px}.explain div{padding:12px;border-radius:12px;background:#f8f8f6;font-size:12px;line-height:1.55}
+.plan{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}.calcgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}.calcbox{border:1px solid var(--line);border-radius:14px;padding:14px}.calcbox h3{margin:0 0 10px;font-size:16px}
+.calcrow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.resultline{margin-top:10px;padding:12px;border-radius:12px;background:#f6f7f4;font-size:12px;line-height:1.6}
+table{width:100%;border-collapse:collapse;font-size:11px;margin-top:12px}th,td{padding:10px 6px;border-bottom:1px solid var(--line);text-align:right}th:first-child,td:first-child{text-align:left}th{color:var(--mut)}
+.settings{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:12px}textarea{width:100%;min-height:110px}.notice{background:#fffbe8;border:1px solid #eadf9c;border-radius:12px;padding:12px;font-size:11px;line-height:1.55;margin-top:12px}
+@media(max-width:860px){.todayGrid{grid-template-columns:1fr 1fr}.summary,.calcgrid{grid-template-columns:1fr}.easyMetrics,.plan{grid-template-columns:1fr 1fr}}@media(max-width:560px){.todayGrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body><div class="wrap">
+<header><div class="logo">오늘의 스윙자리<span></span></div><div class="small">PRO LIVE v4 · 개인용</div></header>
+
+<section class="hero">
+<h1>오늘 좋은 자리만<br>빠르고 쉽게.</h1>
+<p>미국 주요 종목을 한 번에 묶어서 불러와 빠르게 정렬하고, 원하는 종목은 상세 진입가·목표가·손절가와 필요한 투자금까지 계산합니다.</p>
+</section>
+
+<div class="tabs">
+<button class="tab on" data-tab="today">오늘 추천</button>
+<button class="tab" data-tab="one">원하는 종목 확인</button>
+<button class="tab" data-tab="settings">추천 범위 설정</button>
+</div>
+
+<div class="card" style="margin-top:0">
+  <div class="sectionTitle"><div><div class="small">시장 분위기</div><h2 id="marketTitle">SPY · QQQ 확인 중</h2></div><div id="marketBadge" class="badge bgWatch">확인 중</div></div>
+  <div id="marketExplain" class="status">시장 흐름이 약하면 같은 종목 점수도 조금 보수적으로 봅니다.</div>
+</div>
+
+<section id="today" class="section on">
+<div class="card">
+<div class="sectionTitle"><div><div class="small">자동 추천</div><h2>오늘 눈여겨볼 자리</h2></div><button id="scanBtn" class="cta">지금 새로고침</button></div>
+<div id="scanStatus" class="status">페이지를 열면 자동으로 오늘 추천을 불러옵니다.</div>
+<div id="todayGrid" class="todayGrid"></div>
+<div id="failBox" class="failbox"></div>
+</div>
+<div class="card">
+<div class="sectionTitle"><h2>전체 검사 결과</h2><div class="help">점수 높은 순</div></div>
+<div style="overflow:auto"><table><thead><tr><th>종목</th><th>판단</th><th>점수</th><th>RSI</th><th>120일선</th><th>볼린저</th><th>쉬운 해석</th><th>ATR</th></tr></thead><tbody id="allBody"></tbody></table></div>
+</div>
+</section>
+
+<section id="one" class="section">
+<div class="card"><div class="searchRow"><input id="tickerInput" value="RBLX" placeholder="티커 입력 예: RBLX"><button id="analyzeBtn" class="cta">확인하기</button></div><div id="oneStatus" class="status"></div></div>
+<div id="oneResult" style="display:none">
+<div class="summary">
+<div class="bigDecision"><div class="small">오늘의 결론</div><h3 id="decision">—</h3><p id="decisionText">—</p></div>
+<div class="scoreBox"><div id="scoreNum" class="scoreNum">—</div><div class="scoreLabel">자리 점수 / 100</div></div>
+</div>
+<div class="card">
+<div class="sectionTitle"><h2>쉽게 보면</h2><div class="help">핵심 지표</div></div>
+<div class="easyMetrics">
+<div class="m"><div class="k">RSI</div><div id="rsi" class="v">—</div><div id="rsiEasy" class="e">—</div></div>
+<div class="m"><div class="k">120일선 거리</div><div id="d120" class="v">—</div><div id="d120Easy" class="e">—</div></div>
+<div class="m"><div class="k">볼린저 위치</div><div id="bb" class="v">—</div><div id="bbEasy" class="e">—</div></div>
+<div class="m"><div class="k">과거 같은 자리</div><div id="histWin" class="v">—</div><div id="histN" class="e">—</div></div>
+</div>
+<div id="why" class="explain"></div>
+</div>
+
+<div class="card">
+<div class="sectionTitle"><h2>이 자리, 과거에는 어땠나?</h2><div class="help">10년 데이터 검증</div></div>
+<div class="easyMetrics">
+<div class="m"><div class="k">같은 자리 발생</div><div id="histTrades" class="v">—</div><div class="e">표본이 많을수록 낫습니다</div></div>
+<div class="m"><div class="k">5일 뒤 상승률</div><div id="histWin2" class="v">—</div><div class="e">단순 동일조건 통계</div></div>
+<div class="m"><div class="k">Backtesting.py 승률</div><div id="btWin" class="v">—</div><div id="btPF" class="e">—</div></div>
+<div class="m"><div class="k">실적발표</div><div id="earnState" class="v">—</div><div id="earnDate" class="e">—</div></div>
+</div>
+</div>
+
+<div class="card">
+<div class="sectionTitle"><h2>진입·목표·손절</h2><div class="help">현재가 기준 자동 계산</div></div>
+<div class="plan">
+<div class="box"><div class="k">관찰 진입구간</div><div id="entry" class="v">—</div></div>
+<div class="box"><div class="k">손절 참고</div><div id="stop" class="v">—</div></div>
+<div class="box"><div class="k">+1% 목표</div><div id="t1" class="v">—</div></div>
+<div class="box"><div class="k">+3% 목표</div><div id="t3" class="v">—</div></div>
+</div>
+</div>
+
+<div class="card">
+<div class="sectionTitle"><h2>내 돈으로 계산하기</h2><div class="help">원하는 방식으로 역산</div></div>
+<div class="calcgrid">
+<div class="calcbox"><h3>① 투자금이 정해져 있을 때</h3>
+<div class="calcrow"><input id="capital" type="number" value="3000000" step="100000"><select id="targetPct"><option value="1">목표 +1%</option><option value="2">목표 +2%</option><option value="3" selected>목표 +3%</option><option value="5">목표 +5%</option></select></div>
+<div class="calcrow"><input id="fxRate" type="number" value="1400" step="1" title="달러/원 환율"><div class="resultline" style="margin:0">USD/KRW 환율 · 자동 조회 후 수정 가능</div></div>
+<div id="capitalResult" class="resultline"></div></div>
+<div class="calcbox"><h3>② 원하는 수익금이 정해져 있을 때</h3>
+<div class="calcrow"><input id="wantProfit" type="number" value="50000" step="10000"><select id="wantPct"><option value="1">예상 수익률 1%</option><option value="2">예상 수익률 2%</option><option value="3" selected>예상 수익률 3%</option><option value="5">예상 수익률 5%</option></select></div>
+<div id="profitResult" class="resultline"></div></div>
+</div>
+</div>
+</div>
+</section>
+
+<section id="settings" class="section">
+<div class="card"><div class="sectionTitle"><h2>오늘 추천에서 검사할 종목</h2><div class="help">최대 120개</div></div>
+<textarea id="watchlist"></textarea><div class="settings"><div class="status">기본은 미국 주요 대형주·성장주·거래활발 종목입니다.</div><button id="saveWatch" class="cta">목록 저장</button></div></div>
+<div class="notice"><b>속도 개선:</b> 이 버전은 브라우저가 종목별로 Yahoo를 호출하지 않습니다. 로컬 엔진이 yfinance로 여러 종목을 한 번에 병렬 다운로드한 뒤 브라우저에 결과만 넘깁니다.</div>
+</section>
+</div>
+
+<script>
+const $=x=>document.getElementById(x);
+const DEFAULT=`AAPL MSFT NVDA AMZN META GOOGL GOOG AVGO TSLA LLY JPM V WMT ORCL MA NFLX COST HD PG JNJ BAC ABBV CRM KO AMD PLTR CSCO CVX IBM GE CAT MRK MCD PEP WFC DIS ABT QCOM TMO INTU AMGN NOW TXN ACN DHR AMAT ISRG BKNG PM HON GS SPGI ADP UBER MU PANW ADI LOW TJX ANET LRCX KLAC SBUX GILD MDLZ MMC PLD DE C APP ADBE SHOP PYPL ARM SMCI COIN RBLX NKE SOFI PINS TSM ASML NVO XOM COP SLB BA RTX LMT NOC F GM`;
+$('watchlist').value=localStorage.getItem('fast_watch')||DEFAULT;
+let CURRENT=null;
+
+const label=r=>r.grade==='S'?'좋은 자리':r.grade==='A'?'꽤 괜찮음':r.grade==='B'?'조금 더 기다림':'지금은 패스';
+const cls=r=>r.grade==='S'||r.grade==='A'?'good':r.grade==='B'?'watch':'bad';
+function reason(r){
+ if(Math.abs(r.d120)<=2.5 && r.rsi>=30&&r.rsi<=42)return '120일선 근처 + RSI 눌림이 같이 보여요.';
+ if(Math.abs(r.d120)<=2.5)return '120일선 근처라 지지 여부를 볼 만해요.';
+ if(r.rsi>60)return '이미 많이 오른 자리일 수 있어요.';
+ return '핵심 조건이 아직 충분히 겹치지 않았어요.';
+}
+function renderScan(d){
+ let rs=d.results||[], failed=d.failed||[];
+ $('todayGrid').innerHTML=rs.slice(0,8).map((r,i)=>`<div class="pick" onclick="openTicker('${r.symbol}')"><div class="pickTop"><div><div class="small">#${i+1}</div><div class="ticker">${r.symbol}</div></div><div class="grade ${cls(r)}">${r.grade}</div></div><div style="margin-top:8px"><span class="badge ${r.grade==='S'||r.grade==='A'?'bgGood':r.grade==='B'?'bgWatch':'bgBad'}">${label(r)}</span></div><div class="reason">${reason(r)}</div><div class="rankline"><span>${Math.round(r.score)}점</span><div class="bar"><i style="width:${r.score}%"></i></div></div></div>`).join('');
+ $('allBody').innerHTML=rs.map(r=>`<tr><td><b>${r.symbol}</b></td><td class="${cls(r)}"><b>${label(r)}</b></td><td>${Math.round(r.score)}</td><td>${r.rsi}</td><td>${r.d120}%</td><td>${r.bb_pos}%</td><td>${r.bb_label||'—'}</td><td>${r.atr_pct}%</td></tr>`).join('');
+ let m=d.market||{};$('marketTitle').textContent=m.state==='좋음'?'시장 흐름이 비교적 좋아요':m.state==='중립'?'시장 흐름은 보통이에요':m.state==='조심'?'시장부터 조금 조심':'시장 확인 실패';
+ $('marketBadge').textContent=m.state||'확인 실패';$('marketBadge').className='badge '+(m.state==='좋음'?'bgGood':m.state==='중립'?'bgWatch':'bgBad');
+ $('marketExplain').textContent=m.state==='조심'?'SPY/QQQ 흐름이 약해서 종목 점수를 5점 보수적으로 계산했습니다.':'SPY/QQQ의 120·200일선과 RSI를 함께 보고 있습니다.';
+ if(failed.length){$('failBox').style.display='block';$('failBox').innerHTML='<b>불러오지 못한 종목</b><br>'+failed.map(x=>`${x.symbol} — ${x.reason}`).join('<br>')}else $('failBox').style.display='none';
+ $('scanStatus').textContent=`완료 · ${rs.length}개 성공 · S/A 후보 ${rs.filter(x=>['S','A'].includes(x.grade)).length}개${failed.length?` · 실패 ${failed.length}개`:''}`;
+}
+async function scan(){
+ let sy=[...new Set($('watchlist').value.toUpperCase().split(/[\s,;]+/).filter(Boolean))].slice(0,120);
+ $('scanStatus').textContent=`${sy.length}종목을 한 번에 불러오는 중…`;$('scanBtn').disabled=true;
+ try{let d=await(await fetch('/api/scan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({symbols:sy})})).json();renderScan(d)}catch(e){$('scanStatus').textContent='스캔 오류 · '+e.message}
+ finally{$('scanBtn').disabled=false}
+}
+async function analyze(){
+ let s=$('tickerInput').value.trim().toUpperCase();if(!s)return;$('oneStatus').textContent=s+' 10년 데이터 분석 중…';$('oneResult').style.display='none';
+ try{
+  let [a,b]=await Promise.all([fetch('/api/analyze/'+s),fetch('/api/detail/'+s)]),d=await a.json(),detail=await b.json();if(d.error)throw Error(d.error);
+  let r=d.signal;CURRENT={...r,symbol:s,bt:d.backtest,fx:detail.usdkrw||+$('fxRate').value||1400};if(detail.usdkrw)$('fxRate').value=Math.round(detail.usdkrw);$('oneResult').style.display='block';
+  $('decision').textContent=label(r);$('decision').className=cls(r);$('scoreNum').textContent=Math.round(r.score);$('scoreNum').className='scoreNum '+cls(r);
+  $('decisionText').textContent=r.grade==='S'?'오늘 우선 확인할 만한 자리예요. 그래도 실제 주문 전 지지 여부를 확인하세요.':r.grade==='A'?'꽤 괜찮지만 한두 조건은 더 확인하는 편이 좋아요.':r.grade==='B'?'아직 서두를 이유는 적어요. 조금 더 기다려보세요.':'현재는 우선순위를 낮추는 편이 좋아요.';
+  $('rsi').textContent=r.rsi;$('rsiEasy').textContent=r.rsi>=30&&r.rsi<=42?'적당히 눌린 편':r.rsi>60?'조금 과열':'애매한 구간';
+  $('d120').textContent=r.d120+'%';$('d120Easy').textContent=Math.abs(r.d120)<=2.5?'120일선 바로 근처':r.d120>0?'120일선보다 위':'120일선 아래';
+  $('bb').textContent=r.bb_pos+'%';$('bbEasy').textContent=r.bb_pos<=30?'밴드 아래쪽':r.bb_pos>75?'밴드 위쪽':'중간';
+  let bt=d.backtest||{};$('histWin').textContent=bt.win_rate!=null?bt.win_rate+'%':'—';$('histN').textContent=`표본 ${bt.trades||0}회 · 기대값 ${bt.expectancy??'—'}%`;
+  let hs=detail.history_stats||{};$('histTrades').textContent=(hs.trades||0)+'회';$('histWin2').textContent=hs.win_rate!=null?hs.win_rate+'%':'—';
+  let bp=detail.backtesting_py;$('btWin').textContent=bp&&bp.win_rate!=null?bp.win_rate+'%':'—';$('btPF').textContent=bp?`PF ${bp.profit_factor??'—'} · MDD ${bp.max_dd??'—'}%`:'Backtesting.py 결과 없음';
+  let er=detail.earnings||{};$('earnState').textContent=er.status||'확인 불가';$('earnState').className='v '+(er.status==='주의'?'bad':er.status==='여유'?'good':'watch');$('earnDate').textContent=er.date?(er.date+(er.days!=null?` · ${er.days}일`:'')):'일정 데이터 없음';
+  $('why').innerHTML=[reason(r),`ATR은 현재가의 ${r.atr_pct}% 수준이에요.`,`120일선과의 거리는 ${r.d120}%예요.`].map(x=>`<div>• ${x}</div>`).join('');
+  let p=r.close, stop=p*(1-Math.max(.012,Math.min(.06,r.atr_pct/100*1.35)));
+  $('entry').textContent='$'+(p*.992).toFixed(2)+' ~ $'+(p*1.004).toFixed(2);$('stop').textContent='$'+stop.toFixed(2);$('t1').textContent='$'+(p*1.01).toFixed(2);$('t3').textContent='$'+(p*1.03).toFixed(2);
+  calcMoney();$('oneStatus').textContent=s+' 분석 완료 · 현재가 $'+p.toFixed(2);
+ }catch(e){$('oneStatus').textContent='분석 실패 · '+e.message}
+}
+function calcMoney(){
+ if(!CURRENT)return;
+ let p=CURRENT.close,fx=+$('fxRate').value||CURRENT.fx||1400,capital=+$('capital').value||0,tp=+$('targetPct').value||0,want=+$('wantProfit').value||0,wp=+$('wantPct').value||0;
+ let usdCapital=capital/fx,shares=Math.floor(usdCapital/p),usedUsd=shares*p,usedKrw=usedUsd*fx,profitKrw=usedKrw*(tp/100),target=p*(1+tp/100);
+ $('capitalResult').innerHTML=`환율 <b>${Math.round(fx).toLocaleString()}원/$</b> 기준 · 약 <b>${shares.toLocaleString()}주</b> 매수<br>실제 투입 약 <b>${Math.round(usedKrw).toLocaleString()}원</b> · 목표가 <b>$${target.toFixed(2)}</b> 도달 시 예상 수익 약 <b>${Math.round(profitKrw).toLocaleString()}원</b>`;
+ let needKrw=wp>0?want/(wp/100):0,needUsd=needKrw/fx,needShares=Math.ceil(needUsd/p),actualKrw=needShares*p*fx,actualProfit=actualKrw*(wp/100);
+ $('profitResult').innerHTML=`목표 수익 <b>${want.toLocaleString()}원</b>을 ${wp}% 수익률로 내려면 이론상 <b>${Math.round(needKrw).toLocaleString()}원</b> 필요.<br>현재가·환율 기준 약 <b>${needShares.toLocaleString()}주</b> · 실제 필요금 약 <b>${Math.round(actualKrw).toLocaleString()}원</b> · 목표가 <b>$${(p*(1+wp/100)).toFixed(2)}</b> · 예상 수익 약 <b>${Math.round(actualProfit).toLocaleString()}원</b>`;
+}
+function openTicker(s){$('tickerInput').value=s;document.querySelector('[data-tab="one"]').click();analyze()}
+$('scanBtn').onclick=scan;$('analyzeBtn').onclick=analyze;$('tickerInput').onkeydown=e=>{if(e.key==='Enter')analyze()};
+['capital','targetPct','wantProfit','wantPct','fxRate'].forEach(id=>$(id).oninput=calcMoney);
+$('saveWatch').onclick=()=>{localStorage.setItem('fast_watch',$('watchlist').value);$('saveWatch').textContent='저장됨';setTimeout(()=>$('saveWatch').textContent='목록 저장',900)};
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));document.querySelectorAll('.section').forEach(x=>x.classList.remove('on'));t.classList.add('on');$(t.dataset.tab).classList.add('on')});
+scan();
+</script>
+</body></html>
