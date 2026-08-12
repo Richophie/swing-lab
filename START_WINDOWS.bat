@@ -6,7 +6,7 @@ if errorlevel 1 (
   pause
   exit /b
 )
-python -c "import flask,yfinance,pandas,numpy,backtesting" >nul 2>nul
+python -c "import flask,yfinance,pandas,numpy,requests" >nul 2>nul
 if errorlevel 1 python -m pip install -r requirements.txt
 start "" /b cmd /c "timeout /t 2 /nobreak >nul & start http://127.0.0.1:8766"
 python app.py
