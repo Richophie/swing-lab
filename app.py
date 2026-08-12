@@ -7,7 +7,7 @@ import pandas as pd
 import yfinance as yf
 from flask import Flask, jsonify, request, send_from_directory
 
-from config import APP_VERSION, CORE_VERSION, PUBLIC_STRATEGIES, ELITE_MAX
+from config import APP_VERSION, CORE_VERSION, PUBLIC_STRATEGIES, ELITE_MAX, S_THRESHOLD
 from market_data import load_price_history, fresh_price_history, indicators, market_snapshot
 from strategy_engine import evaluate_strategies, trade_plan
 from backtest_engine import run_backtest
@@ -28,9 +28,13 @@ def normalize_plan(plan):
     return p
 
 def public_row(raw):
-    row=dict(raw);signals=[s for s in row.get('strategy_signals',[]) if s.get('strategy_id') in PUBLIC_STRATEGIES and bool(s.get('elite_pass'))]
+    row=dict(raw)
+    # Strategy tabs must retain their raw S signals. Aggregate filtering happens in the UI from elite_pass.
+    signals=[s for s in row.get('strategy_signals',[]) if s.get('strategy_id') in PUBLIC_STRATEGIES and float(s.get('strategy_score',0))>=S_THRESHOLD]
     if not signals:return None
-    signals.sort(key=lambda x:float(x.get('elite_score',x.get('strategy_score',0))),reverse=True);best=signals[0];plans=row.get('strategy_trade_plans') or {};row['strategy_signals']=signals;row['strategy_id']=best['strategy_id'];row['strategy_name']=best['strategy_name'];row['strategy_reason']=best.get('evidence') or best.get('why');row['selection_reason']=best.get('selection_reason');row['score']=float(best.get('elite_score',best.get('strategy_score',0)));row['trade_plan']=normalize_plan(plans.get(best['strategy_id']) or row.get('trade_plan'));row['name_ko']=row.get('name_ko') or korean_name(row.get('symbol'),row.get('security_name'));return row
+    signals.sort(key=lambda x:(bool(x.get('elite_pass')),float(x.get('elite_score',x.get('strategy_score',0)))),reverse=True)
+    best=signals[0];plans=row.get('strategy_trade_plans') or {}
+    row['strategy_signals']=signals;row['strategy_id']=best['strategy_id'];row['strategy_name']=best['strategy_name'];row['strategy_reason']=best.get('evidence') or best.get('why');row['selection_reason']=best.get('selection_reason');row['score']=float(best.get('elite_score',best.get('strategy_score',0)));row['trade_plan']=normalize_plan(plans.get(best['strategy_id']) or row.get('trade_plan'));row['aggregate_eligible']=any(bool(s.get('elite_pass')) for s in signals);row['name_ko']=row.get('name_ko') or korean_name(row.get('symbol'),row.get('security_name'));return row
 
 def quote_name(symbol):
     try:
@@ -59,7 +63,7 @@ def latest():
     for raw in data.get('results') or []:
         row=public_row(raw)
         if row:rows.append(row)
-    rows.sort(key=lambda x:x['score'],reverse=True);data['results']=rows;data['ui_version']=APP_VERSION;data['display_filter']='elite public signals only';data['elite_max']=ELITE_MAX;data['usdkrw']=usdkrw_rate();return jsonify(data)
+    rows.sort(key=lambda x:(bool(x.get('aggregate_eligible')),x['score']),reverse=True);data['results']=rows;data['ui_version']=APP_VERSION;data['display_filter']='strategy tabs: raw S / aggregate: conservative top 5';data['elite_max']=ELITE_MAX;data['usdkrw']=usdkrw_rate();return jsonify(data)
 @app.route('/api/history')
 def history():
     data=load_json(HISTORY_FILE,{'days':[],'summary':{}})
