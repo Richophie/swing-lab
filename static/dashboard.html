@@ -25,7 +25,7 @@
   <section id="search" style="display:none"><article class="panel"><div class="panel-head"><div><div class="eyebrow">직접 확인</div><h2>원하는 종목을 찾아보세요</h2></div></div><div class="actions"><input id="tickerInput" class="search-input" placeholder="예: AAPL" aria-label="미국주식 티커"><button class="btn primary" id="searchBtn">분석</button></div><div class="status" id="searchStatus">티커를 입력하면 공개 중인 세 전략을 비교해 현재 신호와 가장 가까운 전략을 보여줍니다.</div></article></section>
   <section id="state" style="display:none"><article class="panel"><div class="eyebrow">엔진 상태</div><h2>현재 구조</h2><div class="detail-copy" id="engineState">불러오는 중…</div></article></section>
   <section class="panel detail" id="detail">
-    <div class="detail-top"><div><div class="detail-name" id="detailName">—</div><div class="detail-ticker" id="detailTicker">—</div></div><div class="detail-score" id="detailScore">—</div></div><div class="detail-copy" id="detailReason">—</div>
+    <div class="detail-top"><div><div class="detail-name" id="detailName">—</div><div class="detail-ticker" id="detailTicker">—</div></div><div class="actions"><button class="btn" id="copySignal" type="button">AI 검증용 복사</button><div class="detail-score" id="detailScore">—</div></div></div><div class="detail-copy" id="detailReason">—</div>
     <div class="plan-grid"><div class="plan-box"><span>BUY 엔진 진입구간</span><b id="dBuy">—</b></div><div class="plan-box target"><span>TARGET 목표가 · 예상수익률</span><b id="dTarget">—</b></div><div class="plan-box stop"><span>STOP 손절가 · 예상손실률</span><b id="dStop">—</b></div></div>
     <div class="chart-wrap" id="bigChart">차트 불러오는 중…</div><div class="legend"><span><i class="dot" style="background:#111"></i>종가</span><span><i class="dot" style="background:#4b75c7"></i>120일선</span><span><i class="dot" style="background:#d3d7d2"></i>볼린저 상/하단</span><span><i class="boxdot" style="background:#e8f6ed"></i>BUY 구간</span><span><i class="dot" style="background:#17845d"></i>TARGET</span><span><i class="dot" style="background:#c45151"></i>STOP</span><span><i class="dot" style="background:#7867a7"></i>RSI 30/70</span></div><div class="detail-copy" id="metricsCopy">—</div>
     <div class="panel-head" style="margin-top:24px"><div><div class="eyebrow">백테스트 · 참고자료</div><h2>같은 전략을 과거에 적용하면</h2></div><button class="btn" id="btBtn">10년 검증</button></div><div id="btArea" class="status">버튼을 누르면 현재 선택 전략으로 검증합니다. 이 결과는 오늘 추천의 합격/탈락 조건으로 사용하지 않습니다.</div>
@@ -33,5 +33,6 @@
   </section>
 </main>
 <script src="/static/dashboard.js" defer></script>
+<script src="/static/signal_copy.js" defer></script>
 </body>
 </html>
