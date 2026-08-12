@@ -5,6 +5,7 @@ from backtesting import Backtest, Strategy
 
 from app_v7 import app
 from app_v6 import indicators, trade_plan
+from calibration import load_calibration, apply_calibration, calibrated_grade
 
 
 def load_df(symbol, period='10y'):
@@ -71,8 +72,19 @@ def backtest(symbol):
     except Exception as e:return {'error':str(e)},400
 
 
+@app.route('/api/calibration')
+def calibration_info():
+    return load_calibration()
+
+@app.route('/api/calibrate-score/<score>')
+def calibrate_score(score):
+    try:
+        c=apply_calibration(float(score)); c['grade']=calibrated_grade(c['calibrated_score']); return c
+    except Exception as e:return {'error':str(e)},400
+
+
 def index_v8(): return app.send_static_file('v8.html')
 app.view_functions['index']=index_v8
 
 @app.route('/api/version-v8')
-def version_v8(): return {'version':'8.0','features':['chart','rsi','bollinger','sma120','buy-target-stop','backtest']}
+def version_v8(): return {'version':'8.1','features':['chart','rsi','bollinger','sma120','buy-target-stop','backtest','statistical-score-calibration']}
