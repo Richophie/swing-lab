@@ -3,7 +3,9 @@ name: Market Scan Cache
 on:
   workflow_dispatch:
   schedule:
-    - cron: '20 12,15,18,21 * * 1-5'
+    # 30-minute cache refresh across the US regular-session window.
+    # The wider UTC window safely covers both EDT and EST.
+    - cron: '*/30 13-21 * * 1-5'
   push:
     branches: [main]
     paths:
@@ -13,6 +15,10 @@ on:
 
 permissions:
   contents: write
+
+concurrency:
+  group: market-scan-cache
+  cancel-in-progress: true
 
 jobs:
   scan:
@@ -35,5 +41,6 @@ jobs:
             echo "No scan changes"
           else
             git commit -m "data: refresh market scan cache"
+            git pull --rebase origin main
             git push
           fi
