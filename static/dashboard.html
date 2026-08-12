@@ -9,72 +9,27 @@
 <body>
 <main class="shell">
   <header class="top">
-    <div class="brand">
-      <small>SWING LAB</small>
-      <h1>오늘의 스윙자리</h1>
-      <p>전략 조건과 과거 성과를 함께 통과한 자리만 보수적으로 골라봅니다.</p>
-    </div>
+    <div class="brand"><small>SWING LAB</small><h1>오늘의 스윙자리</h1><p>현재 차트·수급·시장환경·손익비를 함께 보고 좋은 자리부터 정리합니다.</p></div>
     <div class="version" id="version">불러오는 중</div>
   </header>
-
-  <nav class="nav" aria-label="주요 메뉴">
-    <button class="on" data-page="today">오늘 추천</button>
-    <button data-page="search">원하는 종목 확인</button>
-    <button data-page="state">엔진 상태</button>
-  </nav>
-
+  <nav class="nav" aria-label="주요 메뉴"><button class="on" data-page="today">오늘 추천</button><button data-page="search">원하는 종목 확인</button><button data-page="state">엔진 상태</button></nav>
   <section id="today">
+    <article class="panel"><div class="panel-head"><div><div class="eyebrow">시장 분위기</div><h2 id="marketTitle">시장 확인 중</h2></div></div><div class="market"><div class="market-grade" id="marketGrade">—</div><div class="market-text" id="marketBrief">SPY와 QQQ를 확인하고 있어요.</div></div></article>
     <article class="panel">
-      <div class="panel-head"><div><div class="eyebrow">시장 분위기</div><h2 id="marketTitle">시장 확인 중</h2></div></div>
-      <div class="market"><div class="market-grade" id="marketGrade">—</div><div class="market-text" id="marketBrief">SPY와 QQQ를 확인하고 있어요.</div></div>
+      <div class="panel-head"><div><div class="eyebrow">엄선 · 현재 자리의 질</div><h2>오늘 눈여겨볼 자리</h2></div><div class="actions"><button class="btn" id="reload">최신 저장 결과</button><button class="btn primary" id="refresh">시장 다시 확인</button></div></div>
+      <div class="seg" id="todayTabs" aria-label="추천 전략"></div><div class="grid" id="todayGrid"></div><div class="status" id="status">추천을 불러오는 중…</div>
+      <div class="note">전략별 탭은 각 엔진의 S 신호를 보여줍니다. 엄선은 그중 현재 차트·수급/유동성·시장환경·손익비를 다시 보고 우선순위를 정합니다. 백테스트는 추천 탈락조건이 아니라 과거 참고자료로만 사용합니다. 금액은 원화를 먼저, 달러를 함께 표기합니다.</div>
     </article>
-
-    <article class="panel">
-      <div class="panel-head">
-        <div><div class="eyebrow">엄격 선별 · 종합 우선순위</div><h2>오늘 눈여겨볼 자리</h2></div>
-        <div class="actions"><button class="btn" id="reload">최신 저장 결과</button><button class="btn primary" id="refresh">시장 다시 확인</button></div>
-      </div>
-      <div class="seg" id="todayTabs" aria-label="추천 전략"></div>
-      <div class="grid" id="todayGrid"></div>
-      <div class="status" id="status">추천을 불러오는 중…</div>
-      <div class="note">종목 전체 추천은 자동 스캔 결과를 사용합니다. 전략별 탭은 각 엔진의 S 신호를 보여주고, 종합은 그중 과거 성적·손익비·과열 위험을 한 번 더 반영해 우선순위대로 표시합니다. 통과 종목 수를 억지로 제한하지 않습니다. 금액은 원화를 먼저, 달러를 함께 표기합니다.</div>
-    </article>
-
-    <article class="panel">
-      <div class="panel-head"><div><div class="eyebrow">추천 기록</div><h2>지난 추천도 그대로 남겨둬요</h2></div><div id="historySummary" class="ticker">—</div></div>
-      <div id="historyDays"></div>
-      <div class="status" id="historyMore">아래로 내리면 이전 날짜를 더 불러옵니다.</div>
-    </article>
+    <article class="panel"><div class="panel-head"><div><div class="eyebrow">추천 기록</div><h2>지난 추천도 그대로 남겨둬요</h2></div><div id="historySummary" class="ticker">—</div></div><div id="historyDays"></div><div class="status" id="historyMore">아래로 내리면 이전 날짜를 더 불러옵니다.</div></article>
   </section>
-
-  <section id="search" style="display:none">
-    <article class="panel">
-      <div class="panel-head"><div><div class="eyebrow">직접 확인</div><h2>원하는 종목을 찾아보세요</h2></div></div>
-      <div class="actions"><input id="tickerInput" class="search-input" placeholder="예: AAPL" aria-label="미국주식 티커"><button class="btn primary" id="searchBtn">분석</button></div>
-      <div class="status" id="searchStatus">티커를 입력하면 공개 중인 세 전략을 비교해 가장 강한 전략으로 보여줍니다.</div>
-    </article>
-  </section>
-
-  <section id="state" style="display:none">
-    <article class="panel"><div class="eyebrow">엔진 상태</div><h2>현재 구조</h2><div class="detail-copy" id="engineState">불러오는 중…</div></article>
-  </section>
-
+  <section id="search" style="display:none"><article class="panel"><div class="panel-head"><div><div class="eyebrow">직접 확인</div><h2>원하는 종목을 찾아보세요</h2></div></div><div class="actions"><input id="tickerInput" class="search-input" placeholder="예: AAPL" aria-label="미국주식 티커"><button class="btn primary" id="searchBtn">분석</button></div><div class="status" id="searchStatus">티커를 입력하면 공개 중인 세 전략을 비교해 현재 신호와 가장 가까운 전략을 보여줍니다.</div></article></section>
+  <section id="state" style="display:none"><article class="panel"><div class="eyebrow">엔진 상태</div><h2>현재 구조</h2><div class="detail-copy" id="engineState">불러오는 중…</div></article></section>
   <section class="panel detail" id="detail">
-    <div class="detail-top"><div><div class="detail-name" id="detailName">—</div><div class="detail-ticker" id="detailTicker">—</div></div><div class="detail-score" id="detailScore">—</div></div>
-    <div class="detail-copy" id="detailReason">—</div>
-    <div class="plan-grid"><div class="plan-box"><span>BUY 진입구간</span><b id="dBuy">—</b></div><div class="plan-box target"><span>TARGET 목표가 · 예상수익률</span><b id="dTarget">—</b></div><div class="plan-box stop"><span>STOP 손절가 · 예상손실률</span><b id="dStop">—</b></div></div>
-    <div class="chart-wrap" id="bigChart">차트 불러오는 중…</div>
-    <div class="legend"><span><i class="dot" style="background:#111"></i>종가</span><span><i class="dot" style="background:#4b75c7"></i>120일선</span><span><i class="dot" style="background:#d3d7d2"></i>볼린저 상/하단</span><span><i class="boxdot" style="background:#e8f6ed"></i>BUY 구간</span><span><i class="dot" style="background:#17845d"></i>TARGET</span><span><i class="dot" style="background:#c45151"></i>STOP</span><span><i class="dot" style="background:#7867a7"></i>RSI 30/70</span></div>
-    <div class="detail-copy" id="metricsCopy">—</div>
-
-    <div class="panel-head" style="margin-top:24px"><div><div class="eyebrow">백테스트</div><h2>같은 전략을 과거에 적용하면</h2></div><button class="btn" id="btBtn">10년 검증</button></div>
-    <div id="btArea" class="status">버튼을 누르면 현재 선택 전략으로 검증합니다.</div>
-
-    <div class="panel-head" style="margin-top:24px"><div><div class="eyebrow">내 돈으로 계산</div><h2>필요 투자금을 바로 계산해요</h2></div></div>
-    <div class="calc-grid">
-      <div><div class="field"><label for="capital">투자금 · 원화 입력</label><input id="capital" value="3,000,000" inputmode="numeric"></div><div class="resultbox" id="capitalOut">—</div></div>
-      <div><div class="field"><label for="wanted">원하는 수익금 · 원화 입력</label><input id="wanted" value="50,000" inputmode="numeric"></div><div class="resultbox" id="wantedOut">—</div></div>
-    </div>
+    <div class="detail-top"><div><div class="detail-name" id="detailName">—</div><div class="detail-ticker" id="detailTicker">—</div></div><div class="detail-score" id="detailScore">—</div></div><div class="detail-copy" id="detailReason">—</div>
+    <div class="plan-grid"><div class="plan-box"><span>BUY 엔진 진입구간</span><b id="dBuy">—</b></div><div class="plan-box target"><span>TARGET 목표가 · 예상수익률</span><b id="dTarget">—</b></div><div class="plan-box stop"><span>STOP 손절가 · 예상손실률</span><b id="dStop">—</b></div></div>
+    <div class="chart-wrap" id="bigChart">차트 불러오는 중…</div><div class="legend"><span><i class="dot" style="background:#111"></i>종가</span><span><i class="dot" style="background:#4b75c7"></i>120일선</span><span><i class="dot" style="background:#d3d7d2"></i>볼린저 상/하단</span><span><i class="boxdot" style="background:#e8f6ed"></i>BUY 구간</span><span><i class="dot" style="background:#17845d"></i>TARGET</span><span><i class="dot" style="background:#c45151"></i>STOP</span><span><i class="dot" style="background:#7867a7"></i>RSI 30/70</span></div><div class="detail-copy" id="metricsCopy">—</div>
+    <div class="panel-head" style="margin-top:24px"><div><div class="eyebrow">백테스트 · 참고자료</div><h2>같은 전략을 과거에 적용하면</h2></div><button class="btn" id="btBtn">10년 검증</button></div><div id="btArea" class="status">버튼을 누르면 현재 선택 전략으로 검증합니다. 이 결과는 오늘 추천의 합격/탈락 조건으로 사용하지 않습니다.</div>
+    <div class="panel-head" style="margin-top:24px"><div><div class="eyebrow">내 돈으로 계산</div><h2>필요 투자금을 바로 계산해요</h2></div></div><div class="calc-grid"><div><div class="field"><label for="capital">투자금 · 원화 입력</label><input id="capital" value="3,000,000" inputmode="numeric"></div><div class="resultbox" id="capitalOut">—</div></div><div><div class="field"><label for="wanted">원하는 수익금 · 원화 입력</label><input id="wanted" value="50,000" inputmode="numeric"></div><div class="resultbox" id="wantedOut">—</div></div></div>
   </section>
 </main>
 <script src="/static/dashboard.js" defer></script>
