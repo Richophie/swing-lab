@@ -35,7 +35,6 @@ def _series(df):
 
 
 def _quality(points, max_points, active):
-    # Every playbook reports on the same 0-100 quality scale.
     q = 55 + 40 * max(0.0, min(1.0, points / max_points))
     if not active:
         q = min(q, 69)
@@ -104,4 +103,15 @@ def trade_plan_for(df, strategy_id):
     if stop >= entry: stop=entry-atr
     if target <= entry: target=entry+1.5*atr
     risk=entry-stop; reward=target-entry; rr=reward/risk if risk>0 else 0
-    return {'buy_low':round(buy_low,2),'buy_high':round(buy_high,2),'target':round(target,2),'stop':round(stop,2),'target_pct':round((target/entry-1)*100,2),'stop_pct':round((stop/entry-1)*100,2),'rr':round(rr,2),'days_min':days[0],'days_max':days[1],'basis':basis,'strategy_id':strategy_id}
+    target_pct=(target/entry-1)*100; stop_pct=(entry-stop)/entry*100
+    return {
+        'buy_low':round(buy_low,2),'buy_high':round(buy_high,2),
+        'entry_low':round(buy_low,2),'entry_high':round(buy_high,2),
+        'target':round(target,2),'stop':round(stop,2),
+        'target_pct':round(target_pct,2),'stop_pct':round(stop_pct,2),
+        'rr':round(rr,2),'risk_reward':round(rr,2),
+        'days_min':days[0],'days_max':days[1],
+        'target_days':{'days_low':days[0],'days_high':days[1],'method':'전략별 예상 보유기간'},
+        'basis':basis,'target_reason':basis,'stop_reason':basis,
+        'strategy_id':strategy_id
+    }
