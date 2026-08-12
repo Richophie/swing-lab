@@ -3,16 +3,18 @@ name: Market Scan Cache
 on:
   workflow_dispatch:
   schedule:
-    # US regular-session window, every 30 minutes. Covers EDT/EST safely.
     - cron: '*/30 13-21 * * 1-5'
   push:
     branches: [main]
     paths:
       - 'core_v2.py'
       - 'core_v3.py'
+      - 'core_v4.py'
+      - 'engine_qa.py'
       - 'scanner_v10.py'
       - 'trade_journal.py'
       - 'app_v11.py'
+      - 'app_v12.py'
       - '.github/workflows/market-scan.yml'
 
 permissions:
@@ -35,6 +37,17 @@ jobs:
       - run: pip install -r requirements.txt
       - name: Build latest A/S recommendations
         run: python scanner_v10.py
+      - name: Regression QA gate
+        run: |
+          python - <<'PY'
+          import json
+          from engine_qa import distribution_guard
+          with open('static/latest_scan.json', encoding='utf-8') as f:
+              payload=json.load(f)
+          assert payload.get('core_version') == '4.0', payload.get('core_version')
+          assert payload.get('version') == '11.3', payload.get('version')
+          print(distribution_guard(payload.get('results', [])))
+          PY
       - name: Freeze new recommendations and update outcomes
         run: python trade_journal.py
       - name: Commit latest scan and journal
@@ -45,7 +58,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "No data changes"
           else
-            git commit -m "data: refresh v11 signals and journal"
+            git commit -m "data: refresh core4 signals and journal"
             git pull --rebase origin main
             git push
           fi
