@@ -71,6 +71,37 @@ def _find_history(symbol, strategy_id=None):
             return item
     return None
 
+def _open_history_index():
+    data=load_json(HISTORY_FILE,{'days':[]});out={}
+    for day in reversed(data.get('days') or []):
+        for item in day.get('items') or []:
+            if item.get('status_code')!='OPEN':continue
+            key=f"{str(item.get('symbol','')).upper()}|{item.get('strategy_id')}"
+            if item.get('symbol') and item.get('strategy_id') and key not in out:out[key]=item
+    return out
+
+def _lifecycle(item,current_price):
+    if not item:return None
+    lo=item.get('entry_low');hi=item.get('entry_high');target=item.get('target');stop=item.get('stop')
+    try:now=float(current_price)
+    except Exception:now=None
+    try:lo=float(lo);hi=float(hi)
+    except Exception:lo=hi=None
+    try:target=float(target)
+    except Exception:target=None
+    try:stop=float(stop)
+    except Exception:stop=None
+    ref=(lo+hi)/2 if lo is not None and hi is not None else None
+    ret=round((now/ref-1)*100,2) if now is not None and ref else None
+    if now is None:state,label,note='TRACKING','추천 유지','최초 추천가 기준으로 추적 중'
+    elif target is not None and now>=target:state,label,note='TARGET_NEAR','목표 도달권','최초 추천 목표가에 도달한 가격대'
+    elif stop is not None and now<=stop:state,label,note='STOP_ZONE','손절 구간','최초 추천 손절가 이하'
+    elif lo is not None and hi is not None and lo<=now<=hi:state,label,note='ENTRY','진입구간','최초 추천 BUY 구간 안에 있음'
+    elif hi is not None and now>hi:state,label,note='ENTRY_MISSED','진입가 이탈','최초 추천 BUY 상단을 넘어 신규 추격 진입은 주의'
+    elif lo is not None and now<lo:state,label,note='BELOW_ENTRY','진입가 하회','최초 추천 BUY 하단보다 낮아져 재확인 필요'
+    else:state,label,note='TRACKING','추천 유지','최초 추천가 기준으로 추적 중'
+    return {'state':state,'label':label,'note':note,'recommended_at':item.get('recommended_at'),'market_date':item.get('market_date'),'entry_low':lo,'entry_high':hi,'target':target,'stop':stop,'current_return_pct':ret,'bars_observed':item.get('bars_observed',0),'best_high':item.get('best_high'),'worst_low':item.get('worst_low')}
+
 def _plan_from_history(item):
     if not item:return {}
     return normalize_plan({'entry_low':item.get('entry_low'),'entry_high':item.get('entry_high'),'target':item.get('target'),'stop':item.get('stop'),'target_pct':item.get('target_pct'),'stop_pct':item.get('stop_pct'),'risk_reward':item.get('risk_reward'),'days_min':item.get('target_days_low'),'days_max':item.get('target_days_high'),'target_days':{'days_low':item.get('target_days_low'),'days_high':item.get('target_days_high')},'strategy_id':item.get('strategy_id'),'entry_status':'추천 당시 진입구간','signal_active':True})
@@ -111,10 +142,19 @@ def health():return jsonify({'ok':True,'version':APP_VERSION,'core':CORE_VERSION
 def version():return jsonify({'version':APP_VERSION,'core':CORE_VERSION,'architecture':'standalone','public_strategies':list(PUBLIC_STRATEGIES),'aggregate_cap':None})
 @app.route('/api/latest')
 def latest():
-    data=load_json(SCAN_FILE,{'status':'pending','results':[]});rows=[]
+    data=load_json(SCAN_FILE,{'status':'pending','results':[]});rows=[];open_idx=_open_history_index()
     for raw in data.get('results') or []:
         row=public_row(raw)
-        if row:rows.append(row)
+        if not row:continue
+        now=(row.get('sparkline') or [None])[-1]
+        for sig in row.get('strategy_signals') or []:
+            key=f"{str(row.get('symbol','')).upper()}|{sig.get('strategy_id')}";old=open_idx.get(key)
+            if old:sig['lifecycle']=_lifecycle(old,now)
+        key=f"{str(row.get('symbol','')).upper()}|{row.get('strategy_id')}";old=open_idx.get(key);row['lifecycle']=_lifecycle(old,now) if old else None
+        if old:
+            row['trade_plan']=_plan_from_history(old);row['original_recommendation']=True
+            plans=dict(row.get('strategy_trade_plans') or {});plans[row['strategy_id']]=row['trade_plan'];row['strategy_trade_plans']=plans
+        rows.append(row)
     rows.sort(key=lambda x:(bool(x.get('aggregate_eligible')),x['score']),reverse=True);data['results']=rows;data['ui_version']=APP_VERSION;data['display_filter']='strategy tabs: raw S / aggregate: current setup + flow + risk/reward; backtest informational only';data['usdkrw']=usdkrw_rate();return jsonify(data)
 @app.route('/api/history')
 def history():
