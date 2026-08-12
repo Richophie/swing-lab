@@ -1,69 +1,72 @@
-/* Stock recommendation cards — neutral cards + Korean market color convention.
-   Up / positive = red. Down / negative = blue. */
+/* Recommendation cards — neutral surfaces + Korean market convention.
+   Up/target = red. Down/stop = blue. Entry = green. */
 #todayGrid{grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:18px}
-#todayGrid .pick{position:relative;overflow:hidden;border:1px solid rgba(19,24,31,.09);border-radius:24px;padding:20px;background:#fff;box-shadow:0 1px 2px rgba(17,24,39,.02),0 8px 26px rgba(17,24,39,.035);transition:transform .22s cubic-bezier(.2,.8,.2,1),box-shadow .22s ease,border-color .22s ease}
-#todayGrid .pick::before,#todayGrid .pick::after{display:none!important;content:none!important}
-#todayGrid .pick:hover{transform:translateY(-3px);border-color:rgba(19,24,31,.14);box-shadow:0 16px 36px rgba(17,24,39,.075)}
-#todayGrid .rank,#todayGrid .badge{display:none!important}
+#todayGrid .pick,#historyDays .pick{position:relative;overflow:hidden;border:1px solid rgba(19,24,31,.09);border-radius:24px;padding:20px;background:#fff;box-shadow:0 1px 2px rgba(17,24,39,.02),0 8px 26px rgba(17,24,39,.035);transition:transform .22s cubic-bezier(.2,.8,.2,1),box-shadow .22s ease,border-color .22s ease}
+#todayGrid .pick::before,#todayGrid .pick::after,#historyDays .pick::before,#historyDays .pick::after{display:none!important;content:none!important}
+#todayGrid .pick:hover,#historyDays .pick:hover{transform:translateY(-3px);border-color:rgba(19,24,31,.14);box-shadow:0 16px 36px rgba(17,24,39,.075)}
+#todayGrid .rank,#todayGrid .badge,#historyDays .rank,#historyDays .badge{display:none!important}
 
-#todayGrid .status-hero{display:flex;align-items:center;gap:10px;margin:0 0 10px}
-#todayGrid .grade-orb{width:36px;height:36px;flex:0 0 36px;border-radius:12px;display:grid;place-items:center;background:#23272d;color:#fff;font-size:13px;font-weight:900;box-shadow:none}
-#todayGrid .status-copy{min-width:0;flex:1}
-#todayGrid .status-title{display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-size:16px;line-height:1.2;font-weight:850;letter-spacing:-.035em;color:#1d2126}
-#todayGrid .status-solid{display:inline-flex;align-items:center;min-height:30px;padding:0 11px;border-radius:9px;background:#23272d;color:#fff;font-size:12px;font-weight:850;letter-spacing:-.02em}
+#todayGrid .status-hero,#historyDays .status-hero{display:flex;align-items:center;gap:10px;margin:0 0 10px}
+#todayGrid .grade-orb,#historyDays .grade-orb{width:36px;height:36px;flex:0 0 36px;border-radius:12px;display:grid;place-items:center;background:#23272d;color:#fff;font-size:13px;font-weight:900;box-shadow:none}
+#todayGrid .status-copy,#historyDays .status-copy{min-width:0;flex:1}
+#todayGrid .status-title,#historyDays .status-title{display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-size:16px;line-height:1.2;font-weight:850;letter-spacing:-.035em;color:#1d2126}
+#todayGrid .status-solid,#historyDays .status-solid{display:inline-flex;align-items:center;min-height:30px;padding:0 11px;border-radius:9px;background:#23272d;color:#fff;font-size:12px;font-weight:850;letter-spacing:-.02em}
 #todayGrid .pick.life-entry .status-solid{background:#16865f;color:#fff}
-#todayGrid .status-return{font-size:14px;font-weight:850;letter-spacing:-.025em}
-#todayGrid .status-return.up{color:#d83b42}
-#todayGrid .status-return.down{color:#3267c8}
-#todayGrid .status-sub{margin-top:5px;color:#9aa0a7;font-size:10px;line-height:1.35}
-#todayGrid .card-divider{height:1px;background:#eceef1;margin:12px 0 15px}
+#todayGrid .status-return,#historyDays .status-return{font-size:14px;font-weight:850;letter-spacing:-.025em}
+#todayGrid .status-return.up,#historyDays .status-return.up{color:#d83b42}
+#todayGrid .status-return.down,#historyDays .status-return.down{color:#3267c8}
+#todayGrid .status-sub,#historyDays .status-sub{margin-top:5px;color:#9aa0a7;font-size:10px;line-height:1.35}
+#todayGrid .card-divider,#historyDays .card-divider{height:1px;background:#eceef1;margin:12px 0 15px}
+#historyDays .history-outcome{background:#23272d;color:#fff}
 
-#todayGrid .picktop{align-items:center;gap:14px;min-width:0;margin:0 0 2px}
-#todayGrid .picktop>div:first-child{min-width:0;flex:1}
-#todayGrid .stock-name{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:20px;line-height:1.18;font-weight:820;letter-spacing:-.045em;color:#15181c}
-#todayGrid .ticker{margin-top:5px;font-size:11px;line-height:1;font-weight:800;color:#a0a6ad;letter-spacing:.055em;text-transform:uppercase}
+#todayGrid .picktop,#historyDays .picktop{align-items:center;gap:14px;min-width:0;margin:0 0 2px}
+#todayGrid .picktop>div:first-child,#historyDays .picktop>div:first-child{min-width:0;flex:1}
+#todayGrid .stock-name,#historyDays .stock-name{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:20px;line-height:1.18;font-weight:820;letter-spacing:-.045em;color:#15181c}
+#todayGrid .ticker,#historyDays .ticker{margin-top:5px;font-size:11px;line-height:1;font-weight:800;color:#a0a6ad;letter-spacing:.055em;text-transform:uppercase}
 
-#todayGrid .mini{position:relative;height:136px;margin:16px -2px 16px;border:1px solid #f0f1f3;border-radius:18px;background:#fff;box-shadow:none;overflow:hidden}
-#todayGrid .mini svg{filter:none}
+#todayGrid .mini,#historyDays .mini{position:relative;height:136px;margin:16px -2px 16px;border:1px solid #f0f1f3;border-radius:18px;background:#fff;box-shadow:none;overflow:hidden}
+#todayGrid .mini svg,#historyDays .mini svg{filter:none}
 #todayGrid .entry-marker-label{pointer-events:none}
-#todayGrid .levels{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid #eceef1;border-radius:17px;overflow:hidden;background:#fff}
-#todayGrid .level{position:relative;min-width:0;border-radius:0;padding:12px 13px;background:#fff}
-#todayGrid .level:nth-child(odd){border-right:1px solid #eceef1}
-#todayGrid .level:nth-child(-n+2){border-bottom:1px solid #eceef1}
-#todayGrid .level span{font-size:9.5px;font-weight:800;color:#9ca2a9;letter-spacing:.02em}
-#todayGrid .level b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:5px;font-size:13px;line-height:1.25;font-weight:820;letter-spacing:-.025em;color:#7a8189}
-#todayGrid .level.target,#todayGrid .level.stop{background:#fff}
-#todayGrid .level.target span,#todayGrid .level.stop span{color:#9ca2a9}
-#todayGrid .level.target b,#todayGrid .level.stop b{color:#7a8189}
-#todayGrid .level-pct{font-style:normal;font-weight:850;margin-left:4px}
-#todayGrid .level-pct.up{color:#d83b42}
-#todayGrid .level-pct.down{color:#3267c8}
 
-#todayGrid .chips{display:flex;flex-wrap:nowrap;gap:6px;margin:12px 0 0;overflow:hidden}
-#todayGrid .chip{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border:1px solid #eceef1;border-radius:999px;padding:6px 8px;background:#fff;color:#747c84;font-size:9.5px;font-weight:750}
-#todayGrid .scoreline{display:flex;align-items:center;min-height:32px;margin:13px 0 0;padding:0 2px;font-size:11px;font-weight:850;color:#353a40}
-#todayGrid .scoreline::before{content:"";width:7px;height:7px;margin-right:7px;border-radius:50%;background:#555b63}
-#todayGrid .reason{position:relative;margin-top:0;border:1px solid #eceef1;border-radius:15px;padding:12px 13px 12px 14px;background:#fff;color:#747b83;font-size:11px;line-height:1.48}
-#todayGrid .reason::before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:2px;border-radius:2px;background:#d7dade}
-#todayGrid .reason b{margin-bottom:3px;color:#24282d;font-size:11px;font-weight:850}
-#todayGrid .reason span{color:#8b9198}
-#todayGrid .pick:focus-visible{outline:3px solid rgba(50,103,200,.16);outline-offset:3px}
+#todayGrid .levels,#historyDays .levels{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid #eceef1;border-radius:17px;overflow:hidden;background:#fff}
+#todayGrid .level,#historyDays .level{position:relative;min-width:0;border-radius:0;padding:12px 13px;background:#fff}
+#todayGrid .level:nth-child(odd),#historyDays .level:nth-child(odd){border-right:1px solid #eceef1}
+#todayGrid .level:nth-child(-n+2),#historyDays .level:nth-child(-n+2){border-bottom:1px solid #eceef1}
+#todayGrid .level span,#historyDays .level span{font-size:9.5px;font-weight:800;color:#9ca2a9;letter-spacing:.02em}
+#todayGrid .level b,#historyDays .level b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:5px;font-size:13px;line-height:1.25;font-weight:820;letter-spacing:-.025em;color:#7a8189}
+#todayGrid .level.target,#todayGrid .level.stop,#historyDays .level.target,#historyDays .level.stop{background:#fff}
+#todayGrid .level.target span,#todayGrid .level.stop span,#historyDays .level.target span,#historyDays .level.stop span{color:#9ca2a9}
+#todayGrid .level.target b,#historyDays .level.target b{color:#d83b42}
+#todayGrid .level.stop b,#historyDays .level.stop b{color:#3267c8}
+#todayGrid .level-pct,#historyDays .level-pct{font-style:normal;font-weight:850;margin-left:4px}
+#todayGrid .level-pct.up,#historyDays .level-pct.up{color:#d83b42}
+#todayGrid .level-pct.down,#historyDays .level-pct.down{color:#3267c8}
+
+#todayGrid .chips,#historyDays .chips{display:flex;flex-wrap:nowrap;gap:6px;margin:12px 0 0;overflow:hidden}
+#todayGrid .chip,#historyDays .chip{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border:1px solid #eceef1;border-radius:999px;padding:6px 8px;background:#fff;color:#747c84;font-size:9.5px;font-weight:750}
+#todayGrid .scoreline,#historyDays .scoreline{display:flex;align-items:center;min-height:32px;margin:13px 0 0;padding:0 2px;font-size:11px;font-weight:850;color:#353a40}
+#todayGrid .scoreline::before,#historyDays .scoreline::before{content:"";width:7px;height:7px;margin-right:7px;border-radius:50%;background:#555b63}
+#todayGrid .reason,#historyDays .reason{position:relative;margin-top:0;border:1px solid #eceef1;border-radius:15px;padding:12px 13px 12px 14px;background:#fff;color:#747b83;font-size:11px;line-height:1.48}
+#todayGrid .reason::before,#historyDays .reason::before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:2px;border-radius:2px;background:#d7dade}
+#todayGrid .reason b,#historyDays .reason b{margin-bottom:3px;color:#24282d;font-size:11px;font-weight:850}
+#todayGrid .reason span,#historyDays .reason span{color:#8b9198}
+#todayGrid .pick:focus-visible,#historyDays .pick:focus-visible{outline:3px solid rgba(50,103,200,.16);outline-offset:3px}
 
 .chart-wrap [stroke="#17845d"]{stroke:#d83b42!important}
 .chart-wrap [stroke="#c45151"]{stroke:#3267c8!important}
 
 @media(max-width:720px){
-  #todayGrid{grid-template-columns:1fr;gap:13px}
-  #todayGrid .pick{padding:17px;border-radius:21px}
-  #todayGrid .grade-orb{width:32px;height:32px;flex-basis:32px;border-radius:10px;font-size:12px}
-  #todayGrid .status-title{font-size:15px}
-  #todayGrid .status-solid{min-height:28px;font-size:11px}
-  #todayGrid .status-return{font-size:13px}
-  #todayGrid .stock-name{font-size:19px}
-  #todayGrid .mini{height:124px;margin:14px -1px}
-  #todayGrid .level{padding:11px}
-  #todayGrid .level b{font-size:12px}
-  #todayGrid .chips{overflow-x:auto;scrollbar-width:none;padding-bottom:1px}
-  #todayGrid .chips::-webkit-scrollbar{display:none}
-  #todayGrid .chip{flex:0 0 auto}
+  #todayGrid,#historyDays .grid{grid-template-columns:1fr;gap:13px}
+  #todayGrid .pick,#historyDays .pick{padding:17px;border-radius:21px}
+  #todayGrid .grade-orb,#historyDays .grade-orb{width:32px;height:32px;flex-basis:32px;border-radius:10px;font-size:12px}
+  #todayGrid .status-title,#historyDays .status-title{font-size:15px}
+  #todayGrid .status-solid,#historyDays .status-solid{min-height:28px;font-size:11px}
+  #todayGrid .status-return,#historyDays .status-return{font-size:13px}
+  #todayGrid .stock-name,#historyDays .stock-name{font-size:19px}
+  #todayGrid .mini,#historyDays .mini{height:124px;margin:14px -1px}
+  #todayGrid .level,#historyDays .level{padding:11px}
+  #todayGrid .level b,#historyDays .level b{font-size:12px}
+  #todayGrid .chips,#historyDays .chips{overflow-x:auto;scrollbar-width:none;padding-bottom:1px}
+  #todayGrid .chips::-webkit-scrollbar,#historyDays .chips::-webkit-scrollbar{display:none}
+  #todayGrid .chip,#historyDays .chip{flex:0 0 auto}
 }
