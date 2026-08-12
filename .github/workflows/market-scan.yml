@@ -14,6 +14,7 @@ on:
       - 'stock_names.py'
       - 'scanner.py'
       - 'journal.py'
+      - 'rebuild_journal_day.py'
       - 'backtest_engine.py'
       - 'app.py'
       - 'qa.py'
@@ -41,7 +42,9 @@ jobs:
           cache: 'pip'
       - run: pip install -r requirements.txt
       - name: Compile clean modules
-        run: python -m py_compile config.py market_data.py strategy_engine.py stock_names.py scanner.py journal.py backtest_engine.py app.py qa.py
+        run: python -m py_compile config.py market_data.py strategy_engine.py stock_names.py scanner.py journal.py rebuild_journal_day.py backtest_engine.py app.py qa.py
+      - name: Rebuild Aug 12 journal with current strategy logic
+        run: python rebuild_journal_day.py
       - name: Build latest recommendations
         run: python scanner.py
       - name: Clean architecture QA gate
