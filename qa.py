@@ -1,11 +1,13 @@
 from __future__ import annotations
 import ast
 import json
+import re
 from pathlib import Path
 from config import APP_VERSION, CORE_VERSION, S_THRESHOLD
 
 ROOT=Path(__file__).parent
 LEGACY_PREFIXES=('app_v','core_v','scanner_v','trade_journal_v')
+HANGUL=re.compile(r'[가-힣]')
 
 
 def check_scan(path=ROOT/'static'/'latest_scan.json'):
@@ -14,13 +16,14 @@ def check_scan(path=ROOT/'static'/'latest_scan.json'):
     assert data.get('core_version')==CORE_VERSION,(data.get('core_version'),CORE_VERSION)
     rows=data.get('results') or [];symbols=[]
     for row in rows:
-        assert row.get('symbol');symbols.append(row['symbol'])
-        assert row.get('name_ko') or row.get('security_name')
-        sigs=row.get('strategy_signals') or [];assert sigs,row['symbol'];plans=row.get('strategy_trade_plans') or {}
+        symbol=row.get('symbol');assert symbol;symbols.append(symbol)
+        name=row.get('name_ko') or ''
+        assert HANGUL.search(name),f'Korean display name missing: {symbol} -> {name!r}'
+        sigs=row.get('strategy_signals') or [];assert sigs,symbol;plans=row.get('strategy_trade_plans') or {}
         for sig in sigs:
             score=float(sig.get('strategy_score',0));assert 0<=score<=95
             if score>=S_THRESHOLD:
-                sid=sig.get('strategy_id');assert sid in plans,(row['symbol'],sid);p=plans[sid];entry=(float(p['entry_low'])+float(p['entry_high']))/2;assert float(p['stop'])<entry<float(p['target']),(row['symbol'],sid,p)
+                sid=sig.get('strategy_id');assert sid in plans,(symbol,sid);p=plans[sid];entry=(float(p['entry_low'])+float(p['entry_high']))/2;assert float(p['stop'])<entry<float(p['target']),(symbol,sid,p)
     assert not ('GOOG' in symbols and 'GOOGL' in symbols),'Alphabet share-class duplicate'
     return {'rows':len(rows),'failed':data.get('failed_count',0)}
 
@@ -36,9 +39,7 @@ def imports_in(path):
 def check_imports():
     files=['app.py','scanner.py','journal.py','strategy_engine.py','market_data.py','backtest_engine.py','stock_names.py']
     for f in files:
-        mods=imports_in(ROOT/f)
-        bad=[m for m in mods if m.startswith(LEGACY_PREFIXES)]
-        assert not bad,f'legacy imports in {f}: {bad}'
+        mods=imports_in(ROOT/f);bad=[m for m in mods if m.startswith(LEGACY_PREFIXES)];assert not bad,f'legacy imports in {f}: {bad}'
     return files
 
 
