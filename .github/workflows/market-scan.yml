@@ -3,15 +3,16 @@ name: Market Scan Cache
 on:
   workflow_dispatch:
   schedule:
-    # 30-minute cache refresh across the US regular-session window.
-    # The wider UTC window safely covers both EDT and EST.
+    # US regular-session window, every 30 minutes. Covers EDT/EST safely.
     - cron: '*/30 13-21 * * 1-5'
   push:
     branches: [main]
     paths:
       - 'core_v2.py'
-      - 'scanner_v9.py'
-      - 'app_v9.py'
+      - 'core_v3.py'
+      - 'scanner_v10.py'
+      - 'trade_journal.py'
+      - 'app_v11.py'
       - '.github/workflows/market-scan.yml'
 
 permissions:
@@ -24,7 +25,7 @@ concurrency:
 jobs:
   scan:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -32,16 +33,19 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
       - run: pip install -r requirements.txt
-      - run: python scanner_v9.py
-      - name: Commit latest scan
+      - name: Build latest A/S recommendations
+        run: python scanner_v10.py
+      - name: Freeze new recommendations and update outcomes
+        run: python trade_journal.py
+      - name: Commit latest scan and journal
         run: |
           git config user.name "swing-lab-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add static/latest_scan.json
+          git add static/latest_scan.json static/trade_history.json
           if git diff --cached --quiet; then
-            echo "No scan changes"
+            echo "No data changes"
           else
-            git commit -m "data: refresh v9 market scan cache"
+            git commit -m "data: refresh v11 signals and journal"
             git pull --rebase origin main
             git push
           fi
