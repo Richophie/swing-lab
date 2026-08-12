@@ -13,7 +13,7 @@ def indicators(df: pd.DataFrame) -> pd.DataFrame:
     c=df['Close'].astype(float); h=df['High'].astype(float); l=df['Low'].astype(float)
     v=df['Volume'].astype(float) if 'Volume' in df else pd.Series(0,index=df.index)
     o=pd.DataFrame(index=df.index)
-    o['close']=c; o['sma50']=c.rolling(50).mean(); o['sma120']=c.rolling(120).mean(); o['sma200']=c.rolling(200).mean()
+    o['close']=c; o['sma5']=c.rolling(5).mean(); o['sma20']=c.rolling(20).mean(); o['sma50']=c.rolling(50).mean(); o['sma60']=c.rolling(60).mean(); o['sma120']=c.rolling(120).mean(); o['sma200']=c.rolling(200).mean()
     d=c.diff(); g=d.clip(lower=0); loss=-d.clip(upper=0)
     ag=g.ewm(alpha=1/14,adjust=False,min_periods=14).mean(); al=loss.ewm(alpha=1/14,adjust=False,min_periods=14).mean()
     o['rsi']=100-100/(1+ag/al.replace(0,np.nan))
@@ -46,25 +46,28 @@ def load_price_history(symbol: str, period: str='10y') -> pd.DataFrame:
 
 
 def fresh_price_history(symbol: str, period: str='2y') -> pd.DataFrame:
-    """Uncached fetch for endpoints whose value should reflect the current session."""
     return _normalize_history(yf.Ticker(symbol.upper().strip()).history(period=period,auto_adjust=False))
 
 
 def market_snapshot() -> dict:
-    details={}; total=0
+    details={}; total=0; panic={'active':False,'triggered':False,'label':'평상시','message':'SPY RSI가 패닉 기준보다 높습니다.'}
     for symbol in ('SPY','QQQ'):
         try:
             d=fresh_price_history(symbol,'2y')
             if len(d)<205: raise ValueError('일봉 부족')
-            x=indicators(d).iloc[-1]; above120=bool(x['close']>x['sma120']); above200=bool(x['close']>x['sma200']); rsi=float(x['rsi'])
+            ind=indicators(d);x=ind.iloc[-1];above120=bool(x['close']>x['sma120']);above200=bool(x['close']>x['sma200']);rsi=float(x['rsi'])
             score=int(above120)+int(above200)+int(rsi>45); total+=score; details[symbol]={'score':score,'rsi':round(rsi,1),'above120':above120,'above200':above200}
+            if symbol=='SPY':
+                bar=d.iloc[-1];low=float(bar['Low']);close=float(bar['Close']);rebound=(close/low-1)*100 if low>0 else 0
+                active=rsi<=35;triggered=active and rebound>=.5
+                panic={'active':active,'triggered':triggered,'rsi':round(rsi,1),'rebound_from_low_pct':round(rebound,2),'label':'패닉 반등 확인' if triggered else '패닉 구간 감시' if active else '평상시','message':f"SPY RSI {rsi:.1f} · 당일 저가 대비 {rebound:+.2f}%" + (' · 바닥 반등 조건 충족' if triggered else ' · 아직 반등 확인 전' if active else '')}
         except Exception as exc: details[symbol]={'error':str(exc),'score':0}
     usable=sum('error' not in x for x in details.values())
-    if usable==0:return {'state':'확인 실패','score':0,'details':details,'brief':'시장 데이터를 불러오지 못했습니다.','action':'시장 상태를 다시 확인한 뒤 진입'}
+    if usable==0:return {'state':'확인 실패','score':0,'details':details,'brief':'시장 데이터를 불러오지 못했습니다.','action':'시장 상태를 다시 확인한 뒤 진입','panic_setup':panic}
     state='좋음' if total>=5 else '중립' if total>=3 else '조심'; reasons=[]
     for s,q in details.items(): reasons.append(f'{s} 확인 실패' if 'error' in q else f"{s} {'120·200일선 위' if q['above120'] and q['above200'] else '장기선 일부 이탈'} · RSI {q['rsi']}")
     action='눌림 후보를 관찰하되 추격매수는 자제' if state=='좋음' else '조건이 겹치는 종목만 선별' if state=='중립' else '현금 비중과 손절 기준을 보수적으로'
-    return {'state':state,'score':total,'details':details,'brief':' / '.join(reasons),'action':action}
+    return {'state':state,'score':total,'details':details,'brief':' / '.join(reasons),'action':action,'panic_setup':panic}
 
 
 def clean_symbol(sym: str) -> bool:return bool(re.match(r'^[A-Z][A-Z0-9.\-]{0,7}$',str(sym or '').strip().upper()))
