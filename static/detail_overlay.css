@@ -11,7 +11,9 @@ body.detail-open{overflow:hidden}
 
 .market-panel{position:relative;overflow:hidden;padding:0!important;background:linear-gradient(135deg,#f9fbfb 0%,#fff 50%,#f4f7f6 100%);border:1px solid rgba(225,231,229,.9)}
 .market-panel:before{content:"";position:absolute;width:360px;height:360px;border-radius:50%;right:-150px;top:-220px;background:radial-gradient(circle,rgba(31,132,93,.16),rgba(31,132,93,0) 68%);pointer-events:none;animation:marketGlow 7s ease-in-out infinite alternate}
-.market-refresh-wrap{position:absolute;top:18px;right:18px;z-index:3}
+.market-refresh-wrap{position:absolute;top:18px;right:18px;z-index:3;display:flex;align-items:center;gap:8px}
+.market-refresh-status{opacity:0;transform:translateY(-2px);pointer-events:none;font-size:10px;font-weight:750;color:#8d959d;transition:opacity .16s ease,transform .16s ease;white-space:nowrap}
+.market-refresh-status.show{opacity:1;transform:none}
 .market-panel-inner{position:relative;z-index:1;display:grid;grid-template-columns:minmax(210px,.72fr) 1.55fr;min-height:190px}
 .market-state-zone{padding:28px;border-right:1px solid rgba(224,229,227,.85);display:flex;flex-direction:column;justify-content:space-between;gap:24px}
 .market-copy-zone{padding:28px 30px;display:flex;flex-direction:column;justify-content:center}
@@ -24,7 +26,7 @@ body.detail-open{overflow:hidden}
 .market-text{font-size:14px!important;line-height:1.75!important;color:#606a71!important;max-width:720px}
 .market-text:after{content:"자동 스캔은 시장 방향을 참고하되 개별 종목의 진입 조건을 별도로 확인합니다.";display:block;margin-top:16px;padding-top:14px;border-top:1px solid #e8ecea;color:#91999e;font-size:11px}
 .icon-refresh{width:36px;height:36px;display:grid;place-items:center;border:1px solid #e6e9ed;border-radius:11px;background:#fff;color:#747c84;cursor:pointer;transition:background .16s ease,border-color .16s ease,transform .16s ease}
-.icon-refresh:hover{background:#f7f8fa;border-color:#daddE2;transform:translateY(-1px)}
+.icon-refresh:hover{background:#f7f8fa;border-color:#dadde2;transform:translateY(-1px)}
 .icon-refresh:active{transform:scale(.96)}
 .icon-refresh svg{width:18px;height:18px;fill:currentColor}
 .scan-meta{display:flex;align-items:center;gap:10px}
@@ -32,4 +34,4 @@ body.detail-open{overflow:hidden}
 #status{display:none!important}
 @keyframes marketGlow{to{transform:translate(-22px,22px) scale(1.08)}}@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(28,152,107,.18)}70%{box-shadow:0 0 0 8px rgba(28,152,107,0)}100%{box-shadow:0 0 0 0 rgba(28,152,107,0)}}
 
-@media(max-width:720px){.detail-overlay{padding:0;background:#f5f6f8;backdrop-filter:none}.detail-overlay-shell{margin:0;width:100%}.detail-overlay .detail{min-height:100vh;border-radius:0;box-shadow:none}.detail-close{top:10px;margin-right:12px}.market-panel-inner{grid-template-columns:1fr}.market-state-zone{border-right:0;border-bottom:1px solid rgba(224,229,227,.85);padding:22px}.market-copy-zone{padding:22px}.market-panel #marketTitle{font-size:23px}.market-text{font-size:13px!important}.scan-meta{gap:8px}.scan-time{font-size:10px}.market-refresh-wrap{top:14px;right:14px}}
+@media(max-width:720px){.detail-overlay{padding:0;background:#f5f6f8;backdrop-filter:none}.detail-overlay-shell{margin:0;width:100%}.detail-overlay .detail{min-height:100vh;border-radius:0;box-shadow:none}.detail-close{top:10px;margin-right:12px}.market-panel-inner{grid-template-columns:1fr}.market-state-zone{border-right:0;border-bottom:1px solid rgba(224,229,227,.85);padding:22px}.market-copy-zone{padding:22px}.market-panel #marketTitle{font-size:23px}.market-text{font-size:13px!important}.scan-meta{gap:8px}.scan-time{font-size:10px}.market-refresh-wrap{top:14px;right:14px}.market-refresh-status{font-size:9px}}
