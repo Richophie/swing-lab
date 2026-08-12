@@ -12,9 +12,10 @@ on:
       - 'core_v4.py'
       - 'engine_qa.py'
       - 'scanner_v10.py'
-      - 'trade_journal.py'
+      - 'trade_journal_v3.py'
       - 'app_v11.py'
       - 'app_v12.py'
+      - 'app_v13.py'
       - '.github/workflows/market-scan.yml'
 
 permissions:
@@ -35,7 +36,7 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
       - run: pip install -r requirements.txt
-      - name: Build latest A/S recommendations
+      - name: Build latest S recommendations by four strategies
         run: python scanner_v10.py
       - name: Regression QA gate
         run: |
@@ -45,11 +46,15 @@ jobs:
           with open('static/latest_scan.json', encoding='utf-8') as f:
               payload=json.load(f)
           assert payload.get('core_version') == '4.0', payload.get('core_version')
-          assert payload.get('version') == '11.3', payload.get('version')
+          assert payload.get('version') == '13.0', payload.get('version')
+          assert payload.get('display_filter') == 'S only', payload.get('display_filter')
+          for row in payload.get('results', []):
+              assert row.get('grade') == 'S'
+              assert row.get('strategy_signals'), row.get('symbol')
           print(distribution_guard(payload.get('results', [])))
           PY
-      - name: Freeze new recommendations and update outcomes
-        run: python trade_journal.py
+      - name: Freeze S signals by symbol and strategy and update outcomes
+        run: python trade_journal_v3.py
       - name: Commit latest scan and journal
         run: |
           git config user.name "swing-lab-bot"
@@ -58,7 +63,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "No data changes"
           else
-            git commit -m "data: refresh core4 signals and journal"
+            git commit -m "data: refresh v13 S strategy signals and journal"
             git pull --rebase origin main
             git push
           fi
