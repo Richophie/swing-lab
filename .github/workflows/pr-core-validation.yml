@@ -28,4 +28,4 @@ jobs:
       - name: Compile core modules
         run: python -m py_compile market_data.py strategy_rules.py strategy_engine.py backtest_engine.py qa.py tests/test_strategy_rules.py
       - name: Deterministic strategy parity test
-        run: python tests/test_strategy_rules.py
+        run: PYTHONPATH=. python tests/test_strategy_rules.py
