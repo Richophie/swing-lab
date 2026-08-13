@@ -11,7 +11,7 @@
     text(navToday,'⚡ 실시간 후보');text(navSearch,'종목 찾기');text(navState,'엔진');text(navPaper,'🧪 가상계좌');
 
     const todayGrid=document.getElementById('todayGrid'),todayPanel=todayGrid?.closest('.panel');
-    if(todayPanel){text(todayPanel.querySelector('.eyebrow'),'LIVE PICKS · 지금 조건 통과');text(todayPanel.querySelector('.panel-head h2'),'지금 볼 만한 자리')}
+    if(todayPanel){text(todayPanel.querySelector('.eyebrow'),'LIVE PICKS · 지금 조건 통과');text(todayPanel.querySelector('.panel-head h2'),'👌 지금 볼 만한 자리')}
 
     const market=document.querySelector('.market-panel');
     if(market)text(market.querySelector('.market-copy-zone .eyebrow'),'MARKET VIBE · SPY / QQQ');
@@ -38,9 +38,10 @@
     if(live){const b=live.querySelector('b');text(b,'장중엔 후보가 움직여요')}
   }
   window.addEventListener('DOMContentLoaded',()=>{
+    // One-shot polish only. A previous body-wide MutationObserver competed with
+    // pop_indie_polish.js over the same heading and could starve the main thread.
     apply();
-    const observer=new MutationObserver(()=>apply());
-    observer.observe(document.body,{childList:true,subtree:true});
-    setTimeout(()=>observer.disconnect(),5000);
+    setTimeout(apply,250);
+    setTimeout(apply,900);
   });
 })();
