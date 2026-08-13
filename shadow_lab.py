@@ -8,6 +8,7 @@ from config import PUBLIC_STRATEGIES
 from market_data import fresh_price_history
 from paper_broker import PaperBrokerStore, process_bar, snapshot, submit_order
 from paper_broker_service import current_fx_rate
+from paper_plan import execution_plan_with_atr
 from risk_observability import snapshot_event_risk
 
 ROOT = Path(__file__).parent
@@ -45,18 +46,32 @@ def _scan_plan_index(scan: dict) -> dict[str, dict]:
 
 
 def _plan_from_item(item: dict, current_plan: dict | None = None) -> dict:
-    source = current_plan or {}
-    atr = item.get('atr')
-    if atr is None:
-        atr = source.get('atr')
-    if atr is None or _number(atr, 0.0) <= 0:
-        raise ValueError('공식 추천 ATR 스냅샷이 없어 canonical gap guard를 계산할 수 없습니다')
+    """Use frozen levels, but recover the execution ATR without changing them."""
+    frozen = {
+        'entry_low': item.get('entry_low'),
+        'entry_high': item.get('entry_high'),
+        'target': item.get('target'),
+        'stop': item.get('stop'),
+        'atr': item.get('atr'),
+        'stop_atr_multiple': item.get('stop_atr_multiple'),
+    }
+    recovered = execution_plan_with_atr(frozen)
+    if not recovered.get('atr') and current_plan:
+        # Current scan is only an ATR recovery source. The official frozen BUY,
+        # TARGET and STOP above remain authoritative for the Shadow order.
+        current = execution_plan_with_atr(current_plan)
+        recovered['atr'] = current.get('atr')
+        recovered['atr_source'] = current.get('atr_source') or ('current_scan' if current.get('atr') else None)
+    atr = _number(recovered.get('atr'), 0.0)
+    if atr <= 0:
+        raise ValueError('공식 추천 ATR 실행값을 복원할 수 없어 canonical gap guard를 계산할 수 없습니다')
     return {
         'entry_low': item.get('entry_low'),
         'entry_high': item.get('entry_high'),
         'target': item.get('target'),
         'stop': item.get('stop'),
-        'atr': float(atr),
+        'atr': atr,
+        'atr_source': recovered.get('atr_source') or 'stored',
         'days_min': item.get('target_days_low'),
         'days_max': item.get('target_days_high'),
         'target_days': {
@@ -181,12 +196,14 @@ def ingest_confirmed_signals(
             order['event_risk_snapshot'] = snapshot_event_risk(
                 item.get('event_risk_snapshot') or item.get('event_risk')
             )
+            order['atr_source'] = plan.get('atr_source') or 'stored'
             order['risk_observability_only'] = True
             decision.update(
                 {
                     'decision': 'SUBMITTED',
                     'order_id': order.get('id'),
                     'atr': order.get('atr'),
+                    'atr_source': order.get('atr_source'),
                     'gap_guard': order.get('gap_guard'),
                 }
             )
