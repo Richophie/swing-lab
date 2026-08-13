@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+from datetime import datetime, timezone
 import json
 from pathlib import Path
 
+import journal
 from intraday_execution import bars_for_date, first_exit_touch, fresh_intraday_history
 from market_data import fresh_price_history
 
@@ -101,11 +103,19 @@ def repair(history: dict) -> int:
     return repaired
 
 
+def refresh_summaries(history: dict) -> None:
+    official, research = journal.summarize(history)
+    history['summary'] = official
+    history['research_summary'] = research
+    history['intraday_repair_updated_at'] = datetime.now(timezone.utc).isoformat(timespec='seconds')
+
+
 def main():
     history = _load(HISTORY_FILE, {'days': []})
     changed = repair(history)
+    refresh_summaries(history)
     _save(HISTORY_FILE, history)
-    print('intraday outcome target-first repairs', changed)
+    print('intraday outcome target-first repairs', changed, 'summary refreshed')
 
 
 if __name__ == '__main__':
