@@ -158,6 +158,74 @@ def _fill_manual_now(state: dict, order: dict, *, allow_resize: bool = True) -> 
     return order
 
 
+def _legacy_submit_fill_values(order: dict) -> tuple[float, float, str, str]:
+    raw = float(order.get('planned_entry_usd') or ((float(order['buy_low']) + float(order['buy_high'])) / 2.0))
+    fx = float(order.get('fx_at_submit') or current_fx_rate())
+    timestamp = str(order.get('created_at') or '') or datetime.now(timezone.utc).isoformat(timespec='seconds')
+    market_date = str(order.get('submitted_market_date') or order.get('signal_date') or timestamp)[:10]
+    return raw, fx, timestamp, market_date
+
+
+def _apply_legacy_submit_fill(state: dict, order: dict, *, repair_existing_fill: bool = False) -> dict:
+    """Honor the user's original click for pre-immediate-fill manual orders.
+
+    Before manual paper buys became immediate, clicking "가상매수" created a
+    PENDING next-open order. Those clicks should be interpreted as buys at the
+    price shown/stored at that click, not at a later deployment-time quote.
+    """
+    raw, fx, timestamp, market_date = _legacy_submit_fill_values(order)
+    stop = float(order['stop'])
+    target = float(order['target'])
+    if not stop < raw < target:
+        raise ValueError('기존 주문의 저장 진입가가 STOP/TARGET 사이가 아닙니다')
+    fill = market_buy_fill(raw, float(order.get('slippage_bps') or 0.0), float(order.get('half_spread_bps') or 0.0))
+    if not stop < fill < target:
+        raise ValueError('기존 주문의 체결비용 반영 진입가가 STOP/TARGET 사이가 아닙니다')
+
+    qty = max(1, int(order.get('qty') or 0))
+    commission = max(0.0, float(order.get('commission_pct_per_side') or 0.0)) / 100.0
+    gross = fill * qty * fx
+    entry_commission = gross * commission
+    entry_cost = gross + entry_commission
+    cash = float(state.get('cash_krw') or 0.0)
+    if repair_existing_fill:
+        cash += float(order.get('entry_cost_krw') or 0.0)
+    if entry_cost > cash + 0.01:
+        raise ValueError('기존 클릭시점 기준 체결금액이 가상계좌 현금을 초과합니다')
+    state['cash_krw'] = round(cash - entry_cost, 2)
+
+    order.update(
+        {
+            'status': 'FILLED',
+            'entry_date': market_date,
+            'entry_fill_usd': round(fill, 6),
+            'entry_raw_open_usd': round(raw, 6),
+            'entry_timestamp': timestamp,
+            'entry_resolution_quality': 'manual_legacy_click_price',
+            'entry_commission_krw': round(entry_commission, 2),
+            'entry_cost_krw': round(entry_cost, 2),
+            'fx_at_entry': round(fx, 4),
+            'reserved_cash_krw': 0.0,
+            'held_bars': int(order.get('held_bars') or 0),
+            'last_close_usd': round(float(order.get('last_close_usd') or raw), 6),
+            'last_fx': round(float(order.get('last_fx') or fx), 4),
+            'last_processed_date': market_date,
+            'filled_at': timestamp,
+            'manual_fill_quote_source': 'legacy_planned_entry_at_click',
+            'manual_immediate_upgrade': True,
+            'manual_immediate_upgrade_repaired': True,
+            'manual_immediate_upgrade_basis': 'stored_planned_entry_fx_and_created_at',
+        }
+    )
+    _event(
+        state,
+        order,
+        'MIGRATION_REPAIRED' if repair_existing_fill else 'FILLED',
+        f"기존 수동 가상매수 · 클릭 당시 저장가 기준 {qty}주 · ${fill:.4f} · {timestamp}",
+    )
+    return order
+
+
 def preview_manual(
     symbol: str,
     strategy_id: str | None = None,
@@ -213,24 +281,44 @@ def submit_manual(
 
 
 def upgrade_pending_manual_orders(*, state_path: str | Path) -> int:
-    """One-time compatibility migration for manual orders created before immediate-fill semantics."""
+    """Migrate pre-immediate-fill manual clicks without changing their original buy basis."""
     store = PaperBrokerStore(state_path)
     state = store.load()
     _tag_legacy_origins(state)
     changed = 0
+
+    # Repair orders that the first immediate-fill migration may already have filled
+    # using a later quote after deployment. Restore their original click-time basis.
+    for order in state.get('orders', []):
+        if order.get('order_origin') != 'MANUAL_PAPER' or order.get('status') != 'FILLED':
+            continue
+        if not order.get('manual_immediate_upgrade') or order.get('manual_immediate_upgrade_repaired'):
+            continue
+        try:
+            _apply_legacy_submit_fill(state, order, repair_existing_fill=True)
+            changed += 1
+        except Exception as exc:
+            order['manual_immediate_upgrade_repair_error'] = str(exc)
+
+    # Orders that have not yet been touched by the first migration are filled at
+    # the price/FX/timestamp that were stored when the user originally clicked buy.
     for order in state.get('orders', []):
         if order.get('status') != 'PENDING' or order.get('order_origin') != 'MANUAL_PAPER':
             continue
-        if order.get('manual_immediate_upgrade_attempted'):
+        if order.get('manual_immediate_upgrade_repaired'):
             continue
-        order['manual_immediate_upgrade_attempted'] = True
         try:
-            _fill_manual_now(state, order, allow_resize=True)
-            order['manual_immediate_upgrade'] = True
+            _apply_legacy_submit_fill(state, order, repair_existing_fill=False)
+            order['manual_immediate_upgrade_attempted'] = True
             changed += 1
         except Exception as exc:
+            order['manual_immediate_upgrade_attempted'] = True
             order['manual_immediate_upgrade_error'] = str(exc)
-    if changed or any(o.get('manual_immediate_upgrade_attempted') for o in state.get('orders', [])):
+
+    if changed or any(
+        o.get('manual_immediate_upgrade_attempted') or o.get('manual_immediate_upgrade_repaired')
+        for o in state.get('orders', [])
+    ):
         store.save(state)
     return changed
 
