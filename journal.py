@@ -8,6 +8,7 @@ import pandas as pd
 import yfinance as yf
 
 from config import PUBLIC_STRATEGIES
+from risk_observability import event_bucket, snapshot_event_risk
 
 ROOT=Path(__file__).parent;SCAN_FILE=ROOT/'static'/'latest_scan.json';JOURNAL_FILE=ROOT/'static'/'trade_history.json';NY=ZoneInfo('America/New_York');CLOSED={'SUCCESS','STOP','EXPIRED_GAIN','EXPIRED_LOSS','EXPIRED_FLAT'}
 
@@ -22,14 +23,12 @@ def _parse_scan_time(value):
     try:
         d=datetime.fromisoformat(str(value).replace('Z','+00:00'));d=d if d.tzinfo else d.replace(tzinfo=timezone.utc);return d.astimezone(NY)
     except Exception:return datetime.now(timezone.utc).astimezone(NY)
-
 def market_date(value):return _parse_scan_time(value).date().isoformat()
 
 def should_publish_scan(scan):
     """Only turn a mutable intraday scan into an official recommendation after the US daily bar closes."""
     ny=_parse_scan_time(scan.get('scanned_at'))
     return (ny.hour,ny.minute)>=(16,5)
-
 def confirmed_market_date(scan):
     """Use the most recent actual SPY trading date so holidays/weekends cannot create fake journal dates."""
     try:
@@ -44,11 +43,10 @@ def confirmed_market_date(scan):
 
 def freeze_signal(row,sig,plan,at,day):
     td=plan.get('target_days') or {};sid=sig['strategy_id']
-    return {'signal_key':f"{row['symbol']}|{sid}",'symbol':row['symbol'],'name_ko':row.get('name_ko'),'security_name':row.get('security_name'),'grade':'S','score':sig.get('elite_score',sig.get('strategy_score',row.get('score'))),'raw_strategy_score':sig.get('strategy_score'),'strategy_id':sid,'strategy_name':sig.get('strategy_name'),'strategy_reason':sig.get('evidence') or sig.get('why'),'selection_reason':sig.get('selection_reason'),'experimental':False,'performance_bucket':'official_public','recommended_at':at,'published_at':at,'publication_status':'CONFIRMED_CLOSE','signal_origin':'daily_bar_close','market_date':day,'rsi':row.get('rsi'),'d120':row.get('d120'),'bb_pos':row.get('bb_pos'),'sparkline':row.get('sparkline') or [],'bb_high_spark':row.get('bb_high_spark') or [],'bb_low_spark':row.get('bb_low_spark') or [],'entry_low':plan.get('entry_low'),'entry_high':plan.get('entry_high'),'target':plan.get('target'),'stop':plan.get('stop'),'target_pct':plan.get('target_pct'),'stop_pct':plan.get('stop_pct'),'target_days_low':int(td.get('days_low') or plan.get('days_min') or 1),'target_days_high':int(td.get('days_high') or plan.get('days_max') or 5),'target_reason':plan.get('target_reason'),'stop_reason':plan.get('stop_reason'),'risk_reward':plan.get('risk_reward'),'status':'진행중','status_code':'OPEN','outcome_at':None,'outcome_price':None,'outcome_return_pct':None,'outcome_note':'마감 확정 추천의 다음 거래일부터 판정합니다.','bars_observed':0,'best_high':None,'worst_low':None}
+    return {'signal_key':f"{row['symbol']}|{sid}",'symbol':row['symbol'],'name_ko':row.get('name_ko'),'security_name':row.get('security_name'),'grade':'S','score':sig.get('elite_score',sig.get('strategy_score',row.get('score'))),'raw_strategy_score':sig.get('strategy_score'),'strategy_id':sid,'strategy_name':sig.get('strategy_name'),'strategy_reason':sig.get('evidence') or sig.get('why'),'selection_reason':sig.get('selection_reason'),'experimental':False,'performance_bucket':'official_public','recommended_at':at,'published_at':at,'publication_status':'CONFIRMED_CLOSE','signal_origin':'daily_bar_close','market_date':day,'rsi':row.get('rsi'),'d120':row.get('d120'),'bb_pos':row.get('bb_pos'),'event_risk_snapshot':snapshot_event_risk(row.get('event_risk')),'sparkline':row.get('sparkline') or [],'bb_high_spark':row.get('bb_high_spark') or [],'bb_low_spark':row.get('bb_low_spark') or [],'entry_low':plan.get('entry_low'),'entry_high':plan.get('entry_high'),'target':plan.get('target'),'stop':plan.get('stop'),'target_pct':plan.get('target_pct'),'stop_pct':plan.get('stop_pct'),'target_days_low':int(td.get('days_low') or plan.get('days_min') or 1),'target_days_high':int(td.get('days_high') or plan.get('days_max') or 5),'target_reason':plan.get('target_reason'),'stop_reason':plan.get('stop_reason'),'risk_reward':plan.get('risk_reward'),'status':'진행중','status_code':'OPEN','outcome_at':None,'outcome_price':None,'outcome_return_pct':None,'outcome_note':'마감 확정 추천의 다음 거래일부터 판정합니다.','bars_observed':0,'best_high':None,'worst_low':None}
 
 
 def _derived_key(x):return x.get('signal_key') or (f"{x.get('symbol')}|{x.get('strategy_id')}" if x.get('symbol') and x.get('strategy_id') else None)
-
 def _official_item(item):return not bool(item.get('experimental')) and item.get('strategy_id') in PUBLIC_STRATEGIES
 
 
@@ -116,7 +114,6 @@ def entry_price(item):
 
 def finish(item,code,label,when,price,note):
     entry=entry_price(item);ret=((float(price)/entry)-1)*100 if entry and price is not None else None;item.update({'status':label,'status_code':code,'outcome_at':when,'outcome_price':round(float(price),4),'outcome_return_pct':round(ret,2) if ret is not None else None,'outcome_note':note})
-
 def evaluate(item,d):
     if item.get('status_code') in CLOSED or d.empty:return
     target,stop=item.get('target'),item.get('stop');entry=entry_price(item)
@@ -131,13 +128,23 @@ def evaluate(item,d):
         close=float(window.iloc[-1]['Close']);ret=((close/entry)-1)*100;code='EXPIRED_GAIN' if ret>.05 else 'EXPIRED_LOSS' if ret<-.05 else 'EXPIRED_FLAT';finish(item,code,'목표미달',window.index[-1].date().isoformat(),close,'목표기간 종료 종가 기준 수익률입니다.')
 
 
-def _summarize_items(items):
-    closed=[x for x in items if x.get('status_code') in CLOSED];returns=[float(x['outcome_return_pct']) for x in closed if x.get('outcome_return_pct') is not None];by={}
-    for x in closed:
-        sid=x.get('strategy_id');b=by.setdefault(sid,{'closed':0,'success':0,'stop':0,'target_miss':0,'returns':[]});b['closed']+=1;b['success']+=x.get('status_code')=='SUCCESS';b['stop']+=x.get('status_code')=='STOP';b['target_miss']+=str(x.get('status_code','')).startswith('EXPIRED')
+def _group_summary(items,key_fn):
+    grouped={}
+    for x in items:
+        key=key_fn(x);b=grouped.setdefault(key,{'signals':0,'closed':0,'success':0,'stop':0,'target_miss':0,'returns':[]});b['signals']+=1
+        if x.get('status_code') not in CLOSED:continue
+        b['closed']+=1;b['success']+=x.get('status_code')=='SUCCESS';b['stop']+=x.get('status_code')=='STOP';b['target_miss']+=str(x.get('status_code','')).startswith('EXPIRED')
         if x.get('outcome_return_pct') is not None:b['returns'].append(float(x['outcome_return_pct']))
-    for b in by.values():b['success_rate_pct']=round(b['success']/b['closed']*100,1) if b['closed'] else None;b['avg_return_pct']=round(sum(b['returns'])/len(b['returns']),2) if b['returns'] else None;b.pop('returns',None)
-    return {'total_signals':len(items),'closed_signals':len(closed),'success':sum(x.get('status_code')=='SUCCESS' for x in closed),'stop':sum(x.get('status_code')=='STOP' for x in closed),'target_miss':sum(str(x.get('status_code','')).startswith('EXPIRED') for x in closed),'avg_outcome_return_pct':round(sum(returns)/len(returns),2) if returns else None,'by_strategy':by}
+    for b in grouped.values():
+        b['success_rate_pct']=round(b['success']/b['closed']*100,1) if b['closed'] else None;b['avg_return_pct']=round(sum(b['returns'])/len(b['returns']),2) if b['returns'] else None;b.pop('returns',None)
+    return grouped
+
+
+def _summarize_items(items):
+    closed=[x for x in items if x.get('status_code') in CLOSED];returns=[float(x['outcome_return_pct']) for x in closed if x.get('outcome_return_pct') is not None]
+    by_strategy=_group_summary(items,lambda x:x.get('strategy_id') or 'UNKNOWN')
+    by_event=_group_summary(items,event_bucket)
+    return {'total_signals':len(items),'closed_signals':len(closed),'success':sum(x.get('status_code')=='SUCCESS' for x in closed),'stop':sum(x.get('status_code')=='STOP' for x in closed),'target_miss':sum(str(x.get('status_code','')).startswith('EXPIRED') for x in closed),'avg_outcome_return_pct':round(sum(returns)/len(returns),2) if returns else None,'by_strategy':by_strategy,'by_event_risk':by_event}
 
 
 def summarize(journal):
@@ -145,11 +152,11 @@ def summarize(journal):
 
 
 def main():
-    scan=load(SCAN_FILE,{});journal=load(JOURNAL_FILE,{'version':'4.3','days':[]});repaired=repair_legacy_entries(journal);published=False;published_day=None;added=0
+    scan=load(SCAN_FILE,{});journal=load(JOURNAL_FILE,{'version':'4.4','days':[]});repaired=repair_legacy_entries(journal);published=False;published_day=None;added=0
     if should_publish_scan(scan):published_day,added=append_current_scan(scan,journal);published=True
     open_items=[x for d in journal.get('days',[]) for x in d.get('items',[]) if x.get('status_code') not in CLOSED];symbols=sorted({x['symbol'] for x in open_items if x.get('symbol')});bulk=fetch_frames(symbols)
     if bulk is not None:
         for item in open_items:evaluate(item,frame_for(bulk,item['symbol'],len(symbols)))
-    official_summary,research_summary=summarize(journal);journal['version']='4.3';journal['updated_at']=datetime.now(timezone.utc).isoformat(timespec='seconds');journal['summary']=official_summary;journal['research_summary']=research_summary;journal['legacy_entries_repaired']=repaired;journal['publication_policy']='intraday scans are mutable; official public recommendations only are frozen after 16:05 America/New_York; experimental performance is excluded';journal['last_publish_check']={'scan_at':scan.get('scanned_at'),'eligible':should_publish_scan(scan),'published':published,'market_date':published_day,'added':added};save(JOURNAL_FILE,journal);print('saved journal',journal['summary'],'research excluded',journal['research_summary'],'published',published,'market_date',published_day,'added',added,'repaired',repaired)
+    official_summary,research_summary=summarize(journal);journal['version']='4.4';journal['updated_at']=datetime.now(timezone.utc).isoformat(timespec='seconds');journal['summary']=official_summary;journal['research_summary']=research_summary;journal['legacy_entries_repaired']=repaired;journal['publication_policy']='intraday scans are mutable; official public recommendations only are frozen after 16:05 America/New_York; experimental performance is excluded';journal['risk_observability_policy']='event risk is snapshotted at publication for later outcome analysis only; it never changes recommendation eligibility or trade levels';journal['last_publish_check']={'scan_at':scan.get('scanned_at'),'eligible':should_publish_scan(scan),'published':published,'market_date':published_day,'added':added};save(JOURNAL_FILE,journal);print('saved journal',journal['summary'],'research excluded',journal['research_summary'],'published',published,'market_date',published_day,'added',added,'repaired',repaired)
 
 if __name__=='__main__':main()

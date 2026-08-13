@@ -8,6 +8,7 @@ from pathlib import Path
 from config import PUBLIC_STRATEGIES
 from market_data import fresh_price_history
 from paper_broker import PaperBrokerStore, process_bar, snapshot, submit_order
+from risk_observability import snapshot_event_risk
 
 ROOT = Path(__file__).parent
 STATIC = ROOT / 'static'
@@ -88,6 +89,7 @@ def latest_plan(symbol: str, strategy_id: str | None = None) -> dict:
             'plan': plan,
             'scan_date': str(data.get('market_date') or data.get('scanned_at') or '')[:10],
             'signal_origin': 'LIVE_CANDIDATE',
+            'event_risk_snapshot': snapshot_event_risk(row.get('event_risk')),
         }
     raise ValueError(f'{symbol}이 latest_scan.json에 없습니다')
 
@@ -125,6 +127,8 @@ def submit_from_latest(
     # must never be mistaken for close-confirmed official-paper performance.
     order['order_origin'] = 'LIVE_CANDIDATE'
     order['signal_origin'] = 'intraday_latest_scan'
+    order['event_risk_snapshot'] = dict(info.get('event_risk_snapshot') or {})
+    order['risk_observability_only'] = True
     saved = store.save(state)
     return {'order': order, 'summary': snapshot(saved)['summary'], 'state_file': str(Path(state_path))}
 
