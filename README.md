@@ -15,6 +15,7 @@
 - `backtest_engine.py` — canonical 규칙 + 현실적 체결비용/갭 규칙을 사용하는 Backtest V2
 - `portfolio_backtest.py` — 여러 종목 신호를 하나의 300만원 계좌로 합성하는 동시보유/포지션 사이징 시뮬레이터
 - `backtrader_audit.py` — 같은 canonical 신호/가격계획을 Backtrader의 독립 브로커에서 재체결해 결과 차이를 감사
+- `audit_matrix.py` — 실제 10년 데이터 20종목 × 공개 3전략 교차 엔진 감사 리포트
 - `walkforward.py` — OOS / Walk-forward 검증
 - `stock_names.py` — 한글 종목명 단일 관리
 - `qa.py` — 회귀/구조 검증 및 live/backtest 규칙 배선 검사
@@ -54,11 +55,30 @@
 
 ## Backtrader 독립 감사
 
-- 신호와 BUY/TARGET/STOP만 canonical 원본에서 전달하고 실제 주문 체결은 Backtrader의 `BackBroker`가 담당합니다.
-- 다음날 시가 진입은 `cheat_on_open`에서 실제 시가를 확인한 뒤 Backtrader Market 주문으로 제출합니다.
-- 진입 후에는 Backtrader native bracket 주문(Stop + Limit OCO)을 사용합니다.
-- Swing V2와 Backtrader 결과를 진입일, 거래 수, 목표/손절/기간종료 결과, 평균 거래수익 차이로 비교합니다.
-- Backtrader가 유리한 목표가 갭에서 limit 가격보다 좋은 시가를 인정하거나 기간종료 `Order.Close` 의미가 Swing V2와 다른 경우는 정상적인 엔진 의미 차이로 별도 표시합니다.
+Backtrader 감사 경로는 Swing Lab의 체결 함수를 호출하지 않습니다. canonical 신호와 BUY/TARGET/STOP만 입력으로 공유하고, 실제 주문 체결은 Backtrader native broker의 Market + Stop/Limit bracket, commission, slippage 모델에 맡깁니다.
+
+실제 10년 데이터 기준 20종목 × 공개 3전략 = 60조합 감사 결과:
+
+- 전체: PASS 30 / PASS_WITH_DIFFERENCES 22 / NO_TRADES 8 / REVIEW 0 / 실행 오류 0
+- 확인형 눌림반등: Swing 48건 / Backtrader 48건, 진입일 일치 100.0%, 결과 일치 100.0%, 평균 절대 수익률 차이 0.418%p
+- RSI2 추세내 과매도: Swing 232건 / Backtrader 226건, 진입일 일치 96.6%, 결과 일치 99.1%, 평균 절대 수익률 차이 0.267%p
+- 모멘텀 눌림 지속: Swing 42건 / Backtrader 42건, 진입일 일치 100.0%, 결과 일치 100.0%, 평균 절대 수익률 차이 0.573%p
+
+RSI2의 진입일 차이는 Swing-only 7건, Backtrader-only 1건입니다.
+
+- MSFT: Swing-only 2022-01-07
+- AMZN: Swing-only 2019-08-02, 2025-02-25 / Backtrader-only 2025-02-26
+- CAT: Swing-only 2024-12-20
+- QCOM: Swing-only 2019-12-04
+- F: Swing-only 2026-08-07
+- PLD: Swing-only 2026-08-05
+
+결과 분류 차이는 NKE RSI2의 2건입니다.
+
+- 2017-08-21 진입: Swing은 당일 손절(-2.291%), Backtrader는 기간종료(2017-08-29, -3.407%)
+- 2021-12-20 진입: Swing은 당일 손절(-2.575%), Backtrader는 다음날 목표달성(2021-12-21, +5.621%)
+
+두 NKE 사례는 신호 규칙 차이보다 일봉 내부 주문 순서 해상도 차이로 해석하는 것이 타당합니다. Swing V2는 다음날 시가 진입 직후 같은 일봉의 Stop/Target 터치를 즉시 평가하지만, Backtrader의 일봉 bracket은 부모 Market 진입이 체결된 뒤 같은 OHLC 봉 내부에서 자식 Stop/Limit 주문이 어떤 순서로 터졌는지 완전히 재구성할 수 없습니다. 이 차이는 숨기지 않고 감사 리포트에 남깁니다.
 
 ## 자동 실행
 
@@ -72,6 +92,6 @@ GitHub Actions의 `Market Scan Cache`가 장중 주기적으로:
 
 순서로 실행됩니다.
 
-PR 검증에서는 canonical 규칙 일치, Backtest V2 체결/계좌 테스트, Backtrader 독립 브로커 테스트를 함께 실행합니다.
+PR Core Validation은 canonical 전략 parity, Backtest V2 체결/계좌 테스트, Backtrader native broker 테스트, 실제 10년 × 20종목 × 3전략 감사 리포트를 실행하고 JSON artifact를 저장합니다.
 
 Render는 `gunicorn app:app`으로 현재 `app.py`만 실행합니다.
