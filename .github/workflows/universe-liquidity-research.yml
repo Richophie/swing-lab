@@ -1,0 +1,37 @@
+name: Universe Dollar Liquidity Research
+
+on:
+  pull_request:
+    paths:
+      - 'universe_liquidity_research.py'
+      - 'tests/test_universe_liquidity_research.py'
+      - '.github/workflows/universe-liquidity-research.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: pip install -r requirements.txt
+      - name: Compile research modules
+        run: python -m py_compile universe_liquidity_research.py tests/test_universe_liquidity_research.py
+      - name: Deterministic universe helper tests
+        run: PYTHONPATH=. python tests/test_universe_liquidity_research.py
+      - name: Compare market-cap and dollar-liquidity universes
+        run: PYTHONPATH=. python universe_liquidity_research.py
+      - name: Upload universe research artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: universe-dollar-liquidity-research
+          path: artifacts/universe_liquidity_research.json
+          if-no-files-found: warn
