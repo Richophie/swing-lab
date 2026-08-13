@@ -139,12 +139,12 @@ def pooled_stats(trades: list[dict]) -> dict:
     }
 
 
-def _split_stats(trades: list[dict], split_i: int, recent_start_i: int) -> dict:
+def _bucket(trades: list[dict], split_i: int, recent_start_i: int) -> dict[str, list[dict]]:
     return {
-        'full_10y': pooled_stats(trades),
-        'is_first_70pct': pooled_stats([t for t in trades if int(t['signal_i']) < split_i]),
-        'oos_last_30pct': pooled_stats([t for t in trades if int(t['signal_i']) >= split_i]),
-        'recent_2y': pooled_stats([t for t in trades if int(t['signal_i']) >= recent_start_i]),
+        'all': trades,
+        'is_first_70pct': [t for t in trades if int(t['signal_i']) < split_i],
+        'oos_last_30pct': [t for t in trades if int(t['signal_i']) >= split_i],
+        'recent_2y': [t for t in trades if int(t['signal_i']) >= recent_start_i],
     }
 
 
@@ -180,8 +180,8 @@ def current_scan_sensitivity() -> list[dict]:
 
 
 def run_research() -> dict:
-    pooled = {name: [] for name in VARIANTS}
-    pooled_by_strategy = {name: defaultdict(list) for name in VARIANTS}
+    buckets = {name: defaultdict(list) for name in VARIANTS}
+    by_strategy = {name: {sid: defaultdict(list) for sid in STRATEGIES} for name in VARIANTS}
     errors = []
     symbol_summaries = []
 
@@ -191,39 +191,32 @@ def run_research() -> dict:
         except Exception as exc:
             errors.append({'symbol':symbol,'error':str(exc)})
             continue
-        split_i = int(len(d) * .70)
+        split_i = max(205, int(len(d) * .70))
         recent_start_i = max(205, len(d) - 504)
         for strategy_id in STRATEGIES:
             row = {'symbol':symbol,'strategy_id':strategy_id,'strategy_name':STRATEGY_NAMES[strategy_id],'variants':{}}
             for name, rule in VARIANTS.items():
                 try:
                     trades = simulate_rr_variant(d, strategy_id, rule, symbol=symbol)
-                    pooled[name].extend(trades)
-                    pooled_by_strategy[name][strategy_id].extend(trades)
-                    row['variants'][name] = _split_stats(trades, split_i, recent_start_i)
+                    grouped = _bucket(trades, split_i, recent_start_i)
+                    row['variants'][name] = {bucket_name: pooled_stats(items) for bucket_name,items in grouped.items()}
+                    for bucket_name,items in grouped.items():
+                        buckets[name][bucket_name].extend(items)
+                        by_strategy[name][strategy_id][bucket_name].extend(items)
                 except Exception as exc:
                     row['variants'][name] = {'error':str(exc)}
             symbol_summaries.append(row)
 
-    # A pooled split by signal_i is not comparable across symbols of different lengths.
-    # Build time-bucket labels within each symbol above, then aggregate OOS/recent directly
-    # from per-trade dates using a common approximate 10y sample split date.
-    all_dates = sorted({t['signal_date'] for trades in pooled['no_rr_filter'] for t in trades})
-    common_oos_date = all_dates[int(len(all_dates)*.70)] if all_dates else None
-    recent_cutoff = None
-    if all_dates:
-        last_year = int(all_dates[-1][:4]);recent_cutoff = f'{last_year-2:04d}-{all_dates[-1][5:]}'
-
     variant_summary = {}
-    baseline_n = max(1, len(pooled['no_rr_filter']))
-    for name,trades in pooled.items():
-        summary = {
-            'all': pooled_stats(trades),
-            'oos_common_last_30pct_dates': pooled_stats([t for t in trades if common_oos_date and t['signal_date'] >= common_oos_date]),
-            'recent_approx_2y': pooled_stats([t for t in trades if recent_cutoff and t['signal_date'] >= recent_cutoff]),
-            'coverage_vs_no_rr_pct': round(len(trades)/baseline_n*100.0,2),
-            'by_strategy': {sid: pooled_stats(pooled_by_strategy[name][sid]) for sid in STRATEGIES},
-        }
+    baseline_counts = {bucket_name:max(1,len(items)) for bucket_name,items in buckets['no_rr_filter'].items()}
+    for name in VARIANTS:
+        summary = {}
+        for bucket_name in ('all','is_first_70pct','oos_last_30pct','recent_2y'):
+            items = buckets[name][bucket_name]
+            stats = pooled_stats(items)
+            stats['coverage_vs_no_rr_pct'] = round(len(items)/baseline_counts.get(bucket_name,1)*100.0,2)
+            stats['by_strategy'] = {sid: pooled_stats(by_strategy[name][sid][bucket_name]) for sid in STRATEGIES}
+            summary[bucket_name] = stats
         variant_summary[name] = summary
 
     payload = {
@@ -240,8 +233,7 @@ def run_research() -> dict:
             'stop':'stop-market at stop less spread/slippage and sell commission',
             'entry':'planned BUY midpoint plus spread/slippage and buy commission',
         },
-        'common_oos_date':common_oos_date,
-        'recent_cutoff_approx':recent_cutoff,
+        'oos_method':'Each symbol uses its own first 70% of 10y rows as IS and final 30% as OOS; indicators retain full prior warmup. Each RR variant is re-simulated from scratch.',
         'variant_summary':variant_summary,
         'current_scan':current_scan_sensitivity(),
         'symbol_summaries':symbol_summaries,
