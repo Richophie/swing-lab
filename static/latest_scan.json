@@ -2,7 +2,7 @@
   "status": "ready",
   "version": "16.5",
   "core_version": "4.4",
-  "scanned_at": "2026-08-13T05:21:31+00:00",
+  "scanned_at": "2026-08-13T06:34:46+00:00",
   "universe_count": 5762,
   "candidate_count": 500,
   "failed_count": 8,
@@ -145,6 +145,14 @@
         "up_down_volume_ratio": 1.38,
         "avg_dollar_volume_20d": 62560005.0
       },
+      "live_flow": {
+        "relative_volume": 0.96,
+        "volume_5d_vs_20d": 0.83,
+        "reversal_volume": 0,
+        "up_down_volume_ratio": 1.38,
+        "avg_dollar_volume_20d": 62560005.0
+      },
+      "flow_basis": "current_completed_session",
       "sparkline": [
         123.08,
         125.37,
@@ -400,6 +408,14 @@
         "up_down_volume_ratio": 1.34,
         "avg_dollar_volume_20d": 145414593.0
       },
+      "live_flow": {
+        "relative_volume": 0.59,
+        "volume_5d_vs_20d": 0.81,
+        "reversal_volume": 0.59,
+        "up_down_volume_ratio": 1.34,
+        "avg_dollar_volume_20d": 145414593.0
+      },
+      "flow_basis": "current_completed_session",
       "sparkline": [
         70.05,
         69.29,
@@ -655,6 +671,14 @@
         "up_down_volume_ratio": 1.07,
         "avg_dollar_volume_20d": 156946439.0
       },
+      "live_flow": {
+        "relative_volume": 1.4,
+        "volume_5d_vs_20d": 1.06,
+        "reversal_volume": 0,
+        "up_down_volume_ratio": 1.07,
+        "avg_dollar_volume_20d": 156946439.0
+      },
+      "flow_basis": "current_completed_session",
       "sparkline": [
         84.43,
         84.08,
@@ -910,6 +934,14 @@
         "up_down_volume_ratio": 1.08,
         "avg_dollar_volume_20d": 190657098.0
       },
+      "live_flow": {
+        "relative_volume": 0.86,
+        "volume_5d_vs_20d": 0.82,
+        "reversal_volume": 0,
+        "up_down_volume_ratio": 1.08,
+        "avg_dollar_volume_20d": 190657098.0
+      },
+      "flow_basis": "current_completed_session",
       "sparkline": [
         94.92,
         94.33,
@@ -1164,6 +1196,14 @@
         "up_down_volume_ratio": 0.88,
         "avg_dollar_volume_20d": 475938359.0
       },
+      "live_flow": {
+        "relative_volume": 1.06,
+        "volume_5d_vs_20d": 0.91,
+        "reversal_volume": 1.06,
+        "up_down_volume_ratio": 0.88,
+        "avg_dollar_volume_20d": 475938359.0
+      },
+      "flow_basis": "current_completed_session",
       "sparkline": [
         577.29,
         544.56,
@@ -1346,7 +1386,9 @@
   "public_s_count": 5,
   "aggregate_eligible_count": 3,
   "experimental_s_count": 0,
-  "display_filter": "strategy tabs show raw public S; aggregate ranks current signal + flow + risk/reward + entry viability + ATR stop margin; no count cap",
+  "flow_completed_session_count": 0,
+  "flow_policy": "during an incomplete US daily bar, elite flow/liquidity scoring uses the previous completed session; live partial flow is stored separately",
+  "display_filter": "strategy tabs show raw public S; aggregate ranks current signal + completed-session flow/liquidity + risk/reward + entry viability + ATR stop margin; no count cap",
   "s_threshold": 85.0,
-  "elite_policy": "backtest is informational only; aggregate uses current setup, flow/liquidity, risk-reward, market regime, entry viability, ATR stop margin and first-20DMA overlay"
+  "elite_policy": "backtest is informational only; aggregate uses current setup, completed-session flow/liquidity during intraday scans, risk-reward, market regime, entry viability, ATR stop margin and first-20DMA overlay"
 }
