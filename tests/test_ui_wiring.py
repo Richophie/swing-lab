@@ -36,6 +36,8 @@ def test_dashboard_loads_backtest_v2_paper_and_indie_ui_helpers():
     assert '/static/indie_finance_ui.js?v=' in html
     assert '/static/pop_indie_polish.css?v=' in html
     assert '/static/pop_indie_polish.js?v=' in html
+    assert '/static/semantic_palette.css?v=' in html
+    assert '/static/signal_event_polish.js?v=' in html
 
     backtest = (ROOT / 'static' / 'backtest_compat.js').read_text(encoding='utf-8')
     assert 'full_10y' in backtest
@@ -71,6 +73,18 @@ def test_dashboard_loads_backtest_v2_paper_and_indie_ui_helpers():
     assert '👌 지금 볼 만한 자리' in pop_js
     assert 'entry-sticker-card' in pop_js
     assert 'live-marquee-track' in pop_js
+
+    palette = (ROOT / 'static' / 'semantic_palette.css').read_text(encoding='utf-8')
+    assert '--up:#ff7d88' in palette
+    assert '--down:#76a1ff' in palette
+    assert 'stroke:#ff7d88!important' in palette
+    assert 'stroke:#76a1ff!important' in palette
+    assert '.signal-event.exit .event-badge' in palette
+
+    signal_ui = (ROOT / 'static' / 'signal_event_polish.js').read_text(encoding='utf-8')
+    assert '/api/signal-events?limit=40' in signal_ui
+    assert '이탈 이유' in signal_ui
+    assert 'exit_reason' in signal_ui
 
     persistence = (ROOT / 'static' / 'paper_persistence.js').read_text(encoding='utf-8')
     assert 'swingLabPaperStateBackupV1' in persistence
