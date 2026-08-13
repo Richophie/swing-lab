@@ -63,6 +63,8 @@ def test_current_marks_show_recent_price_and_net_unrealized_pnl():
         assert mark['unrealized_pnl_krw'] > 0
         assert mark['unrealized_return_pct'] > 0
         assert mark['estimated_liquidation_value_krw'] < mark['market_value_krw']
+        assert result['summary']['unrealized_pnl_krw'] == mark['unrealized_pnl_krw']
+        assert result['summary']['equity_krw'] == round(result['summary']['cash_krw'] + mark['estimated_liquidation_value_krw'], 2)
 
 
 def test_pending_mark_has_price_but_no_unrealized_pnl():
@@ -86,7 +88,8 @@ def test_pending_mark_has_price_but_no_unrealized_pnl():
         paper_marks._price_mark = lambda symbol: (100.5, '2026-01-05T19:00:00+00:00', '1m')
         paper_marks.current_fx_rate = lambda: 1000.0
         try:
-            mark = paper_marks.current_marks(path)['orders'][0]
+            result = paper_marks.current_marks(path)
+            mark = result['orders'][0]
         finally:
             paper_marks._price_mark = old_price
             paper_marks.current_fx_rate = old_fx
@@ -94,6 +97,7 @@ def test_pending_mark_has_price_but_no_unrealized_pnl():
         assert mark['status'] == 'PENDING'
         assert mark['current_price_usd'] == 100.5
         assert mark['unrealized_pnl_krw'] is None
+        assert result['summary']['unrealized_pnl_krw'] == 0.0
 
 
 def main():
