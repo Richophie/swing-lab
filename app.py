@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from functools import lru_cache
 from pathlib import Path
+import hashlib
 import json
 import pandas as pd
 import yfinance as yf
@@ -13,7 +14,7 @@ from strategy_engine import evaluate_strategies, trade_plan
 from backtest_engine import run_backtest
 from stock_names import korean_name
 
-ROOT=Path(__file__).parent;STATIC=ROOT/'static';SCAN_FILE=STATIC/'latest_scan.json';HISTORY_FILE=STATIC/'trade_history.json';SIGNAL_EVENTS_FILE=STATIC/'signal_events.json';FX_FILE=STATIC/'fx_cache.json';app=Flask(__name__,static_folder='static')
+ROOT=Path(__file__).parent;STATIC=ROOT/'static';SCAN_FILE=STATIC/'latest_scan.json';HISTORY_FILE=STATIC/'trade_history.json';SIGNAL_EVENTS_FILE=STATIC/'signal_events.json';FX_FILE=STATIC/'fx_cache.json';PAPER_CLIENT_DIR=ROOT/'runtime'/'paper_clients';app=Flask(__name__,static_folder='static')
 
 def load_json(path, default):
     try:return json.loads(path.read_text(encoding='utf-8'))
@@ -140,6 +141,12 @@ def _decorate_paper_snapshot(data):
         order=dict(raw_order);symbol=str(order.get('symbol') or '').upper();row,_=_find_scan(symbol,order.get('strategy_id'));order['name_ko']=(row or {}).get('name_ko') or korean_name(symbol,(row or {}).get('security_name'));orders.append(order)
     out['orders']=orders;return out
 
+def _paper_state_path():
+    raw=str(request.headers.get('X-Paper-Client') or '').strip()
+    if not raw:raw=f"anonymous:{request.remote_addr or 'unknown'}"
+    token=hashlib.sha256(raw.encode('utf-8')).hexdigest()[:32]
+    return PAPER_CLIENT_DIR/f'{token}.json'
+
 @app.route('/')
 def index():return send_from_directory('static','dashboard.html')
 @app.route('/health')
@@ -210,7 +217,7 @@ def backtest(symbol):
 def paper_status_api():
     try:
         from paper_broker_service import status
-        return jsonify(_decorate_paper_snapshot(status()))
+        return jsonify(_decorate_paper_snapshot(status(state_path=_paper_state_path())))
     except Exception as exc:return jsonify({'error':str(exc)}),400
 @app.route('/api/paper/submit',methods=['POST'])
 def paper_submit_api():
@@ -218,19 +225,19 @@ def paper_submit_api():
     if not symbol:return jsonify({'error':'symbol이 필요합니다'}),400
     try:
         from paper_broker_service import submit_from_latest,status
-        submit_from_latest(symbol,strategy);return jsonify(_decorate_paper_snapshot(status()))
+        path=_paper_state_path();submit_from_latest(symbol,strategy,state_path=path);return jsonify(_decorate_paper_snapshot(status(state_path=path)))
     except Exception as exc:return jsonify({'error':str(exc)}),400
 @app.route('/api/paper/refresh',methods=['POST'])
 def paper_refresh_api():
     try:
         from paper_broker_service import refresh_active
-        return jsonify(_decorate_paper_snapshot(refresh_active()))
+        return jsonify(_decorate_paper_snapshot(refresh_active(state_path=_paper_state_path())))
     except Exception as exc:return jsonify({'error':str(exc)}),400
 @app.route('/api/paper/reset',methods=['POST'])
 def paper_reset_api():
     try:
         from paper_broker_service import reset
-        return jsonify(_decorate_paper_snapshot(reset()))
+        return jsonify(_decorate_paper_snapshot(reset(state_path=_paper_state_path())))
     except Exception as exc:return jsonify({'error':str(exc)}),400
 
 if __name__=='__main__':app.run(host='0.0.0.0',port=8766,debug=False)
