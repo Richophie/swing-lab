@@ -1,0 +1,43 @@
+name: RSI2 Regime Sizing Research
+
+on:
+  pull_request:
+    paths:
+      - 'rsi2_regime_sizing_research.py'
+      - 'rsi2_broad_regime_research.py'
+      - 'rsi2_selector_research.py'
+      - 'portfolio_backtest.py'
+      - 'scanner.py'
+      - 'strategy_rules.py'
+      - 'backtest_engine.py'
+      - 'tests/test_rsi2_regime_sizing_research.py'
+      - '.github/workflows/rsi2-regime-sizing-research.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: pip install -r requirements.txt
+      - name: Compile research modules
+        run: python -m py_compile rsi2_regime_sizing_research.py tests/test_rsi2_regime_sizing_research.py
+      - name: Deterministic regime-sizing tests
+        run: PYTHONPATH=. python tests/test_rsi2_regime_sizing_research.py
+      - name: Broad finite-account regime-sizing research
+        run: PYTHONPATH=. python rsi2_regime_sizing_research.py
+      - name: Upload research artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rsi2-regime-sizing-research
+          path: artifacts/rsi2_regime_sizing_research.json
+          if-no-files-found: warn
