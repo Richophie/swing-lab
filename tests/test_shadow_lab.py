@@ -22,6 +22,25 @@ def _item(symbol, rr, score=90):
     }
 
 
+def _live_scan_without_raw_atr(symbol='AAA'):
+    return {
+        'results': [
+            {
+                'symbol': symbol,
+                'strategy_trade_plans': {
+                    'rsi2_trend_reversion': {
+                        'entry_low': 99.0,
+                        'entry_high': 101.0,
+                        'target': 106.0,
+                        'stop': 95.0,
+                        'stop_atr_multiple': 2.5,
+                    }
+                },
+            }
+        ]
+    }
+
+
 def test_shadow_uses_official_close_signals_and_capacity_with_rr_priority():
     state = new_state(3_000_000)
     history = {
@@ -60,7 +79,29 @@ def test_shadow_does_not_duplicate_same_confirmed_signal():
     assert len(state['orders']) == 1
 
 
-def test_shadow_rejects_missing_atr_instead_of_silently_using_one_percent():
+def test_shadow_recovers_missing_atr_from_current_scan_without_changing_frozen_levels():
+    state = new_state(3_000_000)
+    item = _item('AAA', 1.5)
+    item.pop('atr')
+    history = {'days': [{'date': '2026-08-13', 'items': [item]}]}
+    result = ingest_confirmed_signals(
+        state,
+        history,
+        fx_rate=1000.0,
+        live_scan=_live_scan_without_raw_atr(),
+    )
+    assert result == {'submitted': 1, 'skipped': 0}
+    order = state['orders'][0]
+    # ($100 entry - $95 stop) / 2.5 = $2 ATR; gap guard = $1.50.
+    assert order['atr'] == 2.0
+    assert order['gap_guard'] == 1.5
+    assert order['buy_low'] == 99.0
+    assert order['buy_high'] == 101.0
+    assert order['target'] == 106.0
+    assert order['stop'] == 95.0
+
+
+def test_shadow_rejects_missing_atr_when_no_recovery_source_exists():
     state = new_state(3_000_000)
     item = _item('AAA', 1.5)
     item.pop('atr')
@@ -82,7 +123,8 @@ def test_shadow_snapshot_keeps_live_trading_disabled():
 def main():
     test_shadow_uses_official_close_signals_and_capacity_with_rr_priority()
     test_shadow_does_not_duplicate_same_confirmed_signal()
-    test_shadow_rejects_missing_atr_instead_of_silently_using_one_percent()
+    test_shadow_recovers_missing_atr_from_current_scan_without_changing_frozen_levels()
+    test_shadow_rejects_missing_atr_when_no_recovery_source_exists()
     test_shadow_snapshot_keeps_live_trading_disabled()
     print('shadow lab PASS')
 
