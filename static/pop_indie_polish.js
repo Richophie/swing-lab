@@ -32,7 +32,13 @@
   function apply(){polishHeading();polishLiveTicker();markEntryStickers()}
   window.addEventListener('DOMContentLoaded',()=>{
     apply();
-    const observer=new MutationObserver(apply);
-    observer.observe(document.body,{childList:true,subtree:true});
+    // Only watch recommendation-card insertion. Do not observe the whole body:
+    // another UI layer also edits headings and a body-wide observer caused an
+    // endless heading mutation loop that locked the page during startup.
+    const grid=document.getElementById('todayGrid');
+    if(grid){
+      const observer=new MutationObserver(()=>markEntryStickers());
+      observer.observe(grid,{childList:true,subtree:true});
+    }
   });
 })();
