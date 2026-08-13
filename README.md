@@ -82,6 +82,8 @@ RSI2의 진입일 차이는 Swing-only 7건, Backtrader-only 1건입니다.
 
 현재 감사 결과는 **체결 엔진 재현성 검증**입니다. 이 20개 현재 종목 표본만으로 전략의 장기 수익성이 증명되었다고 보지는 않습니다. 전략 수익성 검증은 더 넓은 역사적 종목 universe, OOS/walk-forward, 시장 국면 분리, Paper Broker의 실제 주문 lifecycle 검증까지 통과해야 합니다.
 
+다음 구현 단계는 **Paper Broker**입니다. 실계좌 주문을 보내지 않고 cash, pending order, position, average price, realized/unrealized P&L, 주문 상태 전이와 같은 날 진입 후 Stop/Target 활성화 순서를 실제 주문 lifecycle처럼 기록해 RSI2의 남은 체결 차이를 검증합니다.
+
 ## 자동 실행
 
 GitHub Actions의 `Market Scan Cache`가 장중 주기적으로:
