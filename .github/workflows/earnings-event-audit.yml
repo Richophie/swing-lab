@@ -22,11 +22,13 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
       - run: pip install -r requirements.txt
+      - name: Install audit-only parser dependency
+        run: pip install lxml
       - name: Compile audit modules
         run: python -m py_compile earnings_event_audit.py tests/test_earnings_event_audit.py
       - name: Deterministic extraction tests
         run: PYTHONPATH=. python tests/test_earnings_event_audit.py
-      - name: Audit 60 liquid symbols
+      - name: Confirm 20 liquid symbols across both earnings surfaces
         run: PYTHONPATH=. python earnings_event_audit.py
       - name: Upload earnings audit
         if: always()
