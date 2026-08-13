@@ -1,0 +1,47 @@
+name: Portfolio Correlation Research
+
+on:
+  pull_request:
+    paths:
+      - 'portfolio_correlation_research.py'
+      - 'portfolio_correlation_validation.py'
+      - 'tests/test_portfolio_correlation_research.py'
+      - '.github/workflows/portfolio-correlation-research.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: pip install -r requirements.txt
+      - name: Compile research modules
+        run: python -m py_compile portfolio_correlation_research.py portfolio_correlation_validation.py tests/test_portfolio_correlation_research.py
+      - name: Deterministic correlation portfolio tests
+        run: PYTHONPATH=. python tests/test_portfolio_correlation_research.py
+      - name: Broad correlation concentration exploration
+        run: PYTHONPATH=. python portfolio_correlation_research.py
+      - name: Upload exploration artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: portfolio-correlation-research
+          path: artifacts/portfolio_correlation_research.json
+          if-no-files-found: warn
+      - name: Fixed-candidate 80-symbol confirmation
+        run: PYTHONPATH=. python portfolio_correlation_validation.py
+      - name: Upload confirmation artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: portfolio-correlation-validation
+          path: artifacts/portfolio_correlation_validation.json
+          if-no-files-found: warn
