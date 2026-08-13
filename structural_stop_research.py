@@ -91,7 +91,6 @@ def historical_features(d:pd.DataFrame,state:pd.Series,frame:pd.DataFrame)->dict
     )
     momentum_score=_quality(pd.Series(mp,index=d.index),frame['momentum_pullback'])
 
-    # Historical first-20DMA overlay, equivalent in spirit to scanner._first_20d_pullback_overlay.
     ma5=c.rolling(5).mean();ma20=c.rolling(20).mean();ma50=c.rolling(50).mean();ma200=c.rolling(200).mean();high52=h.rolling(252).max()
     aligned=(ma5>ma20)&(ma20>ma50)&(ma50>ma200)
     recent_high=(h>=high52*.997).rolling(30,min_periods=1).max().fillna(0).astype(bool)
@@ -173,11 +172,12 @@ def simulate_symbol_variant(d:pd.DataFrame,strategy_id:str,variant:str,symbol:st
             bar=d.iloc[j];outcome=exit_fill_for_bar(bar['Open'],bar['High'],bar['Low'],target,stop,BACKTEST_SLIPPAGE_BPS,BACKTEST_HALF_SPREAD_BPS)
             if outcome is not None:exit_fill,reason,raw_exit=outcome;exit_i=j;break
         ret=net_trade_return(entry_fill,exit_fill,commission);risk=entry_fill-stop;reward=target-entry_fill
-        split_i=max(205,int(n*.70));recent_i=max(205,n-504)
+        split_i=max(205,int(n*.70));recent_i=max(205,n-504);gross_rr=float(sel['gross_rr']);net_rr=float(sel['net_rr'])
         trades.append({
             'symbol':symbol,'strategy_id':strategy_id,'variant':variant,'signal_i':i,'signal_date':d.index[i].strftime('%Y-%m-%d'),'entry_date':d.index[entry_i].strftime('%Y-%m-%d'),'exit_date':d.index[exit_i].strftime('%Y-%m-%d'),
             'ret':float(ret),'reason':reason,'risk_pct':risk/entry_fill if entry_fill>0 else 0.0,'risk_reward':reward/risk if risk>0 else 0.0,
-            'raw_stop_atr_multiple':float(plan['raw_stop_atr_multiple']),'final_stop_atr_multiple':float(plan['stop_atr_multiple']),'gross_risk_reward_signal':float(sel['gross_rr']),'elite_score':float(sel['elite_score']),'market_state':str(state.iloc[i]),
+            'gross_risk_reward':gross_rr,'net_risk_reward':net_rr,'cost_rr_drag':gross_rr-net_rr,
+            'raw_stop_atr_multiple':float(plan['raw_stop_atr_multiple']),'final_stop_atr_multiple':float(plan['stop_atr_multiple']),'gross_risk_reward_signal':gross_rr,'elite_score':float(sel['elite_score']),'market_state':str(state.iloc[i]),
             'is_is':i<split_i,'is_oos':i>=split_i,'is_recent':i>=recent_i,
         });i=exit_i+1
     diag['avg_raw_stop_atr_multiple']=round(float(np.mean(raw_mults)),4) if raw_mults else None;diag['raw_lt_1_25_pct']=round(sum(x<1.25 for x in raw_mults)/len(raw_mults)*100,2) if raw_mults else 0;diag['raw_lt_1_50_pct']=round(sum(x<1.5 for x in raw_mults)/len(raw_mults)*100,2) if raw_mults else 0
@@ -193,8 +193,7 @@ def bucket(trades:list[dict],name:str)->list[dict]:
 
 
 def run_research()->dict:
-    requested,source=research_universe();requested=requested[:TARGET_SYMBOLS];eligible=[];errors=[];variant_trades={v:[] for v in VARIANTS};diagnostics={v:defaultdict(lambda:defaultdict(float)) for v in VARIANTS}
-    per_symbol=[]
+    requested,source=research_universe();requested=requested[:TARGET_SYMBOLS];eligible=[];errors=[];variant_trades={v:[] for v in VARIANTS};per_symbol=[]
     for symbol in requested:
         try:
             d=load_price_history(symbol,'10y').dropna()
