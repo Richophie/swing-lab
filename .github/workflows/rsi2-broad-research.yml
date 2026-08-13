@@ -1,0 +1,43 @@
+name: RSI2 Broad Regime Research
+
+on:
+  pull_request:
+    paths:
+      - 'rsi2_broad_regime_research.py'
+      - 'rsi2_selector_research.py'
+      - 'scanner.py'
+      - 'execution_quality.py'
+      - 'market_data.py'
+      - 'strategy_rules.py'
+      - 'backtest_engine.py'
+      - 'tests/test_rsi2_broad_regime_research.py'
+      - '.github/workflows/rsi2-broad-research.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: pip install -r requirements.txt
+      - name: Compile research modules
+        run: python -m py_compile rsi2_broad_regime_research.py rsi2_selector_research.py tests/test_rsi2_broad_regime_research.py
+      - name: Deterministic broad-regime tests
+        run: PYTHONPATH=. python tests/test_rsi2_broad_regime_research.py
+      - name: Broad 80-symbol RSI2 market-regime research
+        run: PYTHONPATH=. python rsi2_broad_regime_research.py
+      - name: Upload research artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rsi2-broad-regime-research
+          path: artifacts/rsi2_broad_regime_research.json
+          if-no-files-found: warn
