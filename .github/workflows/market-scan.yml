@@ -9,6 +9,10 @@ on:
     paths:
       - 'requirements.txt'
       - 'config.py'
+      - 'baseline_rules.py'
+      - 'baseline_journal.py'
+      - 'intraday_execution.py'
+      - 'intraday_outcome_repair.py'
       - 'market_data.py'
       - 'strategy_rules.py'
       - 'strategy_engine.py'
@@ -35,6 +39,8 @@ on:
       - 'static/dashboard.js'
       - 'static/detail_overlay.js'
       - 'static/ui_controls.js'
+      - 'static/lab_dashboard.js'
+      - 'static/lab_dashboard.css'
       - 'static/signal_event_polish.js'
       - 'static/event_risk.css'
       - 'static/event_risk_ui.js'
@@ -59,7 +65,7 @@ jobs:
           cache: 'pip'
       - run: pip install -r requirements.txt
       - name: Compile clean modules
-        run: python -m py_compile config.py market_data.py strategy_rules.py strategy_engine.py stock_names.py scanner.py earnings_events.py risk_observability.py paper_broker.py paper_broker_service.py paper_plan.py paper_manual.py paper_entry.py repo_data.py shadow_lab.py signal_log.py journal.py rebuild_journal_day.py refresh_fx_cache.py backtest_engine.py app.py qa.py
+        run: python -m py_compile config.py baseline_rules.py baseline_journal.py intraday_execution.py intraday_outcome_repair.py market_data.py strategy_rules.py strategy_engine.py stock_names.py scanner.py earnings_events.py risk_observability.py paper_broker.py paper_broker_service.py paper_plan.py paper_manual.py paper_entry.py repo_data.py shadow_lab.py signal_log.py journal.py rebuild_journal_day.py refresh_fx_cache.py backtest_engine.py app.py qa.py
       - name: Rebuild Aug 12 journal with current strategy logic
         run: python rebuild_journal_day.py
       - name: Build latest live candidates
@@ -72,17 +78,21 @@ jobs:
         run: python qa.py
       - name: Freeze close-confirmed signals and update outcomes
         run: python journal.py
-      - name: Advance automatic research portfolio
+      - name: Freeze baseline metadata on official recommendations
+        run: python baseline_journal.py
+      - name: Resolve same-day STOP/TARGET order with minute data
+        run: python intraday_outcome_repair.py
+      - name: Advance A/B automatic research portfolios
         run: python shadow_lab.py
-      - name: Commit latest scan, caches, logs, journal and research portfolio
+      - name: Commit latest scan, caches, logs, journal and A/B research portfolios
         run: |
           git config user.name "swing-lab-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add static/latest_scan.json static/fx_cache.json static/earnings_cache.json static/signal_events.json static/trade_history.json static/shadow_portfolio.json
+          git add static/latest_scan.json static/fx_cache.json static/earnings_cache.json static/signal_events.json static/trade_history.json static/shadow_portfolio.json static/shadow_portfolio_touch.json
           if git diff --cached --quiet; then
             echo "No data changes"
           else
-            git commit -m "data: refresh signals, journal and shadow portfolio [skip render]"
+            git commit -m "data: refresh signals, journal and A-B forward lab [skip render]"
             git pull --rebase origin main
             git push
           fi
