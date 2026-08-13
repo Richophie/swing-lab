@@ -1,0 +1,43 @@
+name: Gap Guard Research
+
+on:
+  pull_request:
+    paths:
+      - 'gap_guard_research.py'
+      - 'structural_stop_research.py'
+      - 'strategy_rules.py'
+      - 'scanner.py'
+      - 'execution_quality.py'
+      - 'portfolio_backtest.py'
+      - 'backtest_engine.py'
+      - 'tests/test_gap_guard_research.py'
+      - '.github/workflows/gap-guard-research.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: pip install -r requirements.txt
+      - name: Compile research modules
+        run: python -m py_compile gap_guard_research.py tests/test_gap_guard_research.py
+      - name: Deterministic gap-guard tests
+        run: PYTHONPATH=. python tests/test_gap_guard_research.py
+      - name: Broad 60-symbol gap-guard research
+        run: PYTHONPATH=. python gap_guard_research.py
+      - name: Upload research artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gap-guard-research
+          path: artifacts/gap_guard_research.json
+          if-no-files-found: warn
