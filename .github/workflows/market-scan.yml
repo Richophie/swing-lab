@@ -16,7 +16,11 @@ on:
       - 'scanner.py'
       - 'earnings_events.py'
       - 'risk_observability.py'
+      - 'paper_broker.py'
       - 'paper_broker_service.py'
+      - 'paper_manual.py'
+      - 'paper_entry.py'
+      - 'shadow_lab.py'
       - 'signal_log.py'
       - 'journal.py'
       - 'rebuild_journal_day.py'
@@ -28,6 +32,8 @@ on:
       - 'static/dashboard.css'
       - 'static/dashboard.js'
       - 'static/detail_overlay.js'
+      - 'static/ui_controls.js'
+      - 'static/signal_event_polish.js'
       - 'static/event_risk.css'
       - 'static/event_risk_ui.js'
       - '.github/workflows/market-scan.yml'
@@ -51,7 +57,7 @@ jobs:
           cache: 'pip'
       - run: pip install -r requirements.txt
       - name: Compile clean modules
-        run: python -m py_compile config.py market_data.py strategy_rules.py strategy_engine.py stock_names.py scanner.py earnings_events.py risk_observability.py paper_broker_service.py signal_log.py journal.py rebuild_journal_day.py refresh_fx_cache.py backtest_engine.py app.py qa.py
+        run: python -m py_compile config.py market_data.py strategy_rules.py strategy_engine.py stock_names.py scanner.py earnings_events.py risk_observability.py paper_broker.py paper_broker_service.py paper_manual.py paper_entry.py shadow_lab.py signal_log.py journal.py rebuild_journal_day.py refresh_fx_cache.py backtest_engine.py app.py qa.py
       - name: Rebuild Aug 12 journal with current strategy logic
         run: python rebuild_journal_day.py
       - name: Build latest live candidates
@@ -64,15 +70,17 @@ jobs:
         run: python qa.py
       - name: Freeze close-confirmed signals and update outcomes
         run: python journal.py
-      - name: Commit latest scan, caches, signal log and confirmed journal
+      - name: Advance automatic research portfolio
+        run: python shadow_lab.py
+      - name: Commit latest scan, caches, logs, journal and research portfolio
         run: |
           git config user.name "swing-lab-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add static/latest_scan.json static/fx_cache.json static/earnings_cache.json static/signal_events.json static/trade_history.json
+          git add static/latest_scan.json static/fx_cache.json static/earnings_cache.json static/signal_events.json static/trade_history.json static/shadow_portfolio.json
           if git diff --cached --quiet; then
             echo "No data changes"
           else
-            git commit -m "data: refresh live signals, event cache and confirmed journal [skip render]"
+            git commit -m "data: refresh signals, journal and shadow portfolio [skip render]"
             git pull --rebase origin main
             git push
           fi
