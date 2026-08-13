@@ -60,23 +60,42 @@ def bars_for_date(df: pd.DataFrame, session_date: str | date) -> pd.DataFrame:
     return df.loc[mask].copy()
 
 
-def first_buy_touch(bars: pd.DataFrame, buy_low: float, buy_high: float):
-    """Return the first regular-session touch of the frozen BUY zone.
+def first_buy_touch(bars: pd.DataFrame, buy_low: float, buy_high: float, *, stop: float | None = None):
+    """Return the first price at-or-better than the frozen BUY ceiling.
 
-    The returned raw price is the first boundary/open price that could have been
-    filled without looking ahead inside later bars.
+    BUY high is interpreted as the maximum acceptable entry price, not a narrow
+    box that rejects cheaper prices. If the next session opens below BUY low but
+    remains above STOP, that cheaper open is a valid fill. If price starts above
+    BUY high, wait until it falls to BUY high. A session already at/below STOP is
+    considered thesis-broken and must not create a fresh position.
     """
     if bars is None or bars.empty:
         return None
-    lo, hi = sorted((float(buy_low), float(buy_high)))
+    _, hi = sorted((float(buy_low), float(buy_high)))
+    stop_px = None if stop is None else float(stop)
     for ts, row in bars.iterrows():
-        o, h, l = float(row['Open']), float(row['High']), float(row['Low'])
-        if lo <= o <= hi:
-            return {'timestamp': ts.isoformat(), 'raw_price': o, 'quality': '1m_open_in_buy_zone'}
-        if o > hi and l <= hi:
-            return {'timestamp': ts.isoformat(), 'raw_price': hi, 'quality': '1m_first_buy_touch'}
-        if o < lo and h >= lo:
-            return {'timestamp': ts.isoformat(), 'raw_price': lo, 'quality': '1m_first_buy_touch'}
+        o, l = float(row['Open']), float(row['Low'])
+        if stop_px is not None and o <= stop_px:
+            return {
+                'timestamp': ts.isoformat(),
+                'raw_price': o,
+                'quality': '1m_open_below_stop_skip',
+                'invalid': True,
+            }
+        if o <= hi:
+            return {
+                'timestamp': ts.isoformat(),
+                'raw_price': o,
+                'quality': '1m_open_at_or_better_than_buy',
+                'invalid': False,
+            }
+        if l <= hi:
+            return {
+                'timestamp': ts.isoformat(),
+                'raw_price': hi,
+                'quality': '1m_first_buy_ceiling_touch',
+                'invalid': False,
+            }
     return None
 
 
