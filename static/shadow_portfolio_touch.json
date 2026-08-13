@@ -6,7 +6,7 @@
   "events": [],
   "shadow_decisions": [],
   "created_at": "2026-08-13T11:20:00+00:00",
-  "updated_at": "2026-08-13T11:20:00+00:00",
+  "updated_at": "2026-08-13T11:44:10+00:00",
   "live_trading_enabled": false,
   "lab_meta": {
     "version": 2,
@@ -17,6 +17,56 @@
     "entry_mode": "NEXT_SESSION_BUY_TOUCH",
     "allocator": "risk_reward_priority",
     "human_intervention": false,
-    "live_trading_enabled": false
+    "live_trading_enabled": false,
+    "baseline_version": "baseline-v1.0-2026-08-13",
+    "baseline": {
+      "baseline_version": "baseline-v1.0-2026-08-13",
+      "frozen_at": "2026-08-13",
+      "app_version_at_freeze": "16.5",
+      "core_version_at_freeze": "4.4",
+      "public_strategies": [
+        "confirmed_pullback",
+        "rsi2_trend_reversion",
+        "momentum_pullback"
+      ],
+      "s_threshold": 85.0,
+      "elite_policy": {
+        "elite_min_score": 72.0,
+        "min_flow_score": 42.0,
+        "min_gross_risk_reward": 1.2,
+        "market_state_excluded": [
+          "조심"
+        ],
+        "entry_viable_required": true,
+        "min_stop_atr": 1.5
+      },
+      "execution": {
+        "entry_gap_atr": 0.75,
+        "entry_gap_pct": 0.01,
+        "same_bar_policy": "use 1m first-touch when available; unresolved same-1m/daily ambiguity falls back to stop",
+        "commission_pct_per_side": 0.1,
+        "slippage_bps": 5.0,
+        "half_spread_bps": 2.5
+      },
+      "portfolio": {
+        "starting_cash_krw": 3000000,
+        "max_positions": 3,
+        "risk_per_trade_pct": 1.0,
+        "max_position_pct": 40.0,
+        "slot_priority": "ex_ante_gross_risk_reward"
+      },
+      "universe": {
+        "candidate_limit": 500
+      },
+      "forward_review": {
+        "no_strategy_tuning_before_closed_trades": 30,
+        "formal_review_target_closed_trades": 50
+      }
+    },
+    "last_run_at": "2026-08-13T11:44:10+00:00",
+    "last_ingest": {
+      "submitted": 0,
+      "skipped": 0
+    }
   }
 }
