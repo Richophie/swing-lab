@@ -14,6 +14,7 @@ on:
       - 'audit_matrix.py'
       - 'paper_broker.py'
       - 'paper_broker_service.py'
+      - 'paper_marks.py'
       - 'paper_restore.py'
       - 'paper_entry.py'
       - 'render.yaml'
@@ -30,6 +31,7 @@ on:
       - 'static/backtest_results.css'
       - 'static/fx_cache.json'
       - 'static/paper_persistence.js'
+      - 'static/paper_mark_to_market.js'
       - 'static/detail_overlay.js'
       - 'static/indie_finance_theme.css'
       - 'static/indie_finance_ui.js'
@@ -41,6 +43,7 @@ on:
       - 'tests/test_backtest_v2.py'
       - 'tests/test_backtrader_audit.py'
       - 'tests/test_paper_broker.py'
+      - 'tests/test_paper_marks.py'
       - 'tests/test_paper_restore.py'
       - 'tests/test_signal_history.py'
       - 'tests/test_startup_stability.py'
@@ -63,9 +66,9 @@ jobs:
           cache: 'pip'
       - run: pip install -r requirements.txt
       - name: Compile core modules
-        run: python -m py_compile config.py market_data.py strategy_rules.py strategy_engine.py backtest_engine.py portfolio_backtest.py backtrader_audit.py audit_matrix.py paper_broker.py paper_broker_service.py paper_restore.py paper_entry.py refresh_fx_cache.py stock_names.py signal_log.py journal.py app.py qa.py tests/test_strategy_rules.py tests/test_backtest_v2.py tests/test_backtrader_audit.py tests/test_paper_broker.py tests/test_paper_restore.py tests/test_signal_history.py tests/test_startup_stability.py tests/test_ui_wiring.py
+        run: python -m py_compile config.py market_data.py strategy_rules.py strategy_engine.py backtest_engine.py portfolio_backtest.py backtrader_audit.py audit_matrix.py paper_broker.py paper_broker_service.py paper_marks.py paper_restore.py paper_entry.py refresh_fx_cache.py stock_names.py signal_log.py journal.py app.py qa.py tests/test_strategy_rules.py tests/test_backtest_v2.py tests/test_backtrader_audit.py tests/test_paper_broker.py tests/test_paper_marks.py tests/test_paper_restore.py tests/test_signal_history.py tests/test_startup_stability.py tests/test_ui_wiring.py
       - name: JavaScript syntax check
-        run: node --check static/dashboard.js && node --check static/chart_guides.js && node --check static/backtest_compat.js && node --check static/paper_persistence.js && node --check static/detail_overlay.js && node --check static/indie_finance_ui.js && node --check static/pop_indie_polish.js && node --check static/signal_event_polish.js
+        run: node --check static/dashboard.js && node --check static/chart_guides.js && node --check static/backtest_compat.js && node --check static/paper_persistence.js && node --check static/paper_mark_to_market.js && node --check static/detail_overlay.js && node --check static/indie_finance_ui.js && node --check static/pop_indie_polish.js && node --check static/signal_event_polish.js
       - name: Deterministic strategy parity test
         run: PYTHONPATH=. python tests/test_strategy_rules.py
       - name: Backtest V2 execution and portfolio tests
@@ -74,6 +77,8 @@ jobs:
         run: PYTHONPATH=. python tests/test_backtrader_audit.py
       - name: Paper broker lifecycle tests
         run: PYTHONPATH=. python tests/test_paper_broker.py
+      - name: Paper mark-to-market tests
+        run: PYTHONPATH=. python tests/test_paper_marks.py
       - name: Paper browser restore tests
         run: PYTHONPATH=. python tests/test_paper_restore.py
       - name: Signal history and close-publication tests
