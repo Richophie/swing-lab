@@ -80,6 +80,8 @@ RSI2의 진입일 차이는 Swing-only 7건, Backtrader-only 1건입니다.
 
 두 NKE 사례는 신호 규칙 차이보다 일봉 내부 주문 순서 해상도 차이로 해석하는 것이 타당합니다. Swing V2는 다음날 시가 진입 직후 같은 일봉의 Stop/Target 터치를 즉시 평가하지만, Backtrader의 일봉 bracket은 부모 Market 진입이 체결된 뒤 같은 OHLC 봉 내부에서 자식 Stop/Limit 주문이 어떤 순서로 터졌는지 완전히 재구성할 수 없습니다. 이 차이는 숨기지 않고 감사 리포트에 남깁니다.
 
+현재 감사 결과는 **체결 엔진 재현성 검증**입니다. 이 20개 현재 종목 표본만으로 전략의 장기 수익성이 증명되었다고 보지는 않습니다. 전략 수익성 검증은 더 넓은 역사적 종목 universe, OOS/walk-forward, 시장 국면 분리, Paper Broker의 실제 주문 lifecycle 검증까지 통과해야 합니다.
+
 ## 자동 실행
 
 GitHub Actions의 `Market Scan Cache`가 장중 주기적으로:
