@@ -34,6 +34,8 @@ def test_dashboard_loads_backtest_v2_paper_and_indie_ui_helpers():
     assert '/static/paper_persistence.js?v=' in html
     assert '/static/indie_finance_theme.css?v=' in html
     assert '/static/indie_finance_ui.js?v=' in html
+    assert '/static/pop_indie_polish.css?v=' in html
+    assert '/static/pop_indie_polish.js?v=' in html
 
     backtest = (ROOT / 'static' / 'backtest_compat.js').read_text(encoding='utf-8')
     assert 'full_10y' in backtest
@@ -59,6 +61,16 @@ def test_dashboard_loads_backtest_v2_paper_and_indie_ui_helpers():
     assert '🧪 가상계좌' in microcopy
     assert '🧭 이 자리를 어떻게 읽었는지' in microcopy
     assert '💸 내 돈으로 계산' in microcopy
+
+    pop_css = (ROOT / 'static' / 'pop_indie_polish.css').read_text(encoding='utf-8')
+    pop_js = (ROOT / 'static' / 'pop_indie_polish.js').read_text(encoding='utf-8')
+    assert 'Black Han Sans' in pop_css
+    assert '.live-marquee-track' in pop_css
+    assert 'clip-path:polygon' in pop_css
+    assert '#5cff77' in pop_css
+    assert '👌 지금 볼 만한 자리' in pop_js
+    assert 'entry-sticker-card' in pop_js
+    assert 'live-marquee-track' in pop_js
 
     persistence = (ROOT / 'static' / 'paper_persistence.js').read_text(encoding='utf-8')
     assert 'swingLabPaperStateBackupV1' in persistence
