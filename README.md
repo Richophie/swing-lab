@@ -14,6 +14,7 @@
 - `journal.py` — 날짜별 추천 스냅샷과 결과 판정
 - `backtest_engine.py` — canonical 규칙 + 현실적 체결비용/갭 규칙을 사용하는 Backtest V2
 - `portfolio_backtest.py` — 여러 종목 신호를 하나의 300만원 계좌로 합성하는 동시보유/포지션 사이징 시뮬레이터
+- `backtrader_audit.py` — 같은 canonical 신호/가격계획을 Backtrader의 독립 브로커에서 재체결해 결과 차이를 감사
 - `walkforward.py` — OOS / Walk-forward 검증
 - `stock_names.py` — 한글 종목명 단일 관리
 - `qa.py` — 회귀/구조 검증 및 live/backtest 규칙 배선 검사
@@ -33,7 +34,7 @@
 - BUY/TARGET/STOP과 최소 1.5 ATR 손절 여유도 같은 모듈을 실전과 백테스트가 함께 사용합니다.
 - 백테스트의 과거 시장 상태는 현재 시장 필터와 같은 SPY/QQQ 120일선·200일선·RSI>45 점수 체계로 재구성합니다.
 - 다음 거래일 시가가 실전 진입 허용 범위를 크게 벗어나면 백테스트에서도 체결하지 않습니다.
-- 한 일봉에서 목표와 손절을 모두 터치한 경우 보수적으로 손절을 먼저 적용합니다.
+- 한 일봉에서 목표와 손절을 모두 터치한 경우 Swing V2는 보수적으로 손절을 먼저 적용합니다.
 
 ## Backtest V2 체결 모델
 
@@ -51,6 +52,14 @@
 - 같은 날 청산되는 돈을 그날 시가 신규진입에 다시 쓰지 않아 체결 순서를 보수적으로 처리합니다.
 - 포지션은 KRW 명목노출 기준의 fractional exposure로 계산합니다. 역사적 환율이나 주식 수량 반올림은 강제로 가정하지 않으며, 실제 주식 수량 계산은 향후 Paper Broker/Toss 주문 계층에서 처리합니다.
 
+## Backtrader 독립 감사
+
+- 신호와 BUY/TARGET/STOP만 canonical 원본에서 전달하고 실제 주문 체결은 Backtrader의 `BackBroker`가 담당합니다.
+- 다음날 시가 진입은 `cheat_on_open`에서 실제 시가를 확인한 뒤 Backtrader Market 주문으로 제출합니다.
+- 진입 후에는 Backtrader native bracket 주문(Stop + Limit OCO)을 사용합니다.
+- Swing V2와 Backtrader 결과를 진입일, 거래 수, 목표/손절/기간종료 결과, 평균 거래수익 차이로 비교합니다.
+- Backtrader가 유리한 목표가 갭에서 limit 가격보다 좋은 시가를 인정하거나 기간종료 `Order.Close` 의미가 Swing V2와 다른 경우는 정상적인 엔진 의미 차이로 별도 표시합니다.
+
 ## 자동 실행
 
 GitHub Actions의 `Market Scan Cache`가 장중 주기적으로:
@@ -62,5 +71,7 @@ GitHub Actions의 `Market Scan Cache`가 장중 주기적으로:
 5. 캐시 파일 커밋
 
 순서로 실행됩니다.
+
+PR 검증에서는 canonical 규칙 일치, Backtest V2 체결/계좌 테스트, Backtrader 독립 브로커 테스트를 함께 실행합니다.
 
 Render는 `gunicorn app:app`으로 현재 `app.py`만 실행합니다.
