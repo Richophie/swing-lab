@@ -28,6 +28,7 @@ def test_paper_ui_and_detail_explanation_are_wired():
 def test_dashboard_loads_backtest_v2_paper_and_indie_ui_helpers():
     html = (ROOT / 'static' / 'dashboard.html').read_text(encoding='utf-8')
     assert '/static/dashboard.js?v=' in html
+    assert '/static/chart_guides.js?v=' in html
     assert '/static/detail_overlay.js?v=' in html
     assert '/static/backtest_compat.js?v=' in html
     assert '/static/backtest_results.css?v=' in html
@@ -67,12 +68,14 @@ def test_dashboard_loads_backtest_v2_paper_and_indie_ui_helpers():
     pop_css = (ROOT / 'static' / 'pop_indie_polish.css').read_text(encoding='utf-8')
     pop_js = (ROOT / 'static' / 'pop_indie_polish.js').read_text(encoding='utf-8')
     assert 'Black Han Sans' in pop_css
-    assert '.live-marquee-track' in pop_css
-    assert 'clip-path:polygon' in pop_css
-    assert '#5cff77' in pop_css
+    assert '.live-static-copy' in pop_css
+    assert 'background:#f2f3ef!important' in pop_css
+    assert 'background:#151714!important' in pop_css
+    assert 'clip-path:none!important' in pop_css
     assert '👌 지금 볼 만한 자리' in pop_js
     assert 'entry-sticker-card' in pop_js
-    assert 'live-marquee-track' in pop_js
+    assert 'live-static-copy' in pop_js
+    assert 'live-marquee-track' not in pop_js
 
     palette = (ROOT / 'static' / 'semantic_palette.css').read_text(encoding='utf-8')
     assert '--up:#ff7d88' in palette
@@ -80,11 +83,22 @@ def test_dashboard_loads_backtest_v2_paper_and_indie_ui_helpers():
     assert 'stroke:#ff7d88!important' in palette
     assert 'stroke:#76a1ff!important' in palette
     assert '.signal-event.exit .event-badge' in palette
+    assert 'color:#fff!important' in palette
+    assert '.signal-event:not(.exit) .event-badge' in palette
 
     signal_ui = (ROOT / 'static' / 'signal_event_polish.js').read_text(encoding='utf-8')
     assert '/api/signal-events?limit=40' in signal_ui
     assert '이탈 이유' in signal_ui
     assert 'exit_reason' in signal_ui
+    assert '👀 포착' in signal_ui
+
+    guides = (ROOT / 'static' / 'chart_guides.js').read_text(encoding='utf-8')
+    assert "PLOT_LEFT='48'" in guides
+    assert "PLOT_RIGHT='900'" in guides
+    assert 'line[stroke="#d94b4b"][stroke-dasharray]' in guides
+    assert 'line[stroke="#3777d0"][stroke-dasharray]' in guides
+    assert 'line[stroke="#17191c"][stroke-dasharray]' in guides
+    assert 'now.remove()' in guides
 
     persistence = (ROOT / 'static' / 'paper_persistence.js').read_text(encoding='utf-8')
     assert 'swingLabPaperStateBackupV1' in persistence
