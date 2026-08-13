@@ -1,6 +1,15 @@
 (()=>{
   const LIVE_TEXT='RSI·볼린저·현재가가 일봉 형성 중 바뀌면 목록에 들어왔다 빠질 수 있습니다. 포착/이탈은 아래 로그에 남기고, 공식 추천은 미국장 마감 후 한 번만 확정합니다.';
 
+  function loadPaperMarks(){
+    if(document.querySelector('script[data-paper-marks]'))return;
+    const s=document.createElement('script');
+    s.src='/static/paper_mark_to_market.js?v=20260813-1';
+    s.defer=true;
+    s.dataset.paperMarks='1';
+    document.head.appendChild(s);
+  }
+
   function polishHeading(){
     const grid=document.getElementById('todayGrid');
     const h2=grid?.closest('.panel')?.querySelector('.panel-head h2');
@@ -21,7 +30,7 @@
     });
   }
 
-  function apply(){polishHeading();polishLiveNote();markEntryCards()}
+  function apply(){polishHeading();polishLiveNote();markEntryCards();loadPaperMarks()}
   window.addEventListener('DOMContentLoaded',()=>{
     apply();
     const grid=document.getElementById('todayGrid');
