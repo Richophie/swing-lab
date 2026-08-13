@@ -8,6 +8,7 @@ import pandas as pd
 import yfinance as yf
 
 from config import APP_VERSION, CORE_VERSION, S_THRESHOLD, SCAN_CANDIDATE_LIMIT
+from execution_quality import plan_execution_quality
 from market_data import load_us_universe, prefilter_symbols, market_snapshot, indicators, load_price_history
 from strategy_engine import evaluate_strategies, trade_plan, public_s_signals, experimental_s_signals
 from backtest_engine import run_backtest_on_frame
@@ -86,7 +87,18 @@ def _selection_flow(d,current_flow,market_state,now_utc=None):
 
 
 def _current_selection(signal_score,plan,flow,overlay=False,market_state=None,strategy_id=None):
-    rr=float(plan.get('risk_reward') or 0);fq=_flow_quality(flow);score=float(signal_score)*.68+fq*.22+min(100,rr/3*100)*.10
+    # Never make threshold decisions from a display-rounded 2-decimal RR. Rebuild
+    # gross RR from the stored price levels at cent precision and also retain net RR
+    # as a diagnostic. The live gate remains the existing gross >= 1.20 baseline.
+    try:
+        quality=plan_execution_quality(plan)
+        rr=float(quality['gross_risk_reward']);net_rr=float(quality['net_risk_reward'])
+    except Exception:
+        rr=float(plan.get('risk_reward') or 0);net_rr=None
+    plan['risk_reward_gate']=round(rr,4)
+    plan['net_risk_reward']=None if net_rr is None else round(net_rr,2)
+    plan['net_risk_reward_raw']=net_rr
+    fq=_flow_quality(flow);score=float(signal_score)*.68+fq*.22+min(100,rr/3*100)*.10
     if overlay:score+=6
     if market_state=='중립':score-=2
     if market_state=='조심':score-=8
@@ -97,10 +109,11 @@ def _current_selection(signal_score,plan,flow,overlay=False,market_state=None,st
     hard_ok=rr>=1.20 and fq>=42 and market_state!='조심' and entry_ok and stop_ok
     score=round(max(0,min(99,score)),1)
     reason=f"현재 자리 {float(signal_score):.0f} · 수급 {fq:.0f} · 손익비 {rr:.2f}:1"
+    if net_rr is not None:reason+=f" · 비용후 {net_rr:.2f}:1"
     if not entry_ok:reason+=f" · {plan.get('entry_status','진입구간 이탈')}"
     if not stop_ok:reason+=' · ATR 손절여유 부족'
     if overlay:reason+=' · 20일선 첫 눌림 교집합 ✓'
-    return {'elite_pass':bool(hard_ok and score>=72),'elite_score':score,'selection_reason':reason,'flow_score':round(fq,1),'checks':{'current_signal':float(signal_score)>=S_THRESHOLD,'flow':fq>=42,'risk_reward':rr>=1.20,'market':market_state!='조심','entry_viable':entry_ok,'atr_stop_margin':stop_ok,'first_20d_overlay':bool(overlay)}}
+    return {'elite_pass':bool(hard_ok and score>=72),'elite_score':score,'selection_reason':reason,'flow_score':round(fq,1),'gross_risk_reward_gate':round(rr,4),'net_risk_reward':None if net_rr is None else round(net_rr,4),'checks':{'current_signal':float(signal_score)>=S_THRESHOLD,'flow':fq>=42,'risk_reward':rr>=1.20,'market':market_state!='조심','entry_viable':entry_ok,'atr_stop_margin':stop_ok,'first_20d_overlay':bool(overlay)}}
 
 
 def scan_candidates(symbols,market,security_names,now_utc=None):
@@ -148,7 +161,7 @@ def enrich_plans(rows,market_state=None):
 def main():
     scan_now=datetime.now(timezone.utc);universe=load_us_universe();names={x['symbol']:x['security_name'] for x in universe};symbols=prefilter_symbols(universe,SCAN_CANDIDATE_LIMIT);market=market_snapshot();rows,failed=scan_candidates(symbols,market,names,scan_now);rows=_dedupe_share_classes(rows);rows=enrich_plans(rows,market.get('state'));rows.sort(key=lambda r:(bool(r.get('elite_pass')),float(r.get('elite_score') or r.get('score') or 0)),reverse=True)
     public_count=sum(any(not s.get('experimental') and float(s.get('strategy_score',0))>=S_THRESHOLD for s in r['strategy_signals']) for r in rows);aggregate_count=sum(any(not s.get('experimental') and s.get('elite_pass') for s in r['strategy_signals']) for r in rows);experimental_count=sum(any(s.get('experimental') for s in r['strategy_signals']) for r in rows);completed_flow_count=sum(r.get('flow_basis')=='previous_completed_session' for r in rows)
-    payload={'status':'ready','version':APP_VERSION,'core_version':CORE_VERSION,'scanned_at':scan_now.isoformat(timespec='seconds'),'universe_count':len(universe),'candidate_count':len(symbols),'failed_count':len(failed),'failed':failed[:100],'market':market,'results':rows,'public_s_count':public_count,'aggregate_eligible_count':aggregate_count,'experimental_s_count':experimental_count,'flow_completed_session_count':completed_flow_count,'flow_policy':'during an incomplete US daily bar, elite flow/liquidity scoring uses the previous completed session; live partial flow is stored separately','display_filter':'strategy tabs show raw public S; aggregate ranks current signal + completed-session flow/liquidity + risk/reward + entry viability + ATR stop margin; no count cap','s_threshold':S_THRESHOLD,'elite_policy':'backtest is informational only; aggregate uses current setup, completed-session flow/liquidity during intraday scans, risk-reward, market regime, entry viability, ATR stop margin and first-20DMA overlay'}
+    payload={'status':'ready','version':APP_VERSION,'core_version':CORE_VERSION,'scanned_at':scan_now.isoformat(timespec='seconds'),'universe_count':len(universe),'candidate_count':len(symbols),'failed_count':len(failed),'failed':failed[:100],'market':market,'results':rows,'public_s_count':public_count,'aggregate_eligible_count':aggregate_count,'experimental_s_count':experimental_count,'flow_completed_session_count':completed_flow_count,'flow_policy':'during an incomplete US daily bar, elite flow/liquidity scoring uses the previous completed session; live partial flow is stored separately','rr_policy':'gross RR >= 1.20 is evaluated from price-level precision; 2-decimal RR is display only; net RR is diagnostic only','display_filter':'strategy tabs show raw public S; aggregate ranks current signal + completed-session flow/liquidity + precise gross risk/reward + entry viability + ATR stop margin; no count cap','s_threshold':S_THRESHOLD,'elite_policy':'backtest is informational only; aggregate uses current setup, completed-session flow/liquidity during intraday scans, precise gross risk-reward, market regime, entry viability, ATR stop margin and first-20DMA overlay'}
     OUT.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding='utf-8');print('saved',OUT,len(rows),'rows','public S',public_count,'aggregate eligible',aggregate_count,'completed-session flow',completed_flow_count)
 
 if __name__=='__main__':main()
