@@ -152,11 +152,15 @@ def main():
     names = {x['symbol']: x['security_name'] for x in universe}
     baseline = prefilter_symbols(universe, BASELINE_LIMIT)
     quotes = broad_quote_pool(universe)
+    dollar500 = _top_dollar(quotes, 500)
+    dollar800 = _top_dollar(quotes, 800)
+    additive800 = list(dict.fromkeys(baseline + dollar800))
 
     variants = {
         'current_marketcap_500': baseline,
-        'dollar_top500': _top_dollar(quotes, 500),
-        'dollar_top800': _top_dollar(quotes, 800),
+        'dollar_top500': dollar500,
+        'dollar_top800': dollar800,
+        'current500_plus_dollar800_union': additive800,
         'dollar_min20m_up_to800': _top_dollar(quotes, 800, 20_000_000),
         'dollar_min50m_up_to800': _top_dollar(quotes, 800, 50_000_000),
     }
@@ -178,6 +182,18 @@ def main():
             'removed_examples': sorted(base_set - sset)[:50],
         }
 
+    base_raw = set(summary['current_marketcap_500']['raw_s_symbols'])
+    base_elite = set(summary['current_marketcap_500']['elite_symbols'])
+    additive_raw = set(summary['current500_plus_dollar800_union']['raw_s_symbols'])
+    additive_elite = set(summary['current500_plus_dollar800_union']['elite_symbols'])
+    additive_effect = {
+        'added_symbol_count': len(set(additive800) - base_set),
+        'new_raw_s_symbols': sorted(additive_raw - base_raw),
+        'new_elite_symbols': sorted(additive_elite - base_elite),
+        'raw_s_gain': len(additive_raw - base_raw),
+        'elite_gain': len(additive_elite - base_elite),
+    }
+
     payload = {
         'study': 'Current market-cap universe versus dollar-liquidity ranked universes',
         'status': 'RESEARCH_ONLY',
@@ -193,9 +209,10 @@ def main():
         },
         'variant_summary': summary,
         'overlap': overlap,
+        'additive_expansion_effect': additive_effect,
         'quote_field_sample': next(iter(quotes.values())).get('quote_keys', []) if quotes else [],
         'failed_sample': failed[:50],
-        'decision_rule': 'Do not expand merely because more signals appear. Prefer a liquidity-ranked universe only if signal/elite discovery improves while dollar-liquidity quality remains high; quoted spread is diagnostic only because coverage may be incomplete.',
+        'decision_rule': 'Do not expand merely because more signals appear. Prefer an additive liquidity expansion only if it discovers meaningfully more elite candidates while the added names retain high dollar liquidity. A one-day discovery gain is not enough for production promotion.',
         'scope_note': 'This is a current-universe discovery-quality study, not a historical constituent backtest. Survivorship bias remains for historical performance questions.',
     }
     OUT.parent.mkdir(parents=True, exist_ok=True)
@@ -204,6 +221,7 @@ def main():
         'broad_quote_pool_count': len(quotes),
         'union_scanned_count': len(union),
         'variant_summary': summary,
+        'additive_expansion_effect': additive_effect,
         'scan_failed_count': len(failed),
     }, ensure_ascii=False, indent=2))
     return payload
