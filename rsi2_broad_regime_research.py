@@ -74,6 +74,13 @@ def _symbol_robustness(symbol_trades: dict[str, list[dict]]) -> dict:
     }
 
 
+def _state_breakdown(trades: list[dict]) -> dict:
+    states=defaultdict(list)
+    for trade in trades:
+        states[str(trade.get('market_state') or 'unknown')].append(trade)
+    return {state:pooled_stats(items) for state,items in sorted(states.items())}
+
+
 def run_research() -> dict:
     requested, source = research_universe()
     pooled = {v:defaultdict(list) for v in VARIANTS}
@@ -113,6 +120,7 @@ def run_research() -> dict:
             trades=pooled[variant][bucket]
             stats=pooled_stats(trades)
             stats['coverage_vs_baseline_pct']=round(len(trades)/baseline_counts[bucket]*100,2)
+            stats['market_state_breakdown']=_state_breakdown(trades)
             if bucket in by_symbol[variant]:
                 stats['symbol_robustness']=_symbol_robustness(by_symbol[variant][bucket])
             summary[variant][bucket]=stats
@@ -129,7 +137,7 @@ def run_research() -> dict:
         'variant_summary':summary,
         'symbol_results':symbol_rows,
         'errors':errors,
-        'decision_rule':'Candidate should improve OOS and recent expectancy/PF with meaningful coverage and without dependence on a handful of symbols. This current-name universe still does not remove survivorship bias.',
+        'decision_rule':'Candidate should improve OOS and recent expectancy/PF with meaningful coverage and without dependence on a handful of symbols. State breakdown is diagnostic: if neutral trades are not consistently harmful, prefer risk scaling/re-ranking over a blanket reject.',
         'scope_note':'Broad robustness check, not final historical-universe proof. No live promotion from this artifact alone.',
     }
     OUT.parent.mkdir(parents=True,exist_ok=True)
