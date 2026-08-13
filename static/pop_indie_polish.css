@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap');
 
-/* Pop-indie finishing layer: headline type, live ticker, entry sticker. */
+/* Headline type + restrained live note + compact entry-state badge. */
 .brand h1{
   font-family:'Black Han Sans','Pretendard','Noto Sans KR',sans-serif!important;
   font-weight:400!important;
@@ -8,111 +8,94 @@
   line-height:1.04!important;
 }
 
-/* LIVE notice becomes a compact black ticker instead of an explainer box. */
+/* LIVE notice: static, neutral and readable. No ticker or pop accent. */
 .live-mode-banner{
   position:relative;
   display:flex!important;
-  align-items:center!important;
-  gap:0!important;
-  min-height:48px;
+  align-items:flex-start!important;
+  gap:12px!important;
+  min-height:0!important;
   margin:0 0 20px!important;
-  padding:0!important;
-  overflow:hidden;
-  border:0!important;
+  padding:13px 14px!important;
+  overflow:visible!important;
+  border:1px solid #e2e5df!important;
   border-radius:14px!important;
-  background:#11130f!important;
-  color:#f7f8f3!important;
+  background:#f2f3ef!important;
+  color:#6d736c!important;
   box-shadow:none!important;
 }
 .live-mode-banner .live-mode-badge{
-  position:relative;
-  z-index:2;
-  align-self:stretch;
-  display:flex!important;
-  align-items:center;
-  padding:0 15px!important;
-  border-radius:0!important;
-  background:#dfff57!important;
-  color:#172000!important;
-  font-size:10px!important;
-  font-weight:950!important;
-  letter-spacing:.08em!important;
   flex:0 0 auto!important;
-}
-.live-mode-banner .live-marquee{
-  min-width:0;
-  flex:1;
-  overflow:hidden;
-  -webkit-mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent);
-  mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent);
-}
-.live-mode-banner .live-marquee-track{
-  display:flex;
-  width:max-content;
+  display:inline-flex!important;
   align-items:center;
-  gap:56px;
-  padding-left:24px;
-  white-space:nowrap;
-  animation:liveTicker 22s linear infinite;
-  will-change:transform;
+  justify-content:center;
+  min-height:24px;
+  padding:0 8px!important;
+  border:0!important;
+  border-radius:999px!important;
+  background:#dfe2dc!important;
+  color:#50564f!important;
+  font-size:9px!important;
+  font-weight:900!important;
+  letter-spacing:.08em!important;
 }
-.live-mode-banner .live-marquee-track span{
+.live-mode-banner .live-static-copy{
+  min-width:0;
+  display:block;
+  font-size:11px;
+  line-height:1.55;
+  color:#737972;
+}
+.live-mode-banner .live-static-copy strong{
+  display:block;
+  margin:0 0 2px;
+  color:#30342f;
   font-size:12px;
-  font-weight:780;
-  letter-spacing:-.018em;
-  color:#d7dbd2;
+  font-weight:900;
 }
-.live-mode-banner .live-marquee-track strong{
-  margin-right:10px;
-  color:#fff;
-  font-weight:950;
-}
-@keyframes liveTicker{to{transform:translateX(calc(-50% - 28px))}}
-@media(prefers-reduced-motion:reduce){.live-mode-banner .live-marquee-track{animation:none;transform:none}}
+.live-mode-banner .live-static-copy span{display:block}
+.live-mode-banner .live-marquee,.live-mode-banner .live-marquee-track{display:none!important}
 
-/* Entry-zone badge: bright green starburst sticker sitting across the card border. */
+/* Entry-zone status: back in the card flow, with a simple black badge. */
 #todayGrid .pick.entry-sticker-card{
-  overflow:visible!important;
-  margin-top:18px;
+  overflow:hidden!important;
+  margin-top:0!important;
 }
-#todayGrid .pick.entry-sticker-card .grade-orb{display:none!important}
+#todayGrid .pick.entry-sticker-card .grade-orb{display:grid!important}
 #todayGrid .pick.entry-sticker-card .status-hero{
-  min-height:42px;
-  padding-left:62px;
+  min-height:0!important;
+  padding-left:0!important;
 }
 #todayGrid .pick.entry-sticker-card .status-solid{
-  position:absolute!important;
-  z-index:5;
-  top:-24px;
-  left:-10px;
-  display:grid!important;
-  place-items:center;
-  width:78px;
-  height:78px;
-  min-height:0!important;
-  padding:12px!important;
+  position:static!important;
+  z-index:auto!important;
+  display:inline-flex!important;
+  align-items:center;
+  justify-content:center;
+  width:auto!important;
+  height:auto!important;
+  min-height:25px!important;
+  padding:0 9px!important;
   border:0!important;
-  border-radius:0!important;
-  clip-path:polygon(50% 0%,58% 13%,70% 4%,74% 20%,89% 14%,87% 30%,100% 33%,89% 44%,100% 54%,85% 59%,94% 73%,77% 74%,79% 91%,64% 83%,57% 100%,49% 86%,36% 98%,33% 81%,17% 89%,20% 72%,3% 70%,14% 57%,0% 48%,16% 40%,5% 27%,22% 25%,21% 8%,38% 17%);
-  background:#5cff77!important;
-  color:#09230f!important;
-  box-shadow:0 8px 0 rgba(19,42,23,.14),0 12px 26px rgba(44,255,102,.22)!important;
-  font-size:11px!important;
-  line-height:1.02!important;
-  font-weight:950!important;
-  letter-spacing:-.04em!important;
+  border-radius:999px!important;
+  clip-path:none!important;
+  background:#151714!important;
+  color:#fff!important;
+  box-shadow:none!important;
+  font-size:10px!important;
+  line-height:1!important;
+  font-weight:900!important;
+  letter-spacing:-.02em!important;
   text-align:center;
-  white-space:normal!important;
-  transform:rotate(-8deg);
+  white-space:nowrap!important;
+  transform:none!important;
 }
-#todayGrid .pick.entry-sticker-card:hover .status-solid{transform:rotate(-5deg) scale(1.035)}
+#todayGrid .pick.entry-sticker-card:hover .status-solid{transform:none!important}
 
 @media(max-width:720px){
   .brand h1{font-size:42px!important;letter-spacing:-.045em!important}
-  .live-mode-banner{min-height:44px;border-radius:12px!important}
-  .live-mode-banner .live-mode-badge{padding:0 12px!important;font-size:9px!important}
-  .live-mode-banner .live-marquee-track span{font-size:11px}
-  #todayGrid .pick.entry-sticker-card{margin-top:15px}
-  #todayGrid .pick.entry-sticker-card .status-solid{top:-20px;left:-7px;width:70px;height:70px;font-size:10px!important}
-  #todayGrid .pick.entry-sticker-card .status-hero{padding-left:54px}
+  .live-mode-banner{padding:12px!important;border-radius:12px!important;gap:10px!important}
+  .live-mode-banner .live-mode-badge{font-size:8px!important;min-height:22px}
+  .live-mode-banner .live-static-copy{font-size:10px}
+  .live-mode-banner .live-static-copy strong{font-size:11px}
 }
