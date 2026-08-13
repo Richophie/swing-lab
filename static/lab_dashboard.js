@@ -35,11 +35,23 @@
     const host=document.getElementById('labBody');if(!host)return;const tracks=d.tracks||{},a=tracks[A]||{},b=tracks[B]||{},base=d.baseline||{},cmp=d.comparison||{};const locked=cmp.production_tuning_locked!==false;
     host.innerHTML=`<div class="lab-v2"><div class="lab-baseline-strip"><div><b>고정 기준 · ${esc(base.baseline_version||'baseline')}</b><small>공개 ${Array.isArray(base.public_strategies)?base.public_strategies.length:0}전략 · S ≥ ${base.s_threshold??'—'} · 300만원 · 최대 ${base.portfolio?.max_positions??3}종목 · 거래당 ${base.portfolio?.risk_per_trade_pct??1}% risk. 주문 생성 당시 버전/시장상태를 고정해 이후 엔진 변경이 과거 거래를 덮어쓰지 않습니다.</small></div><span class="lab-lock ${locked?'':'open'}">${locked?'전략 튜닝 잠금':'정식 리뷰 가능'}</span></div><div class="lab-ab-grid">${trackCard(a,A)}${trackCard(b,B)}</div><div class="lab-chart-card"><div class="lab-section-title"><h3>A/B 자산곡선</h3><small>종료 거래 기준 실현자산</small></div>${equityChart(a,b)}</div>${breakCard('전략별',a,b,'by_strategy')}${breakCard('시장상태별',a,b,'by_market_state')}${breakCard('손익비 구간별',a,b,'by_rr')}${breakCard('종료 사유별',a,b,'by_exit_reason')}${breakCard('보유기간별',a,b,'by_hold')}${ordersCard(a,b)}<div class="lab-v2-note"><b>B 체결 규칙</b> · BUY 상단은 ‘최대 허용 매수가’입니다. 다음 거래일이 더 낮게 시작해도 STOP 위라면 더 좋은 가격으로 체결합니다. 위에서 시작하면 BUY 상단까지 내려올 때 기다립니다. STOP 아래에서 시작하면 전략이 깨진 것으로 보고 새 매수를 하지 않습니다.<br><b>STOP/TARGET 동시 일봉</b> · 1분봉으로 먼저 닿은 쪽을 판정하고, 같은 1분봉 안에서도 순서를 알 수 없거나 분봉이 없을 때만 STOP 우선으로 보수 처리합니다.</div></div>`;
   }
+  function activate(nav){
+    document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('on',x===nav));
+    ['today','search','paper','state','lab'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display=id==='lab'?'block':'none'});
+  }
   async function load(force=false){
     const section=document.getElementById('lab'),host=document.getElementById('labBody');if(!section||!host||inFlight)return;if(section.style.display==='none'&&!force)return;inFlight=true;
-    try{const r=await fetch('/api/shadow',{cache:'no-store'}),d=await r.json();if(!r.ok||d.error)throw new Error(d.error||`서버 ${r.status}`);const sig=JSON.stringify({c:d.comparison,t:Object.fromEntries(Object.entries(d.tracks||{}).map(([k,v])=>[k,{u:v.updated_at,s:v.summary,l:v.lab_summary}]))});if(force||sig!==lastSignature){lastSignature=sig;render(d)}}catch(e){host.innerHTML=`<div class="paper-empty">자동연구 성적표를 불러오지 못했습니다 · ${esc(e.message)}</div>`}finally{inFlight=false}
+    try{const r=await fetch('/api/shadow',{cache:'no-store'}),d=await r.json();if(!r.ok||d.error)throw new Error(d.error||`서버 ${r.status}`);const sig=JSON.stringify({c:d.comparison,t:Object.fromEntries(Object.entries(d.tracks||{}).map(([k,v])=>[k,{u:v.updated_at,s:v.summary,l:v.lab_summary}]))});const missingNewView=!host.querySelector('.lab-v2');if(force||sig!==lastSignature||missingNewView){lastSignature=sig;render(d)}}catch(e){host.innerHTML=`<div class="paper-empty">자동연구 성적표를 불러오지 못했습니다 · ${esc(e.message)}</div>`}finally{inFlight=false}
   }
-  function bind(){const nav=document.querySelector('.nav [data-page="lab"]');if(nav&&!nav.dataset.labV2){nav.dataset.labV2='1';nav.addEventListener('click',()=>setTimeout(()=>load(true),180))}const reload=document.getElementById('labReload');if(reload&&!reload.dataset.labV2){reload.dataset.labV2='1';reload.addEventListener('click',()=>setTimeout(()=>load(true),180))}}
+  function bind(){
+    const nav=document.querySelector('.nav [data-page="lab"]');
+    if(nav&&!nav.dataset.labV2){
+      nav.dataset.labV2='1';
+      nav.onclick=ev=>{ev?.preventDefault?.();activate(nav);setTimeout(()=>load(true),120)};
+    }
+    const reload=document.getElementById('labReload');
+    if(reload&&!reload.dataset.labV2){reload.dataset.labV2='1';reload.onclick=()=>setTimeout(()=>load(true),80)}
+  }
   function boot(){setInterval(()=>{bind();load(false)},2500);setTimeout(()=>{bind();load(false)},700)}
   if(document.readyState==='loading')window.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();
