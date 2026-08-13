@@ -1,0 +1,102 @@
+:root{
+  --red:#ff7d88!important;
+  --blue:#76a1ff!important;
+  --up:#ff7d88!important;
+  --down:#76a1ff!important;
+}
+
+/* Pink = up / target / positive outcome. */
+#todayGrid .status-return.up,
+#historyDays .status-return.up,
+#todayGrid .level.target b,
+#historyDays .level.target b,
+#todayGrid .level-pct.up,
+#historyDays .level-pct.up,
+.level.target b,
+.plan-box.target b,
+.paper-pnl.up,
+.outcome.success{
+  color:#ff7d88!important;
+}
+
+/* Blue = down / stop / exit / negative outcome. */
+#todayGrid .status-return.down,
+#historyDays .status-return.down,
+#todayGrid .level.stop b,
+#historyDays .level.stop b,
+#todayGrid .level-pct.down,
+#historyDays .level-pct.down,
+.level.stop b,
+.plan-box.stop b,
+.paper-pnl.down,
+.outcome.stop,
+.outcome.loss{
+  color:#76a1ff!important;
+}
+
+/* Intraday exit uses the same blue semantic accent. */
+.signal-event.exit .event-badge{
+  background:#76a1ff!important;
+  color:#10214a!important;
+}
+.signal-event .exit-reason{
+  margin-top:6px!important;
+  color:#59616a!important;
+}
+.signal-event .exit-reason b{
+  display:inline!important;
+  margin:0 5px 0 0!important;
+  color:#76a1ff!important;
+  font-size:10px!important;
+}
+
+/* Existing chart SVGs use older hard-coded semantic colors. */
+.chart-wrap [stroke="#17845d"],
+.chart-wrap [stroke="#d83b42"],
+.chart-wrap [stroke="#d94b4b"],
+.chart-wrap [stroke="#ef4351"],
+.chart-wrap [stroke="#c45151"],
+.mini [stroke="#d83b42"],
+.mini [stroke="#d94b4b"],
+.mini [stroke="#ef4351"],
+.mini [stroke="#c45151"]{
+  stroke:#ff7d88!important;
+}
+.chart-wrap [stroke="#3267c8"],
+.chart-wrap [stroke="#3777d0"],
+.chart-wrap [stroke="#4b75c7"],
+.chart-wrap [stroke="#2f6df6"],
+.chart-wrap [stroke="#3569b5"],
+.mini [stroke="#3267c8"],
+.mini [stroke="#3777d0"],
+.mini [stroke="#4b75c7"],
+.mini [stroke="#2f6df6"],
+.mini [stroke="#3569b5"]{
+  stroke:#76a1ff!important;
+}
+
+.chart-wrap [fill="#d83b42"],
+.chart-wrap [fill="#d94b4b"],
+.chart-wrap [fill="#ef4351"],
+.chart-wrap [fill="#c45151"]{fill:#ff7d88!important}
+.chart-wrap [fill="#3267c8"],
+.chart-wrap [fill="#3777d0"],
+.chart-wrap [fill="#4b75c7"],
+.chart-wrap [fill="#2f6df6"],
+.chart-wrap [fill="#3569b5"]{fill:#76a1ff!important}
+
+/* Inline legend swatches are overridden without rewriting chart markup. */
+.legend .dot[style*="#d83b42"],
+.legend .dot[style*="#d94b4b"],
+.legend .dot[style*="#ef4351"],
+.legend .dot[style*="#c45151"]{background:#ff7d88!important}
+.legend .dot[style*="#3267c8"],
+.legend .dot[style*="#3777d0"],
+.legend .dot[style*="#4b75c7"],
+.legend .dot[style*="#2f6df6"],
+.legend .dot[style*="#3569b5"]{background:#76a1ff!important}
+
+#todayGrid .pick:focus-visible,
+#historyDays .pick:focus-visible{
+  outline-color:#76a1ff!important;
+}

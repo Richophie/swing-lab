@@ -43,6 +43,13 @@ def _current_price(row: dict):
         return None
 
 
+def _number(value):
+    try:
+        return float(value)
+    except Exception:
+        return None
+
+
 def _qualified(scan: dict) -> dict[str, dict]:
     out = {}
     at = scan.get('scanned_at') or datetime.now(timezone.utc).isoformat(timespec='seconds')
@@ -80,11 +87,102 @@ def _qualified(scan: dict) -> dict[str, dict]:
     return out
 
 
+def _strategy_lookup(scan: dict) -> dict[str, dict]:
+    """Return every currently scanned strategy, including those that failed elite selection."""
+    lookup = {}
+    for row in scan.get('results') or []:
+        symbol = str(row.get('symbol') or '').upper().strip()
+        if not symbol:
+            continue
+        plans = row.get('strategy_trade_plans') or {}
+        for sig in row.get('strategy_signals') or []:
+            sid = sig.get('strategy_id')
+            if sid not in PUBLIC_STRATEGIES:
+                continue
+            lookup[f'{symbol}|{sid}'] = {
+                'row': row,
+                'signal': sig,
+                'plan': plans.get(sid) or {},
+            }
+    return lookup
+
+
+def _exit_reason(previous: dict, current: dict | None, scan: dict) -> tuple[str, str, dict]:
+    if current is None:
+        return (
+            '현재 스캔에서 해당 전략 S 신호를 확인할 수 없음',
+            'signal_missing',
+            {'previous_score': previous.get('score')},
+        )
+
+    sig = current.get('signal') or {}
+    plan = current.get('plan') or {}
+    row = current.get('row') or {}
+    checks = sig.get('checks') or {}
+    reasons = []
+    codes = []
+
+    if checks.get('current_signal') is False:
+        reasons.append('전략 S 점수 기준 이탈')
+        codes.append('strategy_score')
+
+    if checks.get('flow') is False:
+        flow_score = _number(sig.get('flow_score'))
+        reasons.append(f'수급 점수 {flow_score:.0f} < 42' if flow_score is not None else '수급 기준 미달')
+        codes.append('flow')
+
+    if checks.get('risk_reward') is False:
+        rr = _number(plan.get('risk_reward'))
+        reasons.append(f'손익비 {rr:.2f}:1 < 1.20:1' if rr is not None else '손익비 1.20:1 기준 미달')
+        codes.append('risk_reward')
+
+    if checks.get('market') is False:
+        market_state = (scan.get('market') or {}).get('state') or '조심'
+        reasons.append(f'시장 상태 {market_state} · 엄선 제외')
+        codes.append('market')
+
+    if checks.get('entry_viable') is False:
+        reasons.append(plan.get('entry_status') or '진입구간 이탈')
+        codes.append('entry_viable')
+
+    if checks.get('atr_stop_margin') is False:
+        atr = _number(plan.get('stop_atr_multiple'))
+        minimum = _number(plan.get('min_stop_atr')) or 1.5
+        reasons.append(f'ATR 손절여유 {atr:.2f} < {minimum:.1f}' if atr is not None else 'ATR 손절여유 부족')
+        codes.append('atr_stop_margin')
+
+    elite_score = _number(sig.get('elite_score'))
+    if not reasons and elite_score is not None and elite_score < 72:
+        reasons.append(f'엄선 점수 {elite_score:.1f} < 72')
+        codes.append('elite_score')
+
+    if not reasons:
+        reasons.append('엄선 복합조건 미충족')
+        codes.append('elite_rules')
+
+    details = {
+        'previous_score': previous.get('score'),
+        'current_elite_score': elite_score,
+        'current_strategy_score': sig.get('strategy_score'),
+        'flow_score': sig.get('flow_score'),
+        'risk_reward': plan.get('risk_reward'),
+        'entry_status': plan.get('entry_status'),
+        'stop_atr_multiple': plan.get('stop_atr_multiple'),
+        'market_state': (scan.get('market') or {}).get('state'),
+        'rsi': row.get('rsi'),
+        'd120': row.get('d120'),
+        'bb_pos': row.get('bb_pos'),
+        'checks': checks,
+    }
+    return ' · '.join(reasons), '+'.join(codes), details
+
+
 def update_log(scan: dict, log: dict) -> dict:
     if scan.get('status') != 'ready':
         return log
     at = scan.get('scanned_at') or datetime.now(timezone.utc).isoformat(timespec='seconds')
     current = _qualified(scan)
+    strategy_lookup = _strategy_lookup(scan)
     active = dict(log.get('active') or {})
     events = list(log.get('events') or [])
 
@@ -100,16 +198,19 @@ def update_log(scan: dict, log: dict) -> dict:
         if key in current:
             continue
         previous = active.pop(key)
+        reason, reason_code, details = _exit_reason(previous, strategy_lookup.get(key), scan)
         events.append({
             **previous,
             'event': 'EXIT',
             'at': at,
             'last_seen': previous.get('last_seen'),
-            'exit_reason': '현재 엄선 조건에서 이탈',
+            'exit_reason': reason,
+            'exit_reason_code': reason_code,
+            'exit_details': details,
         })
 
     log.update({
-        'version': 1,
+        'version': 2,
         'updated_at': at,
         'market_date': _market_date(at),
         'active': active,
@@ -120,7 +221,7 @@ def update_log(scan: dict, log: dict) -> dict:
 
 def main():
     scan = load(SCAN_FILE, {})
-    log = load(OUT_FILE, {'version': 1, 'active': {}, 'events': []})
+    log = load(OUT_FILE, {'version': 2, 'active': {}, 'events': []})
     log = update_log(scan, log)
     save(OUT_FILE, log)
     print('saved signal log', {'active': len(log.get('active') or {}), 'events': len(log.get('events') or [])})
