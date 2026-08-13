@@ -1,0 +1,85 @@
+name: Replay Lab Bootstrap
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/replay-lab-bootstrap.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: pip install -r requirements.txt
+      - name: Build replay pool
+        run: |
+          python - <<'PY'
+          import json
+          from datetime import datetime, timezone
+          from gap_guard_research import _signal_candidates, simulate_variant
+          from market_data import load_price_history
+          from rsi2_broad_regime_research import MIN_HISTORY_ROWS, research_universe
+          from structural_stop_research import STRATEGIES, STRATEGY_NAMES
+
+          requested, source = research_universe()
+          requested = requested[:80]
+          trades, eligible, errors = [], [], []
+          for symbol in requested:
+              try:
+                  d = load_price_history(symbol, '10y').dropna()
+                  if len(d) < MIN_HISTORY_ROWS:
+                      raise ValueError(f'history rows {len(d)} < {MIN_HISTORY_ROWS}')
+                  frame, candidates = _signal_candidates(d, symbol)
+                  for sid in STRATEGIES:
+                      rows, _ = simulate_variant(d, frame, candidates[sid], 'current', symbol=symbol, strategy_id=sid)
+                      for row in rows:
+                          trades.append({
+                              'symbol': row.get('symbol'), 'strategy_id': row.get('strategy_id'),
+                              'strategy_name': STRATEGY_NAMES.get(row.get('strategy_id'), row.get('strategy_id')),
+                              'signal_date': row.get('signal_date'), 'entry_date': row.get('entry_date'),
+                              'exit_date': row.get('exit_date'), 'ret': row.get('ret'), 'reason': row.get('reason'),
+                              'risk_pct': row.get('risk_pct'), 'risk_reward': row.get('risk_reward'),
+                              'elite_score': row.get('elite_score'), 'market_state': row.get('market_state'),
+                          })
+                  eligible.append(symbol)
+              except Exception as exc:
+                  errors.append({'symbol': symbol, 'error': str(exc)})
+          trades.sort(key=lambda x: (str(x.get('entry_date') or ''), -float(x.get('risk_reward') or 0), str(x.get('symbol') or '')))
+          dates = [x['entry_date'] for x in trades if x.get('entry_date')]
+          payload = {
+              'version': 1, 'ready': True, 'generated_at': datetime.now(timezone.utc).isoformat(timespec='seconds'),
+              'selection_source': source, 'requested_symbol_count': len(requested),
+              'eligible_symbol_count': len(eligible), 'available_start': min(dates) if dates else None,
+              'available_end': max(dates) if dates else None, 'strategies': list(STRATEGIES),
+              'strategy_names': STRATEGY_NAMES, 'trade_count': len(trades), 'errors': errors, 'trades': trades,
+              'limitations': [
+                  '현재 유동성 종목을 과거로 되감는 V1이라 survivorship bias가 있습니다.',
+                  'Portfolio Backtest V2의 KRW notional 모델을 사용합니다.',
+                  '과거 분봉이 없는 구간의 같은 날 STOP/TARGET 동시 터치는 보수적 일봉 판정을 사용합니다.'
+              ]
+          }
+          with open('static/replay_backtest_pool.json', 'w', encoding='utf-8') as f:
+              json.dump(payload, f, ensure_ascii=False, indent=2)
+          print('eligible', len(eligible), 'trades', len(trades), 'errors', len(errors))
+          PY
+      - name: Commit replay pool
+        run: |
+          git config user.name "swing-lab-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add static/replay_backtest_pool.json
+          if git diff --cached --quiet; then
+            echo "No replay pool changes"
+          else
+            git commit -m "data: bootstrap replay lab pool"
+            git pull --rebase origin main
+            git push
+          fi
