@@ -13,6 +13,7 @@ from risk_observability import snapshot_event_risk
 ROOT = Path(__file__).parent
 STATIC = ROOT / 'static'
 HISTORY_FILE = STATIC / 'trade_history.json'
+SCAN_FILE = STATIC / 'latest_scan.json'
 STATE_FILE = STATIC / 'shadow_portfolio.json'
 LAB_START_DATE = '2026-08-13'
 LAB_VERSION = 1
@@ -32,13 +33,30 @@ def _number(value, default=0.0):
         return default
 
 
-def _plan_from_item(item: dict) -> dict:
+def _scan_plan_index(scan: dict) -> dict[str, dict]:
+    out = {}
+    for row in scan.get('results') or []:
+        symbol = str(row.get('symbol') or '').upper().strip()
+        plans = row.get('strategy_trade_plans') or {}
+        for sid, plan in plans.items():
+            if symbol and sid in PUBLIC_STRATEGIES and isinstance(plan, dict):
+                out[f'{symbol}|{sid}'] = plan
+    return out
+
+
+def _plan_from_item(item: dict, current_plan: dict | None = None) -> dict:
+    source = current_plan or {}
+    atr = item.get('atr')
+    if atr is None:
+        atr = source.get('atr')
+    if atr is None or _number(atr, 0.0) <= 0:
+        raise ValueError('공식 추천 ATR 스냅샷이 없어 canonical gap guard를 계산할 수 없습니다')
     return {
         'entry_low': item.get('entry_low'),
         'entry_high': item.get('entry_high'),
         'target': item.get('target'),
         'stop': item.get('stop'),
-        'atr': item.get('atr'),
+        'atr': float(atr),
         'days_min': item.get('target_days_low'),
         'days_max': item.get('target_days_high'),
         'target_days': {
@@ -113,9 +131,16 @@ def _seen_keys(state: dict) -> set[str]:
     return out
 
 
-def ingest_confirmed_signals(state: dict, history: dict, *, fx_rate: float) -> dict:
+def ingest_confirmed_signals(
+    state: dict,
+    history: dict,
+    *,
+    fx_rate: float,
+    live_scan: dict | None = None,
+) -> dict:
     _ensure_meta(state)
     seen = _seen_keys(state)
+    scan_plans = _scan_plan_index(live_scan or {})
     submitted = 0
     skipped = 0
 
@@ -134,12 +159,15 @@ def ingest_confirmed_signals(state: dict, history: dict, *, fx_rate: float) -> d
             'at': datetime.now(timezone.utc).isoformat(timespec='seconds'),
         }
         try:
+            symbol = str(item.get('symbol') or '').upper().strip()
+            sid = str(item.get('strategy_id') or '')
+            plan = _plan_from_item(item, scan_plans.get(f'{symbol}|{sid}'))
             order = submit_order(
                 state,
-                symbol=item.get('symbol'),
-                strategy_id=item.get('strategy_id'),
-                strategy_name=item.get('strategy_name') or item.get('strategy_id'),
-                plan=_plan_from_item(item),
+                symbol=symbol,
+                strategy_id=sid,
+                strategy_name=item.get('strategy_name') or sid,
+                plan=plan,
                 fx_rate=float(fx_rate),
                 submitted_market_date=item.get('market_date'),
                 signal_date=item.get('market_date'),
@@ -154,7 +182,14 @@ def ingest_confirmed_signals(state: dict, history: dict, *, fx_rate: float) -> d
                 item.get('event_risk_snapshot') or item.get('event_risk')
             )
             order['risk_observability_only'] = True
-            decision.update({'decision': 'SUBMITTED', 'order_id': order.get('id')})
+            decision.update(
+                {
+                    'decision': 'SUBMITTED',
+                    'order_id': order.get('id'),
+                    'atr': order.get('atr'),
+                    'gap_guard': order.get('gap_guard'),
+                }
+            )
             submitted += 1
         except Exception as exc:
             decision.update({'decision': 'SKIPPED', 'reason': str(exc)})
@@ -256,8 +291,9 @@ def run(*, state_path: str | Path = STATE_FILE) -> dict:
     _ensure_meta(state)
     refresh_active(state)
     history = _load_json(HISTORY_FILE, {'days': []})
+    scan = _load_json(SCAN_FILE, {'results': []})
     fx = current_fx_rate()
-    result = ingest_confirmed_signals(state, history, fx_rate=fx)
+    result = ingest_confirmed_signals(state, history, fx_rate=fx, live_scan=scan)
     state['updated_at'] = datetime.now(timezone.utc).isoformat(timespec='seconds')
     state['lab_meta']['last_run_at'] = state['updated_at']
     state['lab_meta']['last_ingest'] = result
