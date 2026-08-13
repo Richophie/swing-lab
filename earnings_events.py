@@ -12,6 +12,7 @@ import yfinance as yf
 CACHE_PATH = Path(__file__).parent / 'static' / 'earnings_cache.json'
 CACHE_VERSION = 1
 CACHE_TTL_HOURS = 12
+ERROR_RETRY_HOURS = 2
 NY = ZoneInfo('America/New_York')
 
 
@@ -43,7 +44,7 @@ def _future_from_earnings_dates(ticker, today: str):
 def _future_from_calendar(ticker, today: str):
     try:
         cal = ticker.calendar
-        if not cal:
+        if cal is None:
             return None, 'empty'
         value = None
         if isinstance(cal, dict):
@@ -102,9 +103,9 @@ def _write_cache(data, path: Path = CACHE_PATH):
     tmp.replace(path)
 
 
-def _cache_age_hours(entry, now_utc):
+def _age_hours(value, now_utc):
     try:
-        checked = datetime.fromisoformat(str(entry.get('checked_at')).replace('Z', '+00:00'))
+        checked = datetime.fromisoformat(str(value).replace('Z', '+00:00'))
         if checked.tzinfo is None:
             checked = checked.replace(tzinfo=timezone.utc)
         return max(0.0, (now_utc - checked.astimezone(timezone.utc)).total_seconds() / 3600.0)
@@ -131,6 +132,7 @@ def _query_symbol(symbol: str, today: str, now_utc):
         },
         'source_day_diff': diff,
         'checked_at': now_utc.isoformat(timespec='seconds'),
+        'last_attempt_at': now_utc.isoformat(timespec='seconds'),
         'stale': False,
     }
 
@@ -208,7 +210,8 @@ def enrich_elite_rows(rows, now_utc=None, cache_path: Path = CACHE_PATH):
 
     This function never changes elite_pass, scores, BUY/TARGET/STOP or strategy
     selection. It is deliberately fail-soft: a failed refresh falls back to the
-    last dated cache entry and marks it stale.
+    last dated cache entry and marks it stale. Failed refreshes back off for two
+    hours so a provider outage cannot slow every 30-minute scan.
     """
     now = now_utc or datetime.now(timezone.utc)
     if now.tzinfo is None:
@@ -216,7 +219,7 @@ def enrich_elite_rows(rows, now_utc=None, cache_path: Path = CACHE_PATH):
     today = now.astimezone(NY).date().isoformat()
     cache = _read_cache(cache_path)
     symbols_cache = cache.setdefault('symbols', {})
-    queried = reused = stale_used = 0
+    queried = reused = stale_used = retry_backoff = 0
     changed = False
 
     for row in rows:
@@ -227,10 +230,15 @@ def enrich_elite_rows(rows, now_utc=None, cache_path: Path = CACHE_PATH):
             continue
         existing = symbols_cache.get(symbol)
         entry = None
-        if existing and _cache_age_hours(existing, now) < CACHE_TTL_HOURS:
+        if existing and _age_hours(existing.get('checked_at'), now) < CACHE_TTL_HOURS:
             entry = dict(existing)
             entry['stale'] = False
             reused += 1
+        elif existing and existing.get('earnings_date') and _age_hours(existing.get('last_attempt_at'), now) < ERROR_RETRY_HOURS:
+            entry = dict(existing)
+            entry['stale'] = True
+            stale_used += 1
+            retry_backoff += 1
         else:
             queried += 1
             try:
@@ -244,6 +252,7 @@ def enrich_elite_rows(rows, now_utc=None, cache_path: Path = CACHE_PATH):
                     'source_status': {'query': f'error:{exc}'},
                     'source_day_diff': None,
                     'checked_at': now.isoformat(timespec='seconds'),
+                    'last_attempt_at': now.isoformat(timespec='seconds'),
                     'stale': False,
                 }
             if fresh.get('earnings_date'):
@@ -253,8 +262,11 @@ def enrich_elite_rows(rows, now_utc=None, cache_path: Path = CACHE_PATH):
             elif existing and existing.get('earnings_date'):
                 entry = dict(existing)
                 entry['stale'] = True
+                entry['last_attempt_at'] = now.isoformat(timespec='seconds')
                 entry['refresh_error'] = fresh.get('source_status')
+                symbols_cache[symbol] = dict(entry)
                 stale_used += 1
+                changed = True
             else:
                 entry = fresh
                 symbols_cache[symbol] = dict(fresh)
@@ -269,6 +281,8 @@ def enrich_elite_rows(rows, now_utc=None, cache_path: Path = CACHE_PATH):
         'earnings_cache_queried': queried,
         'earnings_cache_reused': reused,
         'earnings_cache_stale_used': stale_used,
+        'earnings_cache_retry_backoff': retry_backoff,
         'earnings_cache_ttl_hours': CACHE_TTL_HOURS,
+        'earnings_error_retry_hours': ERROR_RETRY_HOURS,
         'event_policy': 'informational only; no score, signal, BUY/TARGET/STOP or hard-gate effect',
     }
