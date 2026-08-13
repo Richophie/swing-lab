@@ -1,0 +1,39 @@
+name: Earnings Event Data Audit
+
+on:
+  pull_request:
+    paths:
+      - 'earnings_event_audit.py'
+      - 'tests/test_earnings_event_audit.py'
+      - '.github/workflows/earnings-event-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: pip install -r requirements.txt
+      - name: Install audit-only parser dependency
+        run: pip install lxml
+      - name: Compile audit modules
+        run: python -m py_compile earnings_event_audit.py tests/test_earnings_event_audit.py
+      - name: Deterministic extraction tests
+        run: PYTHONPATH=. python tests/test_earnings_event_audit.py
+      - name: Confirm 20 liquid symbols across both earnings surfaces
+        run: PYTHONPATH=. python earnings_event_audit.py
+      - name: Upload earnings audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: earnings-event-audit
+          path: artifacts/earnings_event_audit.json
+          if-no-files-found: warn
