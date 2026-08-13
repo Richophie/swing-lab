@@ -5,6 +5,7 @@ on:
   push:
     branches: [main]
     paths:
+      - 'strategy_rules.py'
       - 'strategy_engine.py'
       - 'market_data.py'
       - 'backtest_engine.py'
@@ -30,7 +31,7 @@ jobs:
           cache: 'pip'
       - run: pip install -r requirements.txt
       - name: Compile validator
-        run: python -m py_compile market_data.py strategy_engine.py backtest_engine.py walkforward.py
+        run: python -m py_compile market_data.py strategy_rules.py strategy_engine.py backtest_engine.py walkforward.py
       - name: Run chronological OOS validation
         run: python walkforward.py
       - name: Commit validation report

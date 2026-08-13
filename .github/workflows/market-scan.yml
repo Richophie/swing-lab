@@ -3,16 +3,18 @@ name: Market Scan Cache
 on:
   workflow_dispatch:
   schedule:
-    - cron: '*/30 13-21 * * 1-5'
+    - cron: '*/30 13-22 * * 1-5'
   push:
     branches: [main]
     paths:
       - 'requirements.txt'
       - 'config.py'
       - 'market_data.py'
+      - 'strategy_rules.py'
       - 'strategy_engine.py'
       - 'stock_names.py'
       - 'scanner.py'
+      - 'signal_log.py'
       - 'journal.py'
       - 'rebuild_journal_day.py'
       - 'backtest_engine.py'
@@ -21,6 +23,7 @@ on:
       - 'static/dashboard.html'
       - 'static/dashboard.css'
       - 'static/dashboard.js'
+      - 'static/detail_overlay.js'
       - '.github/workflows/market-scan.yml'
 
 permissions:
@@ -42,24 +45,26 @@ jobs:
           cache: 'pip'
       - run: pip install -r requirements.txt
       - name: Compile clean modules
-        run: python -m py_compile config.py market_data.py strategy_engine.py stock_names.py scanner.py journal.py rebuild_journal_day.py backtest_engine.py app.py qa.py
+        run: python -m py_compile config.py market_data.py strategy_rules.py strategy_engine.py stock_names.py scanner.py signal_log.py journal.py rebuild_journal_day.py backtest_engine.py app.py qa.py
       - name: Rebuild Aug 12 journal with current strategy logic
         run: python rebuild_journal_day.py
-      - name: Build latest recommendations
+      - name: Build latest live candidates
         run: python scanner.py
+      - name: Append intraday candidate transitions
+        run: python signal_log.py
       - name: Clean architecture QA gate
         run: python qa.py
-      - name: Freeze signals and update outcomes
+      - name: Freeze close-confirmed signals and update outcomes
         run: python journal.py
-      - name: Commit latest scan and journal
+      - name: Commit latest scan, signal log and confirmed journal
         run: |
           git config user.name "swing-lab-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add static/latest_scan.json static/trade_history.json
+          git add static/latest_scan.json static/signal_events.json static/trade_history.json
           if git diff --cached --quiet; then
             echo "No data changes"
           else
-            git commit -m "data: refresh clean swing signals and journal"
+            git commit -m "data: refresh live signals and confirmed journal"
             git pull --rebase origin main
             git push
           fi
