@@ -1,0 +1,49 @@
+name: RSI2 Upside Gap Research
+
+on:
+  pull_request:
+    paths:
+      - 'rsi2_upside_gap_research.py'
+      - 'rsi2_upside_gap_validation.py'
+      - 'gap_guard_research.py'
+      - 'structural_stop_research.py'
+      - 'tests/test_rsi2_upside_gap_research.py'
+      - '.github/workflows/rsi2-upside-gap-research.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: pip install -r requirements.txt
+      - name: Compile research modules
+        run: python -m py_compile rsi2_upside_gap_research.py rsi2_upside_gap_validation.py tests/test_rsi2_upside_gap_research.py
+      - name: Deterministic focused-gap tests
+        run: PYTHONPATH=. python tests/test_rsi2_upside_gap_research.py
+      - name: Broad focused RSI2 upside-gap research
+        run: PYTHONPATH=. python rsi2_upside_gap_research.py
+      - name: Upload research artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rsi2-upside-gap-research
+          path: artifacts/rsi2_upside_gap_research.json
+          if-no-files-found: warn
+      - name: 80-symbol confirmation validation for RSI2 upside 0.50ATR
+        run: PYTHONPATH=. python rsi2_upside_gap_validation.py
+      - name: Upload confirmation validation
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rsi2-upside-gap-validation
+          path: artifacts/rsi2_upside_gap_validation.json
+          if-no-files-found: warn
