@@ -14,6 +14,7 @@
   function injectStyle(){
     if(document.getElementById('paperMarkStyle'))return;
     const s=document.createElement('style');s.id='paperMarkStyle';s.textContent=`
+      .paper-live-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0 0 10px}.paper-live-stat{padding:12px 14px;border:1px solid #e8ebee;border-radius:14px;background:#f8f9f7}.paper-live-stat span{display:block;color:#939a9f;font-size:9px;margin-bottom:4px}.paper-live-stat b{font-size:15px;letter-spacing:-.035em}.paper-live-stat small{display:block;margin-top:3px;color:#a0a6aa;font-size:8px;line-height:1.35}.paper-live-stat b.up{color:#ff7d88}.paper-live-stat b.down{color:#76a1ff}
       .paper-mark-price b{font-size:12px!important}.paper-mark-price small{display:block;margin-top:2px;color:#a0a6aa;font-size:8px;line-height:1.3}
       .paper-pnl.paper-live{font-size:12px!important}.paper-pnl.paper-live.up{color:#ff7d88!important}.paper-pnl.paper-live.down{color:#76a1ff!important}
     `;document.head.appendChild(s);
@@ -39,6 +40,13 @@
       }
     }
   }
+  function paintSummary(summary){
+    const orders=document.querySelector('.paper-orders');if(!orders||!summary)return;
+    let host=orders.parentElement?.querySelector('.paper-live-summary');
+    if(!host){host=document.createElement('div');host.className='paper-live-summary';orders.parentElement?.insertBefore(host,orders)}
+    const pnl=num(summary.unrealized_pnl_krw),equity=num(summary.equity_krw);const cls=pnl==null?'':pnl>=0?'up':'down';
+    host.innerHTML=`<div class="paper-live-stat"><span>현재 평가자산</span><b>${krw(equity)}</b><small>보유종목을 지금 청산한다고 가정</small></div><div class="paper-live-stat"><span>미실현손익</span><b class="${cls}">${pnl==null?'—':`${pnl>=0?'+':''}${krw(pnl)}`}</b><small>스프레드·슬리피지·매도수수료 반영</small></div>`;
+  }
   function paint(data){
     const rows=Array.isArray(data?.orders)?data.orders:[],queues=new Map();
     rows.forEach(r=>{const key=String(r.symbol||'').toUpperCase();if(!queues.has(key))queues.set(key,[]);queues.get(key).push(r)});
@@ -48,6 +56,7 @@
       let i=q.findIndex(r=>!strategy||strategy.includes(r.strategy_id)||strategy.includes(r.strategy_name||''));if(i<0)i=0;
       const mark=q.splice(i,1)[0];decorate(card,mark);
     });
+    paintSummary(data?.summary);
   }
   async function refresh(force=false){
     const list=cards();if(!list.length||inFlight)return;
