@@ -14,6 +14,7 @@ on:
       - 'strategy_engine.py'
       - 'stock_names.py'
       - 'scanner.py'
+      - 'earnings_events.py'
       - 'signal_log.py'
       - 'journal.py'
       - 'rebuild_journal_day.py'
@@ -25,6 +26,8 @@ on:
       - 'static/dashboard.css'
       - 'static/dashboard.js'
       - 'static/detail_overlay.js'
+      - 'static/event_risk.css'
+      - 'static/event_risk_ui.js'
       - '.github/workflows/market-scan.yml'
 
 permissions:
@@ -46,7 +49,7 @@ jobs:
           cache: 'pip'
       - run: pip install -r requirements.txt
       - name: Compile clean modules
-        run: python -m py_compile config.py market_data.py strategy_rules.py strategy_engine.py stock_names.py scanner.py signal_log.py journal.py rebuild_journal_day.py refresh_fx_cache.py backtest_engine.py app.py qa.py
+        run: python -m py_compile config.py market_data.py strategy_rules.py strategy_engine.py stock_names.py scanner.py earnings_events.py signal_log.py journal.py rebuild_journal_day.py refresh_fx_cache.py backtest_engine.py app.py qa.py
       - name: Rebuild Aug 12 journal with current strategy logic
         run: python rebuild_journal_day.py
       - name: Build latest live candidates
@@ -59,15 +62,15 @@ jobs:
         run: python qa.py
       - name: Freeze close-confirmed signals and update outcomes
         run: python journal.py
-      - name: Commit latest scan, FX cache, signal log and confirmed journal
+      - name: Commit latest scan, caches, signal log and confirmed journal
         run: |
           git config user.name "swing-lab-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add static/latest_scan.json static/fx_cache.json static/signal_events.json static/trade_history.json
+          git add static/latest_scan.json static/fx_cache.json static/earnings_cache.json static/signal_events.json static/trade_history.json
           if git diff --cached --quiet; then
             echo "No data changes"
           else
-            git commit -m "data: refresh live signals and confirmed journal [skip render]"
+            git commit -m "data: refresh live signals, event cache and confirmed journal [skip render]"
             git pull --rebase origin main
             git push
           fi

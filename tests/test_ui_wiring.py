@@ -25,7 +25,7 @@ def test_paper_ui_and_detail_explanation_are_wired():
     assert "마감 확정 추천 기록" in text
 
 
-def test_dashboard_loads_backtest_v2_paper_and_indie_ui_helpers():
+def test_dashboard_loads_backtest_v2_paper_indie_and_event_ui_helpers():
     html = (ROOT / 'static' / 'dashboard.html').read_text(encoding='utf-8')
     assert '/static/dashboard.js?v=' in html
     assert '/static/chart_guides.js?v=' in html
@@ -39,6 +39,17 @@ def test_dashboard_loads_backtest_v2_paper_and_indie_ui_helpers():
     assert '/static/pop_indie_polish.js?v=' in html
     assert '/static/semantic_palette.css?v=' in html
     assert '/static/signal_event_polish.js?v=' in html
+    assert '/static/event_risk.css?v=' in html
+    assert '/static/event_risk_ui.js?v=' in html
+
+    event_ui = (ROOT / 'static' / 'event_risk_ui.js').read_text(encoding='utf-8')
+    assert 'EVENT RISK' in event_ui
+    assert '보유기간 중 실적' in event_ui
+    assert '추천 점수나 BUY/TARGET/STOP에 영향을 주지 않는 참고 경고' in event_ui
+
+    event_css = (ROOT / 'static' / 'event_risk.css').read_text(encoding='utf-8')
+    assert '.event-risk-badge' in event_css
+    assert '.detail-event-risk' in event_css
 
     backtest = (ROOT / 'static' / 'backtest_compat.js').read_text(encoding='utf-8')
     assert 'full_10y' in backtest
@@ -121,7 +132,7 @@ def test_app_exposes_paper_and_signal_log_routes():
 def main():
     test_detail_overlay_accepts_legacy_inline_open_contract()
     test_paper_ui_and_detail_explanation_are_wired()
-    test_dashboard_loads_backtest_v2_paper_and_indie_ui_helpers()
+    test_dashboard_loads_backtest_v2_paper_indie_and_event_ui_helpers()
     test_app_exposes_paper_and_signal_log_routes()
     print('ui wiring PASS')
 
