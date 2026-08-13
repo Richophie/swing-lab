@@ -1,0 +1,1 @@
+(()=>{const apply=()=>{const b=document.querySelector('.nav [data-page="lab"]');if(b)b.textContent='백테스트연구소';const s=document.getElementById('lab');const h=s?.querySelector('h2');if(h)h.textContent='백테스트연구소'};setInterval(apply,1500);apply()})();
