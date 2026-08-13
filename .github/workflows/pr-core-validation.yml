@@ -12,10 +12,22 @@ on:
       - 'portfolio_backtest.py'
       - 'backtrader_audit.py'
       - 'audit_matrix.py'
+      - 'paper_broker.py'
+      - 'paper_broker_service.py'
+      - 'stock_names.py'
+      - 'signal_log.py'
+      - 'journal.py'
+      - 'app.py'
       - 'qa.py'
+      - 'static/dashboard.html'
+      - 'static/dashboard.js'
+      - 'static/detail_overlay.js'
       - 'tests/test_strategy_rules.py'
       - 'tests/test_backtest_v2.py'
       - 'tests/test_backtrader_audit.py'
+      - 'tests/test_paper_broker.py'
+      - 'tests/test_signal_history.py'
+      - 'tests/test_ui_wiring.py'
       - '.github/workflows/pr-core-validation.yml'
 
 permissions:
@@ -33,13 +45,21 @@ jobs:
           cache: 'pip'
       - run: pip install -r requirements.txt
       - name: Compile core modules
-        run: python -m py_compile config.py market_data.py strategy_rules.py strategy_engine.py backtest_engine.py portfolio_backtest.py backtrader_audit.py audit_matrix.py qa.py tests/test_strategy_rules.py tests/test_backtest_v2.py tests/test_backtrader_audit.py
+        run: python -m py_compile config.py market_data.py strategy_rules.py strategy_engine.py backtest_engine.py portfolio_backtest.py backtrader_audit.py audit_matrix.py paper_broker.py paper_broker_service.py stock_names.py signal_log.py journal.py app.py qa.py tests/test_strategy_rules.py tests/test_backtest_v2.py tests/test_backtrader_audit.py tests/test_paper_broker.py tests/test_signal_history.py tests/test_ui_wiring.py
+      - name: JavaScript syntax check
+        run: node --check static/dashboard.js && node --check static/detail_overlay.js
       - name: Deterministic strategy parity test
         run: PYTHONPATH=. python tests/test_strategy_rules.py
       - name: Backtest V2 execution and portfolio tests
         run: PYTHONPATH=. python tests/test_backtest_v2.py
       - name: Backtrader independent audit tests
         run: PYTHONPATH=. python tests/test_backtrader_audit.py
+      - name: Paper broker lifecycle tests
+        run: PYTHONPATH=. python tests/test_paper_broker.py
+      - name: Signal history and close-publication tests
+        run: PYTHONPATH=. python tests/test_signal_history.py
+      - name: Detail and Paper UI regression test
+        run: PYTHONPATH=. python tests/test_ui_wiring.py
       - name: Real 10y x 20 stocks x 3 strategies audit
         run: PYTHONPATH=. python audit_matrix.py
       - name: Upload real-data audit report
