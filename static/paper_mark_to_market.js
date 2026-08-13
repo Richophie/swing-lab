@@ -23,8 +23,17 @@
   function symbolOf(card){return (card.querySelector('.paper-order-name .ticker')?.textContent||'').trim().toUpperCase()}
   function strategyOf(card){return (card.querySelector('.paper-order-sub')?.textContent||'').split(' · ')[0].trim()}
   function field(grid,label){return [...grid.children].find(x=>x.querySelector('span')?.textContent?.trim()===label)||null}
+  function syncFilledCard(card,mark){
+    if(mark?.status!=='FILLED')return;
+    const badge=card.querySelector('.paper-status');
+    if(badge){badge.textContent='보유중';badge.className='paper-status filled'}
+    const grid=card.querySelector('.paper-order-grid');if(!grid)return;
+    const planned=field(grid,'예정 진입');
+    if(planned){const label=planned.querySelector('span'),b=planned.querySelector('b');if(label)label.textContent='진입가';if(b&&mark.entry_fill_usd!=null)b.textContent=usd(mark.entry_fill_usd)}
+  }
   function decorate(card,mark){
     const grid=card.querySelector('.paper-order-grid');if(!grid||!mark)return;
+    syncFilledCard(card,mark);
     let priceCell=grid.querySelector('.paper-mark-price');
     if(!priceCell){priceCell=document.createElement('div');priceCell.className='paper-mark-price';grid.insertBefore(priceCell,grid.firstChild)}
     const source=mark.price_source==='1m'?'최근 1분 데이터':mark.price_source==='daily'?'최근 일봉':'가격 확인 실패';
