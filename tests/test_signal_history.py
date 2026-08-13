@@ -10,7 +10,7 @@ from signal_log import update_log
 from stock_names import korean_name
 
 
-def synthetic_scan(at='2026-08-13T19:30:00+00:00', include=True):
+def synthetic_scan(at='2026-08-13T19:30:00+00:00', include=True, elite_pass=True, checks=None, risk_reward=1.31, flow_score=68, elite_score=85):
     rows = []
     if include:
         rows = [
@@ -29,6 +29,10 @@ def synthetic_scan(at='2026-08-13T19:30:00+00:00', include=True):
                         'entry_high': 118.10,
                         'target': 125.91,
                         'stop': 112.27,
+                        'risk_reward': risk_reward,
+                        'entry_status': '진입 적정',
+                        'stop_atr_multiple': 1.8,
+                        'min_stop_atr': 1.5,
                     }
                 },
                 'strategy_signals': [
@@ -36,14 +40,23 @@ def synthetic_scan(at='2026-08-13T19:30:00+00:00', include=True):
                         'strategy_id': 'rsi2_trend_reversion',
                         'strategy_name': 'RSI2 추세내 과매도',
                         'strategy_score': 91,
-                        'elite_score': 85,
-                        'elite_pass': True,
+                        'elite_score': elite_score,
+                        'elite_pass': elite_pass,
+                        'flow_score': flow_score,
+                        'checks': checks or {
+                            'current_signal': True,
+                            'flow': True,
+                            'risk_reward': True,
+                            'market': True,
+                            'entry_viable': True,
+                            'atr_stop_margin': True,
+                        },
                         'experimental': False,
                     }
                 ],
             }
         ]
-    return {'status': 'ready', 'scanned_at': at, 'results': rows}
+    return {'status': 'ready', 'scanned_at': at, 'market': {'state': '좋음'}, 'results': rows}
 
 
 def test_close_publication_gate():
@@ -66,11 +79,42 @@ def test_intraday_enter_exit_log_is_append_only():
     assert len(log['events']) == 1
     assert next(iter(log['active'].values()))['first_seen'] == first_seen
 
-    # If it drops out later, preserve the earlier ENTER and append EXIT.
+    # If it drops out later, preserve the earlier ENTER and append EXIT with a reason.
     gone = synthetic_scan('2026-08-13T20:30:00+00:00', include=False)
     log = update_log(gone, log)
     assert len(log['active']) == 0
     assert [e['event'] for e in log['events']] == ['ENTER', 'EXIT']
+    assert log['events'][-1]['exit_reason_code'] == 'signal_missing'
+    assert '해당 전략 S 신호' in log['events'][-1]['exit_reason']
+
+
+def test_intraday_exit_reason_identifies_failed_elite_checks():
+    log = {'version': 1, 'active': {}, 'events': []}
+    log = update_log(synthetic_scan(), log)
+    failed_checks = {
+        'current_signal': True,
+        'flow': False,
+        'risk_reward': False,
+        'market': True,
+        'entry_viable': True,
+        'atr_stop_margin': True,
+    }
+    failed = synthetic_scan(
+        '2026-08-13T20:15:00+00:00',
+        elite_pass=False,
+        checks=failed_checks,
+        risk_reward=1.08,
+        flow_score=39,
+        elite_score=68,
+    )
+    log = update_log(failed, log)
+    event = log['events'][-1]
+    assert event['event'] == 'EXIT'
+    assert event['exit_reason_code'] == 'flow+risk_reward'
+    assert '수급 점수 39 < 42' in event['exit_reason']
+    assert '손익비 1.08:1 < 1.20:1' in event['exit_reason']
+    assert event['exit_details']['flow_score'] == 39
+    assert event['exit_details']['risk_reward'] == 1.08
 
 
 def test_korean_names_for_new_scan_names():
@@ -82,6 +126,7 @@ def test_korean_names_for_new_scan_names():
 def main():
     test_close_publication_gate()
     test_intraday_enter_exit_log_is_append_only()
+    test_intraday_exit_reason_identifies_failed_elite_checks()
     test_korean_names_for_new_scan_names()
     print('signal history PASS')
 
