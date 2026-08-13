@@ -142,7 +142,7 @@ class BacktraderAuditStrategy(bt.Strategy):
             'buy_low': float(self.data.buy_low[0]),
             'buy_high': float(self.data.buy_high[0]),
             'target': float(self.data.target[0]),
-            'stop': float(self.data.stop[0]),
+            'stop': float(self.data.lines.stop[0]),
             'max_hold': int(round(float(self.data.max_hold[0]))),
             'gap_guard': float(self.data.gap_guard[0]),
         }
