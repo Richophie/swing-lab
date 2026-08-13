@@ -13,7 +13,7 @@ from strategy_engine import evaluate_strategies, trade_plan
 from backtest_engine import run_backtest
 from stock_names import korean_name
 
-ROOT=Path(__file__).parent;STATIC=ROOT/'static';SCAN_FILE=STATIC/'latest_scan.json';HISTORY_FILE=STATIC/'trade_history.json';FX_FILE=STATIC/'fx_cache.json';app=Flask(__name__,static_folder='static')
+ROOT=Path(__file__).parent;STATIC=ROOT/'static';SCAN_FILE=STATIC/'latest_scan.json';HISTORY_FILE=STATIC/'trade_history.json';SIGNAL_EVENTS_FILE=STATIC/'signal_events.json';FX_FILE=STATIC/'fx_cache.json';app=Flask(__name__,static_folder='static')
 
 def load_json(path, default):
     try:return json.loads(path.read_text(encoding='utf-8'))
@@ -134,6 +134,12 @@ def chart_payload(symbol,strategy_id,days=180):
     for idx,row in x.iterrows():series.append({'date':idx.strftime('%Y-%m-%d'),'close':round(float(row['Close']),2),'sma120':None if pd.isna(row['sma120']) else round(float(row['sma120']),2),'bb_low':None if pd.isna(row['bb_low']) else round(float(row['bb_low']),2),'bb_high':None if pd.isna(row['bb_high']) else round(float(row['bb_high']),2),'rsi':None if pd.isna(row['rsi']) else round(float(row['rsi']),1)})
     return {'symbol':symbol,'strategy_id':strategy_id,'series':series,'trade_plan':plan,'current_price':series[-1]['close'] if series else None,'source':'live'}
 
+def _decorate_paper_snapshot(data):
+    out=dict(data or {});orders=[]
+    for raw_order in out.get('orders') or []:
+        order=dict(raw_order);symbol=str(order.get('symbol') or '').upper();row,_=_find_scan(symbol,order.get('strategy_id'));order['name_ko']=(row or {}).get('name_ko') or korean_name(symbol,(row or {}).get('security_name'));orders.append(order)
+    out['orders']=orders;return out
+
 @app.route('/')
 def index():return send_from_directory('static','dashboard.html')
 @app.route('/health')
@@ -155,7 +161,7 @@ def latest():
             row['trade_plan']=_plan_from_history(old);row['original_recommendation']=True
             plans=dict(row.get('strategy_trade_plans') or {});plans[row['strategy_id']]=row['trade_plan'];row['strategy_trade_plans']=plans
         rows.append(row)
-    rows.sort(key=lambda x:(bool(x.get('aggregate_eligible')),x['score']),reverse=True);data['results']=rows;data['ui_version']=APP_VERSION;data['display_filter']='strategy tabs: raw S / aggregate: current setup + flow + risk/reward; backtest informational only';data['usdkrw']=usdkrw_rate();return jsonify(data)
+    rows.sort(key=lambda x:(bool(x.get('aggregate_eligible')),x['score']),reverse=True);data['results']=rows;data['ui_version']=APP_VERSION;data['display_filter']='live candidates are mutable intraday; confirmed history is frozen after US daily close';data['usdkrw']=usdkrw_rate();return jsonify(data)
 @app.route('/api/history')
 def history():
     data=load_json(HISTORY_FILE,{'days':[],'summary':{}})
@@ -166,7 +172,14 @@ def history():
     start=page*size;end=start+size;days=data.get('days') or []
     for day in days[start:end]:
         for item in day.get('items') or []:item['name_ko']=item.get('name_ko') or korean_name(item.get('symbol'),item.get('security_name'))
-    return jsonify({'version':data.get('version'),'updated_at':data.get('updated_at'),'summary':data.get('summary') or {},'days':days[start:end],'page':page,'size':size,'has_more':end<len(days),'total_days':len(days),'usdkrw':usdkrw_rate(),'legacy_entries_repaired':data.get('legacy_entries_repaired',0)})
+    return jsonify({'version':data.get('version'),'updated_at':data.get('updated_at'),'summary':data.get('summary') or {},'days':days[start:end],'page':page,'size':size,'has_more':end<len(days),'total_days':len(days),'usdkrw':usdkrw_rate(),'legacy_entries_repaired':data.get('legacy_entries_repaired',0),'publication_policy':data.get('publication_policy'),'last_publish_check':data.get('last_publish_check')})
+@app.route('/api/signal-events')
+def signal_events():
+    data=load_json(SIGNAL_EVENTS_FILE,{'active':{},'events':[]})
+    try:limit=min(200,max(1,int(request.args.get('limit',50))))
+    except Exception:limit=50
+    events=list(reversed(data.get('events') or []))[:limit]
+    return jsonify({'updated_at':data.get('updated_at'),'market_date':data.get('market_date'),'active_count':len(data.get('active') or {}),'events':events})
 @app.route('/api/market')
 def market():return jsonify(market_snapshot())
 @app.route('/api/detail/<symbol>')
@@ -192,4 +205,32 @@ def backtest(symbol):
     if cached:return jsonify(cached)
     try:return jsonify(live_backtest(s,sid))
     except Exception as exc:return jsonify({'error':str(exc)}),400
+
+@app.route('/api/paper',methods=['GET'])
+def paper_status_api():
+    try:
+        from paper_broker_service import status
+        return jsonify(_decorate_paper_snapshot(status()))
+    except Exception as exc:return jsonify({'error':str(exc)}),400
+@app.route('/api/paper/submit',methods=['POST'])
+def paper_submit_api():
+    body=request.get_json(silent=True) or {};symbol=str(body.get('symbol') or '').upper().strip();strategy=body.get('strategy')
+    if not symbol:return jsonify({'error':'symbol이 필요합니다'}),400
+    try:
+        from paper_broker_service import submit_from_latest,status
+        submit_from_latest(symbol,strategy);return jsonify(_decorate_paper_snapshot(status()))
+    except Exception as exc:return jsonify({'error':str(exc)}),400
+@app.route('/api/paper/refresh',methods=['POST'])
+def paper_refresh_api():
+    try:
+        from paper_broker_service import refresh_active
+        return jsonify(_decorate_paper_snapshot(refresh_active()))
+    except Exception as exc:return jsonify({'error':str(exc)}),400
+@app.route('/api/paper/reset',methods=['POST'])
+def paper_reset_api():
+    try:
+        from paper_broker_service import reset
+        return jsonify(_decorate_paper_snapshot(reset()))
+    except Exception as exc:return jsonify({'error':str(exc)}),400
+
 if __name__=='__main__':app.run(host='0.0.0.0',port=8766,debug=False)
