@@ -17,7 +17,7 @@
     host.innerHTML=events.length?events.slice(0,24).map(e=>{
       const exit=e.event==='EXIT',reasonValue=reasonText(e);
       const reason=exit&&reasonValue?`<small class="exit-reason"><b>이탈 이유</b>${esc(reasonValue)}</small>`:'';
-      return `<div class="signal-event ${exit?'exit':''}"><span class="event-badge">${exit?'이탈':'포착'}</span><div><b>${esc(e.name_ko||e.security_name||e.symbol)} · ${esc(e.symbol)}</b><small>${esc(e.strategy_name||e.strategy_id)}${e.score!=null?` · 당시 엄선 ${Math.round(Number(e.score))}점`:''}</small>${reason}</div><time>${esc(eventTime(e.at))}</time></div>`;
+      return `<div class="signal-event ${exit?'exit':'capture'}"><span class="event-badge">${exit?'이탈':'👀 포착'}</span><div><b>${esc(e.name_ko||e.security_name||e.symbol)} · ${esc(e.symbol)}</b><small>${esc(e.strategy_name||e.strategy_id)}${e.score!=null?` · 당시 엄선 ${Math.round(Number(e.score))}점`:''}</small>${reason}</div><time>${esc(eventTime(e.at))}</time></div>`;
     }).join(''):'<div class="paper-empty">아직 저장된 장중 변동 로그가 없어요. 다음 자동 스캔부터 포착/이탈과 이탈 이유가 기록됩니다.</div>';
     host.dataset.exitReasons='1';
     rendering=false;

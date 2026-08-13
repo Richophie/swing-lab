@@ -7,37 +7,26 @@
     if(h2&&h2.textContent!=='👌 지금 볼 만한 자리')h2.textContent='👌 지금 볼 만한 자리';
   }
 
-  function polishLiveTicker(){
+  function polishLiveNote(){
     const live=document.querySelector('.live-mode-banner');
-    if(!live||live.dataset.popTicker==='1')return;
-    const badge=live.querySelector('.live-mode-badge');
-    if(!badge)return;
-    [...live.children].forEach(el=>{if(el!==badge)el.remove()});
-    const marquee=document.createElement('div');
-    marquee.className='live-marquee';
-    const track=document.createElement('div');
-    track.className='live-marquee-track';
-    const copy=`<strong>장중엔 후보가 움직여요</strong>${LIVE_TEXT}`;
-    track.innerHTML=`<span>${copy}</span><span aria-hidden="true">${copy}</span>`;
-    marquee.appendChild(track);live.appendChild(marquee);live.dataset.popTicker='1';
+    if(!live||live.dataset.staticNote==='1')return;
+    live.innerHTML=`<span class="live-mode-badge">LIVE</span><div class="live-static-copy"><strong>장중엔 후보가 움직여요</strong><span>${LIVE_TEXT}</span></div>`;
+    live.dataset.staticNote='1';
   }
 
-  function markEntryStickers(){
+  function markEntryCards(){
     document.querySelectorAll('#todayGrid .pick').forEach(card=>{
       const label=card.querySelector('.status-solid')?.textContent?.trim()||'';
       card.classList.toggle('entry-sticker-card',/진입/.test(label));
     });
   }
 
-  function apply(){polishHeading();polishLiveTicker();markEntryStickers()}
+  function apply(){polishHeading();polishLiveNote();markEntryCards()}
   window.addEventListener('DOMContentLoaded',()=>{
     apply();
-    // Only watch recommendation-card insertion. Do not observe the whole body:
-    // another UI layer also edits headings and a body-wide observer caused an
-    // endless heading mutation loop that locked the page during startup.
     const grid=document.getElementById('todayGrid');
     if(grid){
-      const observer=new MutationObserver(()=>markEntryStickers());
+      const observer=new MutationObserver(()=>markEntryCards());
       observer.observe(grid,{childList:true,subtree:true});
     }
   });
