@@ -3,15 +3,18 @@ name: PR Core Validation
 on:
   pull_request:
     paths:
+      - 'requirements.txt'
       - 'config.py'
       - 'market_data.py'
       - 'strategy_rules.py'
       - 'strategy_engine.py'
       - 'backtest_engine.py'
       - 'portfolio_backtest.py'
+      - 'backtrader_audit.py'
       - 'qa.py'
       - 'tests/test_strategy_rules.py'
       - 'tests/test_backtest_v2.py'
+      - 'tests/test_backtrader_audit.py'
       - '.github/workflows/pr-core-validation.yml'
 
 permissions:
@@ -29,8 +32,10 @@ jobs:
           cache: 'pip'
       - run: pip install -r requirements.txt
       - name: Compile core modules
-        run: python -m py_compile config.py market_data.py strategy_rules.py strategy_engine.py backtest_engine.py portfolio_backtest.py qa.py tests/test_strategy_rules.py tests/test_backtest_v2.py
+        run: python -m py_compile config.py market_data.py strategy_rules.py strategy_engine.py backtest_engine.py portfolio_backtest.py backtrader_audit.py qa.py tests/test_strategy_rules.py tests/test_backtest_v2.py tests/test_backtrader_audit.py
       - name: Deterministic strategy parity test
         run: PYTHONPATH=. python tests/test_strategy_rules.py
       - name: Backtest V2 execution and portfolio tests
         run: PYTHONPATH=. python tests/test_backtest_v2.py
+      - name: Backtrader independent audit tests
+        run: PYTHONPATH=. python tests/test_backtrader_audit.py
