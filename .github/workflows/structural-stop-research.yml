@@ -1,0 +1,42 @@
+name: Structural Stop Research
+
+on:
+  pull_request:
+    paths:
+      - 'structural_stop_research.py'
+      - 'strategy_rules.py'
+      - 'scanner.py'
+      - 'execution_quality.py'
+      - 'portfolio_backtest.py'
+      - 'backtest_engine.py'
+      - 'tests/test_structural_stop_research.py'
+      - '.github/workflows/structural-stop-research.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: pip install -r requirements.txt
+      - name: Compile research modules
+        run: python -m py_compile structural_stop_research.py tests/test_structural_stop_research.py
+      - name: Deterministic structural-stop tests
+        run: PYTHONPATH=. python tests/test_structural_stop_research.py
+      - name: Broad 60-symbol structural-stop research
+        run: PYTHONPATH=. python structural_stop_research.py
+      - name: Upload research artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: structural-stop-research
+          path: artifacts/structural_stop_research.json
+          if-no-files-found: warn
