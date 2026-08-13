@@ -33,6 +33,16 @@ def mean_or_none(values):
     return None if not values else float(np.mean(values))
 
 
+def normalize_zero_trade_comparison(comparison: dict) -> dict:
+    """Zero vs zero means there is nothing to compare, not an engine disagreement."""
+    out = dict(comparison)
+    if int(out.get('swing_trade_count') or 0) == 0 and int(out.get('backtrader_trade_count') or 0) == 0:
+        out['verdict'] = 'NO_TRADES'
+        out['entry_match_rate_pct'] = 100.0
+        out['outcome_agreement_pct'] = 100.0
+    return out
+
+
 def run_matrix():
     rows = []
     by_strategy = defaultdict(list)
@@ -66,7 +76,7 @@ def run_matrix():
                     strategy_id,
                     market_state=market_state,
                 )
-                comparison = compare_engines(swing_trades, bt_result['trades'])
+                comparison = normalize_zero_trade_comparison(compare_engines(swing_trades, bt_result['trades']))
                 row = {
                     'symbol': symbol,
                     'strategy_id': strategy_id,
@@ -127,7 +137,7 @@ def run_matrix():
                 'backtrader_trade_count': total_bt,
                 'entry_match_rate_pct': round(matched / union * 100.0, 1) if union else 100.0,
                 'outcome_agreement_pct': round(weighted_outcome_matches / weighted_outcome_n * 100.0, 1) if weighted_outcome_n else 100.0,
-                'mean_abs_avg_return_delta_pp': round(mean_or_none([abs(r['avg_return_delta_pp']) for r in valid]) or 0.0, 3),
+                'mean_abs_avg_return_delta_pp': round(mean_or_none([abs(r['avg_return_delta_pp']) for r in valid if r['verdict'] != 'NO_TRADES']) or 0.0, 3),
             }
         )
 
