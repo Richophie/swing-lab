@@ -55,14 +55,14 @@ def signal_frame(d: pd.DataFrame, strategy_id: str) -> pd.DataFrame:
     )
 
 
-def simulate(d: pd.DataFrame, strategy_id: str, commission: float = .001):
+def simulate(d: pd.DataFrame, strategy_id: str, commission: float = .001, start_i: int = 205):
     market_state = _historical_market_state(d.index)
     frame = canonical_signal_frame(d, market_state)
     if strategy_id not in frame.columns:
         raise ValueError('알 수 없는 전략')
 
     trades = []
-    i = 205
+    i = max(205, int(start_i))
     n = len(d)
     while i < n - 2:
         if not bool(frame[strategy_id].iloc[i]):
@@ -147,10 +147,16 @@ def stats(d: pd.DataFrame, trades: list[dict]):
 
 
 def run_backtest_on_frame(d: pd.DataFrame, strategy_id: str):
+    full = stats(d, simulate(d, strategy_id))
+    if len(d) <= 220:
+        return {'full_10y': full, 'recent_2y': None}
+
     recent = d.tail(504).copy()
+    recent_start = max(205, len(d) - len(recent))
+    recent_trades = simulate(d, strategy_id, start_i=recent_start)
     return {
-        'full_10y': stats(d, simulate(d, strategy_id)),
-        'recent_2y': stats(recent, simulate(recent, strategy_id)) if len(recent) > 220 else None,
+        'full_10y': full,
+        'recent_2y': stats(recent, recent_trades),
     }
 
 
