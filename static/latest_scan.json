@@ -2,8 +2,8 @@
   "status": "ready",
   "version": "16.5",
   "core_version": "4.4",
-  "scanned_at": "2026-08-13T06:47:39+00:00",
-  "universe_count": 5762,
+  "scanned_at": "2026-08-13T09:46:58+00:00",
+  "universe_count": 5761,
   "candidate_count": 500,
   "failed_count": 8,
   "failed": [
@@ -338,6 +338,21 @@
         "risk_reward_gate": 1.2156,
         "net_risk_reward": 1.1,
         "net_risk_reward_raw": 1.1039
+      },
+      "event_risk": {
+        "earnings_date": "2026-10-28",
+        "days_until": 76,
+        "confidence": "confirmed",
+        "stale": false,
+        "risk_code": "CLEAR",
+        "risk_label": "실적까지 76일",
+        "hold_calendar_days": 8,
+        "source_dates": {
+          "get_earnings_dates": "2026-10-28",
+          "calendar": "2026-10-28"
+        },
+        "source_day_diff": 0,
+        "checked_at": "2026-08-13T09:46:58+00:00"
       }
     },
     {
@@ -1427,7 +1442,15 @@
   "flow_completed_session_count": 0,
   "flow_policy": "during an incomplete US daily bar, elite flow/liquidity scoring uses the previous completed session; live partial flow is stored separately",
   "rr_policy": "gross RR >= 1.20 is evaluated from price-level precision; 2-decimal RR is display only; net RR is diagnostic only",
+  "event_policy": "informational only; no score, signal, BUY/TARGET/STOP or hard-gate effect",
   "display_filter": "strategy tabs show raw public S; aggregate ranks current signal + completed-session flow/liquidity + precise gross risk/reward + entry viability + ATR stop margin; no count cap",
   "s_threshold": 85.0,
-  "elite_policy": "backtest is informational only; aggregate uses current setup, completed-session flow/liquidity during intraday scans, precise gross risk-reward, market regime, entry viability, ATR stop margin and first-20DMA overlay"
+  "elite_policy": "backtest is informational only; aggregate uses current setup, completed-session flow/liquidity during intraday scans, precise gross risk-reward, market regime, entry viability, ATR stop margin and first-20DMA overlay",
+  "elite_rows_with_event_check": 1,
+  "earnings_cache_queried": 1,
+  "earnings_cache_reused": 0,
+  "earnings_cache_stale_used": 0,
+  "earnings_cache_retry_backoff": 0,
+  "earnings_cache_ttl_hours": 12,
+  "earnings_error_retry_hours": 2
 }
