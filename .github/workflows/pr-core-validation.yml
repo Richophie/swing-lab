@@ -1,0 +1,31 @@
+name: PR Core Validation
+
+on:
+  pull_request:
+    paths:
+      - 'market_data.py'
+      - 'strategy_rules.py'
+      - 'strategy_engine.py'
+      - 'backtest_engine.py'
+      - 'qa.py'
+      - 'tests/test_strategy_rules.py'
+      - '.github/workflows/pr-core-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: pip install -r requirements.txt
+      - name: Compile core modules
+        run: python -m py_compile market_data.py strategy_rules.py strategy_engine.py backtest_engine.py qa.py tests/test_strategy_rules.py
+      - name: Deterministic strategy parity test
+        run: python tests/test_strategy_rules.py
