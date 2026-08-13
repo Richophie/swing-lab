@@ -73,13 +73,13 @@ def test_intraday_enter_exit_log_is_append_only():
     assert log['events'][-1]['event'] == 'ENTER'
     first_seen = log['events'][-1]['first_seen']
 
-    # Same signal in the next scan updates last_seen without creating duplicate ENTER.
+    # Same S signal in the next scan updates last_seen without creating duplicate ENTER.
     again = synthetic_scan('2026-08-13T20:00:00+00:00')
     log = update_log(again, log)
     assert len(log['events']) == 1
     assert next(iter(log['active'].values()))['first_seen'] == first_seen
 
-    # If it drops out later, preserve the earlier ENTER and append EXIT with a reason.
+    # If the S signal itself drops out later, preserve ENTER and append a true EXIT.
     gone = synthetic_scan('2026-08-13T20:30:00+00:00', include=False)
     log = update_log(gone, log)
     assert len(log['active']) == 0
@@ -88,7 +88,7 @@ def test_intraday_enter_exit_log_is_append_only():
     assert '해당 전략 S 신호' in log['events'][-1]['exit_reason']
 
 
-def test_intraday_exit_reason_identifies_failed_elite_checks():
+def test_intraday_elite_exit_reason_identifies_failed_elite_checks():
     log = {'version': 1, 'active': {}, 'events': []}
     log = update_log(synthetic_scan(), log)
     failed_checks = {
@@ -109,7 +109,10 @@ def test_intraday_exit_reason_identifies_failed_elite_checks():
     )
     log = update_log(failed, log)
     event = log['events'][-1]
-    assert event['event'] == 'EXIT'
+    # The strategy S signal is still alive; only the elite/엄선 layer was lost.
+    assert event['event'] == 'ELITE_EXIT'
+    assert len(log['active']) == 1
+    assert len(log['elite_active']) == 0
     assert event['exit_reason_code'] == 'flow+risk_reward'
     assert '수급 점수 39 < 42' in event['exit_reason']
     assert '손익비 1.08:1 < 1.20:1' in event['exit_reason']
@@ -126,7 +129,7 @@ def test_korean_names_for_new_scan_names():
 def main():
     test_close_publication_gate()
     test_intraday_enter_exit_log_is_append_only()
-    test_intraday_exit_reason_identifies_failed_elite_checks()
+    test_intraday_elite_exit_reason_identifies_failed_elite_checks()
     test_korean_names_for_new_scan_names()
     print('signal history PASS')
 
