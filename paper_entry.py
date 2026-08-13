@@ -24,7 +24,7 @@ from config import (
     SCAN_CANDIDATE_LIMIT,
     S_THRESHOLD,
 )
-from paper_manual import close_or_cancel_manual, preview_manual, submit_manual
+from paper_manual import close_or_cancel_manual, preview_manual, submit_manual, upgrade_pending_manual_orders
 from paper_marks import current_marks
 from paper_restore import restore_browser_backup
 from repo_data import load_json
@@ -72,7 +72,9 @@ def paper_restore_api():
 @app.route('/api/paper/marks', methods=['GET'])
 def paper_marks_api():
     try:
-        return jsonify(current_marks(_paper_state_path()))
+        state_path = _paper_state_path()
+        upgrade_pending_manual_orders(state_path=state_path)
+        return jsonify(current_marks(state_path))
     except Exception as exc:
         return jsonify({'error': str(exc)}), 400
 
