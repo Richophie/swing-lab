@@ -59,7 +59,19 @@ def current_marks(state_path) -> dict:
     state = PaperBrokerStore(state_path).load()
     active = [o for o in state.get('orders', []) if o.get('status') in {'PENDING', 'FILLED'}]
     if not active:
-        return {'orders': [], 'fx_rate': None, 'live_trading_enabled': False}
+        cash = float(state.get('cash_krw') or 0.0)
+        return {
+            'orders': [],
+            'fx_rate': None,
+            'summary': {
+                'cash_krw': round(cash, 2),
+                'gross_market_value_krw': 0.0,
+                'estimated_liquidation_value_krw': 0.0,
+                'equity_krw': round(cash, 2),
+                'unrealized_pnl_krw': 0.0,
+            },
+            'live_trading_enabled': False,
+        }
 
     try:
         fx = float(current_fx_rate())
@@ -68,6 +80,10 @@ def current_marks(state_path) -> dict:
 
     quote_cache: dict[str, tuple[float | None, str | None, str]] = {}
     rows = []
+    gross_market_value = 0.0
+    estimated_liquidation_value = 0.0
+    unrealized_total = 0.0
+
     for order in active:
         symbol = str(order.get('symbol') or '').upper().strip()
         if symbol not in quote_cache:
@@ -78,6 +94,7 @@ def current_marks(state_path) -> dict:
             'order_id': order.get('id'),
             'symbol': symbol,
             'strategy_id': order.get('strategy_id'),
+            'strategy_name': order.get('strategy_name'),
             'status': order.get('status'),
             'current_price_usd': None if price is None else round(float(price), 6),
             'price_at': price_at,
@@ -98,6 +115,9 @@ def current_marks(state_path) -> dict:
             gross_value = qty * float(price) * fx
             liquidation_value = qty * liquidation_fill * fx * (1.0 - commission)
             pnl = liquidation_value - entry_cost
+            gross_market_value += gross_value
+            estimated_liquidation_value += liquidation_value
+            unrealized_total += pnl
             row.update({
                 'market_value_krw': round(gross_value, 2),
                 'estimated_liquidation_value_krw': round(liquidation_value, 2),
@@ -108,4 +128,12 @@ def current_marks(state_path) -> dict:
             })
         rows.append(row)
 
-    return {'orders': rows, 'fx_rate': fx, 'live_trading_enabled': False}
+    cash = float(state.get('cash_krw') or 0.0)
+    summary = {
+        'cash_krw': round(cash, 2),
+        'gross_market_value_krw': round(gross_market_value, 2),
+        'estimated_liquidation_value_krw': round(estimated_liquidation_value, 2),
+        'equity_krw': round(cash + estimated_liquidation_value, 2),
+        'unrealized_pnl_krw': round(unrealized_total, 2),
+    }
+    return {'orders': rows, 'fx_rate': fx, 'summary': summary, 'live_trading_enabled': False}
