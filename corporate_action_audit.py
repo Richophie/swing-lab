@@ -16,16 +16,18 @@ def _safe_float(value):
 
 
 def audit_symbol(symbol: str) -> dict:
-    raw = yf.Ticker(symbol).history(period='10y', auto_adjust=False, actions=True, repair=True)
-    adj = yf.Ticker(symbol).history(period='10y', auto_adjust=True, actions=True, repair=True)
+    # Keep this audit independent of yfinance's optional price-repair path.
+    # We only compare raw vs auto-adjusted OHLC around explicit split events.
+    raw = yf.Ticker(symbol).history(period='10y', auto_adjust=False, actions=True, repair=False)
+    adj = yf.Ticker(symbol).history(period='10y', auto_adjust=True, actions=True, repair=False)
     result = {'symbol':symbol,'rows_raw':len(raw),'rows_adjusted':len(adj),'splits':[]}
     if raw.empty:return {**result,'error':'raw history empty'}
     splits = raw.get('Stock Splits')
     if splits is None:return result
     for idx,value in splits[splits.fillna(0)!=0].items():
-        pos = raw.index.get_loc(idx)
-        if not isinstance(pos,int) or pos<1:continue
-        prev_idx = raw.index[pos-1]
+        loc = raw.index.get_loc(idx)
+        if isinstance(loc,slice) or not isinstance(loc,int) or loc<1:continue
+        prev_idx = raw.index[loc-1]
         prev_close = _safe_float(raw.loc[prev_idx,'Close'])
         split_close = _safe_float(raw.loc[idx,'Close'])
         adj_prev = _safe_float(adj.loc[prev_idx,'Close']) if prev_idx in adj.index else None
@@ -40,6 +42,7 @@ def audit_symbol(symbol: str) -> dict:
             'raw_overnight_return_pct':None if raw_jump is None else round(raw_jump*100,4),
             'adjusted_overnight_return_pct':None if adj_jump is None else round(adj_jump*100,4),
         })
+    result['split_events_found']=len(result['splits'])
     return result
 
 
