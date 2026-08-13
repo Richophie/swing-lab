@@ -43,6 +43,39 @@ def normalize_zero_trade_comparison(comparison: dict) -> dict:
     return out
 
 
+def outcome_bucket(reason):
+    text = str(reason or '')
+    if '손절' in text:
+        return 'stop'
+    if '목표' in text:
+        return 'target'
+    return 'time'
+
+
+def trade_diagnostics(swing_trades: list[dict], backtrader_trades: list[dict]) -> dict:
+    swing = {str(t.get('entry_date')): t for t in swing_trades if t.get('entry_date')}
+    bt = {str(t.get('entry_date')): t for t in backtrader_trades if t.get('entry_date')}
+    swing_only = sorted(set(swing) - set(bt))
+    backtrader_only = sorted(set(bt) - set(swing))
+    outcome_mismatch = []
+    for date in sorted(set(swing) & set(bt)):
+        if outcome_bucket(swing[date].get('reason')) != outcome_bucket(bt[date].get('reason')):
+            outcome_mismatch.append({
+                'entry_date': date,
+                'swing_reason': swing[date].get('reason'),
+                'backtrader_reason': bt[date].get('reason'),
+                'swing_exit_date': swing[date].get('exit_date'),
+                'backtrader_exit_date': bt[date].get('exit_date'),
+                'swing_ret_pct': round(float(swing[date].get('ret') or 0.0) * 100.0, 3),
+                'backtrader_ret_pct': round(float(bt[date].get('ret') or 0.0) * 100.0, 3),
+            })
+    return {
+        'swing_only_entry_dates': swing_only,
+        'backtrader_only_entry_dates': backtrader_only,
+        'outcome_mismatches': outcome_mismatch,
+    }
+
+
 def run_matrix():
     rows = []
     by_strategy = defaultdict(list)
@@ -77,11 +110,13 @@ def run_matrix():
                     market_state=market_state,
                 )
                 comparison = normalize_zero_trade_comparison(compare_engines(swing_trades, bt_result['trades']))
+                diagnostics = trade_diagnostics(swing_trades, bt_result['trades'])
                 row = {
                     'symbol': symbol,
                     'strategy_id': strategy_id,
                     'strategy_name': STRATEGY_NAMES[strategy_id],
                     **comparison,
+                    **diagnostics,
                     'backtrader_gap_rejections': len(bt_result.get('gap_rejections') or []),
                 }
             except Exception as exc:
@@ -104,6 +139,12 @@ def run_matrix():
                     f"outcome {row['outcome_agreement_pct']:5.1f}% "
                     f"delta {row['avg_return_delta_pp']:+.3f}pp"
                 )
+                if row['swing_only_entry_dates'] or row['backtrader_only_entry_dates'] or row['outcome_mismatches']:
+                    print('  DIFF', json.dumps({
+                        'swing_only': row['swing_only_entry_dates'],
+                        'backtrader_only': row['backtrader_only_entry_dates'],
+                        'outcomes': row['outcome_mismatches'],
+                    }, ensure_ascii=False))
 
     strategy_summaries = []
     for strategy_id in STRATEGIES:
@@ -138,6 +179,9 @@ def run_matrix():
                 'entry_match_rate_pct': round(matched / union * 100.0, 1) if union else 100.0,
                 'outcome_agreement_pct': round(weighted_outcome_matches / weighted_outcome_n * 100.0, 1) if weighted_outcome_n else 100.0,
                 'mean_abs_avg_return_delta_pp': round(mean_or_none([abs(r['avg_return_delta_pp']) for r in valid if r['verdict'] != 'NO_TRADES']) or 0.0, 3),
+                'swing_only_entries': sum(len(r.get('swing_only_entry_dates') or []) for r in valid),
+                'backtrader_only_entries': sum(len(r.get('backtrader_only_entry_dates') or []) for r in valid),
+                'outcome_mismatch_count': sum(len(r.get('outcome_mismatches') or []) for r in valid),
             }
         )
 
