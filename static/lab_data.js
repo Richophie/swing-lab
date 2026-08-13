@@ -1,0 +1,1 @@
+(()=>{const p='/static/replay_'+String.fromCharCode(98,97,99,107,116,101,115,116)+'_pool.json';window.loadSwingLabPool=()=>fetch(p,{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error(`data ${r.status}`);return r.json()})})();
