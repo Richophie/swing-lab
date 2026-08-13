@@ -92,7 +92,7 @@
 
 UI에서는 `장중 실험` 배지를 표시한다.
 
-기존 출처 미기록 주문은 `구버전`으로 표시한다.
+이 필드가 생기기 전에는 마감확정 history에서 Paper 주문을 만드는 경로가 없었으므로 기존 출처 미기록 주문은 `LIVE_CANDIDATE`로 자동 마이그레이션한다. 마이그레이션된 주문에는 `origin_migrated = true`를 남긴다.
 
 향후 `CONFIRMED_CLOSE` 전용 Paper 진입경로를 추가한 뒤 두 성과표를 완전히 별도로 비교한다.
 
@@ -104,7 +104,7 @@ UI에서는 `장중 실험` 배지를 표시한다.
 
 이를 즉시 `auto_adjust=True`로 바꾸지 않는다. auto-adjust는 OHLC 전체의 의미를 바꾸므로 전략/백테스트 결과 자체가 달라질 수 있다.
 
-`corporate_action_audit.py`를 추가해 다음 split 이력이 많은 대표 종목을 점검한다.
+`corporate_action_audit.py`로 다음 split 이력이 많은 대표 종목을 점검했다.
 
 - AAPL
 - NVDA
@@ -119,7 +119,23 @@ UI에서는 `장중 실험` 배지를 표시한다.
 - auto-adjusted close의 같은 구간 return
 - raw/adjusted series 차이
 
-감사는 정보수집 단계이며 자동으로 canonical price basis를 변경하지 않는다.
+### 2026-08-13 감사 결과
+
+확인된 대표 split:
+
+- AAPL 2020-08-31 · 4:1
+- NVDA 2021-07-20 · 4:1 / 2024-06-10 · 10:1
+- TSLA 2020-08-31 · 5:1 / 2022-08-25 · 3:1
+- AMZN 2022-06-06 · 20:1
+- GOOGL 2022-07-18 · 20:1
+
+이 모든 split event에서 현재 Yahoo raw `Close`는 split ratio만큼 기계적으로 폭락/폭등하는 불연속을 보이지 않았고, split 당일 raw와 auto-adjusted overnight return은 동일했다.
+
+따라서 **주식분할 연속성만을 이유로 canonical history를 auto-adjust=True로 바꿀 근거는 발견하지 못했다.**
+
+현재 가격 basis는 유지한다. auto-adjust는 배당 등의 조정까지 OHLC에 반영하므로 별도 연구 없이 기술적 가격계열을 변경하지 않는다.
+
+감사 artifact: `corporate-action-audit` / `artifacts/corporate_action_audit.json`.
 
 ---
 
