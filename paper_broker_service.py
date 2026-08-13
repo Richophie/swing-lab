@@ -23,6 +23,24 @@ def _load_json(path: Path, default):
         return default
 
 
+def _tag_legacy_origins(state: dict) -> int:
+    """Migrate pre-origin Paper orders.
+
+    Before this field existed, every UI/CLI Paper submit path used latest_scan, so
+    legacy orders can be classified as LIVE_CANDIDATE without inventing an official
+    close-confirmed history.
+    """
+    changed = 0
+    for order in state.get('orders', []):
+        if order.get('order_origin'):
+            continue
+        order['order_origin'] = 'LIVE_CANDIDATE'
+        order['signal_origin'] = order.get('signal_origin') or 'legacy_latest_scan'
+        order['origin_migrated'] = True
+        changed += 1
+    return changed
+
+
 def current_fx_rate() -> float:
     cached = _load_json(FX_FILE, {})
     try:
@@ -92,6 +110,7 @@ def submit_from_latest(
     market_date = _latest_market_date(info['symbol'])
     store = PaperBrokerStore(state_path)
     state = store.load()
+    _tag_legacy_origins(state)
     order = submit_order(
         state,
         symbol=info['symbol'],
@@ -113,6 +132,7 @@ def submit_from_latest(
 def refresh_active(*, state_path: str | Path = STATE_FILE) -> dict:
     store = PaperBrokerStore(state_path)
     state = store.load()
+    _tag_legacy_origins(state)
     active_symbols = sorted({o.get('symbol') for o in state.get('orders', []) if o.get('status') in {'PENDING', 'FILLED'} and o.get('symbol')})
     if not active_symbols:
         return snapshot(store.save(state))
@@ -137,7 +157,10 @@ def refresh_active(*, state_path: str | Path = STATE_FILE) -> dict:
 
 
 def status(*, state_path: str | Path = STATE_FILE) -> dict:
-    return PaperBrokerStore(state_path).get_snapshot()
+    store = PaperBrokerStore(state_path)
+    state = store.load()
+    _tag_legacy_origins(state)
+    return snapshot(store.save(state))
 
 
 def reset(*, state_path: str | Path = STATE_FILE) -> dict:
