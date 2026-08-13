@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 from copy import deepcopy
-from datetime import datetime
+from datetime import datetime, timezone
+import math
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from backtest_engine import market_sell_fill
-from paper_broker import PaperBrokerStore, _cancel_order, _close_order, snapshot, submit_order
+from backtest_engine import market_buy_fill, market_sell_fill
+from paper_broker import PaperBrokerStore, _cancel_order, _close_order, _event, snapshot, submit_order
 from paper_broker_service import (
     _latest_market_date,
     _tag_legacy_origins,
@@ -46,7 +47,7 @@ def _resize_order(order: dict, state: dict, requested_qty: int) -> None:
 
     for event in reversed(state.get('events', [])):
         if event.get('order_id') == order.get('id') and event.get('event') == 'SUBMITTED':
-            event['detail'] = f"다음 거래일 시가 대기 · {qty}주 · BUY {order['buy_low']:.2f}~{order['buy_high']:.2f}"
+            event['detail'] = f"사용자 즉시 가상매수 준비 · {qty}주"
             break
 
 
@@ -82,6 +83,78 @@ def _build_order(
     order['signal_origin'] = 'user_selected_latest_scan'
     order['event_risk_snapshot'] = dict(info.get('event_risk_snapshot') or {})
     order['risk_observability_only'] = True
+    order['manual_fill_policy'] = 'immediate_latest_available_quote'
+    for event in reversed(state.get('events', [])):
+        if event.get('order_id') == order.get('id') and event.get('event') == 'SUBMITTED':
+            event['detail'] = f"사용자 즉시 가상매수 준비 · {order['qty']}주"
+            break
+    return order
+
+
+def _fill_manual_now(state: dict, order: dict, *, allow_resize: bool = True) -> dict:
+    price, price_at, price_source = _price_mark(str(order.get('symbol') or ''))
+    if price is None:
+        raise ValueError('현재 가상체결 기준가를 확인하지 못했습니다')
+    fx = float(current_fx_rate())
+    stop = float(order['stop'])
+    target = float(order['target'])
+    raw = float(price)
+    if raw <= stop:
+        raise ValueError(f'현재가 ${raw:.2f}가 STOP ${stop:.2f} 이하라 새 가상매수를 막았습니다')
+    if raw >= target:
+        raise ValueError(f'현재가 ${raw:.2f}가 TARGET ${target:.2f} 이상이라 새 가상매수를 막았습니다')
+
+    fill = market_buy_fill(raw, float(order.get('slippage_bps') or 0.0), float(order.get('half_spread_bps') or 0.0))
+    if not stop < fill < target:
+        raise ValueError('체결비용 반영 후 STOP < 체결가 < TARGET 구조가 아닙니다')
+
+    commission = max(0.0, float(order.get('commission_pct_per_side') or 0.0)) / 100.0
+    per_share_cost = fill * fx * (1.0 + commission)
+    cash = max(0.0, float(state.get('cash_krw') or 0.0))
+    by_cash = math.floor(cash / per_share_cost)
+    actual_risk_per_share = max((fill - stop) * fx, 0.0)
+    risk_budget = max(0.0, float(order.get('risk_budget_krw') or 0.0))
+    by_risk = math.floor(risk_budget / actual_risk_per_share) if actual_risk_per_share > 0 else 0
+    allowed = max(0, min(by_cash, by_risk))
+    requested = int(order.get('qty') or 0)
+    if allowed < 1:
+        raise ValueError('현재 가격·현금·리스크 기준으로 1주도 즉시 가상체결할 수 없습니다')
+    if requested > allowed:
+        if not allow_resize:
+            raise ValueError(f'현재 가격 기준 최대 {allowed}주까지 즉시 가상체결 가능합니다')
+        order['qty'] = allowed
+    qty = int(order['qty'])
+
+    gross = fill * qty * fx
+    entry_commission = gross * commission
+    entry_cost = gross + entry_commission
+    state['cash_krw'] = round(cash - entry_cost, 2)
+    order.update(
+        {
+            'status': 'FILLED',
+            'entry_date': _market_date(),
+            'entry_fill_usd': round(fill, 6),
+            'entry_raw_open_usd': round(raw, 6),
+            'entry_timestamp': price_at,
+            'entry_resolution_quality': f'manual_{price_source}_quote',
+            'entry_commission_krw': round(entry_commission, 2),
+            'entry_cost_krw': round(entry_cost, 2),
+            'fx_at_entry': round(fx, 4),
+            'reserved_cash_krw': 0.0,
+            'held_bars': 0,
+            'last_close_usd': round(raw, 6),
+            'last_fx': round(fx, 4),
+            'last_processed_date': str(order.get('submitted_market_date') or _market_date())[:10],
+            'filled_at': datetime.now(timezone.utc).isoformat(timespec='seconds'),
+            'manual_fill_quote_source': price_source,
+        }
+    )
+    _event(
+        state,
+        order,
+        'FILLED',
+        f"사용자 즉시 가상매수 · {qty}주 · ${fill:.4f} · 기준 {price_source} {price_at or ''}".strip(),
+    )
     return order
 
 
@@ -96,18 +169,23 @@ def preview_manual(
     _tag_legacy_origins(state)
     trial = deepcopy(state)
     order = _build_order(trial, symbol=symbol, strategy_id=strategy_id, requested_qty=None)
+    price, price_at, price_source = _price_mark(order['symbol'])
     return {
         'symbol': order['symbol'],
         'strategy_id': order['strategy_id'],
         'strategy_name': order['strategy_name'],
         'max_qty': int(order['qty']),
         'planned_entry_usd': order.get('planned_entry_usd'),
+        'current_quote_usd': None if price is None else round(float(price), 6),
+        'current_quote_at': price_at,
+        'current_quote_source': price_source,
         'planned_notional_krw': order.get('planned_notional_krw'),
         'planned_risk_krw': order.get('planned_risk_krw'),
         'risk_budget_krw': order.get('risk_budget_krw'),
         'gap_guard': order.get('gap_guard'),
         'atr': order.get('atr'),
         'available_cash_krw': snapshot(state)['summary'].get('available_cash_krw'),
+        'fill_policy': 'immediate_latest_available_quote',
         'live_trading_enabled': False,
     }
 
@@ -122,18 +200,39 @@ def submit_manual(
     store = PaperBrokerStore(state_path)
     state = store.load()
     _tag_legacy_origins(state)
-    order = _build_order(
-        state,
-        symbol=symbol,
-        strategy_id=strategy_id,
-        requested_qty=requested_qty,
-    )
+    order = _build_order(state, symbol=symbol, strategy_id=strategy_id, requested_qty=requested_qty)
+    _fill_manual_now(state, order, allow_resize=requested_qty is None)
     saved = store.save(state)
     out = snapshot(saved)
     out['submitted_order_id'] = order.get('id')
     out['submitted_qty'] = int(order.get('qty') or 0)
     out['max_allowed_qty'] = int(order.get('max_allowed_qty') or order.get('qty') or 0)
+    out['filled_immediately'] = True
+    out['entry_fill_usd'] = order.get('entry_fill_usd')
     return out
+
+
+def upgrade_pending_manual_orders(*, state_path: str | Path) -> int:
+    """One-time compatibility migration for manual orders created before immediate-fill semantics."""
+    store = PaperBrokerStore(state_path)
+    state = store.load()
+    _tag_legacy_origins(state)
+    changed = 0
+    for order in state.get('orders', []):
+        if order.get('status') != 'PENDING' or order.get('order_origin') != 'MANUAL_PAPER':
+            continue
+        if order.get('manual_immediate_upgrade_attempted'):
+            continue
+        order['manual_immediate_upgrade_attempted'] = True
+        try:
+            _fill_manual_now(state, order, allow_resize=True)
+            order['manual_immediate_upgrade'] = True
+            changed += 1
+        except Exception as exc:
+            order['manual_immediate_upgrade_error'] = str(exc)
+    if changed or any(o.get('manual_immediate_upgrade_attempted') for o in state.get('orders', [])):
+        store.save(state)
+    return changed
 
 
 def close_or_cancel_manual(order_id: str, *, state_path: str | Path) -> dict:
