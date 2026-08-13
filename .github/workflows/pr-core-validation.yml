@@ -16,6 +16,7 @@ on:
       - 'corporate_action_audit.py'
       - 'execution_quality.py'
       - 'net_rr_research.py'
+      - 'rsi2_selector_research.py'
       - 'paper_broker.py'
       - 'paper_broker_service.py'
       - 'paper_marks.py'
@@ -55,6 +56,7 @@ on:
       - 'tests/test_p0_structure.py'
       - 'tests/test_net_rr_research.py'
       - 'tests/test_selection_precision.py'
+      - 'tests/test_rsi2_selector_research.py'
       - '.github/workflows/market-scan.yml'
       - '.github/workflows/pr-core-validation.yml'
 
@@ -73,7 +75,7 @@ jobs:
           cache: 'pip'
       - run: pip install -r requirements.txt
       - name: Compile core modules
-        run: python -m py_compile config.py market_data.py strategy_rules.py strategy_engine.py scanner.py backtest_engine.py portfolio_backtest.py backtrader_audit.py audit_matrix.py corporate_action_audit.py execution_quality.py net_rr_research.py paper_broker.py paper_broker_service.py paper_marks.py paper_restore.py paper_entry.py refresh_fx_cache.py stock_names.py signal_log.py journal.py app.py qa.py tests/test_strategy_rules.py tests/test_backtest_v2.py tests/test_backtrader_audit.py tests/test_paper_broker.py tests/test_paper_marks.py tests/test_paper_restore.py tests/test_signal_history.py tests/test_startup_stability.py tests/test_ui_wiring.py tests/test_p0_structure.py tests/test_net_rr_research.py tests/test_selection_precision.py
+        run: python -m py_compile config.py market_data.py strategy_rules.py strategy_engine.py scanner.py backtest_engine.py portfolio_backtest.py backtrader_audit.py audit_matrix.py corporate_action_audit.py execution_quality.py net_rr_research.py rsi2_selector_research.py paper_broker.py paper_broker_service.py paper_marks.py paper_restore.py paper_entry.py refresh_fx_cache.py stock_names.py signal_log.py journal.py app.py qa.py tests/test_strategy_rules.py tests/test_backtest_v2.py tests/test_backtrader_audit.py tests/test_paper_broker.py tests/test_paper_marks.py tests/test_paper_restore.py tests/test_signal_history.py tests/test_startup_stability.py tests/test_ui_wiring.py tests/test_p0_structure.py tests/test_net_rr_research.py tests/test_selection_precision.py tests/test_rsi2_selector_research.py
       - name: JavaScript syntax check
         run: node --check static/dashboard.js && node --check static/chart_guides.js && node --check static/backtest_compat.js && node --check static/paper_persistence.js && node --check static/paper_mark_to_market.js && node --check static/detail_overlay.js && node --check static/indie_finance_ui.js && node --check static/pop_indie_polish.js && node --check static/signal_event_polish.js
       - name: Deterministic strategy parity test
@@ -84,6 +86,8 @@ jobs:
         run: PYTHONPATH=. python tests/test_net_rr_research.py
       - name: Selection threshold precision tests
         run: PYTHONPATH=. python tests/test_selection_precision.py
+      - name: RSI2 selector research tests
+        run: PYTHONPATH=. python tests/test_rsi2_selector_research.py
       - name: Backtest V2 execution and portfolio tests
         run: PYTHONPATH=. python tests/test_backtest_v2.py
       - name: Backtrader independent audit tests
@@ -118,6 +122,15 @@ jobs:
         with:
           name: net-rr-sensitivity
           path: artifacts/net_rr_sensitivity.json
+          if-no-files-found: warn
+      - name: RSI2 live-selector research
+        run: PYTHONPATH=. python rsi2_selector_research.py
+      - name: Upload RSI2 selector research
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rsi2-live-selector-research
+          path: artifacts/rsi2_live_selector_research.json
           if-no-files-found: warn
       - name: Real 10y x 20 stocks x 3 strategies audit
         run: PYTHONPATH=. python audit_matrix.py
