@@ -22,6 +22,13 @@ def test_paper_ui_and_detail_explanation_are_wired():
     assert "점수는 성공확률이 아니라" in text
     assert ".pick .reason>span{display:none!important}" in text
     assert "오늘 장중 포착 · 이탈" in text
+    assert "마감 확정 추천 기록" in text
+
+
+def test_dashboard_cache_busts_dynamic_ui_scripts():
+    html = (ROOT / 'static' / 'dashboard.html').read_text(encoding='utf-8')
+    assert '/static/dashboard.js?v=' in html
+    assert '/static/detail_overlay.js?v=' in html
 
 
 def test_app_exposes_paper_and_signal_log_routes():
@@ -35,6 +42,7 @@ def test_app_exposes_paper_and_signal_log_routes():
 def main():
     test_detail_overlay_accepts_legacy_inline_open_contract()
     test_paper_ui_and_detail_explanation_are_wired()
+    test_dashboard_cache_busts_dynamic_ui_scripts()
     test_app_exposes_paper_and_signal_log_routes()
     print('ui wiring PASS')
 
