@@ -11,6 +11,7 @@ on:
       - 'backtest_engine.py'
       - 'portfolio_backtest.py'
       - 'backtrader_audit.py'
+      - 'audit_matrix.py'
       - 'qa.py'
       - 'tests/test_strategy_rules.py'
       - 'tests/test_backtest_v2.py'
@@ -23,7 +24,7 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -32,10 +33,19 @@ jobs:
           cache: 'pip'
       - run: pip install -r requirements.txt
       - name: Compile core modules
-        run: python -m py_compile config.py market_data.py strategy_rules.py strategy_engine.py backtest_engine.py portfolio_backtest.py backtrader_audit.py qa.py tests/test_strategy_rules.py tests/test_backtest_v2.py tests/test_backtrader_audit.py
+        run: python -m py_compile config.py market_data.py strategy_rules.py strategy_engine.py backtest_engine.py portfolio_backtest.py backtrader_audit.py audit_matrix.py qa.py tests/test_strategy_rules.py tests/test_backtest_v2.py tests/test_backtrader_audit.py
       - name: Deterministic strategy parity test
         run: PYTHONPATH=. python tests/test_strategy_rules.py
       - name: Backtest V2 execution and portfolio tests
         run: PYTHONPATH=. python tests/test_backtest_v2.py
       - name: Backtrader independent audit tests
         run: PYTHONPATH=. python tests/test_backtrader_audit.py
+      - name: Real 10y x 20 stocks x 3 strategies audit
+        run: PYTHONPATH=. python audit_matrix.py
+      - name: Upload real-data audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backtrader-real-audit
+          path: artifacts/backtrader_real_audit.json
+          if-no-files-found: warn
