@@ -25,10 +25,24 @@ def test_paper_ui_and_detail_explanation_are_wired():
     assert "마감 확정 추천 기록" in text
 
 
-def test_dashboard_cache_busts_dynamic_ui_scripts():
+def test_dashboard_loads_backtest_v2_and_paper_persistence_helpers():
     html = (ROOT / 'static' / 'dashboard.html').read_text(encoding='utf-8')
     assert '/static/dashboard.js?v=' in html
     assert '/static/detail_overlay.js?v=' in html
+    assert '/static/backtest_compat.js?v=' in html
+    assert '/static/paper_persistence.js?v=' in html
+
+    backtest = (ROOT / 'static' / 'backtest_compat.js').read_text(encoding='utf-8')
+    assert 'full_10y' in backtest
+    assert 'recent_2y' in backtest
+    assert 'return_pct??x.total_return_pct' in backtest
+    assert 'max_drawdown??x.max_drawdown_pct' in backtest
+    assert '검증 데이터가 충분하지 않습니다' in backtest
+
+    persistence = (ROOT / 'static' / 'paper_persistence.js').read_text(encoding='utf-8')
+    assert 'swingLabPaperStateBackupV1' in persistence
+    assert '/api/paper/restore' in persistence
+    assert "path==='/api/paper'" in persistence
 
 
 def test_app_exposes_paper_and_signal_log_routes():
@@ -38,11 +52,15 @@ def test_app_exposes_paper_and_signal_log_routes():
     assert 'X-Paper-Client' in text
     assert 'PAPER_CLIENT_DIR' in text
 
+    entry = (ROOT / 'paper_entry.py').read_text(encoding='utf-8')
+    assert '/api/paper/restore' in entry
+    assert 'restore_browser_backup' in entry
+
 
 def main():
     test_detail_overlay_accepts_legacy_inline_open_contract()
     test_paper_ui_and_detail_explanation_are_wired()
-    test_dashboard_cache_busts_dynamic_ui_scripts()
+    test_dashboard_loads_backtest_v2_and_paper_persistence_helpers()
     test_app_exposes_paper_and_signal_log_routes()
     print('ui wiring PASS')
 
