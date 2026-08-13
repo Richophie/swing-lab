@@ -132,7 +132,11 @@ def _exit_reason(previous: dict, current: dict | None, scan: dict) -> tuple[str,
         codes.append('flow')
 
     if checks.get('risk_reward') is False:
-        rr = _number(plan.get('risk_reward'))
+        rr = _number(plan.get('risk_reward_gate'))
+        if rr is None:
+            rr = _number(sig.get('gross_risk_reward_gate'))
+        if rr is None:
+            rr = _number(plan.get('risk_reward'))
         reasons.append(f'손익비 {rr:.2f}:1 < 1.20:1' if rr is not None else '손익비 1.20:1 기준 미달')
         codes.append('risk_reward')
 
@@ -166,6 +170,8 @@ def _exit_reason(previous: dict, current: dict | None, scan: dict) -> tuple[str,
         'current_strategy_score': sig.get('strategy_score'),
         'flow_score': sig.get('flow_score'),
         'risk_reward': plan.get('risk_reward'),
+        'risk_reward_gate': plan.get('risk_reward_gate', sig.get('gross_risk_reward_gate')),
+        'net_risk_reward': plan.get('net_risk_reward', sig.get('net_risk_reward')),
         'entry_status': plan.get('entry_status'),
         'stop_atr_multiple': plan.get('stop_atr_multiple'),
         'market_state': (scan.get('market') or {}).get('state'),
