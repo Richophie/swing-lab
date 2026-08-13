@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from datetime import timezone
+from datetime import time, timezone
 import math
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 import yfinance as yf
@@ -12,6 +13,8 @@ from paper_broker import PaperBrokerStore
 from paper_broker_service import current_fx_rate
 from stock_names import canonical_symbol
 
+NY = ZoneInfo('America/New_York')
+
 
 def _f(value, default=None):
     try:
@@ -21,15 +24,26 @@ def _f(value, default=None):
         return default
 
 
+def _minute_source(idx: pd.Timestamp) -> str:
+    try:
+        local = idx.tz_convert(NY) if idx.tzinfo is not None else idx.tz_localize(NY)
+        t = local.time()
+        return '1m' if time(9, 30) <= t < time(16, 0) else '1m_ext'
+    except Exception:
+        return '1m'
+
+
 def _price_mark(symbol: str) -> tuple[float | None, str | None, str]:
     """Best-effort recent market mark without advancing Paper Broker lifecycle.
 
-    Prefer a 1-minute quote so the Paper page can show a useful intraday mark. If
-    Yahoo does not return intraday data, fall back to the latest daily close.
+    The user-controlled paper account is intended to answer "what is my virtual
+    position worth now?", so include pre/after-market one-minute quotes when Yahoo
+    provides them. Automatic research execution remains regular-session-only in
+    intraday_execution.py.
     """
     symbol = canonical_symbol(symbol)
     try:
-        d = yf.Ticker(symbol).history(period='2d', interval='1m', auto_adjust=False, prepost=False)
+        d = yf.Ticker(symbol).history(period='2d', interval='1m', auto_adjust=False, prepost=True)
         if d is not None and not d.empty and 'Close' in d:
             s = d['Close'].dropna()
             if len(s):
@@ -38,7 +52,7 @@ def _price_mark(symbol: str) -> tuple[float | None, str | None, str]:
                     at = idx.tz_convert(timezone.utc).isoformat()
                 else:
                     at = idx.isoformat()
-                return float(s.iloc[-1]), at, '1m'
+                return float(s.iloc[-1]), at, _minute_source(idx)
     except Exception:
         pass
 
