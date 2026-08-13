@@ -7,9 +7,10 @@ import pandas as pd
 import yfinance as yf
 
 from backtest_engine import market_sell_fill
-from market_data import canonical_symbol, fresh_price_history
+from market_data import fresh_price_history
 from paper_broker import PaperBrokerStore
 from paper_broker_service import current_fx_rate
+from stock_names import canonical_symbol
 
 
 def _f(value, default=None):
