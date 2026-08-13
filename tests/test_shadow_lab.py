@@ -14,6 +14,7 @@ def _item(symbol, rr, score=90):
         'entry_high': 101.0,
         'target': 106.0,
         'stop': 95.0,
+        'atr': 2.0,
         'target_days_low': 1,
         'target_days_high': 5,
         'performance_bucket': 'official_public',
@@ -42,6 +43,9 @@ def test_shadow_uses_official_close_signals_and_capacity_with_rr_priority():
     assert submitted == ['BBB', 'CCC', 'DDD']
     assert all(o['order_origin'] == 'AUTO_CONFIRMED_CLOSE' for o in state['orders'])
     assert all(o['live_order_sent'] is False for o in state['orders'])
+    # 0.75 ATR = $1.50, larger than the 1% ($1.00) fallback.
+    assert all(o['atr'] == 2.0 for o in state['orders'])
+    assert all(o['gap_guard'] == 1.5 for o in state['orders'])
     skipped = [x for x in state['shadow_decisions'] if x['decision'] == 'SKIPPED']
     assert len(skipped) == 1 and skipped[0]['symbol'] == 'AAA'
 
@@ -56,6 +60,17 @@ def test_shadow_does_not_duplicate_same_confirmed_signal():
     assert len(state['orders']) == 1
 
 
+def test_shadow_rejects_missing_atr_instead_of_silently_using_one_percent():
+    state = new_state(3_000_000)
+    item = _item('AAA', 1.5)
+    item.pop('atr')
+    history = {'days': [{'date': '2026-08-13', 'items': [item]}]}
+    result = ingest_confirmed_signals(state, history, fx_rate=1000.0)
+    assert result == {'submitted': 0, 'skipped': 1}
+    assert not state['orders']
+    assert 'ATR' in state['shadow_decisions'][0]['reason']
+
+
 def test_shadow_snapshot_keeps_live_trading_disabled():
     state = new_state(3_000_000)
     snap = lab_snapshot(state)
@@ -67,6 +82,7 @@ def test_shadow_snapshot_keeps_live_trading_disabled():
 def main():
     test_shadow_uses_official_close_signals_and_capacity_with_rr_priority()
     test_shadow_does_not_duplicate_same_confirmed_signal()
+    test_shadow_rejects_missing_atr_instead_of_silently_using_one_percent()
     test_shadow_snapshot_keeps_live_trading_disabled()
     print('shadow lab PASS')
 
