@@ -25,12 +25,15 @@ def test_paper_ui_and_detail_explanation_are_wired():
     assert "마감 확정 추천 기록" in text
 
 
-def test_dashboard_loads_backtest_v2_and_paper_persistence_helpers():
+def test_dashboard_loads_backtest_v2_paper_and_indie_ui_helpers():
     html = (ROOT / 'static' / 'dashboard.html').read_text(encoding='utf-8')
     assert '/static/dashboard.js?v=' in html
     assert '/static/detail_overlay.js?v=' in html
     assert '/static/backtest_compat.js?v=' in html
+    assert '/static/backtest_results.css?v=' in html
     assert '/static/paper_persistence.js?v=' in html
+    assert '/static/indie_finance_theme.css?v=' in html
+    assert '/static/indie_finance_ui.js?v=' in html
 
     backtest = (ROOT / 'static' / 'backtest_compat.js').read_text(encoding='utf-8')
     assert 'full_10y' in backtest
@@ -38,6 +41,24 @@ def test_dashboard_loads_backtest_v2_and_paper_persistence_helpers():
     assert 'return_pct??x.total_return_pct' in backtest
     assert 'max_drawdown??x.max_drawdown_pct' in backtest
     assert '검증 데이터가 충분하지 않습니다' in backtest
+
+    backtest_css = (ROOT / 'static' / 'backtest_results.css').read_text(encoding='utf-8')
+    assert '#btArea .metrics' in backtest_css
+    assert 'grid-template-columns:repeat(3' in backtest_css
+    assert '@media(max-width:720px)' in backtest_css
+
+    theme = (ROOT / 'static' / 'indie_finance_theme.css').read_text(encoding='utf-8')
+    assert '--acid:#dfff57' in theme
+    assert '.market-panel' in theme
+    assert '.paper-summary' in theme
+    assert '.detail-overlay' in theme
+
+    microcopy = (ROOT / 'static' / 'indie_finance_ui.js').read_text(encoding='utf-8')
+    assert '오늘, 들어갈 만한 자리' in microcopy
+    assert '⚡ 실시간 후보' in microcopy
+    assert '🧪 가상계좌' in microcopy
+    assert '🧭 이 자리를 어떻게 읽었는지' in microcopy
+    assert '💸 내 돈으로 계산' in microcopy
 
     persistence = (ROOT / 'static' / 'paper_persistence.js').read_text(encoding='utf-8')
     assert 'swingLabPaperStateBackupV1' in persistence
@@ -60,7 +81,7 @@ def test_app_exposes_paper_and_signal_log_routes():
 def main():
     test_detail_overlay_accepts_legacy_inline_open_contract()
     test_paper_ui_and_detail_explanation_are_wired()
-    test_dashboard_loads_backtest_v2_and_paper_persistence_helpers()
+    test_dashboard_loads_backtest_v2_paper_and_indie_ui_helpers()
     test_app_exposes_paper_and_signal_log_routes()
     print('ui wiring PASS')
 
