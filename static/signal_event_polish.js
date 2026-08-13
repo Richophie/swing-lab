@@ -1,7 +1,13 @@
 (()=>{
   let cached=null,rendering=false;
-  const esc=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  const esc=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[ch]));
   function eventTime(at){try{return new Date(at).toLocaleString('ko-KR',{timeZone:'Asia/Seoul',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'})}catch{return at||'—'}}
+  function reasonText(e){
+    if(!e||e.event!=='EXIT')return'';
+    if(e.exit_reason_code&&e.exit_reason)return e.exit_reason;
+    if(e.exit_reason==='현재 엄선 조건에서 이탈')return '현재 엄선 조건에서 이탈 · 세부 이유는 구버전 로그라 미저장';
+    return e.exit_reason||'세부 이유는 구버전 로그라 미저장';
+  }
   function render(data){
     const host=document.getElementById('signalEventList'),meta=document.getElementById('signalEventMeta');
     if(!host||!data)return false;
@@ -9,8 +15,8 @@
     const events=data.events||[];
     rendering=true;
     host.innerHTML=events.length?events.slice(0,24).map(e=>{
-      const exit=e.event==='EXIT';
-      const reason=exit&&e.exit_reason?`<small class="exit-reason"><b>이탈 이유</b>${esc(e.exit_reason)}</small>`:'';
+      const exit=e.event==='EXIT',reasonValue=reasonText(e);
+      const reason=exit&&reasonValue?`<small class="exit-reason"><b>이탈 이유</b>${esc(reasonValue)}</small>`:'';
       return `<div class="signal-event ${exit?'exit':''}"><span class="event-badge">${exit?'이탈':'포착'}</span><div><b>${esc(e.name_ko||e.security_name||e.symbol)} · ${esc(e.symbol)}</b><small>${esc(e.strategy_name||e.strategy_id)}${e.score!=null?` · 당시 엄선 ${Math.round(Number(e.score))}점`:''}</small>${reason}</div><time>${esc(eventTime(e.at))}</time></div>`;
     }).join(''):'<div class="paper-empty">아직 저장된 장중 변동 로그가 없어요. 다음 자동 스캔부터 포착/이탈과 이탈 이유가 기록됩니다.</div>';
     host.dataset.exitReasons='1';
@@ -33,8 +39,8 @@
       if(rendering||!cached)return;
       const host=document.getElementById('signalEventList');
       if(!host)return;
-      const hasDetailedExit=(cached.events||[]).slice(0,24).some(e=>e.event==='EXIT'&&e.exit_reason);
-      if(hasDetailedExit&&!host.querySelector('.exit-reason'))render(cached);
+      const hasExit=(cached.events||[]).slice(0,24).some(e=>e.event==='EXIT');
+      if(hasExit&&!host.querySelector('.exit-reason'))render(cached);
     });
     observer.observe(document.body,{childList:true,subtree:true});
   });
