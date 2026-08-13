@@ -1,0 +1,1 @@
+(()=>{const e=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));window.SwingReplayMetrics={html:rows=>`<div class="btlab-metrics">${rows.map(x=>`<div class="btlab-metric"><span>${e(x.label)}</span><b class="${e(x.cls||'')}">${e(x.value)}</b></div>`).join('')}</div>`,esc:e}})();
