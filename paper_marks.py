@@ -96,6 +96,8 @@ def current_marks(state_path) -> dict:
             'strategy_id': order.get('strategy_id'),
             'strategy_name': order.get('strategy_name'),
             'status': order.get('status'),
+            'entry_fill_usd': order.get('entry_fill_usd'),
+            'entry_timestamp': order.get('entry_timestamp'),
             'current_price_usd': None if price is None else round(float(price), 6),
             'price_at': price_at,
             'price_source': price_source,
