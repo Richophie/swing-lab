@@ -223,11 +223,13 @@ def update_log(scan: dict, log: dict) -> dict:
     current_s, current_elite = _current_sets(scan)
     strategy_lookup = _strategy_lookup(scan)
     active = dict(log.get('active') or {})
-    # v2 active represented elite signals only. Those are also valid S signals, so
-    # they can safely seed both maps during the one-time v3 migration.
-    elite_active = dict(log.get('elite_active') or active)
+    # Only v2 logs lacked elite_active. An explicit empty v3 map means there are
+    # currently no elite signals and must not be back-filled from active S signals.
+    if 'elite_active' in log:
+        elite_active = dict(log.get('elite_active') or {})
+    else:
+        elite_active = dict(active)
     old_active_keys = set(active)
-    old_elite_keys = set(elite_active)
     events = list(log.get('events') or [])
 
     for key, item in current_s.items():
@@ -248,8 +250,6 @@ def update_log(scan: dict, log: dict) -> dict:
             first_seen = active[key].get('first_seen') or at
             active[key] = {**active[key], **item, 'first_seen': first_seen, 'last_seen': at}
 
-    # Elite transitions are separate from S presence. A brand-new S signal that is
-    # already elite is represented by the ENTER event itself to avoid duplicate rows.
     for key, item in current_elite.items():
         if key not in elite_active:
             elite_active[key] = {**item, 'elite_first_seen': at, 'last_seen': at}
@@ -263,7 +263,6 @@ def update_log(scan: dict, log: dict) -> dict:
         if key in current_elite:
             continue
         previous = elite_active.pop(key)
-        # If the S signal itself disappeared, the S EXIT below is enough.
         if key not in current_s:
             continue
         reason, reason_code, details = _exit_reason(previous, strategy_lookup.get(key), scan)
