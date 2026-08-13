@@ -69,6 +69,7 @@ def latest_plan(symbol: str, strategy_id: str | None = None) -> dict:
             'strategy_name': signal.get('strategy_name') or sid,
             'plan': plan,
             'scan_date': str(data.get('market_date') or data.get('scanned_at') or '')[:10],
+            'signal_origin': 'LIVE_CANDIDATE',
         }
     raise ValueError(f'{symbol}이 latest_scan.json에 없습니다')
 
@@ -101,6 +102,10 @@ def submit_from_latest(
         submitted_market_date=market_date,
         signal_date=info.get('scan_date') or market_date,
     )
+    # Paper orders created from the live detail screen are research orders. They
+    # must never be mistaken for close-confirmed official-paper performance.
+    order['order_origin'] = 'LIVE_CANDIDATE'
+    order['signal_origin'] = 'intraday_latest_scan'
     saved = store.save(state)
     return {'order': order, 'summary': snapshot(saved)['summary'], 'state_file': str(Path(state_path))}
 
