@@ -36,7 +36,7 @@
     syncFilledCard(card,mark);
     let priceCell=grid.querySelector('.paper-mark-price');
     if(!priceCell){priceCell=document.createElement('div');priceCell.className='paper-mark-price';grid.insertBefore(priceCell,grid.firstChild)}
-    const source=mark.price_source==='1m'?'최근 1분 데이터':mark.price_source==='daily'?'최근 일봉':'가격 확인 실패';
+    const source=mark.price_source==='1m_ext'?'최근 1분 · 장전/장후 포함':mark.price_source==='1m'?'최근 1분 데이터':mark.price_source==='daily'?'최근 일봉':'가격 확인 실패';
     priceCell.innerHTML=`<span>현재가</span><b>${usd(mark.current_price_usd)}</b><small>${source}${mark.price_at?` · ${timeText(mark.price_at)}`:''}</small>`;
 
     const pnlCell=field(grid,'손익');
