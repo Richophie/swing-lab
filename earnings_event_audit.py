@@ -10,7 +10,9 @@ import yfinance as yf
 from rsi2_broad_regime_research import research_universe
 
 OUT=Path('artifacts/earnings_event_audit.json')
-TARGET_SYMBOLS=60
+# Cross-source confirmation pass: a representative liquid subset is enough to
+# verify that the two yfinance surfaces agree before any production feature is added.
+TARGET_SYMBOLS=20
 
 
 def _date_text(value):
@@ -21,7 +23,7 @@ def _date_text(value):
     except Exception:return None
 
 
-def _future_from_earnings_dates(ticker, today):
+def _future_from_earnings_dates(ticker,today):
     try:
         d=ticker.get_earnings_dates(limit=12)
         if d is None or d.empty:return None,'empty'
@@ -83,7 +85,7 @@ def main():
     agree=[r for r in dual if r.get('sources_agree_within_1d')]
     payload={
         'study':'Upcoming earnings-date data availability and cross-source agreement inside yfinance',
-        'status':'RESEARCH_ONLY_DATA_QUALITY','as_of':today,'selection_source':source,
+        'status':'RESEARCH_ONLY_DATA_QUALITY_CONFIRMATION','as_of':today,'selection_source':source,
         'requested_symbols':len(symbols),'symbols_with_any_upcoming_date':len(usable),
         'coverage_pct':round(len(usable)/len(symbols)*100,2) if symbols else 0.0,
         'symbols_with_both_sources':len(dual),'both_sources_agree_within_1d':len(agree),
@@ -92,6 +94,7 @@ def main():
         'upcoming_within_30d':sum(r.get('days_until') is not None and 0<=r['days_until']<=30 for r in rows),
         'rows':rows,
         'decision_rule':'Use as an informational event-risk flag only if coverage is high and source disagreement is manageable. Do not hard-exclude trades from a single unverified earnings date feed.',
+        'production_note':'If promoted, query only elite/confirmed candidates and cache results; never synchronously query the full universe during page render.',
     }
     OUT.parent.mkdir(parents=True,exist_ok=True);OUT.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding='utf-8');print(json.dumps(payload,ensure_ascii=False,indent=2))
 
