@@ -14,6 +14,7 @@ from paper_broker_service import (
     latest_plan,
 )
 from paper_marks import _price_mark
+from paper_plan import execution_plan_with_atr
 
 NY = ZoneInfo('America/New_York')
 
@@ -57,6 +58,9 @@ def _build_order(
     requested_qty: int | None,
 ) -> dict:
     info = latest_plan(symbol, strategy_id)
+    plan = execution_plan_with_atr(info['plan'])
+    if not plan.get('atr'):
+        raise ValueError('ATR 실행값을 복원할 수 없어 가상주문을 만들지 않았습니다')
     fx = current_fx_rate()
     market_date = _latest_market_date(info['symbol'])
     order = submit_order(
@@ -64,13 +68,14 @@ def _build_order(
         symbol=info['symbol'],
         strategy_id=info['strategy_id'],
         strategy_name=info['strategy_name'],
-        plan=info['plan'],
+        plan=plan,
         fx_rate=fx,
         submitted_market_date=market_date,
         signal_date=info.get('scan_date') or market_date,
     )
     max_qty = int(order.get('qty') or 0)
     order['max_allowed_qty'] = max_qty
+    order['atr_source'] = plan.get('atr_source') or 'stored'
     if requested_qty is not None:
         _resize_order(order, state, int(requested_qty))
     order['order_origin'] = 'MANUAL_PAPER'
@@ -100,6 +105,8 @@ def preview_manual(
         'planned_notional_krw': order.get('planned_notional_krw'),
         'planned_risk_krw': order.get('planned_risk_krw'),
         'risk_budget_krw': order.get('risk_budget_krw'),
+        'gap_guard': order.get('gap_guard'),
+        'atr': order.get('atr'),
         'available_cash_krw': snapshot(state)['summary'].get('available_cash_krw'),
         'live_trading_enabled': False,
     }
