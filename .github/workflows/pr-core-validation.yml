@@ -25,8 +25,11 @@ on:
       - 'static/dashboard.html'
       - 'static/dashboard.js'
       - 'static/backtest_compat.js'
+      - 'static/backtest_results.css'
       - 'static/paper_persistence.js'
       - 'static/detail_overlay.js'
+      - 'static/indie_finance_theme.css'
+      - 'static/indie_finance_ui.js'
       - 'tests/test_strategy_rules.py'
       - 'tests/test_backtest_v2.py'
       - 'tests/test_backtrader_audit.py'
@@ -53,7 +56,7 @@ jobs:
       - name: Compile core modules
         run: python -m py_compile config.py market_data.py strategy_rules.py strategy_engine.py backtest_engine.py portfolio_backtest.py backtrader_audit.py audit_matrix.py paper_broker.py paper_broker_service.py paper_restore.py paper_entry.py stock_names.py signal_log.py journal.py app.py qa.py tests/test_strategy_rules.py tests/test_backtest_v2.py tests/test_backtrader_audit.py tests/test_paper_broker.py tests/test_paper_restore.py tests/test_signal_history.py tests/test_ui_wiring.py
       - name: JavaScript syntax check
-        run: node --check static/dashboard.js && node --check static/backtest_compat.js && node --check static/paper_persistence.js && node --check static/detail_overlay.js
+        run: node --check static/dashboard.js && node --check static/backtest_compat.js && node --check static/paper_persistence.js && node --check static/detail_overlay.js && node --check static/indie_finance_ui.js
       - name: Deterministic strategy parity test
         run: PYTHONPATH=. python tests/test_strategy_rules.py
       - name: Backtest V2 execution and portfolio tests
