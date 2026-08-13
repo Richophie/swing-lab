@@ -7,6 +7,8 @@ import json
 import pandas as pd
 import yfinance as yf
 
+from config import PUBLIC_STRATEGIES
+
 ROOT=Path(__file__).parent;SCAN_FILE=ROOT/'static'/'latest_scan.json';JOURNAL_FILE=ROOT/'static'/'trade_history.json';NY=ZoneInfo('America/New_York');CLOSED={'SUCCESS','STOP','EXPIRED_GAIN','EXPIRED_LOSS','EXPIRED_FLAT'}
 
 
@@ -42,10 +44,12 @@ def confirmed_market_date(scan):
 
 def freeze_signal(row,sig,plan,at,day):
     td=plan.get('target_days') or {};sid=sig['strategy_id']
-    return {'signal_key':f"{row['symbol']}|{sid}",'symbol':row['symbol'],'name_ko':row.get('name_ko'),'security_name':row.get('security_name'),'grade':'S','score':sig.get('elite_score',sig.get('strategy_score',row.get('score'))),'raw_strategy_score':sig.get('strategy_score'),'strategy_id':sid,'strategy_name':sig.get('strategy_name'),'strategy_reason':sig.get('evidence') or sig.get('why'),'selection_reason':sig.get('selection_reason'),'experimental':bool(sig.get('experimental')),'recommended_at':at,'published_at':at,'publication_status':'CONFIRMED_CLOSE','signal_origin':'daily_bar_close','market_date':day,'rsi':row.get('rsi'),'d120':row.get('d120'),'bb_pos':row.get('bb_pos'),'sparkline':row.get('sparkline') or [],'bb_high_spark':row.get('bb_high_spark') or [],'bb_low_spark':row.get('bb_low_spark') or [],'entry_low':plan.get('entry_low'),'entry_high':plan.get('entry_high'),'target':plan.get('target'),'stop':plan.get('stop'),'target_pct':plan.get('target_pct'),'stop_pct':plan.get('stop_pct'),'target_days_low':int(td.get('days_low') or plan.get('days_min') or 1),'target_days_high':int(td.get('days_high') or plan.get('days_max') or 5),'target_reason':plan.get('target_reason'),'stop_reason':plan.get('stop_reason'),'risk_reward':plan.get('risk_reward'),'status':'진행중','status_code':'OPEN','outcome_at':None,'outcome_price':None,'outcome_return_pct':None,'outcome_note':'마감 확정 추천의 다음 거래일부터 판정합니다.','bars_observed':0,'best_high':None,'worst_low':None}
+    return {'signal_key':f"{row['symbol']}|{sid}",'symbol':row['symbol'],'name_ko':row.get('name_ko'),'security_name':row.get('security_name'),'grade':'S','score':sig.get('elite_score',sig.get('strategy_score',row.get('score'))),'raw_strategy_score':sig.get('strategy_score'),'strategy_id':sid,'strategy_name':sig.get('strategy_name'),'strategy_reason':sig.get('evidence') or sig.get('why'),'selection_reason':sig.get('selection_reason'),'experimental':False,'performance_bucket':'official_public','recommended_at':at,'published_at':at,'publication_status':'CONFIRMED_CLOSE','signal_origin':'daily_bar_close','market_date':day,'rsi':row.get('rsi'),'d120':row.get('d120'),'bb_pos':row.get('bb_pos'),'sparkline':row.get('sparkline') or [],'bb_high_spark':row.get('bb_high_spark') or [],'bb_low_spark':row.get('bb_low_spark') or [],'entry_low':plan.get('entry_low'),'entry_high':plan.get('entry_high'),'target':plan.get('target'),'stop':plan.get('stop'),'target_pct':plan.get('target_pct'),'stop_pct':plan.get('stop_pct'),'target_days_low':int(td.get('days_low') or plan.get('days_min') or 1),'target_days_high':int(td.get('days_high') or plan.get('days_max') or 5),'target_reason':plan.get('target_reason'),'stop_reason':plan.get('stop_reason'),'risk_reward':plan.get('risk_reward'),'status':'진행중','status_code':'OPEN','outcome_at':None,'outcome_price':None,'outcome_return_pct':None,'outcome_note':'마감 확정 추천의 다음 거래일부터 판정합니다.','bars_observed':0,'best_high':None,'worst_low':None}
 
 
 def _derived_key(x):return x.get('signal_key') or (f"{x.get('symbol')}|{x.get('strategy_id')}" if x.get('symbol') and x.get('strategy_id') else None)
+
+def _official_item(item):return not bool(item.get('experimental')) and item.get('strategy_id') in PUBLIC_STRATEGIES
 
 
 def append_current_scan(scan,journal):
@@ -56,10 +60,10 @@ def append_current_scan(scan,journal):
     for row in scan.get('results') or []:
         plans=row.get('strategy_trade_plans') or {}
         for sig in row.get('strategy_signals') or []:
-            experimental=bool(sig.get('experimental'));qualified=experimental or bool(sig.get('elite_pass'))
-            if not qualified:continue
-            sid=sig.get('strategy_id');key=f"{row.get('symbol')}|{sid}";plan=plans.get(sid)
-            if row.get('symbol') and sid and plan and key not in existing:day['items'].append(freeze_signal(row,sig,plan,at,day_id));existing.add(key);added+=1
+            sid=sig.get('strategy_id')
+            if sid not in PUBLIC_STRATEGIES or bool(sig.get('experimental')) or not bool(sig.get('elite_pass')):continue
+            key=f"{row.get('symbol')}|{sid}";plan=plans.get(sid)
+            if row.get('symbol') and plan and key not in existing:day['items'].append(freeze_signal(row,sig,plan,at,day_id));existing.add(key);added+=1
     day['updated_at']=at;day['published_at']=day.get('published_at') or at;days.sort(key=lambda x:x.get('date',''),reverse=True);return day_id,added
 
 
@@ -85,7 +89,7 @@ def repair_legacy_entries(journal):
     repaired=0
     for day in journal.get('days',[]):
         for item in day.get('items',[]):
-            item['signal_key']=_derived_key(item)
+            item['signal_key']=_derived_key(item);item['performance_bucket']='official_public' if _official_item(item) else 'research_excluded'
             if item.get('entry_low') is not None and item.get('entry_high') is not None:continue
             center,basis=_entry_center_from_legacy(item)
             if center is None or center<=0:continue
@@ -103,7 +107,6 @@ def fetch_frames(symbols):
     if not symbols:return None
     try:return yf.download(' '.join(symbols),period='3mo',interval='1d',auto_adjust=False,group_by='ticker',threads=True,progress=False,timeout=30)
     except Exception:return None
-
 def frame_for(bulk,symbol,count):
     try:
         d=bulk.copy() if count==1 else bulk[symbol].copy();d=d.dropna(subset=['High','Low','Close']).copy();idx=pd.to_datetime(d.index);d.index=idx.tz_localize(None) if getattr(idx,'tz',None) is not None else idx;return d
@@ -128,8 +131,8 @@ def evaluate(item,d):
         close=float(window.iloc[-1]['Close']);ret=((close/entry)-1)*100;code='EXPIRED_GAIN' if ret>.05 else 'EXPIRED_LOSS' if ret<-.05 else 'EXPIRED_FLAT';finish(item,code,'목표미달',window.index[-1].date().isoformat(),close,'목표기간 종료 종가 기준 수익률입니다.')
 
 
-def summarize(journal):
-    items=[x for d in journal.get('days',[]) for x in d.get('items',[])];closed=[x for x in items if x.get('status_code') in CLOSED];returns=[float(x['outcome_return_pct']) for x in closed if x.get('outcome_return_pct') is not None];by={}
+def _summarize_items(items):
+    closed=[x for x in items if x.get('status_code') in CLOSED];returns=[float(x['outcome_return_pct']) for x in closed if x.get('outcome_return_pct') is not None];by={}
     for x in closed:
         sid=x.get('strategy_id');b=by.setdefault(sid,{'closed':0,'success':0,'stop':0,'target_miss':0,'returns':[]});b['closed']+=1;b['success']+=x.get('status_code')=='SUCCESS';b['stop']+=x.get('status_code')=='STOP';b['target_miss']+=str(x.get('status_code','')).startswith('EXPIRED')
         if x.get('outcome_return_pct') is not None:b['returns'].append(float(x['outcome_return_pct']))
@@ -137,12 +140,16 @@ def summarize(journal):
     return {'total_signals':len(items),'closed_signals':len(closed),'success':sum(x.get('status_code')=='SUCCESS' for x in closed),'stop':sum(x.get('status_code')=='STOP' for x in closed),'target_miss':sum(str(x.get('status_code','')).startswith('EXPIRED') for x in closed),'avg_outcome_return_pct':round(sum(returns)/len(returns),2) if returns else None,'by_strategy':by}
 
 
+def summarize(journal):
+    items=[x for d in journal.get('days',[]) for x in d.get('items',[])];official=[x for x in items if _official_item(x)];research=[x for x in items if not _official_item(x)];summary=_summarize_items(official);summary['performance_scope']='official_public_only';summary['excluded_research_signals']=len(research);research_summary=_summarize_items(research);research_summary['performance_scope']='research_excluded_from_official';return summary,research_summary
+
+
 def main():
-    scan=load(SCAN_FILE,{});journal=load(JOURNAL_FILE,{'version':'4.2','days':[]});repaired=repair_legacy_entries(journal);published=False;published_day=None;added=0
+    scan=load(SCAN_FILE,{});journal=load(JOURNAL_FILE,{'version':'4.3','days':[]});repaired=repair_legacy_entries(journal);published=False;published_day=None;added=0
     if should_publish_scan(scan):published_day,added=append_current_scan(scan,journal);published=True
     open_items=[x for d in journal.get('days',[]) for x in d.get('items',[]) if x.get('status_code') not in CLOSED];symbols=sorted({x['symbol'] for x in open_items if x.get('symbol')});bulk=fetch_frames(symbols)
     if bulk is not None:
         for item in open_items:evaluate(item,frame_for(bulk,item['symbol'],len(symbols)))
-    journal['version']='4.2';journal['updated_at']=datetime.now(timezone.utc).isoformat(timespec='seconds');journal['summary']=summarize(journal);journal['legacy_entries_repaired']=repaired;journal['publication_policy']='intraday scans are mutable; official recommendations are frozen after 16:05 America/New_York';journal['last_publish_check']={'scan_at':scan.get('scanned_at'),'eligible':should_publish_scan(scan),'published':published,'market_date':published_day,'added':added};save(JOURNAL_FILE,journal);print('saved journal',journal['summary'],'published',published,'market_date',published_day,'added',added,'repaired',repaired)
+    official_summary,research_summary=summarize(journal);journal['version']='4.3';journal['updated_at']=datetime.now(timezone.utc).isoformat(timespec='seconds');journal['summary']=official_summary;journal['research_summary']=research_summary;journal['legacy_entries_repaired']=repaired;journal['publication_policy']='intraday scans are mutable; official public recommendations only are frozen after 16:05 America/New_York; experimental performance is excluded';journal['last_publish_check']={'scan_at':scan.get('scanned_at'),'eligible':should_publish_scan(scan),'published':published,'market_date':published_day,'added':added};save(JOURNAL_FILE,journal);print('saved journal',journal['summary'],'research excluded',journal['research_summary'],'published',published,'market_date',published_day,'added',added,'repaired',repaired)
 
 if __name__=='__main__':main()

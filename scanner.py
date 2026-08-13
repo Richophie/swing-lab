@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 from pathlib import Path
+from zoneinfo import ZoneInfo
 import json
 import pandas as pd
 import yfinance as yf
@@ -13,6 +14,7 @@ from backtest_engine import run_backtest_on_frame
 from stock_names import korean_name
 
 OUT=Path(__file__).parent/'static'/'latest_scan.json'
+NY=ZoneInfo('America/New_York')
 
 
 def _extract_frame(bulk,symbol,count):
@@ -53,6 +55,36 @@ def _flow_quality(flow):
     return max(0,min(100,score))
 
 
+def _has_incomplete_daily_bar(d, now_utc=None):
+    """True only when the last Yahoo daily row is today's still-forming US session."""
+    if d is None or d.empty:return False
+    now=now_utc or datetime.now(timezone.utc)
+    if now.tzinfo is None:now=now.replace(tzinfo=timezone.utc)
+    ny=now.astimezone(NY)
+    try:last_day=pd.Timestamp(d.index[-1]).date()
+    except Exception:return False
+    return last_day==ny.date() and (ny.hour,ny.minute)<(16,5)
+
+
+def _selection_flow(d,current_flow,market_state,now_utc=None):
+    """Use completed-session flow for elite ranking while today's daily bar is incomplete.
+
+    Price/RSI/BB remain live. Only the aggregate flow-quality layer is prevented from
+    comparing a partial day's volume against completed full-day averages. The strict
+    confirmed-pullback reversal-volume requirement remains a true live confirmation
+    and is intentionally not relaxed here.
+    """
+    live=dict(current_flow or {})
+    if not _has_incomplete_daily_bar(d,now_utc):return live,'current_completed_session'
+    if len(d)<206:return live,'current_partial_fallback'
+    try:
+        previous=evaluate_strategies(d.iloc[:-1].copy(),market_state)
+        completed=dict(previous.get('flow') or {})
+        if completed:return completed,'previous_completed_session'
+    except Exception:pass
+    return live,'current_partial_fallback'
+
+
 def _current_selection(signal_score,plan,flow,overlay=False,market_state=None,strategy_id=None):
     rr=float(plan.get('risk_reward') or 0);fq=_flow_quality(flow);score=float(signal_score)*.68+fq*.22+min(100,rr/3*100)*.10
     if overlay:score+=6
@@ -71,8 +103,8 @@ def _current_selection(signal_score,plan,flow,overlay=False,market_state=None,st
     return {'elite_pass':bool(hard_ok and score>=72),'elite_score':score,'selection_reason':reason,'flow_score':round(fq,1),'checks':{'current_signal':float(signal_score)>=S_THRESHOLD,'flow':fq>=42,'risk_reward':rr>=1.20,'market':market_state!='조심','entry_viable':entry_ok,'atr_stop_margin':stop_ok,'first_20d_overlay':bool(overlay)}}
 
 
-def scan_candidates(symbols,market,security_names):
-    rows=[];failed=[];state=market.get('state')
+def scan_candidates(symbols,market,security_names,now_utc=None):
+    rows=[];failed=[];state=market.get('state');scan_now=now_utc or datetime.now(timezone.utc)
     for start in range(0,len(symbols),100):
         chunk=symbols[start:start+100]
         try:bulk=yf.download(' '.join(chunk),period='14mo',interval='1d',auto_adjust=False,group_by='ticker',threads=True,progress=False,timeout=25)
@@ -83,8 +115,9 @@ def scan_candidates(symbols,market,security_names):
                 if len(d)<205:raise ValueError('일봉 205개 미만')
                 ev=evaluate_strategies(d,state);pub=public_s_signals(ev);exp=experimental_s_signals(ev)
                 if not pub and not exp:continue
+                flow,flow_basis=_selection_flow(d,ev.get('flow') or {},state,scan_now)
                 ind=indicators(d);tail=ind.tail(35);close_tail=d['Close'].tail(35);all_s=pub+exp;all_s.sort(key=lambda x:x['score'],reverse=True);best=all_s[0]
-                row={'symbol':symbol,'name_ko':korean_name(symbol,security_names.get(symbol)),'security_name':security_names.get(symbol),'score':best['score'],'grade':'S','eligible':True,'strategy_id':best['id'],'strategy_name':best['name'],'strategy_reason':best['evidence'],'strategy_signals':[{'strategy_id':s['id'],'strategy_name':s['name'],'strategy_score':s['score'],'why':s['why'],'evidence':s['evidence'],'experimental':s['id']=='volatility_breakout','strict':bool(s.get('strict',False))} for s in all_s],'rsi':ev['metrics']['rsi'],'d120':ev['metrics']['d120'],'bb_pos':ev['metrics']['bb_pos'],'atr_pct':ev['metrics']['atr_pct'],'flow':ev.get('flow') or {},'sparkline':[round(float(x),2) for x in close_tail.tolist()],'bb_high_spark':[None if pd.isna(x) else round(float(x),2) for x in tail['bb_high'].tolist()],'bb_low_spark':[None if pd.isna(x) else round(float(x),2) for x in tail['bb_low'].tolist()]};rows.append(row)
+                row={'symbol':symbol,'name_ko':korean_name(symbol,security_names.get(symbol)),'security_name':security_names.get(symbol),'score':best['score'],'grade':'S','eligible':True,'strategy_id':best['id'],'strategy_name':best['name'],'strategy_reason':best['evidence'],'strategy_signals':[{'strategy_id':s['id'],'strategy_name':s['name'],'strategy_score':s['score'],'why':s['why'],'evidence':s['evidence'],'experimental':s['id']=='volatility_breakout','strict':bool(s.get('strict',False))} for s in all_s],'rsi':ev['metrics']['rsi'],'d120':ev['metrics']['d120'],'bb_pos':ev['metrics']['bb_pos'],'atr_pct':ev['metrics']['atr_pct'],'flow':flow,'live_flow':ev.get('flow') or {},'flow_basis':flow_basis,'sparkline':[round(float(x),2) for x in close_tail.tolist()],'bb_high_spark':[None if pd.isna(x) else round(float(x),2) for x in tail['bb_high'].tolist()],'bb_low_spark':[None if pd.isna(x) else round(float(x),2) for x in tail['bb_low'].tolist()]};rows.append(row)
             except Exception as exc:failed.append({'symbol':symbol,'reason':str(exc)})
     return rows,failed
 
@@ -113,9 +146,9 @@ def enrich_plans(rows,market_state=None):
 
 
 def main():
-    universe=load_us_universe();names={x['symbol']:x['security_name'] for x in universe};symbols=prefilter_symbols(universe,SCAN_CANDIDATE_LIMIT);market=market_snapshot();rows,failed=scan_candidates(symbols,market,names);rows=_dedupe_share_classes(rows);rows=enrich_plans(rows,market.get('state'));rows.sort(key=lambda r:(bool(r.get('elite_pass')),float(r.get('elite_score') or r.get('score') or 0)),reverse=True)
-    public_count=sum(any(not s.get('experimental') and float(s.get('strategy_score',0))>=S_THRESHOLD for s in r['strategy_signals']) for r in rows);aggregate_count=sum(any(not s.get('experimental') and s.get('elite_pass') for s in r['strategy_signals']) for r in rows);experimental_count=sum(any(s.get('experimental') for s in r['strategy_signals']) for r in rows)
-    payload={'status':'ready','version':APP_VERSION,'core_version':CORE_VERSION,'scanned_at':datetime.now(timezone.utc).isoformat(timespec='seconds'),'universe_count':len(universe),'candidate_count':len(symbols),'failed_count':len(failed),'failed':failed[:100],'market':market,'results':rows,'public_s_count':public_count,'aggregate_eligible_count':aggregate_count,'experimental_s_count':experimental_count,'display_filter':'strategy tabs show raw public S; aggregate ranks current signal + flow + risk/reward + entry viability + ATR stop margin; no count cap','s_threshold':S_THRESHOLD,'elite_policy':'backtest is informational only; aggregate uses current setup, flow/liquidity, risk-reward, market regime, entry viability, ATR stop margin and first-20DMA overlay'}
-    OUT.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding='utf-8');print('saved',OUT,len(rows),'rows','public S',public_count,'aggregate eligible',aggregate_count)
+    scan_now=datetime.now(timezone.utc);universe=load_us_universe();names={x['symbol']:x['security_name'] for x in universe};symbols=prefilter_symbols(universe,SCAN_CANDIDATE_LIMIT);market=market_snapshot();rows,failed=scan_candidates(symbols,market,names,scan_now);rows=_dedupe_share_classes(rows);rows=enrich_plans(rows,market.get('state'));rows.sort(key=lambda r:(bool(r.get('elite_pass')),float(r.get('elite_score') or r.get('score') or 0)),reverse=True)
+    public_count=sum(any(not s.get('experimental') and float(s.get('strategy_score',0))>=S_THRESHOLD for s in r['strategy_signals']) for r in rows);aggregate_count=sum(any(not s.get('experimental') and s.get('elite_pass') for s in r['strategy_signals']) for r in rows);experimental_count=sum(any(s.get('experimental') for s in r['strategy_signals']) for r in rows);completed_flow_count=sum(r.get('flow_basis')=='previous_completed_session' for r in rows)
+    payload={'status':'ready','version':APP_VERSION,'core_version':CORE_VERSION,'scanned_at':scan_now.isoformat(timespec='seconds'),'universe_count':len(universe),'candidate_count':len(symbols),'failed_count':len(failed),'failed':failed[:100],'market':market,'results':rows,'public_s_count':public_count,'aggregate_eligible_count':aggregate_count,'experimental_s_count':experimental_count,'flow_completed_session_count':completed_flow_count,'flow_policy':'during an incomplete US daily bar, elite flow/liquidity scoring uses the previous completed session; live partial flow is stored separately','display_filter':'strategy tabs show raw public S; aggregate ranks current signal + completed-session flow/liquidity + risk/reward + entry viability + ATR stop margin; no count cap','s_threshold':S_THRESHOLD,'elite_policy':'backtest is informational only; aggregate uses current setup, completed-session flow/liquidity during intraday scans, risk-reward, market regime, entry viability, ATR stop margin and first-20DMA overlay'}
+    OUT.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding='utf-8');print('saved',OUT,len(rows),'rows','public S',public_count,'aggregate eligible',aggregate_count,'completed-session flow',completed_flow_count)
 
 if __name__=='__main__':main()
