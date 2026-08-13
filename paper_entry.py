@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from flask import jsonify, request
 
+import app as app_module
+import paper_broker_service as paper_service
 from app import (
     HISTORY_FILE,
     SCAN_FILE,
@@ -9,7 +11,6 @@ from app import (
     _decorate_paper_snapshot,
     _paper_state_path,
     app,
-    load_json,
 )
 from config import (
     APP_VERSION,
@@ -25,7 +26,31 @@ from config import (
 from paper_manual import close_or_cancel_manual, preview_manual, submit_manual
 from paper_marks import current_marks
 from paper_restore import restore_browser_backup
-from shadow_lab import status as shadow_status
+from repo_data import load_json
+from shadow_lab import STATE_FILE as SHADOW_STATE_FILE, lab_snapshot
+
+# Production data commits intentionally use [skip render]. Patch the imported app
+# module's JSON loader so all existing /api/latest, /api/history and signal-event
+# handlers resolve the newest repo-backed static data on Render while retaining an
+# immediate local fallback when GitHub is unavailable.
+app_module.load_json = load_json
+paper_service._load_json = load_json
+
+
+def _shadow_snapshot():
+    state = load_json(
+        SHADOW_STATE_FILE,
+        {
+            'version': 1,
+            'starting_cash_krw': BACKTEST_INITIAL_CAPITAL_KRW,
+            'cash_krw': BACKTEST_INITIAL_CAPITAL_KRW,
+            'orders': [],
+            'events': [],
+            'shadow_decisions': [],
+            'live_trading_enabled': False,
+        },
+    )
+    return lab_snapshot(state)
 
 
 @app.route('/api/paper/restore', methods=['POST'])
@@ -92,7 +117,7 @@ def paper_close_api():
 @app.route('/api/shadow', methods=['GET'])
 def shadow_status_api():
     try:
-        return jsonify(shadow_status())
+        return jsonify(_shadow_snapshot())
     except Exception as exc:
         return jsonify({'error': str(exc)}), 400
 
@@ -102,6 +127,7 @@ def engine_status_api():
     scan = load_json(SCAN_FILE, {'status': 'pending', 'results': []})
     history = load_json(HISTORY_FILE, {'summary': {}, 'days': []})
     events = load_json(SIGNAL_EVENTS_FILE, {'active': {}, 'elite_active': {}, 'events': []})
+    shadow = _shadow_snapshot()
     rows = scan.get('results') or []
     raw_s = 0
     elite = 0
@@ -117,7 +143,7 @@ def engine_status_api():
         {
             'app_version': APP_VERSION,
             'core_version': CORE_VERSION,
-            'architecture': 'clean / paper_entry',
+            'architecture': 'clean / paper_entry / repo-data-fallback',
             'scan': {
                 'status': scan.get('status'),
                 'scanned_at': scan.get('scanned_at'),
@@ -146,6 +172,6 @@ def engine_status_api():
                 'event_count': len(events.get('events') or []),
                 'updated_at': events.get('updated_at'),
             },
-            'shadow_lab': shadow_status().get('lab_summary') or {},
+            'shadow_lab': shadow.get('lab_summary') or {},
         }
     )
