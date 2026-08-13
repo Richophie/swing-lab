@@ -57,6 +57,10 @@ def test_dashboard_loads_backtest_v2_paper_indie_and_event_ui_helpers():
     assert '/static/event_risk.css?v=' in html
     assert '/static/event_risk_ui.js?v=' in html
     assert '/static/ui_controls.js' in html
+    assert '<small id="version">불러오는 중</small>' in html
+    assert '<h1>오늘의 스윙</h1>' in html
+    assert '돈이 벌리는 자리 추천 종목 자동 검색기' in html
+    assert 'SWING LAB · PAPER MODE' not in html
 
     event_ui = (ROOT / 'static' / 'event_risk_ui.js').read_text(encoding='utf-8')
     assert 'EVENT RISK' in event_ui
@@ -86,9 +90,11 @@ def test_dashboard_loads_backtest_v2_paper_indie_and_event_ui_helpers():
     assert '.detail-overlay' in theme
 
     microcopy = (ROOT / 'static' / 'indie_finance_ui.js').read_text(encoding='utf-8')
-    assert '오늘, 들어갈 만한 자리' in microcopy
-    assert '⚡ 실시간 후보' in microcopy
-    assert '🧪 가상계좌' in microcopy
+    assert '오늘의 스윙' in microcopy
+    assert '돈이 벌리는 자리 추천 종목 자동 검색기' in microcopy
+    assert 'SWING LAB · PAPER MODE' not in microcopy
+    for label in ('실시간후보', '사라마라', '엔진', '가상계좌'):
+        assert label in microcopy
     assert '🧭 이 자리를 어떻게 읽었는지' in microcopy
     assert '💸 내 돈으로 계산' in microcopy
 

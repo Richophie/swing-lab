@@ -2,13 +2,13 @@
   function text(el,value){if(el&&el.textContent!==value)el.textContent=value}
   function apply(){
     const brand=document.querySelector('.brand');
-    if(brand){text(brand.querySelector('small'),'SWING LAB · PAPER MODE');text(brand.querySelector('h1'),'오늘, 들어갈 만한 자리');text(brand.querySelector('p'),'과열은 거르고, 눌림은 선명하게. 차트·수급·시장환경·손익비를 한 화면에서 빠르게 봅니다.')}
+    if(brand){text(brand.querySelector('h1'),'오늘의 스윙');text(brand.querySelector('p'),'돈이 벌리는 자리 추천 종목 자동 검색기')}
 
     const navToday=document.querySelector('.nav button[data-page="today"]');
     const navSearch=document.querySelector('.nav button[data-page="search"]');
     const navState=document.querySelector('.nav button[data-page="state"]');
     const navPaper=document.querySelector('.nav button[data-page="paper"]');
-    text(navToday,'⚡ 실시간 후보');text(navSearch,'종목 찾기');text(navState,'엔진');text(navPaper,'🧪 가상계좌');
+    text(navToday,'실시간후보');text(navSearch,'사라마라');text(navState,'엔진');text(navPaper,'가상계좌');
 
     const todayGrid=document.getElementById('todayGrid'),todayPanel=todayGrid?.closest('.panel');
     if(todayPanel){text(todayPanel.querySelector('.eyebrow'),'LIVE PICKS · 지금 조건 통과');text(todayPanel.querySelector('.panel-head h2'),'👌 지금 볼 만한 자리')}
