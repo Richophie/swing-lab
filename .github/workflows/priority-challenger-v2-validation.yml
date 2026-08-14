@@ -5,6 +5,10 @@ on:
     paths:
       - 'priority_challenger_v2.py'
       - 'tests/test_priority_challenger_v2.py'
+      - 'tests/test_priority_challenger_ab_ui.py'
+      - 'static/priority_challenger_ab.js'
+      - 'static/priority_challenger_ab.css'
+      - 'static/lab_dashboard.js'
       - '.github/workflows/market-scan.yml'
       - '.github/workflows/priority-challenger-v2-validation.yml'
 
@@ -23,9 +27,15 @@ jobs:
           cache: 'pip'
       - run: python -m pip install -r requirements.txt
       - name: Compile
-        run: python -m py_compile priority_challenger_v2.py tests/test_priority_challenger_v2.py
+        run: python -m py_compile priority_challenger_v2.py tests/test_priority_challenger_v2.py tests/test_priority_challenger_ab_ui.py
+      - name: JavaScript syntax
+        run: |
+          node --check static/priority_challenger_ab.js
+          node --check static/lab_dashboard.js
       - name: Deterministic A/B isolation tests
-        run: PYTHONPATH=. python tests/test_priority_challenger_v2.py
+        run: |
+          PYTHONPATH=. python tests/test_priority_challenger_v2.py
+          PYTHONPATH=. python tests/test_priority_challenger_ab_ui.py
       - name: Freeze V2 from exact V1 calibration clone
         run: |
           rm -f static/priority_challenger_v2_calibration.json static/priority_challenger_v2_state.json
