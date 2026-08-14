@@ -9,6 +9,7 @@ on:
       - 'strategy_optimizer_runner.py'
       - 'strategy_optimizer_v2.py'
       - 'strategy_selection_research.py'
+      - 'portfolio_walkforward_research.py'
       - '.github/workflows/replay-lab-v2.yml'
   schedule:
     - cron: '40 22 * * 1-5'
@@ -23,7 +24,7 @@ concurrency:
 jobs:
   research:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
         with:
@@ -79,8 +80,10 @@ jobs:
           from pathlib import Path
           d=json.loads(Path('static/strategy_selection_results.json').read_text(encoding='utf-8'))
           assert d.get('ready') is True
+          assert d.get('version',0) >= 2
           assert d.get('promotion_status') == 'research_only'
           assert d.get('method',{}).get('equity') == 'daily_close_mark_to_market'
+          assert d.get('method',{}).get('holdout_boundary')
           assert len(d.get('families',[])) == 3
           for f in d['families']:
               assert [v['intensity'] for v in f['variants']] == ['raw','loose','normal','strong']
@@ -88,11 +91,31 @@ jobs:
           print('selection PASS',[(f['id'],f['train_selected_intensity']) for f in d['families']])
           PY
 
+      - name: 4. Run rolling portfolio walk-forward
+        run: python portfolio_walkforward_research.py
+      - name: Validate walk-forward result
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('static/portfolio_walkforward_results.json').read_text(encoding='utf-8'))
+          assert d.get('ready') is True
+          assert d.get('promotion_status') == 'research_only'
+          assert d.get('method',{}).get('type') == 'rolling walk-forward'
+          assert d.get('method',{}).get('equity') == 'daily_close_mark_to_market'
+          assert len(d.get('families',[])) == 3
+          for f in d['families']:
+              assert len(f.get('folds',[])) >= 3
+              assert f.get('summary',{}).get('grade') in {'A','B','C'}
+              assert all(x.get('selected_intensity') in {'raw','loose','normal','strong'} for x in f['folds'])
+          print('walk-forward PASS',[(f['id'],f['summary']['grade']) for f in d['families']])
+          PY
+
       - name: Commit all research outputs together
         run: |
           git config user.name "swing-lab-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add static/replay_backtest_pool_v2.json static/strategy_optimizer_results.json static/strategy_selection_results.json
+          git add static/replay_backtest_pool_v2.json static/strategy_optimizer_results.json static/strategy_selection_results.json static/portfolio_walkforward_results.json
           if git diff --cached --quiet; then
             echo "No research data changes"
             exit 0
