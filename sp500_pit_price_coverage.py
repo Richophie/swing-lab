@@ -68,16 +68,15 @@ def coverage_for_series(series: pd.Series, removal_day: date) -> dict:
 
 
 def _removal_map(membership: dict) -> dict[str, date]:
-    out: dict[str, date] = {}
     target_start = date.fromisoformat(membership.get('target_start') or '2017-01-01')
-    for change in membership.get('changes') or []:
-        ticker = str(change.get('removed') or '').strip().upper()
-        if not ticker:
+    out: dict[str, date] = {}
+    for ticker, raw_day in (membership.get('ticker_last_seen') or {}).items():
+        symbol = str(ticker or '').strip().upper()
+        if not symbol or not raw_day:
             continue
-        day = date.fromisoformat(change['effective_date'])
-        if day < target_start:
-            continue
-        out[ticker] = max(out.get(ticker, day), day)
+        day = date.fromisoformat(str(raw_day)[:10])
+        if day >= target_start:
+            out[symbol] = day
     return out
 
 
@@ -100,7 +99,7 @@ def download_removed_coverage(membership: dict) -> dict:
         for ticker in batch:
             series = _close_series(raw, ticker, len(batch))
             results[ticker] = {
-                'removal_date': removals[ticker].isoformat(),
+                'membership_last_seen_date': removals[ticker].isoformat(),
                 **coverage_for_series(series, removals[ticker]),
             }
 
@@ -109,7 +108,7 @@ def download_removed_coverage(membership: dict) -> dict:
     near = [t for t, x in results.items() if x['near_removal']]
     total = len(results)
     return {
-        'version': 1,
+        'version': 2,
         'ready': True,
         'status': 'FREE_PRICE_COVERAGE_DIAGNOSTIC',
         'promotion_status': 'DIAGNOSTIC_ONLY_NOT_RESEARCH_GRADE_PIT',
@@ -130,7 +129,8 @@ def download_removed_coverage(membership: dict) -> dict:
         'limitations': [
             'This probes free Yahoo/yfinance availability only; it is not assumed complete for delisted securities.',
             'A ticker having historical bars does not prove permanent-identifier or corporate-action continuity.',
-            'Near-removal coverage uses a 10-calendar-day tolerance because the effective index removal date may follow the final trading session.',
+            'Membership last-seen is a snapshot-derived endpoint proxy; it can differ from the final trading session.',
+            'Near-removal coverage uses a 10-calendar-day tolerance around that last-seen membership date.',
             'This diagnostic cannot promote production rules or mark the strict PIT source manifest VERIFIED.',
         ],
         'production_main_picker_mutated': False,
