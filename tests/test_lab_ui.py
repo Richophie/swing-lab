@@ -15,24 +15,46 @@ def test_replay_lab_wiring():
     ui=(ROOT/'static'/'lab_replay_ui.js').read_text(encoding='utf-8')
     math=(ROOT/'static'/'replay_math.js').read_text(encoding='utf-8')
     deep=(ROOT/'static'/'backtest_result_tabs.js').read_text(encoding='utf-8')
+    css=(ROOT/'static'/'backtest_result_tabs.css').read_text(encoding='utf-8')
     core=(ROOT/'static'/'replay_v2_core.js').read_text(encoding='utf-8')
-    for name in ('replay_math.js','lab_data.js','lab_replay_ui.js','lab_run_core.js','lab_result_ui.js','lab_replay_boot.js','backtest_result_tabs.js','lab_nav_hotfix.js'):
+    for name in ('replay_math.js','lab_data.js','lab_replay_ui.js','lab_run_core.js','lab_result_ui.js','lab_replay_boot.js','backtest_result_tabs.js','lab_nav_hotfix.js','strategy_optimizer_ui.js','selection_filter_ui.js','walkforward_ui.js'):
         assert name in loader
-    assert '백테스트연구소' in boot
+    assert '백테스트 연구소' in boot
+    assert 'US STOCKS' in boot and 'DAILY MTM' in boot
+    assert '<option selected>10</option>' in boot
+    assert '고급 민감도 실험 · 고정익절/강제 보유상한' in boot
     assert 'capacity:3' in math
     assert 'riskBudget:.01' in math
     assert 'maxShare:.40' in math
     assert 'markUpdates' in math
     assert 'underwaterDays' in math and 'worstMonth' in math
+    assert '어떤 조건으로 돌려볼까요?' in ui
     assert 'btLabStart' in ui and 'btLabEnd' in ui and 'btLabCapital' in ui
-    assert 'MTM MDD' in ui and '최장 Underwater' in ui and '최악 월' in ui
-    for tab in ('요약','전략기여','연도·구간','체결내역','진단'):
+    assert 'bt-strategy-grid' in ui and 'DAILY MTM' in ui
+    for tab in ('한눈에','전략','기간','체결','진단'):
         assert tab in deep
-    assert '전략 제거 실험' in deep
+    assert '전략 하나씩 빼보기' in deep
+    assert '월별 수익률' in deep
     assert '계좌수익률' in deep and '연중 MDD' in deep
+    assert 'data-label=' in deep
+    assert '.bt-result-layout' in css
+    assert 'grid-template-columns:155px minmax(0,1fr)' in css
+    assert '@media(max-width:900px)' in css
+    assert 'span[data-label]::before' in css
+    assert '.bt-month-grid' in css
     assert '당일 종가 청산 · 일봉순서 안전판' in core
     assert 'const marks=' in core and 'stress_factor:stressFactor' in core
     assert "filter(x=>String(x?.[0]||'')<=b)" in core
+
+
+def test_walkforward_ui_is_loaded():
+    ui=(ROOT/'static'/'walkforward_ui.js').read_text(encoding='utf-8')
+    css=(ROOT/'static'/'walkforward_ui.css').read_text(encoding='utf-8')
+    assert 'portfolio_walkforward_results.json' in ui
+    assert '여러 시장 구간에서 다시 살아남는지' in ui
+    assert 'NO RETUNE' in ui and 'RESEARCH ONLY' in ui
+    assert '4년 학습 → 다음 1년 시험' in ui
+    assert '.wf-folds' in css and '.wf-kpis' in css
 
 
 def test_lab_sections_are_hoisted_out_of_detail_overlay():
@@ -52,7 +74,7 @@ def test_paper_mark_ui_keeps_holding_visible():
 
 
 def main():
-    test_lab_loader_and_paper_marks();test_replay_lab_wiring();test_lab_sections_are_hoisted_out_of_detail_overlay();test_paper_mark_ui_keeps_holding_visible();print('lab ui PASS')
+    test_lab_loader_and_paper_marks();test_replay_lab_wiring();test_walkforward_ui_is_loaded();test_lab_sections_are_hoisted_out_of_detail_overlay();test_paper_mark_ui_keeps_holding_visible();print('lab ui PASS')
 
 
 if __name__=='__main__':main()
