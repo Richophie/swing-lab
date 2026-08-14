@@ -10,6 +10,7 @@ on:
       - 'strategy_optimizer_v2.py'
       - 'strategy_selection_research.py'
       - 'portfolio_walkforward_research.py'
+      - 'portfolio_regime_research.py'
       - '.github/workflows/replay-lab-v2.yml'
   schedule:
     - cron: '40 22 * * 1-5'
@@ -24,7 +25,7 @@ concurrency:
 jobs:
   research:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 50
     steps:
       - uses: actions/checkout@v4
         with:
@@ -111,11 +112,32 @@ jobs:
           print('walk-forward PASS',[(f['id'],f['summary']['grade']) for f in d['families']])
           PY
 
+      - name: 5. Run train-only market regime gate walk-forward
+        run: python portfolio_regime_research.py
+      - name: Validate market regime result
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('static/portfolio_regime_results.json').read_text(encoding='utf-8'))
+          assert d.get('ready') is True
+          assert d.get('promotion_status') == 'research_only'
+          assert d.get('method',{}).get('type') == 'rolling walk-forward regime gate'
+          assert d.get('method',{}).get('equity') == 'daily_close_mark_to_market'
+          assert len(d.get('families',[])) == 3
+          for f in d['families']:
+              assert len(f.get('folds',[])) >= 3
+              assert f.get('summary',{}).get('grade') in {'A','B','C'}
+              assert all(x.get('selected_gate') in {'all','avoid_risk_off','risk_on_only'} for x in f['folds'])
+              assert all('test_same_quality_no_gate' in x for x in f['folds'])
+          print('regime gate PASS',[(f['id'],f['summary']['grade']) for f in d['families']])
+          PY
+
       - name: Commit all research outputs together
         run: |
           git config user.name "swing-lab-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add static/replay_backtest_pool_v2.json static/strategy_optimizer_results.json static/strategy_selection_results.json static/portfolio_walkforward_results.json
+          git add static/replay_backtest_pool_v2.json static/strategy_optimizer_results.json static/strategy_selection_results.json static/portfolio_walkforward_results.json static/portfolio_regime_results.json
           if git diff --cached --quiet; then
             echo "No research data changes"
             exit 0
