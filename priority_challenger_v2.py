@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import datetime, timezone
 import argparse
 import json
 from pathlib import Path
@@ -8,6 +9,7 @@ import priority_challenger_v1 as engine
 
 ROOT = Path(__file__).parent
 STATIC = ROOT / 'static'
+V1_CALIBRATION = STATIC / 'priority_challenger_v1_calibration.json'
 CALIBRATION = STATIC / 'priority_challenger_v2_calibration.json'
 STATE = STATIC / 'priority_challenger_v2_state.json'
 
@@ -20,12 +22,7 @@ COMPARISON_BASELINE = 'priority_challenger_v1'
 
 
 def configure_engine() -> None:
-    """Reuse the frozen V1 signal engine while isolating V2 files and risk size.
-
-    This process-local configuration does not rewrite V1 calibration/state. All
-    signal, quality, ranking, entry, exit, and cost rules remain identical; only
-    the risk budget changes from 1.00% to 0.75%.
-    """
+    """Reuse V1 execution logic while isolating V2 files and risk size."""
     engine.CALIBRATION = CALIBRATION
     engine.STATE = STATE
     engine.CHALLENGER_ID = CHALLENGER_ID
@@ -34,23 +31,42 @@ def configure_engine() -> None:
     engine.RISK_BUDGET = RISK_BUDGET
 
 
+def _load(path: Path) -> dict:
+    return json.loads(path.read_text(encoding='utf-8'))
+
+
 def freeze_calibration() -> dict:
+    """Clone V1's immutable calibration exactly, then change only risk metadata."""
     configure_engine()
-    existed = CALIBRATION.exists()
-    data = engine.freeze_calibration()
-    if existed:
+    if CALIBRATION.exists():
+        data = _load(CALIBRATION)
+        if data.get('challenger_id') != CHALLENGER_ID or data.get('freeze_date') != FREEZE_DATE:
+            raise RuntimeError('Existing V2 calibration has different freeze metadata')
         if float(data.get('risk_budget_pct') or 0.0) != RISK_BUDGET_PCT:
             raise RuntimeError('Existing V2 calibration has a different risk budget')
         if data.get('comparison_baseline') != COMPARISON_BASELINE:
             raise RuntimeError('Existing V2 calibration has different A/B metadata')
         return data
 
-    data = dict(data)
+    if not V1_CALIBRATION.exists():
+        raise RuntimeError('Frozen V1 calibration is required before creating V2 A/B')
+    v1 = _load(V1_CALIBRATION)
+    if v1.get('challenger_id') != COMPARISON_BASELINE or v1.get('status') != 'FROZEN_FORWARD_ONLY':
+        raise RuntimeError('V1 calibration is not the expected frozen baseline')
+    if v1.get('freeze_date') != FREEZE_DATE or v1.get('forward_start_date') != FORWARD_START_DATE:
+        raise RuntimeError('V1 and V2 must share the exact same forward boundary')
+
+    # JSON round-trip gives a deep copy so V1's in-memory object is never mutated.
+    data = json.loads(json.dumps(v1))
+    data['challenger_id'] = CHALLENGER_ID
+    data['created_at'] = datetime.now(timezone.utc).isoformat(timespec='seconds')
     data['risk_budget_pct'] = RISK_BUDGET_PCT
     data['comparison_baseline'] = COMPARISON_BASELINE
+    data['source_v1_calibration_created_at'] = v1.get('created_at')
     data['ab_isolation'] = {
         'same_family': True,
         'same_frozen_universe': True,
+        'same_reference_distributions': True,
         'same_quality_filter': True,
         'same_priority_formula': True,
         'same_execution_and_exits': True,
@@ -59,7 +75,7 @@ def freeze_calibration() -> dict:
         'challenger_risk_budget_pct': RISK_BUDGET_PCT,
     }
     data.setdefault('notes', []).append(
-        'V2는 V1과 동일한 후보·엄선·우선순위·진입·청산 규칙을 사용하고 계좌위험만 1.00%→0.75%로 변경한 forward A/B입니다.'
+        'V2는 V1 calibration의 종목·품질분포·priority분포를 그대로 복제하고 계좌위험만 1.00%→0.75%로 변경한 forward A/B입니다.'
     )
     CALIBRATION.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding='utf-8')
     return data
