@@ -26,18 +26,34 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
       - run: pip install -r requirements.txt
-      - name: Build replay V2 path cache
+      - name: Build replay V4 path and quality cache
         run: python replay_pool_v2.py
-      - name: Commit replay V2 cache
+      - name: Validate quality cache
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('static/replay_backtest_pool_v2.json').read_text(encoding='utf-8'))
+          assert d.get('ready') is True
+          assert d.get('version',0) >= 4
+          assert d.get('quality_features_version') == 1
+          don=[x for x in d.get('trades',[]) if x.get('strategy_id')=='donchian_55']
+          sma=[x for x in d.get('trades',[]) if x.get('strategy_id')=='sma200_20_squeeze']
+          assert don and sma
+          assert all('breakout_atr' in (x.get('quality_features') or {}) for x in don[:100])
+          assert all('ma_spread_pct' in (x.get('quality_features') or {}) for x in sma[:100])
+          print('quality cache PASS',len(don),len(sma))
+          PY
+      - name: Commit replay V4 cache
         run: |
           git config user.name "swing-lab-bot"
           git config user.email "actions@users.noreply.github.com"
           git add static/replay_backtest_pool_v2.json
           if git diff --cached --quiet; then
-            echo "No replay V2 changes"
+            echo "No replay cache changes"
             exit 0
           fi
-          git commit -m "data: refresh replay V2 path cache"
+          git commit -m "data: refresh replay V4 quality cache"
           for attempt in 1 2 3 4; do
             git fetch origin main
             git rebase origin/main
