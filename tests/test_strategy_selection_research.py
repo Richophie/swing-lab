@@ -58,6 +58,20 @@ def test_percentile_thresholds_are_distribution_only():
     assert r.quantile(xs, 0.85) == 44.0
 
 
+def test_holdout_boundary_matches_optimizer_candidate_count_rule():
+    candidates = [
+        {'entry_date': f'2026-01-{d:02d}'}
+        for d in range(1, 11)
+    ]
+    start, train_end, oos_start, recent_start, end = r.holdout_dates(candidates)
+    # int(10 * .70) == 7 -> zero-based eighth candidate is the OOS boundary.
+    assert str(start) == '2026-01-01'
+    assert str(train_end) == '2026-01-07'
+    assert str(oos_start) == '2026-01-08'
+    assert str(recent_start) == '2026-01-08'
+    assert str(end) == '2026-01-10'
+
+
 def test_research_families_are_frozen_challengers():
     ids = [x['id'] for x in r.FAMILIES]
     assert ids == ['donchian_core', 'donchian_momentum', 'confirmed_sma_donchian']
@@ -68,5 +82,6 @@ if __name__ == '__main__':
     test_donchian_quality_rewards_cleaner_signal()
     test_sma_quality_rewards_tight_clean_breakout()
     test_percentile_thresholds_are_distribution_only()
+    test_holdout_boundary_matches_optimizer_candidate_count_rule()
     test_research_families_are_frozen_challengers()
     print('strategy selection research PASS')
