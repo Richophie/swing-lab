@@ -1,8 +1,8 @@
 {
-  "version": 1,
-  "challenger_id": "priority_challenger_v1",
+  "version": 4,
+  "challenger_id": "priority_challenger_v4_same_day_rank1_full",
   "status": "FORWARD_SHADOW",
-  "freeze_date": "2026-08-13",
+  "freeze_date": "2026-08-14",
   "forward_start_date": "2026-08-14",
   "live_trading_enabled": false,
   "production_mutation_enabled": false,
@@ -28,13 +28,20 @@
       "current_weight": 0.5,
       "quality_weight": 0.5
     },
-    "calibration_created_at": "2026-08-14T05:50:01+00:00",
+    "calibration_created_at": "2026-08-14T10:14:24+00:00",
     "human_intervention": false,
     "auto_retune": false,
     "last_market_state": "좋음",
-    "last_completed_signal_date": "2026-08-13"
+    "last_completed_signal_date": "2026-08-13",
+    "comparison_baseline": "priority_challenger_v2_capital075",
+    "rank1_risk_budget_pct": 0.75,
+    "other_rank_risk_budget_pct": 0.375,
+    "ab_only_changed_rule": "same_entry_day_rank_conditioned_risk_budget",
+    "hypothesis_freeze_date": "2026-08-14",
+    "production_main_picker_mutated": false,
+    "live_orders_mutated": false
   },
-  "updated_at": "2026-08-14T10:14:14+00:00",
+  "updated_at": "2026-08-14T10:14:25+00:00",
   "summary": {
     "cash_krw": 3000000.0,
     "equity_krw": 3000000.0,
@@ -52,6 +59,15 @@
       "REJECT_CASH": 0,
       "REJECT_MAX_POSITIONS": 0,
       "REJECT_DUPLICATE": 0
+    },
+    "same_day_rank_risk": {
+      "rank1_risk_budget_pct": 0.75,
+      "other_risk_budget_pct": 0.375,
+      "filled_rank1_full_risk": 0,
+      "filled_other_half_risk": 0,
+      "multi_candidate_day_fills": 0
     }
-  }
+  },
+  "comparison_baseline": "priority_challenger_v2_capital075",
+  "risk_budget_pct": 0.75
 }
