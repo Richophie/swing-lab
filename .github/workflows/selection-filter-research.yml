@@ -1,19 +1,13 @@
-name: Strategy Selection Filter Research
+name: Strategy Selection Filter Research · Manual Backup
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - 'static/replay_backtest_pool_v2.json'
-  schedule:
-    - cron: '25 23 * * 1-5'
 
 permissions:
   contents: write
 
 concurrency:
-  group: selection-filter-main
+  group: selection-filter-manual
   cancel-in-progress: true
 
 jobs:

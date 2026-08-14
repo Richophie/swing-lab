@@ -1,4 +1,4 @@
-name: Replay Lab V2 Cache
+name: Daily Backtest Research Pipeline
 
 on:
   workflow_dispatch:
@@ -6,6 +6,9 @@ on:
     branches: [main]
     paths:
       - 'replay_pool_v2.py'
+      - 'strategy_optimizer_runner.py'
+      - 'strategy_optimizer_v2.py'
+      - 'strategy_selection_research.py'
       - '.github/workflows/replay-lab-v2.yml'
   schedule:
     - cron: '40 22 * * 1-5'
@@ -13,10 +16,14 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: daily-backtest-research-main
+  cancel-in-progress: true
+
 jobs:
-  build:
+  research:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
         with:
@@ -26,9 +33,10 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
       - run: pip install -r requirements.txt
-      - name: Build replay V4 path and quality cache
+
+      - name: 1. Build replay V4 path and quality cache
         run: python replay_pool_v2.py
-      - name: Validate quality cache
+      - name: Validate replay quality cache
         run: |
           python - <<'PY'
           import json
@@ -44,16 +52,52 @@ jobs:
           assert all('ma_spread_pct' in (x.get('quality_features') or {}) for x in sma[:100])
           print('quality cache PASS',len(don),len(sma))
           PY
-      - name: Commit replay V4 cache
+
+      - name: 2. Run holdout-safe MTM optimizer
+        run: python strategy_optimizer_runner.py
+      - name: Validate optimizer result
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('static/strategy_optimizer_results.json').read_text(encoding='utf-8'))
+          assert d.get('ready') is True
+          assert d.get('version',0) >= 4
+          assert d.get('promotion_status') == 'research_only'
+          assert d.get('parameter_grid',{}).get('forced_profit_pct') == [None]
+          assert d.get('parameter_grid',{}).get('hold_cap_days') == [None]
+          assert d.get('risk_model',{}).get('mdd') == 'daily_close_mark_to_market'
+          print('optimizer PASS',d.get('tested_configurations'),d.get('validated_configurations'))
+          PY
+
+      - name: 3. Run strategy-specific selection research
+        run: python strategy_selection_research.py
+      - name: Validate selection research result
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('static/strategy_selection_results.json').read_text(encoding='utf-8'))
+          assert d.get('ready') is True
+          assert d.get('promotion_status') == 'research_only'
+          assert d.get('method',{}).get('equity') == 'daily_close_mark_to_market'
+          assert len(d.get('families',[])) == 3
+          for f in d['families']:
+              assert [v['intensity'] for v in f['variants']] == ['raw','loose','normal','strong']
+              assert sum(1 for v in f['variants'] if v.get('train_pick')) == 1
+          print('selection PASS',[(f['id'],f['train_selected_intensity']) for f in d['families']])
+          PY
+
+      - name: Commit all research outputs together
         run: |
           git config user.name "swing-lab-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add static/replay_backtest_pool_v2.json
+          git add static/replay_backtest_pool_v2.json static/strategy_optimizer_results.json static/strategy_selection_results.json
           if git diff --cached --quiet; then
-            echo "No replay cache changes"
+            echo "No research data changes"
             exit 0
           fi
-          git commit -m "data: refresh replay V4 quality cache"
+          git commit -m "data: refresh daily backtest research [skip render]"
           for attempt in 1 2 3 4; do
             git fetch origin main
             git rebase origin/main
