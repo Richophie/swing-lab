@@ -1,0 +1,836 @@
+{
+  "version": 1,
+  "ready": true,
+  "generated_at": "2026-08-14T06:36:23+00:00",
+  "pool_generated_at": "2026-08-14T05:30:36+00:00",
+  "promotion_status": "development_only_train_fitted_not_fresh_holdout",
+  "family": {
+    "id": "confirmed_sma_donchian",
+    "name": "확인형 + SMA200·20 + Donchian",
+    "strategies": [
+      "confirmed_pullback",
+      "sma200_20_squeeze",
+      "donchian_55"
+    ]
+  },
+  "model": {
+    "scope": "Donchian candidate quality component only",
+    "features": [
+      "breakout_atr",
+      "volume_ratio",
+      "close_position",
+      "body_atr",
+      "sma200_slope_20d_pct",
+      "distance_sma200_pct",
+      "atr_pct"
+    ],
+    "algorithm": "ordinary least squares on standardized signal-day features",
+    "target": "within-TRAIN percentile of realized R",
+    "hyperparameter_search": false,
+    "label_boundary": "TRAIN labels require exit_date <= train_end",
+    "other_strategies": "retain current quality percentile",
+    "current_priority_weight": 0.5,
+    "model_quality_weight": 0.5,
+    "capital_policy": "fixed global tiered 0.5/0.75/1.0% risk budget"
+  },
+  "method": {
+    "top50_gate": "unchanged original quality gate using TRAIN only",
+    "rolling_validation": "4y TRAIN -> next 1y TEST",
+    "equity": "daily_close_mark_to_market",
+    "test_never_fits_model": true,
+    "v1_untouched": true,
+    "warning": "model idea follows prior development diagnostics; TEST is rolling robustness evidence but history is not a fresh final holdout"
+  },
+  "summary": {
+    "v1_flat": {
+      "stitched_test_return_pct": 57.89,
+      "median_test_return_pct": 9.79,
+      "positive_test_folds": 5,
+      "worst_test_return_pct": -1.37,
+      "worst_test_mdd_pct": -16.01,
+      "total_test_trades": 378
+    },
+    "current_tiered": {
+      "stitched_test_return_pct": 77.28,
+      "median_test_return_pct": 8.58,
+      "positive_test_folds": 6,
+      "worst_test_return_pct": 2.15,
+      "worst_test_mdd_pct": -12.91,
+      "total_test_trades": 454,
+      "folds_beating_v1": 4,
+      "mean_delta_vs_v1_pct": 2.26
+    },
+    "train_ranker_tiered": {
+      "stitched_test_return_pct": 59.82,
+      "median_test_return_pct": 4.99,
+      "positive_test_folds": 3,
+      "worst_test_return_pct": -5.89,
+      "worst_test_mdd_pct": -15.18,
+      "total_test_trades": 476,
+      "folds_beating_v1": 4,
+      "mean_delta_vs_v1_pct": 0.99,
+      "folds_beating_current_tiered": 3,
+      "mean_delta_vs_current_tiered_pct": -1.27
+    }
+  },
+  "coefficient_stability": {
+    "breakout_atr": {
+      "mean_coefficient": -0.004615,
+      "positive_folds": 1,
+      "negative_folds": 5,
+      "same_sign_5_of_6": true
+    },
+    "volume_ratio": {
+      "mean_coefficient": -0.002633,
+      "positive_folds": 2,
+      "negative_folds": 4,
+      "same_sign_5_of_6": false
+    },
+    "close_position": {
+      "mean_coefficient": -0.000285,
+      "positive_folds": 4,
+      "negative_folds": 2,
+      "same_sign_5_of_6": false
+    },
+    "body_atr": {
+      "mean_coefficient": 0.00599,
+      "positive_folds": 4,
+      "negative_folds": 2,
+      "same_sign_5_of_6": false
+    },
+    "sma200_slope_20d_pct": {
+      "mean_coefficient": 0.009752,
+      "positive_folds": 3,
+      "negative_folds": 3,
+      "same_sign_5_of_6": false
+    },
+    "distance_sma200_pct": {
+      "mean_coefficient": -0.034272,
+      "positive_folds": 0,
+      "negative_folds": 6,
+      "same_sign_5_of_6": true
+    },
+    "atr_pct": {
+      "mean_coefficient": 0.096143,
+      "positive_folds": 6,
+      "negative_folds": 0,
+      "same_sign_5_of_6": true
+    }
+  },
+  "folds": [
+    {
+      "fold": "2021",
+      "train_start": "2017-06-09",
+      "train_end": "2020-12-31",
+      "test_start": "2021-01-01",
+      "test_end": "2021-12-31",
+      "model": {
+        "train_labels": 1461,
+        "target_mean": 0.5,
+        "coefficients": {
+          "intercept": 0.5,
+          "breakout_atr": 0.006974,
+          "volume_ratio": -0.008592,
+          "close_position": -0.007743,
+          "body_atr": 0.017756,
+          "sma200_slope_20d_pct": 0.06236,
+          "distance_sma200_pct": -0.094018,
+          "atr_pct": 0.101712
+        }
+      },
+      "thresholds": {
+        "confirmed_pullback": 71.77554,
+        "sma200_20_squeeze": 34.638975,
+        "donchian_55": 34.14883
+      },
+      "variants": {
+        "v1_flat": {
+          "test": {
+            "ending": 3306957.62,
+            "return_pct": 10.23,
+            "cagr_pct": 10.27,
+            "mdd_pct": -15.15,
+            "trades": 73,
+            "win_rate_pct": 38.36,
+            "avg_trade_pct": 1.212,
+            "trades_per_year": 73.3,
+            "max_open": 9,
+            "underwater_days": 91
+          },
+          "allocation": {
+            "reject_cash": 446,
+            "reject_capacity": 0,
+            "cash_limited_entries": 41,
+            "allocation_ratio": 0.0833,
+            "capital_share_by_tier": {
+              "low": 0.3807,
+              "mid": 0.6016,
+              "high": 0.0177
+            },
+            "trades_by_tier": {
+              "low": 27,
+              "mid": 44,
+              "high": 2
+            }
+          }
+        },
+        "current_tiered": {
+          "test": {
+            "ending": 3538178.45,
+            "return_pct": 17.94,
+            "cagr_pct": 18.01,
+            "mdd_pct": -11.28,
+            "trades": 90,
+            "win_rate_pct": 42.22,
+            "avg_trade_pct": 1.303,
+            "trades_per_year": 90.3,
+            "max_open": 10,
+            "underwater_days": 91
+          },
+          "allocation": {
+            "reject_cash": 299,
+            "reject_capacity": 102,
+            "cash_limited_entries": 44,
+            "allocation_ratio": 0.1686,
+            "capital_share_by_tier": {
+              "low": 0.3811,
+              "mid": 0.5869,
+              "high": 0.0319
+            },
+            "trades_by_tier": {
+              "low": 38,
+              "mid": 50,
+              "high": 2
+            }
+          }
+        },
+        "train_ranker_tiered": {
+          "test": {
+            "ending": 2890087.81,
+            "return_pct": -3.66,
+            "cagr_pct": -3.68,
+            "mdd_pct": -13.16,
+            "trades": 101,
+            "win_rate_pct": 32.67,
+            "avg_trade_pct": -0.036,
+            "trades_per_year": 101.3,
+            "max_open": 10,
+            "underwater_days": 182
+          },
+          "allocation": {
+            "reject_cash": 333,
+            "reject_capacity": 66,
+            "cash_limited_entries": 56,
+            "allocation_ratio": 0.1593,
+            "capital_share_by_tier": {
+              "low": 0.1113,
+              "mid": 0.86,
+              "high": 0.0287
+            },
+            "trades_by_tier": {
+              "low": 12,
+              "mid": 87,
+              "high": 2
+            }
+          }
+        }
+      }
+    },
+    {
+      "fold": "2022",
+      "train_start": "2018-01-01",
+      "train_end": "2021-12-31",
+      "test_start": "2022-01-01",
+      "test_end": "2022-12-31",
+      "model": {
+        "train_labels": 1743,
+        "target_mean": 0.5,
+        "coefficients": {
+          "intercept": 0.5,
+          "breakout_atr": -0.001464,
+          "volume_ratio": -0.013048,
+          "close_position": -0.00467,
+          "body_atr": 0.011145,
+          "sma200_slope_20d_pct": 0.017026,
+          "distance_sma200_pct": -0.049805,
+          "atr_pct": 0.124522
+        }
+      },
+      "thresholds": {
+        "confirmed_pullback": 71.75528,
+        "sma200_20_squeeze": 34.232014,
+        "donchian_55": 34.6982
+      },
+      "variants": {
+        "v1_flat": {
+          "test": {
+            "ending": 2958820.16,
+            "return_pct": -1.37,
+            "cagr_pct": -1.38,
+            "mdd_pct": -15.09,
+            "trades": 43,
+            "win_rate_pct": 27.91,
+            "avg_trade_pct": -0.191,
+            "trades_per_year": 43.1,
+            "max_open": 6,
+            "underwater_days": 154
+          },
+          "allocation": {
+            "reject_cash": 62,
+            "reject_capacity": 0,
+            "cash_limited_entries": 15,
+            "allocation_ratio": 0.2997,
+            "capital_share_by_tier": {
+              "low": 0.6469,
+              "mid": 0.3308,
+              "high": 0.0223
+            },
+            "trades_by_tier": {
+              "low": 27,
+              "mid": 15,
+              "high": 1
+            }
+          }
+        },
+        "current_tiered": {
+          "test": {
+            "ending": 3064522.36,
+            "return_pct": 2.15,
+            "cagr_pct": 2.16,
+            "mdd_pct": -9.64,
+            "trades": 53,
+            "win_rate_pct": 30.19,
+            "avg_trade_pct": 0.009,
+            "trades_per_year": 53.2,
+            "max_open": 8,
+            "underwater_days": 154
+          },
+          "allocation": {
+            "reject_cash": 44,
+            "reject_capacity": 0,
+            "cash_limited_entries": 8,
+            "allocation_ratio": 0.4643,
+            "capital_share_by_tier": {
+              "low": 0.5287,
+              "mid": 0.4401,
+              "high": 0.0312
+            },
+            "trades_by_tier": {
+              "low": 34,
+              "mid": 18,
+              "high": 1
+            }
+          }
+        },
+        "train_ranker_tiered": {
+          "test": {
+            "ending": 2973392.02,
+            "return_pct": -0.89,
+            "cagr_pct": -0.89,
+            "mdd_pct": -11.45,
+            "trades": 51,
+            "win_rate_pct": 31.37,
+            "avg_trade_pct": 0.145,
+            "trades_per_year": 51.2,
+            "max_open": 8,
+            "underwater_days": 154
+          },
+          "allocation": {
+            "reject_cash": 44,
+            "reject_capacity": 0,
+            "cash_limited_entries": 10,
+            "allocation_ratio": 0.4443,
+            "capital_share_by_tier": {
+              "low": 0.2577,
+              "mid": 0.7115,
+              "high": 0.0308
+            },
+            "trades_by_tier": {
+              "low": 15,
+              "mid": 35,
+              "high": 1
+            }
+          }
+        }
+      }
+    },
+    {
+      "fold": "2023",
+      "train_start": "2019-01-01",
+      "train_end": "2022-12-31",
+      "test_start": "2023-01-01",
+      "test_end": "2023-12-31",
+      "model": {
+        "train_labels": 1577,
+        "target_mean": 0.5,
+        "coefficients": {
+          "intercept": 0.5,
+          "breakout_atr": -0.013564,
+          "volume_ratio": -0.001443,
+          "close_position": 0.0019,
+          "body_atr": 0.010279,
+          "sma200_slope_20d_pct": 0.013313,
+          "distance_sma200_pct": -0.038118,
+          "atr_pct": 0.101657
+        }
+      },
+      "thresholds": {
+        "confirmed_pullback": 72.27105,
+        "sma200_20_squeeze": 34.453453,
+        "donchian_55": 34.061374
+      },
+      "variants": {
+        "v1_flat": {
+          "test": {
+            "ending": 3304345.35,
+            "return_pct": 10.14,
+            "cagr_pct": 10.18,
+            "mdd_pct": -12.56,
+            "trades": 73,
+            "win_rate_pct": 36.99,
+            "avg_trade_pct": 1.588,
+            "trades_per_year": 73.3,
+            "max_open": 10,
+            "underwater_days": 105
+          },
+          "allocation": {
+            "reject_cash": 136,
+            "reject_capacity": 6,
+            "cash_limited_entries": 36,
+            "allocation_ratio": 0.2199,
+            "capital_share_by_tier": {
+              "low": 0.4727,
+              "mid": 0.4708,
+              "high": 0.0565
+            },
+            "trades_by_tier": {
+              "low": 29,
+              "mid": 39,
+              "high": 5
+            }
+          }
+        },
+        "current_tiered": {
+          "test": {
+            "ending": 3101542.96,
+            "return_pct": 3.38,
+            "cagr_pct": 3.4,
+            "mdd_pct": -12.91,
+            "trades": 89,
+            "win_rate_pct": 31.46,
+            "avg_trade_pct": 0.824,
+            "trades_per_year": 89.3,
+            "max_open": 10,
+            "underwater_days": 105
+          },
+          "allocation": {
+            "reject_cash": 71,
+            "reject_capacity": 37,
+            "cash_limited_entries": 24,
+            "allocation_ratio": 0.4451,
+            "capital_share_by_tier": {
+              "low": 0.3966,
+              "mid": 0.534,
+              "high": 0.0695
+            },
+            "trades_by_tier": {
+              "low": 40,
+              "mid": 44,
+              "high": 5
+            }
+          }
+        },
+        "train_ranker_tiered": {
+          "test": {
+            "ending": 2823280.37,
+            "return_pct": -5.89,
+            "cagr_pct": -5.91,
+            "mdd_pct": -15.18,
+            "trades": 86,
+            "win_rate_pct": 29.07,
+            "avg_trade_pct": 0.158,
+            "trades_per_year": 86.3,
+            "max_open": 10,
+            "underwater_days": 115
+          },
+          "allocation": {
+            "reject_cash": 70,
+            "reject_capacity": 48,
+            "cash_limited_entries": 29,
+            "allocation_ratio": 0.458,
+            "capital_share_by_tier": {
+              "low": 0.3949,
+              "mid": 0.5341,
+              "high": 0.071
+            },
+            "trades_by_tier": {
+              "low": 33,
+              "mid": 48,
+              "high": 5
+            }
+          }
+        }
+      }
+    },
+    {
+      "fold": "2024",
+      "train_start": "2020-01-01",
+      "train_end": "2023-12-31",
+      "test_start": "2024-01-01",
+      "test_end": "2024-12-31",
+      "model": {
+        "train_labels": 1394,
+        "target_mean": 0.5,
+        "coefficients": {
+          "intercept": 0.5,
+          "breakout_atr": -0.00387,
+          "volume_ratio": -0.012526,
+          "close_position": 0.001971,
+          "body_atr": 0.005627,
+          "sma200_slope_20d_pct": -0.013716,
+          "distance_sma200_pct": -0.014353,
+          "atr_pct": 0.112099
+        }
+      },
+      "thresholds": {
+        "confirmed_pullback": 72.372,
+        "sma200_20_squeeze": 34.20318,
+        "donchian_55": 34.948818
+      },
+      "variants": {
+        "v1_flat": {
+          "test": {
+            "ending": 3148688.16,
+            "return_pct": 4.96,
+            "cagr_pct": 4.96,
+            "mdd_pct": -16.01,
+            "trades": 75,
+            "win_rate_pct": 36.0,
+            "avg_trade_pct": 0.986,
+            "trades_per_year": 75.1,
+            "max_open": 9,
+            "underwater_days": 206
+          },
+          "allocation": {
+            "reject_cash": 408,
+            "reject_capacity": 0,
+            "cash_limited_entries": 49,
+            "allocation_ratio": 0.0922,
+            "capital_share_by_tier": {
+              "low": 0.259,
+              "mid": 0.7013,
+              "high": 0.0397
+            },
+            "trades_by_tier": {
+              "low": 20,
+              "mid": 51,
+              "high": 4
+            }
+          }
+        },
+        "current_tiered": {
+          "test": {
+            "ending": 3413387.89,
+            "return_pct": 13.78,
+            "cagr_pct": 13.79,
+            "mdd_pct": -9.99,
+            "trades": 90,
+            "win_rate_pct": 36.67,
+            "avg_trade_pct": 1.231,
+            "trades_per_year": 90.1,
+            "max_open": 10,
+            "underwater_days": 168
+          },
+          "allocation": {
+            "reject_cash": 275,
+            "reject_capacity": 97,
+            "cash_limited_entries": 48,
+            "allocation_ratio": 0.1747,
+            "capital_share_by_tier": {
+              "low": 0.2653,
+              "mid": 0.6746,
+              "high": 0.0601
+            },
+            "trades_by_tier": {
+              "low": 30,
+              "mid": 55,
+              "high": 5
+            }
+          }
+        },
+        "train_ranker_tiered": {
+          "test": {
+            "ending": 3587370.51,
+            "return_pct": 19.58,
+            "cagr_pct": 19.59,
+            "mdd_pct": -8.11,
+            "trades": 96,
+            "win_rate_pct": 36.46,
+            "avg_trade_pct": 1.181,
+            "trades_per_year": 96.1,
+            "max_open": 10,
+            "underwater_days": 83
+          },
+          "allocation": {
+            "reject_cash": 264,
+            "reject_capacity": 101,
+            "cash_limited_entries": 48,
+            "allocation_ratio": 0.2026,
+            "capital_share_by_tier": {
+              "low": 0.4113,
+              "mid": 0.5329,
+              "high": 0.0558
+            },
+            "trades_by_tier": {
+              "low": 37,
+              "mid": 54,
+              "high": 5
+            }
+          }
+        }
+      }
+    },
+    {
+      "fold": "2025",
+      "train_start": "2021-01-01",
+      "train_end": "2024-12-31",
+      "test_start": "2025-01-01",
+      "test_end": "2025-12-31",
+      "model": {
+        "train_labels": 1688,
+        "target_mean": 0.5,
+        "coefficients": {
+          "intercept": 0.5,
+          "breakout_atr": -0.011763,
+          "volume_ratio": 0.012947,
+          "close_position": 0.005852,
+          "body_atr": -0.003356,
+          "sma200_slope_20d_pct": -0.011768,
+          "distance_sma200_pct": -0.004807,
+          "atr_pct": 0.069575
+        }
+      },
+      "thresholds": {
+        "confirmed_pullback": 73.546365,
+        "sma200_20_squeeze": 33.342556,
+        "donchian_55": 34.671551
+      },
+      "variants": {
+        "v1_flat": {
+          "test": {
+            "ending": 3283001.96,
+            "return_pct": 9.43,
+            "cagr_pct": 9.47,
+            "mdd_pct": -13.89,
+            "trades": 67,
+            "win_rate_pct": 37.31,
+            "avg_trade_pct": 1.549,
+            "trades_per_year": 67.2,
+            "max_open": 8,
+            "underwater_days": 109
+          },
+          "allocation": {
+            "reject_cash": 346,
+            "reject_capacity": 0,
+            "cash_limited_entries": 30,
+            "allocation_ratio": 0.1119,
+            "capital_share_by_tier": {
+              "low": 0.3213,
+              "mid": 0.6394,
+              "high": 0.0393
+            },
+            "trades_by_tier": {
+              "low": 23,
+              "mid": 42,
+              "high": 2
+            }
+          }
+        },
+        "current_tiered": {
+          "test": {
+            "ending": 3079073.49,
+            "return_pct": 2.64,
+            "cagr_pct": 2.64,
+            "mdd_pct": -12.19,
+            "trades": 80,
+            "win_rate_pct": 33.75,
+            "avg_trade_pct": 1.062,
+            "trades_per_year": 80.3,
+            "max_open": 10,
+            "underwater_days": 139
+          },
+          "allocation": {
+            "reject_cash": 301,
+            "reject_capacity": 21,
+            "cash_limited_entries": 28,
+            "allocation_ratio": 0.1754,
+            "capital_share_by_tier": {
+              "low": 0.3119,
+              "mid": 0.647,
+              "high": 0.0411
+            },
+            "trades_by_tier": {
+              "low": 32,
+              "mid": 46,
+              "high": 2
+            }
+          }
+        },
+        "train_ranker_tiered": {
+          "test": {
+            "ending": 3326100.19,
+            "return_pct": 10.87,
+            "cagr_pct": 10.91,
+            "mdd_pct": -12.3,
+            "trades": 86,
+            "win_rate_pct": 37.21,
+            "avg_trade_pct": 1.353,
+            "trades_per_year": 86.3,
+            "max_open": 10,
+            "underwater_days": 102
+          },
+          "allocation": {
+            "reject_cash": 105,
+            "reject_capacity": 191,
+            "cash_limited_entries": 30,
+            "allocation_ratio": 0.3434,
+            "capital_share_by_tier": {
+              "low": 0.2298,
+              "mid": 0.7157,
+              "high": 0.0545
+            },
+            "trades_by_tier": {
+              "low": 20,
+              "mid": 63,
+              "high": 3
+            }
+          }
+        }
+      }
+    },
+    {
+      "fold": "2026",
+      "train_start": "2022-01-01",
+      "train_end": "2025-12-31",
+      "test_start": "2026-01-01",
+      "test_end": "2026-08-13",
+      "model": {
+        "train_labels": 1646,
+        "target_mean": 0.5,
+        "coefficients": {
+          "intercept": 0.5,
+          "breakout_atr": -0.004004,
+          "volume_ratio": 0.006862,
+          "close_position": 0.00098,
+          "body_atr": -0.00551,
+          "sma200_slope_20d_pct": -0.008704,
+          "distance_sma200_pct": -0.004533,
+          "atr_pct": 0.067294
+        }
+      },
+      "thresholds": {
+        "confirmed_pullback": 73.903205,
+        "sma200_20_squeeze": 32.747463,
+        "donchian_55": 34.290676
+      },
+      "variants": {
+        "v1_flat": {
+          "test": {
+            "ending": 3443934.93,
+            "return_pct": 14.8,
+            "cagr_pct": 25.24,
+            "mdd_pct": -15.09,
+            "trades": 47,
+            "win_rate_pct": 40.43,
+            "avg_trade_pct": 4.396,
+            "trades_per_year": 76.6,
+            "max_open": 10,
+            "underwater_days": 49
+          },
+          "allocation": {
+            "reject_cash": 217,
+            "reject_capacity": 45,
+            "cash_limited_entries": 16,
+            "allocation_ratio": 0.1169,
+            "capital_share_by_tier": {
+              "low": 0.3579,
+              "mid": 0.628,
+              "high": 0.0141
+            },
+            "trades_by_tier": {
+              "low": 15,
+              "mid": 31,
+              "high": 1
+            }
+          }
+        },
+        "current_tiered": {
+          "test": {
+            "ending": 3656347.21,
+            "return_pct": 21.88,
+            "cagr_pct": 38.07,
+            "mdd_pct": -11.7,
+            "trades": 52,
+            "win_rate_pct": 42.31,
+            "avg_trade_pct": 7.051,
+            "trades_per_year": 84.8,
+            "max_open": 10,
+            "underwater_days": 50
+          },
+          "allocation": {
+            "reject_cash": 119,
+            "reject_capacity": 120,
+            "cash_limited_entries": 13,
+            "allocation_ratio": 0.2293,
+            "capital_share_by_tier": {
+              "low": 0.288,
+              "mid": 0.6638,
+              "high": 0.0481
+            },
+            "trades_by_tier": {
+              "low": 17,
+              "mid": 33,
+              "high": 2
+            }
+          }
+        },
+        "train_ranker_tiered": {
+          "test": {
+            "ending": 4024442.83,
+            "return_pct": 34.15,
+            "cagr_pct": 61.45,
+            "mdd_pct": -11.64,
+            "trades": 56,
+            "win_rate_pct": 46.43,
+            "avg_trade_pct": 6.929,
+            "trades_per_year": 91.3,
+            "max_open": 10,
+            "underwater_days": 50
+          },
+          "allocation": {
+            "reject_cash": 105,
+            "reject_capacity": 114,
+            "cash_limited_entries": 12,
+            "allocation_ratio": 0.2839,
+            "capital_share_by_tier": {
+              "low": 0.148,
+              "mid": 0.8086,
+              "high": 0.0434
+            },
+            "trades_by_tier": {
+              "low": 7,
+              "mid": 46,
+              "high": 3
+            }
+          }
+        }
+      }
+    }
+  ],
+  "notes": [
+    "No coefficient, feature subset, threshold, or regularization hyperparameter is selected from TEST.",
+    "The linear model is refit from scratch using only prior TRAIN data in each fold.",
+    "Frozen Challenger V1 remains unchanged and continues forward-only.",
+    "Current-universe survivorship bias remains."
+  ]
+}
