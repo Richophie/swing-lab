@@ -10,8 +10,6 @@ def test_strategy_optimizer_is_wired():
     loader = (ROOT / 'static' / 'lab_dashboard.js').read_text(encoding='utf-8')
     workflow = (ROOT / '.github' / 'workflows' / 'strategy-optimizer.yml').read_text(encoding='utf-8')
 
-    assert "EXIT_PCTS = (None, 1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0)" in script
-    assert "HOLD_CAPS = (None, 1, 2, 3, 5, 7, 10, 20)" in script
     assert "CAPACITIES = (1, 3, 5, 7, 10)" in script
     assert "MAX_STRATEGIES_PER_COMBO = 5" in script
     assert 'AUTO_SEARCH_EXCLUDE = {"larry_williams_vb"}' in script
@@ -19,14 +17,24 @@ def test_strategy_optimizer_is_wired():
     assert "OOS is pass/fail validation" in script
     assert "promotion_status" in script and "research_only" in script
     assert '"ablation"' in script and '"full"' in script
-    assert "memory_lean_portfolio" in runner
-    assert "opt.portfolio = memory_lean_portfolio" in runner
+
+    assert "execute_candidate_mtm" in runner
+    assert "mtm_portfolio" in runner
+    assert "opt.EXIT_PCTS = (None,)" in runner
+    assert "opt.HOLD_CAPS = (None,)" in runner
+    assert "daily_close_mark_to_market" in runner
+    assert '"underwater_days"' in runner
+
     assert "strategy_optimizer_results.json" in ui
     assert "자동 전략 최적화 연구소" in ui
-    assert "1~5개 기법 조합" in ui
+    assert "MTM MDD" in ui
+    assert "고정 +N% 익절과 강제 보유기간은 메인 탐색에서 내렸어요" in ui
     assert "strategy_optimizer_ui.js" in loader
+
     assert "python strategy_optimizer_runner.py" in workflow
-    assert "timeout-minutes: 60" in workflow
+    assert "daily_close_mark_to_market" in workflow
+    assert "forced_profit_pct') == [None]" in workflow
+    assert "hold_cap_days') == [None]" in workflow
 
 
 if __name__ == '__main__':

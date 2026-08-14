@@ -31,7 +31,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Run holdout-safe exhaustive strategy optimizer
+      - name: Run holdout-safe MTM strategy optimizer
         run: python strategy_optimizer_runner.py
       - name: Validate result
         run: |
@@ -41,13 +41,16 @@ jobs:
           p=Path('static/strategy_optimizer_results.json')
           d=json.loads(p.read_text(encoding='utf-8'))
           assert d.get('ready') is True
-          assert d.get('version',0) >= 3
+          assert d.get('version',0) >= 4
           assert d.get('tested_configurations',0) > 0
           assert 5 in d.get('parameter_grid',{}).get('strategy_combo_size',[])
           assert 10 in d.get('parameter_grid',{}).get('capacity',[])
+          assert d.get('parameter_grid',{}).get('forced_profit_pct') == [None]
+          assert d.get('parameter_grid',{}).get('hold_cap_days') == [None]
+          assert d.get('risk_model',{}).get('mdd') == 'daily_close_mark_to_market'
           assert 'balanced' in d.get('leaders',{})
           assert 'validated_configurations' in d
-          print('tested',d['tested_configurations'],'strategy_sets',d.get('strategy_set_count'),'train_eligible',d['train_eligible_configurations'],'validated',d['validated_configurations'])
+          print('tested',d['tested_configurations'],'strategy_sets',d.get('strategy_set_count'),'train_eligible',d['train_eligible_configurations'],'validated',d['validated_configurations'],'risk',d['risk_model']['mdd'])
           PY
       - name: Commit optimizer result
         run: |
