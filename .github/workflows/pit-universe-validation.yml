@@ -35,7 +35,7 @@ jobs:
       - name: Snapshot current-universe replay pool
         run: sha256sum static/replay_backtest_pool_v2.json > /tmp/replay.before
       - name: Deterministic PIT identity, isolation and leakage guards
-        run: python tests/test_pit_universe.py
+        run: PYTHONPATH=. python tests/test_pit_universe.py
       - name: Run PIT readiness audit and isolated status artifact
         run: |
           python pit_universe_audit.py
