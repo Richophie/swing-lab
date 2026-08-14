@@ -1,0 +1,58 @@
+name: PIT Universe Foundation Validation
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'pit_universe.py'
+      - 'pit_universe_audit.py'
+      - 'data/pit_universe/**'
+      - 'tests/test_pit_universe.py'
+      - '.github/workflows/pit-universe-validation.yml'
+      - 'docs/PIT_UNIVERSE_RESEARCH_2026-08-14.md'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile
+        run: python -m py_compile pit_universe.py pit_universe_audit.py tests/test_pit_universe.py
+      - name: Deterministic PIT identity and leakage guards
+        run: python tests/test_pit_universe.py
+      - name: Snapshot frozen Forward files
+        run: |
+          sha256sum static/priority_challenger_v1_calibration.json static/priority_challenger_v1_state.json \
+            static/priority_challenger_v2_calibration.json static/priority_challenger_v2_state.json \
+            static/priority_challenger_v3_calibration.json static/priority_challenger_v3_state.json \
+            static/priority_challenger_v4_calibration.json static/priority_challenger_v4_state.json > /tmp/forward.before
+      - name: Run PIT readiness audit
+        run: python pit_universe_audit.py
+      - name: Verify incomplete source is blocked rather than backfilled from today
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path('static/pit_universe_status.json').read_text(encoding='utf-8'))
+          assert p['ready'] is False, p
+          assert p['status']=='BLOCKED_INCOMPLETE_PIT_DATA', p
+          assert p['strict_no_current_universe_fallback'] is True, p
+          assert p['methodology']['current_universe_fallback_allowed'] is False, p
+          assert p['production_main_picker_mutated'] is False, p
+          assert p['forward_challengers_mutated'] is False, p
+          print('blocked safely:', p['blocking_reasons'][:5])
+          PY
+      - name: Verify V1 V2 V3 V4 untouched
+        run: |
+          sha256sum static/priority_challenger_v1_calibration.json static/priority_challenger_v1_state.json \
+            static/priority_challenger_v2_calibration.json static/priority_challenger_v2_state.json \
+            static/priority_challenger_v3_calibration.json static/priority_challenger_v3_state.json \
+            static/priority_challenger_v4_calibration.json static/priority_challenger_v4_state.json > /tmp/forward.after
+          diff -u /tmp/forward.before /tmp/forward.after
