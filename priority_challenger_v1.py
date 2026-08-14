@@ -430,17 +430,10 @@ def _process_position(state: dict, position: dict, frame: pd.DataFrame, now_utc:
         if target is not None and _num(target) > 0:
             t = _num(target)
             if o >= t or h >= t:
-                # Target is modeled as a limit fill exactly at target, matching replay research.
-                paid = _num(position.get('entry_fill_usd')) * (1.0 + _commission())
-                received = t * (1.0 - _commission())
-                factor = received / paid if paid > 0 else 0.0
-                proceeds = _num(position.get('notional_krw')) * factor
-                pnl = proceeds - _num(position.get('notional_krw'))
-                state['cash_krw'] = round(_num(state.get('cash_krw')) + proceeds, 2)
-                closed = dict(position)
-                closed.update({'status':'CLOSED','exit_date':day,'exit_fill_usd':round(t,6),'exit_reason':'목표가','pnl_krw':round(pnl,2),'return_pct':round((factor-1)*100,4),'closed_at':datetime.now(timezone.utc).isoformat(timespec='seconds')})
-                state['closed'].append(closed);state['positions']=[x for x in state['positions'] if x.get('id')!=position.get('id')]
-                state['decisions'].append({'at':closed['closed_at'],'decision':'EXIT','symbol':position.get('symbol'),'strategy_id':sid,'date':day,'reason':'목표가','pnl_krw':closed['pnl_krw']})
+                # Replay execute_candidate applies the same sell-side friction to
+                # a target trigger before commission. Forward must use that exact
+                # accounting too; the target trigger itself remains unchanged.
+                _close_position(state, position, date=day, raw_exit=t, reason='목표가')
                 break
 
         completed = not (day == last_day and last_incomplete)

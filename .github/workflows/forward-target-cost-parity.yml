@@ -1,0 +1,46 @@
+name: Forward Target Cost Parity
+
+on:
+  pull_request:
+    paths:
+      - 'priority_challenger_v1.py'
+      - 'priority_challenger_v2.py'
+      - 'priority_challenger_v3.py'
+      - 'priority_challenger_v4.py'
+      - 'tests/test_forward_target_cost_parity.py'
+      - '.github/workflows/forward-target-cost-parity.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'priority_challenger_v1.py'
+      - 'priority_challenger_v2.py'
+      - 'priority_challenger_v3.py'
+      - 'priority_challenger_v4.py'
+      - 'tests/test_forward_target_cost_parity.py'
+      - '.github/workflows/forward-target-cost-parity.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Compile forward engines
+        run: python -m py_compile priority_challenger_v1.py priority_challenger_v2.py priority_challenger_v3.py priority_challenger_v4.py
+      - name: Target exit cost parity regression
+        run: PYTHONPATH=. python tests/test_forward_target_cost_parity.py
+      - name: Frozen V1 regression
+        run: PYTHONPATH=. python tests/test_priority_challenger_v1.py
+      - name: Frozen V2 isolation regression
+        run: PYTHONPATH=. python tests/test_priority_challenger_v2.py
+      - name: Frozen V3 regression
+        run: PYTHONPATH=. python tests/test_priority_challenger_v3.py
+      - name: Frozen V4 regression
+        run: PYTHONPATH=. python tests/test_priority_challenger_v4.py
