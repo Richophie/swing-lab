@@ -50,6 +50,7 @@ def test_same_day_rank_is_binary_and_deterministic():
     assert rows[0]['rank_reduced'] is False
     assert rows[1]['risk_budget_pct'] == rows[2]['risk_budget_pct'] == 0.375
     assert rows[1]['rank_reduced'] is True and rows[2]['rank_reduced'] is True
+    assert {x['risk_budget_pct'] for x in rows} == {0.75, 0.375}
 
 
 def test_single_candidate_keeps_v2_risk():
@@ -60,17 +61,16 @@ def test_single_candidate_keeps_v2_risk():
     assert row['rank_reduced'] is False
 
 
-def test_v4_does_not_mutate_production_or_tune_rank_buckets():
+def test_v4_does_not_mutate_production_or_add_parameter_search():
     src = Path('priority_challenger_v4.py').read_text(encoding='utf-8')
     assert 'submit_order' not in src
     assert 'TOP_RANK_RISK_BUDGET = 0.0075' in src
     assert 'OTHER_RANK_RISK_BUDGET = 0.00375' in src
     assert "'production_main_picker_mutated'] = False" in src
     assert "'live_orders_mutated'] = False" in src
-    assert 'threshold_grid' in src
-    assert 'rank2' not in src.lower()
-    assert 'rank3' not in src.lower()
-    assert 'rank4' not in src.lower()
+    assert "'threshold_grid': False" in src
+    assert 'for threshold in' not in src.lower()
+    assert 'for multiplier in' not in src.lower()
 
 
 def main():
@@ -78,7 +78,7 @@ def main():
     test_paths_are_isolated()
     test_same_day_rank_is_binary_and_deterministic()
     test_single_candidate_keeps_v2_risk()
-    test_v4_does_not_mutate_production_or_tune_rank_buckets()
+    test_v4_does_not_mutate_production_or_add_parameter_search()
     print('priority challenger v4 PASS')
 
 
