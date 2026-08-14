@@ -392,7 +392,7 @@ def main() -> None:
         'generated_at': datetime.now(timezone.utc).isoformat(timespec='seconds'),
         'promotion_status': 'development_only_opportunity_cost_rotation_not_fresh_holdout',
         'method': {
-            'family': family['label'],
+            'family': family.get('name') or family['id'],
             'quality_gate': 'TRAIN strategy top 50%',
             'priority': 'TRAIN hybrid_50',
             'base_risk_pct': BASE_RISK_PCT,
