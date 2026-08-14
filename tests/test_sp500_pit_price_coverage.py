@@ -34,15 +34,14 @@ def test_stale_history_near_removal_guard():
     assert result['usable_for_signal_replay'] is False
 
 
-def test_removed_map_uses_latest_removal_and_target_window():
+def test_removed_map_uses_snapshot_last_seen_and_target_window():
     membership = {
         'target_start': '2017-01-01',
-        'changes': [
-            {'effective_date': '2016-01-01', 'removed': 'OLD'},
-            {'effective_date': '2020-01-01', 'removed': 'AAA'},
-            {'effective_date': '2022-01-01', 'removed': 'AAA'},
-            {'effective_date': '2021-01-01', 'removed': 'BBB'},
-        ],
+        'ticker_last_seen': {
+            'OLD': '2016-01-01',
+            'AAA': '2022-01-01',
+            'BBB': '2021-01-01',
+        },
     }
     m = cov._removal_map(membership)
     assert 'OLD' not in m
@@ -63,7 +62,7 @@ def main():
     test_coverage_requires_warmup_and_near_removal()
     test_missing_history_is_not_usable()
     test_stale_history_near_removal_guard()
-    test_removed_map_uses_latest_removal_and_target_window()
+    test_removed_map_uses_snapshot_last_seen_and_target_window()
     test_probe_is_diagnostic_only_and_cannot_mutate_forward()
     print('S&P 500 PIT free price coverage PASS')
 
