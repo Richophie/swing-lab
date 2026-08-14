@@ -1,0 +1,97 @@
+name: Yahoo PIT-Lite Survivorship Stress
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'yahoo_pit_lite_research.py'
+      - 'tests/test_yahoo_pit_lite_research.py'
+      - '.github/workflows/yahoo-pit-lite-research.yml'
+      - 'docs/YAHOO_PIT_LITE_2026-08-14.md'
+  push:
+    branches: [main]
+    paths:
+      - 'yahoo_pit_lite_research.py'
+      - 'tests/test_yahoo_pit_lite_research.py'
+      - '.github/workflows/yahoo-pit-lite-research.yml'
+      - 'docs/YAHOO_PIT_LITE_2026-08-14.md'
+
+permissions:
+  contents: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Compile
+        run: python -m py_compile yahoo_pit_lite_research.py tests/test_yahoo_pit_lite_research.py
+      - name: Deterministic PIT-Lite leakage and isolation tests
+        run: PYTHONPATH=. python tests/test_yahoo_pit_lite_research.py
+
+  live-research:
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Snapshot production replay and frozen Forward states
+        run: |
+          sha256sum static/replay_backtest_pool_v2.json \
+            static/priority_challenger_v1_calibration.json static/priority_challenger_v1_state.json \
+            static/priority_challenger_v2_calibration.json static/priority_challenger_v2_state.json \
+            static/priority_challenger_v3_calibration.json static/priority_challenger_v3_state.json \
+            static/priority_challenger_v4_calibration.json static/priority_challenger_v4_state.json > /tmp/core.before
+      - name: Run full free Yahoo PIT-Lite survivorship stress
+        run: python yahoo_pit_lite_research.py
+      - name: Validate report remains diagnostic and has real historical additions
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path('static/yahoo_pit_lite_results.json').read_text(encoding='utf-8'))
+          assert p['ready'] is True, p
+          assert p['status']=='PIT_LITE_FREE_YAHOO_DIAGNOSTIC', p
+          assert p['promotion_status']=='DIAGNOSTIC_ONLY_NOT_SURVIVORSHIP_FREE', p
+          assert p['production_main_picker_mutated'] is False
+          assert p['forward_challengers_mutated'] is False
+          assert p['live_trading_mutated'] is False
+          assert p['coverage']['historical_noncurrent_tickers'] > 50, p['coverage']
+          assert p['candidate_counts']['historical_noncurrent_candidates_added'] > 0, p['candidate_counts']
+          assert p['comparison']['survivors_only']['fold_count'] >= 4, p['comparison']
+          assert p['comparison']['pit_lite']['fold_count'] >= 4, p['comparison']
+          print('coverage', p['coverage']['historical_noncurrent_coverage_pct'])
+          print('candidate counts', p['candidate_counts'])
+          print('comparison', json.dumps(p['comparison'], ensure_ascii=False, indent=2))
+          PY
+      - name: Verify production replay and V1-V4 stayed byte-identical
+        run: |
+          sha256sum static/replay_backtest_pool_v2.json \
+            static/priority_challenger_v1_calibration.json static/priority_challenger_v1_state.json \
+            static/priority_challenger_v2_calibration.json static/priority_challenger_v2_state.json \
+            static/priority_challenger_v3_calibration.json static/priority_challenger_v3_state.json \
+            static/priority_challenger_v4_calibration.json static/priority_challenger_v4_state.json > /tmp/core.after
+          diff -u /tmp/core.before /tmp/core.after
+      - name: Persist compact PIT-Lite result on main only
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add static/yahoo_pit_lite_results.json
+          if git diff --cached --quiet; then
+            echo 'No PIT-Lite result change'
+          else
+            git commit -m 'data: refresh Yahoo PIT-Lite survivorship stress [skip ci]'
+            git push
+          fi
