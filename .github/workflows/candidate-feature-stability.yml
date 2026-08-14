@@ -1,0 +1,71 @@
+name: Candidate Feature Stability Audit
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'candidate_feature_stability.py'
+      - 'tests/test_candidate_feature_stability.py'
+      - '.github/workflows/candidate-feature-stability.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'candidate_feature_stability.py'
+      - 'static/replay_backtest_pool_v2.json'
+      - '.github/workflows/candidate-feature-stability.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: candidate-feature-stability-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: python -m pip install -r requirements.txt
+      - name: Compile
+        run: python -m py_compile candidate_feature_stability.py tests/test_candidate_feature_stability.py
+      - name: Deterministic tests
+        run: PYTHONPATH=. python tests/test_candidate_feature_stability.py
+      - name: Run feature audit on V4 pool
+        run: python candidate_feature_stability.py
+      - name: Validate artifact
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('static/candidate_feature_stability.json').read_text(encoding='utf-8'))
+          assert d['ready'] is True
+          assert d['promotion_status']=='diagnostic_only_not_fresh_holdout'
+          assert d['method']['v1_untouched'] is True
+          assert d['method']['feature_cuts'].startswith('33/67')
+          print('\nFeature stability')
+          for sid,fs in d['summary']['features'].items():
+              print('\n',sid)
+              for name,x in fs.items():
+                  print(name,'support',f"{x['supported_folds']}/{x['usable_folds']}",'deltaR',x['mean_preferred_minus_opposite_r'],'strong',x['strong_repeat'])
+          print('\nSame-day rank by strategy')
+          print(json.dumps(d['summary']['same_day_rank_by_strategy'],ensure_ascii=False))
+          PY
+      - name: Publish audit on main
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git config user.name "swing-lab-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add static/candidate_feature_stability.json
+          if git diff --cached --quiet; then
+            echo "No feature audit changes"
+          else
+            git commit -m "research: refresh candidate feature stability [skip ci]"
+            git pull --rebase origin main
+            git push
+          fi
