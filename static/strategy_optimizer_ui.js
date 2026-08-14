@@ -1,7 +1,7 @@
 (()=>{
 if(!document.getElementById('strategyOptimizerCss')){const l=document.createElement('link');l.id='strategyOptimizerCss';l.rel='stylesheet';l.href='/static/strategy_optimizer.css?v=20260814-2';document.head.appendChild(l)}
 const ID='strategyOptimizerPanel',N=v=>Number(v)||0,sgn=v=>`${N(v)>=0?'+':''}${N(v).toFixed(1)}%`;
-function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[m]))}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function when(v){try{return new Intl.DateTimeFormat('ko-KR',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit',timeZone:'Asia/Seoul'}).format(new Date(v))}catch{return v||'—'}}
 function config(r){return `기법 자연청산 · 동시 ${r.capacity}종목`}
 function weakest(r){const a=r?.ablation||[];if(!a.length)return'';const x=[...a].sort((p,q)=>p.delta_return_pct_points-q.delta_return_pct_points)[0];return `${x.removed_strategy_name} 제거 시 ${Number(x.delta_return_pct_points).toFixed(1)}%p`}
