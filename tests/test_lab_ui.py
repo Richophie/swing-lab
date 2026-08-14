@@ -22,12 +22,16 @@ def test_replay_lab_wiring():
     assert 'capacity:3' in math
     assert 'riskBudget:.01' in math
     assert 'maxShare:.40' in math
+    assert 'markUpdates' in math
+    assert 'underwaterDays' in math and 'worstMonth' in math
     assert 'btLabStart' in ui and 'btLabEnd' in ui and 'btLabCapital' in ui
+    assert 'MTM MDD' in ui and '최장 Underwater' in ui and '최악 월' in ui
     for tab in ('요약','전략기여','연도·구간','체결내역','진단'):
         assert tab in deep
     assert '전략 제거 실험' in deep
     assert '계좌수익률' in deep and '연중 MDD' in deep
     assert '당일 종가 청산 · 일봉순서 안전판' in core
+    assert 'const marks=' in core and 'stress_factor:stressFactor' in core
     assert "filter(x=>String(x?.[0]||'')<=b)" in core
 
 
