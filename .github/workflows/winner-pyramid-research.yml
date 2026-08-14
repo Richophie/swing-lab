@@ -1,0 +1,65 @@
+name: Winner Pyramid Research
+
+on:
+  pull_request:
+    paths:
+      - 'winner_pyramid_research.py'
+      - 'tests/test_winner_pyramid_research.py'
+      - '.github/workflows/winner-pyramid-research.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'winner_pyramid_research.py'
+      - 'tests/test_winner_pyramid_research.py'
+      - '.github/workflows/winner-pyramid-research.yml'
+      - 'static/replay_backtest_pool_v2.json'
+
+permissions:
+  contents: write
+
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: python -m pip install -r requirements.txt
+      - name: Compile
+        run: python -m py_compile winner_pyramid_research.py tests/test_winner_pyramid_research.py
+      - name: Deterministic tests
+        run: PYTHONPATH=. python tests/test_winner_pyramid_research.py
+      - name: Run winner pyramid research
+        run: python winner_pyramid_research.py
+      - name: Validate artifact
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('static/winner_pyramid_research.json').read_text(encoding='utf-8'))
+          assert d['ready'] is True
+          assert d['promotion_status']=='development_only_winner_pyramid_not_fresh_holdout'
+          assert d['method']['grid_search'] is False
+          assert d['method']['no_averaging_down'] is True
+          assert d['method']['v1_v2_forward_untouched'] is True
+          assert len(d['summary'])==5
+          print('winner pyramid artifact PASS')
+          for k,v in d['summary'].items():
+              print(k,v['stitched_test_return_pct'],v['worst_mdd_pct'],v['total_base_trades'],v['total_addon_trades'],v['mean_addon_avg_trade_pct'])
+          PY
+      - name: Publish result on main
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git config user.name "swing-lab-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add static/winner_pyramid_research.json
+          if git diff --cached --quiet; then
+            echo "No result changes"
+          else
+            git commit -m "data: refresh winner pyramid research [skip render]"
+            git pull --rebase origin main
+            git push
+          fi
