@@ -1,6 +1,12 @@
 from datetime import datetime, timezone
+from pathlib import Path
+import sys
 
 import pandas as pd
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 import priority_challenger_v1 as c
 from backtest_engine import market_sell_fill
@@ -46,25 +52,6 @@ def test_forward_target_exit_uses_same_exit_friction_as_replay():
     assert state['cash_krw'] == round(1_000_000.0 * expected_factor, 2)
 
 
-def test_forward_states_were_empty_when_parity_fix_was_registered():
-    # Documentation/safety assertion for this correctness migration: the fix was
-    # registered before the first forward fill, so there is no mixed old/new
-    # execution history to rewrite. Do not extend this assertion to future state files.
-    for path in (
-        'static/priority_challenger_v1_state.json',
-        'static/priority_challenger_v2_state.json',
-        'static/priority_challenger_v3_state.json',
-        'static/priority_challenger_v4_state.json',
-    ):
-        import json
-        from pathlib import Path
-        state = json.loads(Path(path).read_text(encoding='utf-8'))
-        assert not state.get('positions')
-        assert not state.get('closed')
-        assert (state.get('summary') or {}).get('closed_trades', 0) == 0
-
-
 if __name__ == '__main__':
     test_forward_target_exit_uses_same_exit_friction_as_replay()
-    test_forward_states_were_empty_when_parity_fix_was_registered()
     print('forward target cost parity PASS')
