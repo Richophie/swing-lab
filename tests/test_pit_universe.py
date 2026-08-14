@@ -2,9 +2,11 @@ from __future__ import annotations
 
 from datetime import date
 from pathlib import Path
+import hashlib
 import tempfile
 
 import pit_universe as pit
+import pit_replay_pool as pit_replay
 
 
 def verified_manifest():
@@ -111,10 +113,32 @@ def test_verified_full_coverage_can_become_ready_without_current_fallback():
     assert report['methodology']['current_universe_fallback_allowed'] is False
 
 
+def _sha(path: Path) -> str | None:
+    return hashlib.sha256(path.read_bytes()).hexdigest() if path.exists() else None
+
+
+def test_pit_status_artifact_is_isolated_and_never_overwrites_current_replay():
+    assert pit_replay.OUT.name == 'replay_backtest_pool_pit_v1.json'
+    assert pit_replay.LEGACY_POOL.name == 'replay_backtest_pool_v2.json'
+    assert pit_replay.OUT != pit_replay.LEGACY_POOL
+    before = _sha(pit_replay.LEGACY_POOL)
+    result = pit_replay.build_status()
+    after = _sha(pit_replay.LEGACY_POOL)
+    assert before == after
+    assert result['ready'] is False
+    assert result['status'] == 'BLOCKED_PIT_SOURCE'
+    assert result['output_isolated_from_current_replay'] is True
+    assert result['production_main_picker_mutated'] is False
+    assert result['forward_challengers_mutated'] is False
+
+
 def test_pit_module_cannot_silently_import_current_universe_fallbacks():
     src = Path('pit_universe.py').read_text(encoding='utf-8')
     for forbidden in ('research_universe', 'prefilter_symbols', 'load_us_universe', 'static_liquid_fallback'):
         assert forbidden not in src
+    replay_src = Path('pit_replay_pool.py').read_text(encoding='utf-8')
+    assert 'from rsi2_broad_regime_research' not in replay_src
+    assert 'from market_data import prefilter_symbols' not in replay_src
     audit_src = Path('pit_universe_audit.py').read_text(encoding='utf-8')
     for frozen in ('priority_challenger_v1', 'priority_challenger_v2', 'priority_challenger_v3', 'priority_challenger_v4'):
         assert frozen not in audit_src
@@ -128,6 +152,7 @@ def main():
     test_csv_requires_stable_security_id_not_ticker_only()
     test_unverified_or_missing_inactive_sources_block_pit_ready()
     test_verified_full_coverage_can_become_ready_without_current_fallback()
+    test_pit_status_artifact_is_isolated_and_never_overwrites_current_replay()
     test_pit_module_cannot_silently_import_current_universe_fallbacks()
     print('PIT universe foundation PASS')
 
