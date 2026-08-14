@@ -19,6 +19,8 @@ jobs:
     timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -33,8 +35,16 @@ jobs:
           git add static/replay_backtest_pool_v2.json
           if git diff --cached --quiet; then
             echo "No replay V2 changes"
-          else
-            git commit -m "data: refresh replay V2 path cache"
-            git pull --rebase origin main
-            git push
+            exit 0
           fi
+          git commit -m "data: refresh replay V2 path cache"
+          for attempt in 1 2 3 4; do
+            git fetch origin main
+            git rebase origin/main
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            echo "Push raced with another data writer; retry $attempt"
+            sleep 3
+          done
+          exit 1
