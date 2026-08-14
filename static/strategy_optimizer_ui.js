@@ -1,4 +1,5 @@
 (()=>{
+if(!document.getElementById('strategyOptimizerCss')){const l=document.createElement('link');l.id='strategyOptimizerCss';l.rel='stylesheet';l.href='/static/strategy_optimizer.css?v=20260814-1';document.head.appendChild(l)}
 const ID='strategyOptimizerPanel',N=v=>Number(v)||0,sgn=v=>`${N(v)>=0?'+':''}${N(v).toFixed(1)}%`;
 function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function when(v){try{return new Intl.DateTimeFormat('ko-KR',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit',timeZone:'Asia/Seoul'}).format(new Date(v))}catch{return v||'—'}}
