@@ -1,0 +1,86 @@
+name: Forward Review and Paper Readiness
+
+on:
+  pull_request:
+    paths:
+      - 'forward_review.py'
+      - 'static/forward_review.json'
+      - 'static/forward_review_ui.js'
+      - 'static/forward_review.css'
+      - 'static/dashboard.html'
+      - 'paper_broker.py'
+      - 'paper_broker_service.py'
+      - 'tests/test_forward_review.py'
+      - 'tests/test_paper_broker.py'
+      - 'tests/test_paper_manual.py'
+      - 'tests/test_paper_marks.py'
+      - 'tests/test_paper_restore.py'
+      - '.github/workflows/forward-review-validation.yml'
+      - '.github/workflows/market-scan.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'forward_review.py'
+      - 'static/forward_review_ui.js'
+      - 'static/forward_review.css'
+      - 'static/dashboard.html'
+      - '.github/workflows/forward-review-validation.yml'
+      - '.github/workflows/market-scan.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Compile review and paper modules
+        run: python -m py_compile forward_review.py paper_broker.py paper_broker_service.py
+      - name: Snapshot frozen Forward states
+        run: |
+          sha256sum static/priority_challenger_v1_calibration.json static/priority_challenger_v1_state.json \
+            static/priority_challenger_v2_calibration.json static/priority_challenger_v2_state.json \
+            static/priority_challenger_v3_calibration.json static/priority_challenger_v3_state.json \
+            static/priority_challenger_v4_calibration.json static/priority_challenger_v4_state.json > /tmp/forward.before
+      - name: Forward promotion gate tests
+        run: PYTHONPATH=. python tests/test_forward_review.py
+      - name: Existing PaperBroker regressions
+        run: |
+          PYTHONPATH=. python tests/test_paper_broker.py
+          PYTHONPATH=. python tests/test_paper_manual.py
+          PYTHONPATH=. python tests/test_paper_marks.py
+          PYTHONPATH=. python tests/test_paper_restore.py
+      - name: Build current review snapshot
+        run: python forward_review.py
+      - name: Validate safety contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path('static/forward_review.json').read_text(encoding='utf-8'))
+          assert p['status']=='FORWARD_PROMOTION_REVIEW', p
+          assert p['gate'] in {'WAIT_FORWARD_SAMPLE','HUMAN_REVIEW_READY','BLOCKED_SAFETY','BLOCKED_PAPER_INFRA'}, p
+          assert len(p['challengers'])==4, p
+          assert p['automatic_promotion_enabled'] is False, p
+          assert p['live_order_submission_enabled'] is False, p
+          assert p['production_main_picker_mutated'] is False, p
+          assert p['paper_infrastructure']['real_broker_connected'] is False, p
+          if p['official_paper_strategy_ready']:
+              assert p['gate']=='HUMAN_REVIEW_READY', p
+              assert p['all_forward_sample_ready'] is True, p
+          print(json.dumps({'gate':p['gate'],'progress':p['sample_progress_pct'],'paper_infra':p['paper_infrastructure']['ready']},ensure_ascii=False))
+          PY
+      - name: Verify Forward states stayed byte-identical
+        run: |
+          sha256sum static/priority_challenger_v1_calibration.json static/priority_challenger_v1_state.json \
+            static/priority_challenger_v2_calibration.json static/priority_challenger_v2_state.json \
+            static/priority_challenger_v3_calibration.json static/priority_challenger_v3_state.json \
+            static/priority_challenger_v4_calibration.json static/priority_challenger_v4_state.json > /tmp/forward.after
+          diff -u /tmp/forward.before /tmp/forward.after
