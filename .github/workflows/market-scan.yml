@@ -31,6 +31,7 @@ on:
       - 'priority_challenger_v1.py'
       - 'priority_challenger_v2.py'
       - 'priority_challenger_v3.py'
+      - 'priority_challenger_v4.py'
       - 'signal_log.py'
       - 'journal.py'
       - 'history_marks.py'
@@ -78,7 +79,7 @@ jobs:
           cache: 'pip'
       - run: pip install -r requirements.txt
       - name: Compile clean modules
-        run: python -m py_compile config.py baseline_rules.py baseline_journal.py intraday_execution.py intraday_outcome_repair.py market_data.py strategy_rules.py strategy_engine.py stock_names.py scanner.py global_flow_map.py earnings_events.py risk_observability.py paper_broker.py paper_broker_service.py paper_plan.py paper_manual.py paper_entry.py repo_data.py shadow_lab.py priority_challenger_v1.py priority_challenger_v2.py priority_challenger_v3.py signal_log.py journal.py history_marks.py rebuild_journal_day.py refresh_fx_cache.py backtest_engine.py app.py qa.py
+        run: python -m py_compile config.py baseline_rules.py baseline_journal.py intraday_execution.py intraday_outcome_repair.py market_data.py strategy_rules.py strategy_engine.py stock_names.py scanner.py global_flow_map.py earnings_events.py risk_observability.py paper_broker.py paper_broker_service.py paper_plan.py paper_manual.py paper_entry.py repo_data.py shadow_lab.py priority_challenger_v1.py priority_challenger_v2.py priority_challenger_v3.py priority_challenger_v4.py signal_log.py journal.py history_marks.py rebuild_journal_day.py refresh_fx_cache.py backtest_engine.py app.py qa.py
       - name: Rebuild Aug 12 journal with current strategy logic
         run: python rebuild_journal_day.py
       - name: Build latest live candidates
@@ -97,6 +98,10 @@ jobs:
         run: python priority_challenger_v3.py freeze
       - name: Advance correlation-risk Challenger V3 forward shadow
         run: python priority_challenger_v3.py run
+      - name: Freeze same-day-rank Challenger V4 once
+        run: python priority_challenger_v4.py freeze
+      - name: Advance same-day-rank Challenger V4 forward shadow
+        run: python priority_challenger_v4.py run
       - name: Refresh persisted USDKRW cache
         run: python refresh_fx_cache.py
       - name: Append intraday candidate transitions
@@ -117,7 +122,7 @@ jobs:
         run: |
           git config user.name "swing-lab-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add static/latest_scan.json static/global_flow_map.json static/fx_cache.json static/earnings_cache.json static/signal_events.json static/trade_history.json static/shadow_portfolio.json static/shadow_portfolio_touch.json static/priority_challenger_v1_calibration.json static/priority_challenger_v1_state.json static/priority_challenger_v2_calibration.json static/priority_challenger_v2_state.json static/priority_challenger_v3_calibration.json static/priority_challenger_v3_state.json
+          git add static/latest_scan.json static/global_flow_map.json static/fx_cache.json static/earnings_cache.json static/signal_events.json static/trade_history.json static/shadow_portfolio.json static/shadow_portfolio_touch.json static/priority_challenger_v1_calibration.json static/priority_challenger_v1_state.json static/priority_challenger_v2_calibration.json static/priority_challenger_v2_state.json static/priority_challenger_v3_calibration.json static/priority_challenger_v3_state.json static/priority_challenger_v4_calibration.json static/priority_challenger_v4_state.json
           if git diff --cached --quiet; then
             echo "No data changes"
           else
