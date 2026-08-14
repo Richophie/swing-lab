@@ -27,6 +27,7 @@ on:
       - 'paper_entry.py'
       - 'repo_data.py'
       - 'shadow_lab.py'
+      - 'priority_challenger_v1.py'
       - 'signal_log.py'
       - 'journal.py'
       - 'history_marks.py'
@@ -44,6 +45,8 @@ on:
       - 'static/history_returns_v2.css'
       - 'static/lab_dashboard.js'
       - 'static/lab_dashboard.css'
+      - 'static/priority_challenger_v1.js'
+      - 'static/priority_challenger_v1.css'
       - 'static/signal_event_polish.js'
       - 'static/event_risk.css'
       - 'static/event_risk_ui.js'
@@ -59,7 +62,7 @@ concurrency:
 jobs:
   scan:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -68,11 +71,15 @@ jobs:
           cache: 'pip'
       - run: pip install -r requirements.txt
       - name: Compile clean modules
-        run: python -m py_compile config.py baseline_rules.py baseline_journal.py intraday_execution.py intraday_outcome_repair.py market_data.py strategy_rules.py strategy_engine.py stock_names.py scanner.py earnings_events.py risk_observability.py paper_broker.py paper_broker_service.py paper_plan.py paper_manual.py paper_entry.py repo_data.py shadow_lab.py signal_log.py journal.py history_marks.py rebuild_journal_day.py refresh_fx_cache.py backtest_engine.py app.py qa.py
+        run: python -m py_compile config.py baseline_rules.py baseline_journal.py intraday_execution.py intraday_outcome_repair.py market_data.py strategy_rules.py strategy_engine.py stock_names.py scanner.py earnings_events.py risk_observability.py paper_broker.py paper_broker_service.py paper_plan.py paper_manual.py paper_entry.py repo_data.py shadow_lab.py priority_challenger_v1.py signal_log.py journal.py history_marks.py rebuild_journal_day.py refresh_fx_cache.py backtest_engine.py app.py qa.py
       - name: Rebuild Aug 12 journal with current strategy logic
         run: python rebuild_journal_day.py
       - name: Build latest live candidates
         run: python scanner.py
+      - name: Freeze Challenger V1 calibration once
+        run: python priority_challenger_v1.py freeze
+      - name: Advance frozen priority Challenger V1 forward shadow
+        run: python priority_challenger_v1.py run
       - name: Refresh persisted USDKRW cache
         run: python refresh_fx_cache.py
       - name: Append intraday candidate transitions
@@ -89,15 +96,15 @@ jobs:
         run: python intraday_outcome_repair.py
       - name: Advance A/B automatic research portfolios
         run: python shadow_lab.py
-      - name: Commit latest scan, caches, logs, journal and A/B research portfolios
+      - name: Commit latest scan, caches, logs, journal and research portfolios
         run: |
           git config user.name "swing-lab-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add static/latest_scan.json static/fx_cache.json static/earnings_cache.json static/signal_events.json static/trade_history.json static/shadow_portfolio.json static/shadow_portfolio_touch.json
+          git add static/latest_scan.json static/fx_cache.json static/earnings_cache.json static/signal_events.json static/trade_history.json static/shadow_portfolio.json static/shadow_portfolio_touch.json static/priority_challenger_v1_calibration.json static/priority_challenger_v1_state.json
           if git diff --cached --quiet; then
             echo "No data changes"
           else
-            git commit -m "data: refresh signals, journal and A-B forward lab [skip render]"
+            git commit -m "data: refresh signals and forward research labs [skip render]"
             git pull --rebase origin main
             git push
           fi
