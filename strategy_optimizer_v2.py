@@ -11,14 +11,23 @@ from statistics import mean
 POOL = Path("static/replay_backtest_pool_v2.json")
 OUT = Path("static/strategy_optimizer_results.json")
 INITIAL_CAPITAL = 3_000_000.0
-EXIT_PCTS = (None, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0)
-HOLD_CAPS = (None, 3, 5, 10)
-CAPACITIES = (1, 3, 5)
-MAX_STRATEGIES_PER_COMBO = 2
+
+# Exhaustive research grid used by the automatic lab.
+EXIT_PCTS = (None, 1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0)
+HOLD_CAPS = (None, 1, 2, 3, 5, 7, 10, 20)
+CAPACITIES = (1, 3, 5, 7, 10)
+MAX_STRATEGIES_PER_COMBO = 5
+
+# Larry's intraday trigger cannot be ordered exactly with 10y daily OHLC.
+# It stays available for manual research, but is excluded from automatic ranking
+# until an intraday-backed replay path exists.
+AUTO_SEARCH_EXCLUDE = {"larry_williams_vb"}
+
 RISK_BUDGET = 0.01
 MAX_SHARE = 0.40
 MIN_TRAIN_TRADES = 18
 MIN_OOS_TRADES = 8
+SHORTLIST = 150
 
 
 def num(v, default=0.0):
@@ -86,6 +95,14 @@ def execute_candidate(c: dict, pool: dict, forced_profit_pct: float | None, hold
         s20 = num(bar[5], float("nan")) if len(bar) > 5 else float("nan")
         dc20 = num(bar[7], float("nan")) if len(bar) > 7 else float("nan")
         has_target = math.isfinite(target) and target > entry
+
+        # Daily OHLC cannot tell whether the low happened before or after an intraday
+        # breakout trigger. For same-day-close research we therefore never let a
+        # pre-entry daily low create a fake stop. The trade exits at that day's close.
+        if entry_mode == "intraday_trigger" and exit_mode == "day_close" and i == 0:
+            raw_exit, exit_date, reason = cl, d, "당일 종가 청산 · 일봉순서 안전판"
+            break
+
         if hard_stop > 0 and o <= hard_stop:
             raw_exit, exit_date, reason = o, d, "손절 · 갭"
             break
@@ -111,7 +128,9 @@ def execute_candidate(c: dict, pool: dict, forced_profit_pct: float | None, hold
             break
         if i == hold - 1:
             raw_exit, exit_date = cl, d
-            reason = "보유기간 상한" if hold_cap is not None else ("최대보유 종료" if exit_mode in {"sma20_close", "donchian20_close"} else "기간종료")
+            reason = "보유기간 상한" if hold_cap is not None else (
+                "최대보유 종료" if exit_mode in {"sma20_close", "donchian20_close"} else "기간종료"
+            )
 
     paid = entry * (1.0 + commission)
     received = raw_exit * (1.0 - friction) * (1.0 - commission)
@@ -143,9 +162,14 @@ def _size_for(total: float, cash: float, risk: float) -> float:
     return max(0.0, min(cash, by_risk, cap))
 
 
-def portfolio(rows: list[dict], start: date, end: date, capacity: int) -> dict:
-    selected = [r for r in rows if start <= parse_day(r["start_date"]) <= end and parse_day(r["end_date"]) <= end]
-    selected.sort(key=lambda r: (r["start_date"], -num(r.get("priority")), str(r.get("key") or "")))
+def portfolio(rows: list[dict], start: date, end: date, capacity: int, *, presorted: bool = False) -> dict:
+    selected = [
+        r for r in rows
+        if start <= parse_day(r["start_date"]) <= end and parse_day(r["end_date"]) <= end
+    ]
+    if not presorted:
+        selected.sort(key=lambda r: (r["start_date"], -num(r.get("priority")), str(r.get("key") or "")))
+
     starts = defaultdict(list)
     ends = defaultdict(list)
     for seq, raw in enumerate(selected):
@@ -185,7 +209,7 @@ def portfolio(rows: list[dict], start: date, end: date, capacity: int) -> dict:
             if symbol:
                 open_symbols.add(symbol)
             cash -= size
-            accepted.append(row)
+            accepted.append({**row, "size": size})
             max_open = max(max_open, len(open_positions))
 
         for row in sorted(ends.get(day, []), key=lambda r: r["_seq"]):
@@ -206,6 +230,7 @@ def portfolio(rows: list[dict], start: date, end: date, capacity: int) -> dict:
     if open_positions:
         for pos in open_positions.values():
             cash += pos["size"] * (1.0 + num(pos["row"].get("change")))
+
     changes = [num(r.get("change")) for r in accepted]
     wins = sum(1 for x in changes if x > 0)
     years = max((end - start).days / 365.25, 0.25)
@@ -222,6 +247,7 @@ def portfolio(rows: list[dict], start: date, end: date, capacity: int) -> dict:
         "max_open": max_open,
         "reject_capacity": reject_capacity,
         "reject_duplicate": reject_duplicate,
+        "accepted": accepted,
     }
 
 
@@ -276,6 +302,7 @@ def grade(train: dict, oos: dict, recent: dict) -> str:
 
 def _round_metrics(m: dict) -> dict:
     return {
+        "ending": round(m["ending"], 2),
         "return_pct": round(m["return"] * 100, 2),
         "cagr_pct": round(m["cagr"] * 100, 2),
         "mdd_pct": round(m["mdd"] * 100, 2),
@@ -284,6 +311,8 @@ def _round_metrics(m: dict) -> dict:
         "avg_trade_pct": round(m["avg_trade"] * 100, 3),
         "trades_per_year": round(m["trades_per_year"], 1),
         "max_open": int(m["max_open"]),
+        "reject_capacity": int(m["reject_capacity"]),
+        "reject_duplicate": int(m["reject_duplicate"]),
     }
 
 
@@ -306,9 +335,15 @@ def main() -> None:
     pool = json.loads(POOL.read_text(encoding="utf-8"))
     if not pool.get("ready") or int(pool.get("version") or 0) < 2:
         raise SystemExit("replay V2/V3 pool is not ready")
+
     candidates = pool.get("trades") or []
     strategy_names = pool.get("strategy_names") or {}
-    strategies = [s for s in (pool.get("strategies") or []) if any(c.get("strategy_id") == s for c in candidates)]
+    all_strategies = [
+        s for s in (pool.get("strategies") or [])
+        if any(c.get("strategy_id") == s for c in candidates)
+    ]
+    strategies = [s for s in all_strategies if s not in AUTO_SEARCH_EXCLUDE]
+    excluded = [s for s in all_strategies if s in AUTO_SEARCH_EXCLUDE]
     if not strategies or not candidates:
         raise SystemExit("no strategies/candidates")
 
@@ -320,15 +355,17 @@ def main() -> None:
     train_end = date.fromordinal(split.toordinal() - 1) if split > start else split
     recent_start = max(oos_start, date.fromordinal(end.toordinal() - 730))
 
-    strategy_sets = [(s,) for s in strategies]
-    if MAX_STRATEGIES_PER_COMBO >= 2:
-        strategy_sets.extend(combinations(strategies, 2))
+    strategy_sets: list[tuple[str, ...]] = []
+    for size in range(1, min(MAX_STRATEGIES_PER_COMBO, len(strategies)) + 1):
+        strategy_sets.extend(combinations(strategies, size))
 
     cache = {}
     for exit_pct in EXIT_PCTS:
         for hold_cap in HOLD_CAPS:
             by_strategy = defaultdict(list)
             for c in candidates:
+                if c.get("strategy_id") in AUTO_SEARCH_EXCLUDE:
+                    continue
                 row = execute_candidate(c, pool, exit_pct, hold_cap)
                 if row:
                     by_strategy[row["strategy_id"]].append(row)
@@ -341,22 +378,24 @@ def main() -> None:
         rows = []
         for sid in item["strategies"]:
             rows.extend(by_strategy.get(sid, []))
+        rows.sort(key=lambda r: (r["start_date"], -num(r.get("priority")), str(r.get("key") or "")))
         return rows
 
     train_results = []
     tested = 0
-    for strategy_set in strategy_sets:
-        for exit_pct in EXIT_PCTS:
-            for hold_cap in HOLD_CAPS:
-                by_strategy = cache[(exit_pct, hold_cap)]
+    for exit_pct in EXIT_PCTS:
+        for hold_cap in HOLD_CAPS:
+            by_strategy = cache[(exit_pct, hold_cap)]
+            for strategy_set in strategy_sets:
                 rows = []
                 for sid in strategy_set:
                     rows.extend(by_strategy.get(sid, []))
                 if not rows:
                     continue
+                rows.sort(key=lambda r: (r["start_date"], -num(r.get("priority")), str(r.get("key") or "")))
                 for capacity in CAPACITIES:
                     tested += 1
-                    train = portfolio(rows, start, train_end, capacity)
+                    train = portfolio(rows, start, train_end, capacity, presorted=True)
                     score = train_score(train)
                     if score <= -900:
                         continue
@@ -370,7 +409,6 @@ def main() -> None:
                         "train_raw": train,
                     })
 
-    SHORTLIST = 100
     shortlists = {}
     union = {}
     for category in ("balanced", "return", "defensive", "turnover"):
@@ -383,8 +421,8 @@ def main() -> None:
     validated_by_key = {}
     for key, item in union.items():
         rows = rows_for(item)
-        oos = portfolio(rows, oos_start, end, item["capacity"])
-        recent = portfolio(rows, recent_start, end, item["capacity"])
+        oos = portfolio(rows, oos_start, end, item["capacity"], presorted=True)
+        recent = portfolio(rows, recent_start, end, item["capacity"], presorted=True)
         passed = validation_pass(oos, recent)
         validated_by_key[key] = {
             **item,
@@ -394,7 +432,28 @@ def main() -> None:
             "recent_raw": recent,
         }
 
+    detail_cache = {}
+
     def public(item: dict) -> dict:
+        key = (tuple(item["strategies"]), item["forced_profit_pct"], item["hold_cap_days"], item["capacity"])
+        if key not in detail_cache:
+            rows = rows_for(item)
+            full = portfolio(rows, start, end, item["capacity"], presorted=True)
+            ablation = []
+            if len(item["strategies"]) > 1:
+                for sid in item["strategies"]:
+                    kept = [r for r in rows if r.get("strategy_id") != sid]
+                    m = portfolio(kept, start, end, item["capacity"], presorted=True)
+                    ablation.append({
+                        "removed_strategy": sid,
+                        "removed_strategy_name": strategy_names.get(sid, sid),
+                        "return_pct": round(m["return"] * 100, 2),
+                        "mdd_pct": round(m["mdd"] * 100, 2),
+                        "trades": int(m["trades"]),
+                        "delta_return_pct_points": round((m["return"] - full["return"]) * 100, 2),
+                    })
+            detail_cache[key] = {"full": _round_metrics(full), "ablation": ablation}
+        detail = detail_cache[key]
         return {
             "score": item["score"],
             "grade": item["grade"],
@@ -407,6 +466,8 @@ def main() -> None:
             "train": _round_metrics(item["train_raw"]),
             "oos": _round_metrics(item["oos_raw"]),
             "recent": _round_metrics(item["recent_raw"]),
+            "full": detail["full"],
+            "ablation": detail["ablation"],
         }
 
     leaders = {}
@@ -422,7 +483,7 @@ def main() -> None:
         leaders[category] = passed
 
     payload = {
-        "version": 2,
+        "version": 3,
         "ready": True,
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "pool_generated_at": pool.get("generated_at"),
@@ -433,11 +494,13 @@ def main() -> None:
         "validated_configurations": sum(1 for x in validated_by_key.values() if x["validation_pass"]),
         "strategy_count": len(strategies),
         "strategy_names": strategy_names,
+        "auto_search_excluded": excluded,
+        "strategy_set_count": len(strategy_sets),
         "parameter_grid": {
             "forced_profit_pct": list(EXIT_PCTS),
             "hold_cap_days": list(HOLD_CAPS),
             "capacity": list(CAPACITIES),
-            "strategy_combo_size": [1, 2],
+            "strategy_combo_size": list(range(1, min(MAX_STRATEGIES_PER_COMBO, len(strategies)) + 1)),
         },
         "validation": {
             "available_start": start.isoformat(),
@@ -452,17 +515,26 @@ def main() -> None:
         },
         "leaders": leaders,
         "notes": [
+            "1~5개 전략 조합, 고정익절, 보유기간 상한, 동시보유 1/3/5/7/10을 자동 교차탐색합니다.",
             "파라미터와 전략 조합 순위는 학습 70% 데이터만 사용해 고정합니다.",
             "뒤 30% OOS와 최근 구간은 순위를 다시 맞추는 데 쓰지 않고 통과/탈락 검증에만 사용합니다.",
             "학습구간 CAGR이 0 이하인 조합은 최적화 후보에서 제외합니다.",
+            "상위 조합에는 전체기간 결과와 전략 하나씩 제거한 ablation 진단도 저장합니다.",
+            "Larry Williams식 연구형은 10년 일봉만으로 장중 돌파 이후의 순서를 확정할 수 없어 자동 랭킹에서 제외합니다.",
             "실험 결과는 연구용이며 생산 추천이나 자동주문 전략을 자동 변경하지 않습니다.",
             "현재 유동성 종목을 과거로 되감는 후보풀이라 survivorship bias가 남아 있습니다.",
-            "후보풀의 일봉 OHLC 한계상 같은 날 STOP/TARGET 동시 터치는 보수적으로 손절 우선 처리합니다.",
         ],
     }
     OUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     best = leaders.get("balanced") or []
-    print("tested", tested, "train_eligible", len(train_results), "shortlisted", len(union), "validated", payload["validated_configurations"], "best", best[0]["score"] if best else None)
+    print(
+        "tested", tested,
+        "strategy_sets", len(strategy_sets),
+        "train_eligible", len(train_results),
+        "shortlisted", len(union),
+        "validated", payload["validated_configurations"],
+        "best", best[0]["score"] if best else None,
+    )
 
 
 if __name__ == "__main__":
