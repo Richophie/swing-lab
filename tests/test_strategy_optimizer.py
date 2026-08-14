@@ -8,6 +8,7 @@ def test_strategy_optimizer_is_wired():
     runner = (ROOT / 'strategy_optimizer_runner.py').read_text(encoding='utf-8')
     ui = (ROOT / 'static' / 'strategy_optimizer_ui.js').read_text(encoding='utf-8')
     loader = (ROOT / 'static' / 'lab_dashboard.js').read_text(encoding='utf-8')
+    archive = (ROOT / 'static' / 'lab_research_archive.js').read_text(encoding='utf-8')
     workflow = (ROOT / '.github' / 'workflows' / 'strategy-optimizer.yml').read_text(encoding='utf-8')
 
     assert "CAPACITIES = (1, 3, 5, 7, 10)" in script
@@ -29,7 +30,8 @@ def test_strategy_optimizer_is_wired():
     assert "자동 전략 최적화 연구소" in ui
     assert "MTM MDD" in ui
     assert "고정 +N% 익절과 강제 보유기간은 메인 탐색에서 내렸어요" in ui
-    assert "strategy_optimizer_ui.js" in loader
+    assert "strategy_optimizer_ui.js" not in loader
+    assert "strategy_optimizer_ui.js" in archive
 
     assert "python strategy_optimizer_runner.py" in workflow
     assert "daily_close_mark_to_market" in workflow
@@ -39,4 +41,4 @@ def test_strategy_optimizer_is_wired():
 
 if __name__ == '__main__':
     test_strategy_optimizer_is_wired()
-    print('strategy optimizer wiring PASS')
+    print('strategy optimizer lazy wiring PASS')
