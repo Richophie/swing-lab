@@ -10,11 +10,14 @@ def main():
     assert 'priority_challenger_ab.js' in loader
     assert 'priority_challenger_v1_state.json' in ui
     assert 'priority_challenger_v2_state.json' in ui
-    assert '1.00% vs 0.75%' in ui
-    assert '포지션 크기만 비교' in ui
-    assert 'SAME SIGNALS' in ui
-    assert '.pcab-grid' in css and '.pcab-card' in css
-    print('priority challenger A/B UI PASS')
+    assert 'priority_challenger_v3_state.json' in ui
+    assert 'V1 / V2 / V3' in ui
+    assert 'V1 · BASELINE' in ui and 'V2 · CAPITAL' in ui and 'V3 · CORR DAMP' in ui
+    assert '기본 0.75% · 고상관 0.375%' in ui
+    assert '메인 추천 순위에는 아직 적용하지 않습니다' in ui
+    assert 'NO RETUNE' in ui
+    assert '.pcab-grid' in css and '.pcab-card' in css and '.pcab-corr' in css
+    print('priority challenger V1/V2/V3 UI PASS')
 
 
 if __name__=='__main__':main()
