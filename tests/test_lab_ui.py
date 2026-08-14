@@ -17,7 +17,7 @@ def test_replay_lab_wiring():
     deep=(ROOT/'static'/'backtest_result_tabs.js').read_text(encoding='utf-8')
     css=(ROOT/'static'/'backtest_result_tabs.css').read_text(encoding='utf-8')
     core=(ROOT/'static'/'replay_v2_core.js').read_text(encoding='utf-8')
-    for name in ('replay_math.js','lab_data.js','lab_replay_ui.js','lab_run_core.js','lab_result_ui.js','lab_replay_boot.js','backtest_result_tabs.js','lab_nav_hotfix.js','strategy_optimizer_ui.js','selection_filter_ui.js','walkforward_ui.js'):
+    for name in ('replay_math.js','lab_data.js','lab_replay_ui.js','lab_run_core.js','lab_result_ui.js','lab_replay_boot.js','backtest_result_tabs.js','lab_nav_hotfix.js','strategy_optimizer_ui.js','selection_filter_ui.js','walkforward_ui.js','regime_walkforward_ui.js'):
         assert name in loader
     assert '백테스트 연구소' in boot
     assert 'US STOCKS' in boot and 'DAILY MTM' in boot
@@ -57,6 +57,16 @@ def test_walkforward_ui_is_loaded():
     assert '.wf-folds' in css and '.wf-kpis' in css
 
 
+def test_regime_walkforward_ui_is_loaded():
+    ui=(ROOT/'static'/'regime_walkforward_ui.js').read_text(encoding='utf-8')
+    css=(ROOT/'static'/'regime_walkforward_ui.css').read_text(encoding='utf-8')
+    assert 'portfolio_regime_results.json' in ui
+    assert '전략이 좋은 건지, 장이 좋았던 건지' in ui
+    assert 'TRAIN ONLY' in ui and 'RESEARCH ONLY' in ui
+    assert '게이트 없음' in ui
+    assert '.rg-current' in css and '.rg-folds' in css
+
+
 def test_lab_sections_are_hoisted_out_of_detail_overlay():
     js=(ROOT/'static'/'lab_nav_hotfix.js').read_text(encoding='utf-8')
     assert "['lab','backtestlab']" in js
@@ -74,7 +84,7 @@ def test_paper_mark_ui_keeps_holding_visible():
 
 
 def main():
-    test_lab_loader_and_paper_marks();test_replay_lab_wiring();test_walkforward_ui_is_loaded();test_lab_sections_are_hoisted_out_of_detail_overlay();test_paper_mark_ui_keeps_holding_visible();print('lab ui PASS')
+    test_lab_loader_and_paper_marks();test_replay_lab_wiring();test_walkforward_ui_is_loaded();test_regime_walkforward_ui_is_loaded();test_lab_sections_are_hoisted_out_of_detail_overlay();test_paper_mark_ui_keeps_holding_visible();print('lab ui PASS')
 
 
 if __name__=='__main__':main()
