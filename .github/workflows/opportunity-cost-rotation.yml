@@ -39,12 +39,11 @@ jobs:
           assert d['method']['v1_v2_forward_untouched'] is True
           s=d['summary']
           assert set(s)=={'natural','negative_after_5','stale_after_10'}
-          # The unchanged 0.75% / max10 / natural-exit reference was ~89.45% in
-          # the prior capital-velocity study. A large drift means this mechanism
-          # study is not comparable and must not be interpreted.
           baseline=s['natural']['stitched_test_return_pct']
           assert 84.0 <= baseline <= 95.0, baseline
           print('opportunity rotation artifact PASS; baseline', baseline)
-          for k,v in s.items():
-              print(k, v['stitched_test_return_pct'], v['worst_mdd_pct'], v['total_rotations'], v['total_cash_rejects'], v.get('folds_beating_reference'))
+          print(json.dumps(s, ensure_ascii=False, indent=2))
+          print('FOLD RETURNS')
+          for fold in d['folds']:
+              print(fold['fold'], {k:v['return_pct'] for k,v in fold['variants'].items()})
           PY
