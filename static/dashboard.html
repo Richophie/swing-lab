@@ -13,7 +13,7 @@
 <link rel="stylesheet" href="/static/pop_indie_polish.css?v=20260813-2">
 <link rel="stylesheet" href="/static/semantic_palette.css?v=20260813-2">
 <link rel="stylesheet" href="/static/event_risk.css?v=20260813-1">
-<link rel="stylesheet" href="/static/lab_dashboard.css?v=20260813-1">
+<link rel="stylesheet" href="/static/lab_dashboard.css?v=20260814-5">
 </head>
 <body>
 <main class="shell">
@@ -41,6 +41,7 @@
   </section>
   <section id="search" style="display:none"><article class="panel"><div class="panel-head"><div><div class="eyebrow">직접 확인</div><h2>원하는 종목을 찾아보세요</h2></div></div><div class="actions"><input id="tickerInput" class="search-input" placeholder="예: AAPL" aria-label="미국주식 티커"><button class="btn primary" id="searchBtn">분석</button></div><div class="status" id="searchStatus">티커를 입력하면 공개 중인 세 전략을 비교해 현재 신호와 가장 가까운 전략을 보여줍니다.</div></article></section>
   <section id="state" style="display:none"><article class="panel"><div class="eyebrow">엔진 상태</div><h2>현재 구조</h2><div class="detail-copy" id="engineState">불러오는 중…</div></article></section>
+  <section id="backtestlab" style="display:none"><article class="panel"><div class="panel-head"><div><div class="eyebrow">REPLAY LAB · 과거 시뮬레이션</div><h2>백테스트연구소</h2><p class="paper-head-note">기간·기법·자금·동시보유 수와 청산 방식을 바꿔 비교합니다.</p></div></div><div class="bt-extra-controls"><div class="bt-extra-box"><label><input id="btForceProfit" type="checkbox"> 고정 익절 사용</label><input id="btForceProfitPct" type="number" min="0.1" max="50" step="0.1" value="3.0" inputmode="decimal">%<small>선택하면 매수가 대비 +N%에 도달한 날 바로 청산합니다. 비용 후 순수익률은 N%보다 조금 낮습니다.</small></div><div class="bt-extra-box"><label><input type="checkbox" data-bt-strategy="sma200_20_squeeze"> SMA200·20 스퀴즈 · 실험</label><small>200일선 상승추세 + 20/200 수렴 + 강한 돌파. 생산 추천에는 아직 넣지 않습니다.</small></div></div><div id="btLabBody"><div class="paper-empty">백테스트 데이터를 불러오는 중…</div></div></article></section>
   <section class="panel detail" id="detail">
     <div class="detail-top"><div><div class="detail-name" id="detailName">—</div><div class="detail-ticker" id="detailTicker">—</div></div><div class="actions"><button class="ai-copy-icon detail-ai-copy" id="copySignal" type="button" aria-label="AI 검증용 복사" title="AI 검증용 복사"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v12h2V4h9V2Zm3 4H10a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Zm0 14h-8V8h8v12Z"/></svg></button><div class="detail-score" id="detailScore">—</div></div></div><div class="detail-copy" id="detailReason">—</div>
     <div class="plan-grid"><div class="plan-box"><span>BUY 엔진 진입구간</span><b id="dBuy">—</b></div><div class="plan-box target"><span>TARGET 목표가 · 예상수익률</span><b id="dTarget">—</b></div><div class="plan-box stop"><span>STOP 손절가 · 예상손실률</span><b id="dStop">—</b></div></div>
@@ -66,6 +67,6 @@
 <script src="/static/pop_indie_polish.js?v=20260813-3" defer></script>
 <script src="/static/signal_event_polish.js?v=20260813-3" defer></script>
 <script src="/static/event_risk_ui.js?v=20260813-1" defer></script>
-<script src="/static/lab_dashboard.js?v=20260813-2" defer></script>
+<script src="/static/lab_dashboard.js?v=20260814-5" defer></script>
 </body>
 </html>
