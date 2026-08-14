@@ -1,0 +1,50 @@
+name: Opportunity Cost Rotation Research
+
+on:
+  pull_request:
+    paths:
+      - 'opportunity_cost_rotation.py'
+      - 'tests/test_opportunity_cost_rotation.py'
+      - '.github/workflows/opportunity-cost-rotation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: python -m pip install -r requirements.txt
+      - name: Compile
+        run: python -m py_compile opportunity_cost_rotation.py tests/test_opportunity_cost_rotation.py
+      - name: Deterministic tests
+        run: PYTHONPATH=. python tests/test_opportunity_cost_rotation.py
+      - name: Run opportunity-cost rotation research
+        run: python opportunity_cost_rotation.py
+      - name: Validate artifact and baseline parity
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('static/opportunity_cost_rotation.json').read_text(encoding='utf-8'))
+          assert d['ready'] is True
+          assert d['promotion_status']=='development_only_opportunity_cost_rotation_not_fresh_holdout'
+          assert d['method']['grid_search'] is False
+          assert d['method']['v1_v2_forward_untouched'] is True
+          s=d['summary']
+          assert set(s)=={'natural','negative_after_5','stale_after_10'}
+          # The unchanged 0.75% / max10 / natural-exit reference was ~89.45% in
+          # the prior capital-velocity study. A large drift means this mechanism
+          # study is not comparable and must not be interpreted.
+          baseline=s['natural']['stitched_test_return_pct']
+          assert 84.0 <= baseline <= 95.0, baseline
+          print('opportunity rotation artifact PASS; baseline', baseline)
+          for k,v in s.items():
+              print(k, v['stitched_test_return_pct'], v['worst_mdd_pct'], v['total_rotations'], v['total_cash_rejects'], v.get('folds_beating_reference'))
+          PY
