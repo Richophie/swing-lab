@@ -18,7 +18,7 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -49,4 +49,23 @@ jobs:
           assert 'test_start' not in choose and 'test_end' not in choose
           assert 'TRAIN-only within-strategy empirical percentiles' in s
           print('priority audit leakage guards PASS')
+          PY
+      - name: Run audit on current committed V4 pool
+        run: python portfolio_priority_audit.py
+      - name: Validate real audit output
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('static/portfolio_priority_audit.json').read_text(encoding='utf-8'))
+          assert d.get('ready') is True
+          assert d.get('donchian_current_priority_values') == [2.0]
+          for f in d.get('families',[]):
+              s=f['summary']
+              print(f['name'])
+              for rid in ('current','quality_pct','hybrid_50'):
+                  x=s['rules'][rid]
+                  print(' ',rid,x['stitched_test_return_pct'],x['worst_test_mdd_pct'])
+              print(' rejects',s['current_slot_audit'])
+              print(' 2024',s.get('test_2024'))
           PY
