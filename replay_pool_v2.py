@@ -40,6 +40,15 @@ def _num(v, default=None):
         return default
 
 
+def _clean_features(values: dict | None) -> dict:
+    out = {}
+    for key, value in (values or {}).items():
+        x = _num(value)
+        if x is not None:
+            out[str(key)] = round(float(x), 6)
+    return out
+
+
 def _path(d: pd.DataFrame, ind: dict, entry_i: int, bars: int) -> list[list]:
     out = []
     s20, s200 = ind['sma20'], ind['sma200']
@@ -59,7 +68,7 @@ def _path(d: pd.DataFrame, ind: dict, entry_i: int, bars: int) -> list[list]:
 
 def _candidate(symbol, sid, name, d, ind, i, *, stop, target, max_hold,
                score=75.0, rr=1.5, exit_mode='price_plan', entry_mode='next_open',
-               trigger=None, bars=None):
+               trigger=None, bars=None, quality_features=None):
     entry_i = i + 1
     if entry_i >= len(d):
         return None
@@ -84,6 +93,7 @@ def _candidate(symbol, sid, name, d, ind, i, *, stop, target, max_hold,
         'elite_score': round(float(score), 4),
         'net_risk_reward': round(float(rr), 6),
         'market_state': 'strategy_only',
+        'quality_features': _clean_features(quality_features),
         'exit_mode': exit_mode, 'entry_mode': entry_mode, 'path': path,
     }
     if trigger is not None:
@@ -101,9 +111,11 @@ def _sma_candidates(d: pd.DataFrame, ind: dict, symbol: str) -> list[dict]:
     side = np.sign(s20 - s200)
     crosses = side.ne(side.shift(1)).rolling(30, min_periods=10).sum()
     strong = (c > o) & ((c - o) >= atr * .70)
-    clean = l > pd.concat([s20, s200], axis=1).max(axis=1)
+    ma_top = pd.concat([s20, s200], axis=1).max(axis=1)
+    clean = l > ma_top
     fresh = c.shift(1) <= pd.concat([s20.shift(1), s200.shift(1)], axis=1).max(axis=1) * 1.015
-    liquid = (v / vol20) >= .75
+    vol_ratio = v / vol20
+    liquid = vol_ratio >= .75
     signal = (c > s200) & (s200 > s200.shift(20)) & (spread <= .035) & (crosses <= 2) & strong & clean & fresh & liquid
     rows = []
     for i in np.flatnonzero(signal.fillna(False).to_numpy()):
@@ -111,10 +123,22 @@ def _sma_candidates(d: pd.DataFrame, ind: dict, symbol: str) -> list[dict]:
         a = _num(atr.iloc[i]); close = _num(c.iloc[i]); ma20 = _num(s20.iloc[i]); ma200 = _num(s200.iloc[i])
         if not all(x is not None for x in (a, close, ma20, ma200)) or a <= 0: continue
         body_atr = max(0.0, (float(c.iloc[i]) - float(o.iloc[i])) / a)
+        slope20 = _num(s200.iloc[i] / s200.iloc[i-20] - 1.0, 0.0)
+        clearance = _num((l.iloc[i] - ma_top.iloc[i]) / a, 0.0)
+        q = {
+            'body_atr': body_atr,
+            'ma_spread_pct': _num(spread.iloc[i], 0.0),
+            'crosses_30': _num(crosses.iloc[i], 0.0),
+            'volume_ratio': _num(vol_ratio.iloc[i], 0.0),
+            'ma_clearance_atr': clearance,
+            'sma200_slope_20d_pct': slope20,
+            'atr_pct': a / close,
+        }
         row = _candidate(symbol, SMA_ID, EXPERIMENT_NAMES[SMA_ID], d, ind, i,
                          stop=min(ma20, ma200) - .15*a, target=None, max_hold=20,
                          score=min(95.0, 72.0 + body_atr*8.0 + max(0.0, .035-float(spread.iloc[i]))*200),
-                         rr=1.0 + min(1.0, body_atr/2.0), exit_mode='sma20_close')
+                         rr=1.0 + min(1.0, body_atr/2.0), exit_mode='sma20_close',
+                         quality_features=q)
         if row: rows.append(row)
     return rows
 
@@ -124,36 +148,64 @@ def _breakout_candidates(d: pd.DataFrame, ind: dict, symbol: str) -> list[dict]:
     atr=ind['atr14'].astype(float); s200=ind['sma200'].astype(float)
     hh20=h.rolling(20).max().shift(1); hh55=h.rolling(55).max().shift(1)
     vol20=v.rolling(20).mean().shift(1).replace(0,np.nan)
+    vol_ratio=v/vol20
     rng=(h-l).replace(0,np.nan); body=c-o
     close_pos=(c-l)/rng
     trend=(c>s200)&(s200>s200.shift(20))
     rows=[]
-    sig20=trend&(c>hh20*1.001)&(v/vol20>=1.15)&(body>=atr*.35)
-    sigvol=trend&(c>hh20)&(v/vol20>=1.8)&(body>=atr*.60)&(close_pos>=.75)
+    sig20=trend&(c>hh20*1.001)&(vol_ratio>=1.15)&(body>=atr*.35)
+    sigvol=trend&(c>hh20)&(vol_ratio>=1.8)&(body>=atr*.60)&(close_pos>=.75)
     sig55=trend&(c>hh55)
     for i in np.flatnonzero(sig20.fillna(False).to_numpy()):
         if i<205: continue
         a=_num(atr.iloc[i]); close=_num(c.iloc[i]); level=_num(hh20.iloc[i])
         if not a or not close or not level: continue
+        q={
+            'breakout_atr': (close-level)/a,
+            'volume_ratio': _num(vol_ratio.iloc[i],0.0),
+            'close_position': _num(close_pos.iloc[i],0.0),
+            'body_atr': _num(body.iloc[i]/a,0.0),
+            'sma200_slope_20d_pct': _num(s200.iloc[i]/s200.iloc[i-20]-1.0,0.0),
+            'atr_pct': a/close,
+        }
         row=_candidate(symbol,BREAKOUT20_ID,EXPERIMENT_NAMES[BREAKOUT20_ID],d,ind,i,
                        stop=min(close-1.2*a,level-.20*a),target=close+2.4*a,max_hold=10,
-                       score=76+min(14,max(0,(float(v.iloc[i]/vol20.iloc[i])-1)*10)),rr=2.0)
+                       score=76+min(14,max(0,(float(vol_ratio.iloc[i])-1)*10)),rr=2.0,
+                       quality_features=q)
         if row: rows.append(row)
     for i in np.flatnonzero(sigvol.fillna(False).to_numpy()):
         if i<205: continue
-        a=_num(atr.iloc[i]); close=_num(c.iloc[i]); low=_num(l.iloc[i])
-        if not a or not close or low is None: continue
+        a=_num(atr.iloc[i]); close=_num(c.iloc[i]); low=_num(l.iloc[i]); level=_num(hh20.iloc[i])
+        if not a or not close or low is None or not level: continue
+        q={
+            'breakout_atr': (close-level)/a,
+            'volume_ratio': _num(vol_ratio.iloc[i],0.0),
+            'close_position': _num(close_pos.iloc[i],0.0),
+            'body_atr': _num(body.iloc[i]/a,0.0),
+            'sma200_slope_20d_pct': _num(s200.iloc[i]/s200.iloc[i-20]-1.0,0.0),
+            'atr_pct': a/close,
+        }
         row=_candidate(symbol,VOLUME_BREAKOUT_ID,EXPERIMENT_NAMES[VOLUME_BREAKOUT_ID],d,ind,i,
                        stop=low-.20*a,target=close+2.2*a,max_hold=8,
-                       score=80+min(12,max(0,(float(v.iloc[i]/vol20.iloc[i])-1.8)*6)),rr=1.8)
+                       score=80+min(12,max(0,(float(vol_ratio.iloc[i])-1.8)*6)),rr=1.8,
+                       quality_features=q)
         if row: rows.append(row)
     for i in np.flatnonzero(sig55.fillna(False).to_numpy()):
         if i<205: continue
-        a=_num(atr.iloc[i]); close=_num(c.iloc[i])
-        if not a or not close: continue
+        a=_num(atr.iloc[i]); close=_num(c.iloc[i]); level=_num(hh55.iloc[i])
+        if not a or not close or not level: continue
+        q={
+            'breakout_atr': (close-level)/a,
+            'volume_ratio': _num(vol_ratio.iloc[i],0.0),
+            'close_position': _num(close_pos.iloc[i],0.0),
+            'body_atr': _num(body.iloc[i]/a,0.0),
+            'sma200_slope_20d_pct': _num(s200.iloc[i]/s200.iloc[i-20]-1.0,0.0),
+            'distance_sma200_pct': _num(close/s200.iloc[i]-1.0,0.0),
+            'atr_pct': a/close,
+        }
         row=_candidate(symbol,DONCHIAN55_ID,EXPERIMENT_NAMES[DONCHIAN55_ID],d,ind,i,
                        stop=close-2.0*a,target=None,max_hold=40,score=78,rr=2.0,
-                       exit_mode='donchian20_close',bars=45)
+                       exit_mode='donchian20_close',bars=45,quality_features=q)
         if row: rows.append(row)
     return rows
 
@@ -177,7 +229,12 @@ def _larry_candidates(d: pd.DataFrame, ind: dict, symbol: str, k: float=.50) -> 
         row=_candidate(symbol,LARRY_ID,EXPERIMENT_NAMES[LARRY_ID],d,ind,i,
                        stop=stop,target=None,max_hold=1,score=76+min(14,range_pct*180),
                        rr=1.4,exit_mode='day_close',entry_mode='intraday_trigger',
-                       trigger=trigger,bars=1)
+                       trigger=trigger,bars=1,quality_features={
+                           'prior_range_pct': range_pct,
+                           'volume_ratio': vr,
+                           'sma200_slope_20d_pct': _num(s200.iloc[i]/s200.iloc[i-20]-1.0,0.0),
+                           'atr_pct': a/close,
+                       })
         if row: rows.append(row)
     return rows
 
@@ -211,7 +268,12 @@ def build():
                     'atr': round(float(plan['atr']), 6), 'target': round(float(plan['target']), 6),
                     'stop': round(float(plan['stop']), 6), 'max_hold': int(plan['days'][1]),
                     'elite_score': round(float(info['elite_score']), 4), 'net_risk_reward': round(float(info['net_risk_reward']), 6),
-                    'market_state': info['market_state'], 'exit_mode': 'price_plan', 'entry_mode': 'next_open', 'path': path,
+                    'market_state': info['market_state'],
+                    'quality_features': {
+                        'elite_score': round(float(info['elite_score']), 4),
+                        'net_risk_reward': round(float(info['net_risk_reward']), 6),
+                    },
+                    'exit_mode': 'price_plan', 'entry_mode': 'next_open', 'path': path,
                 })
         candidates.extend(_sma_candidates(d, ind, symbol))
         candidates.extend(_breakout_candidates(d, ind, symbol))
@@ -219,19 +281,20 @@ def build():
     candidates.sort(key=lambda x:(x['entry_date'],-float(x.get('net_risk_reward') or 0),-float(x.get('elite_score') or 0),x['symbol'],x['strategy_id']))
     dates=[x['entry_date'] for x in candidates]
     payload={
-        'version':3,'ready':True,'generated_at':datetime.now(timezone.utc).isoformat(timespec='seconds'),
+        'version':4,'ready':True,'generated_at':datetime.now(timezone.utc).isoformat(timespec='seconds'),
         'selection_source':source,'requested_symbol_count':len(requested),'eligible_symbol_count':len(eligible),
         'available_start':min(dates) if dates else None,'available_end':max(dates) if dates else None,
         'strategies':all_strategies,'strategy_names':names,'candidate_count':len(candidates),'trade_count':len(candidates),
-        'path_bars':PATH_BARS,'larry_k':.50,
+        'path_bars':PATH_BARS,'larry_k':.50,'quality_features_version':1,
         'costs':{'commission_pct_per_side':BACKTEST_COMMISSION_PCT,'slippage_bps':BACKTEST_SLIPPAGE_BPS,'half_spread_bps':BACKTEST_HALF_SPREAD_BPS},
         'errors':errors,'trades':candidates,
         'limitations':[
             '현재 유동성 종목을 과거로 되감는 연구용 후보풀이라 survivorship bias가 있습니다.',
             '같은 일봉에서 목표와 손절을 모두 터치하면 보수적으로 손절 우선 처리합니다.',
+            'quality_features는 신호일 종가까지 알려진 데이터만 저장하며 미래 수익률은 포함하지 않습니다.',
             '실험전략은 백테스트 전용이며 생산 추천에는 자동 반영되지 않습니다.',
             'Larry Williams식 변동성 돌파는 공개된 변동성 확장 아이디어를 K=0.50으로 수치화한 연구형 구현이며 저자의 전체 시스템을 그대로 복제한다고 주장하지 않습니다.',
-            'Larry 연구형은 일봉 OHLC만으로 장중 순서를 알 수 없는 경우 보수적으로 손절 우선 처리합니다.',
+            'Larry 연구형은 일봉 OHLC만으로 장중 순서를 알 수 없는 경우 자동 최적화 랭킹에서 제외합니다.',
         ],
     }
     OUT.write_text(json.dumps(payload,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
