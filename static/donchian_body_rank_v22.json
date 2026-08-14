@@ -1,0 +1,695 @@
+{
+  "version": 1,
+  "ready": true,
+  "generated_at": "2026-08-14T06:32:01+00:00",
+  "pool_generated_at": "2026-08-14T05:30:36+00:00",
+  "promotion_status": "posthoc_development_only_not_fresh_holdout",
+  "family": {
+    "id": "confirmed_sma_donchian",
+    "name": "확인형 + SMA200·20 + Donchian",
+    "strategies": [
+      "confirmed_pullback",
+      "sma200_20_squeeze",
+      "donchian_55"
+    ]
+  },
+  "hypothesis": {
+    "source": "feature audit found Donchian body_atr supported expected direction in 5/6 usable TEST folds; other Donchian quality components were weaker",
+    "change": "replace only Donchian quality-ranking component with TRAIN percentile of body_atr; retain current priority 50% and quality component 50%",
+    "eligibility_gate_changed": false,
+    "capital_policy": "same fixed global tiered 0.5/0.75/1.0% risk budget",
+    "grid_search": false
+  },
+  "method": {
+    "top50_gate": "unchanged original within-strategy quality top50, estimated on TRAIN only",
+    "other_strategy_scores": "unchanged",
+    "donchian_score": "body_atr percentile in TRAIN only",
+    "equity": "daily_close_mark_to_market",
+    "v1_untouched": true,
+    "warning": "body_atr was chosen after inspecting development diagnostics; this is a single post-hoc robustness test, not fresh holdout evidence"
+  },
+  "summary": {
+    "v1_flat": {
+      "stitched_test_return_pct": 57.89,
+      "median_test_return_pct": 9.79,
+      "positive_test_folds": 5,
+      "worst_test_return_pct": -1.37,
+      "worst_test_mdd_pct": -16.01,
+      "total_test_trades": 378
+    },
+    "current_tiered": {
+      "stitched_test_return_pct": 77.28,
+      "median_test_return_pct": 8.58,
+      "positive_test_folds": 6,
+      "worst_test_return_pct": 2.15,
+      "worst_test_mdd_pct": -12.91,
+      "total_test_trades": 454,
+      "folds_beating_v1": 4,
+      "mean_delta_vs_v1_pct": 2.26
+    },
+    "donchian_body_tiered": {
+      "stitched_test_return_pct": 57.56,
+      "median_test_return_pct": 7.32,
+      "positive_test_folds": 5,
+      "worst_test_return_pct": -4.39,
+      "worst_test_mdd_pct": -15.03,
+      "total_test_trades": 467,
+      "folds_beating_v1": 4,
+      "mean_delta_vs_v1_pct": 0.25,
+      "folds_beating_current_tiered": 2,
+      "mean_delta_vs_current_tiered_pct": -2.02
+    }
+  },
+  "folds": [
+    {
+      "fold": "2021",
+      "train_start": "2017-06-09",
+      "train_end": "2020-12-31",
+      "test_start": "2021-01-01",
+      "test_end": "2021-12-31",
+      "variants": {
+        "v1_flat": {
+          "test": {
+            "ending": 3306957.62,
+            "return_pct": 10.23,
+            "cagr_pct": 10.27,
+            "mdd_pct": -15.15,
+            "trades": 73,
+            "win_rate_pct": 38.36,
+            "avg_trade_pct": 1.212,
+            "trades_per_year": 73.3,
+            "max_open": 9,
+            "underwater_days": 91
+          },
+          "allocation": {
+            "reject_cash": 446,
+            "reject_capacity": 0,
+            "cash_limited_entries": 41,
+            "allocation_ratio": 0.0833,
+            "capital_share_by_tier": {
+              "low": 0.3807,
+              "mid": 0.6016,
+              "high": 0.0177
+            },
+            "trades_by_tier": {
+              "low": 27,
+              "mid": 44,
+              "high": 2
+            }
+          }
+        },
+        "current_tiered": {
+          "test": {
+            "ending": 3538178.45,
+            "return_pct": 17.94,
+            "cagr_pct": 18.01,
+            "mdd_pct": -11.28,
+            "trades": 90,
+            "win_rate_pct": 42.22,
+            "avg_trade_pct": 1.303,
+            "trades_per_year": 90.3,
+            "max_open": 10,
+            "underwater_days": 91
+          },
+          "allocation": {
+            "reject_cash": 299,
+            "reject_capacity": 102,
+            "cash_limited_entries": 44,
+            "allocation_ratio": 0.1686,
+            "capital_share_by_tier": {
+              "low": 0.3811,
+              "mid": 0.5869,
+              "high": 0.0319
+            },
+            "trades_by_tier": {
+              "low": 38,
+              "mid": 50,
+              "high": 2
+            }
+          }
+        },
+        "donchian_body_tiered": {
+          "test": {
+            "ending": 3492561.68,
+            "return_pct": 16.42,
+            "cagr_pct": 16.48,
+            "mdd_pct": -8.39,
+            "trades": 94,
+            "win_rate_pct": 42.55,
+            "avg_trade_pct": 1.383,
+            "trades_per_year": 94.3,
+            "max_open": 10,
+            "underwater_days": 87
+          },
+          "allocation": {
+            "reject_cash": 333,
+            "reject_capacity": 57,
+            "cash_limited_entries": 51,
+            "allocation_ratio": 0.1526,
+            "capital_share_by_tier": {
+              "low": 0.2931,
+              "mid": 0.6694,
+              "high": 0.0375
+            },
+            "trades_by_tier": {
+              "low": 29,
+              "mid": 62,
+              "high": 3
+            }
+          }
+        }
+      },
+      "thresholds": {
+        "confirmed_pullback": 71.77554,
+        "sma200_20_squeeze": 34.638975,
+        "donchian_55": 34.14883
+      }
+    },
+    {
+      "fold": "2022",
+      "train_start": "2018-01-01",
+      "train_end": "2021-12-31",
+      "test_start": "2022-01-01",
+      "test_end": "2022-12-31",
+      "variants": {
+        "v1_flat": {
+          "test": {
+            "ending": 2958820.16,
+            "return_pct": -1.37,
+            "cagr_pct": -1.38,
+            "mdd_pct": -15.09,
+            "trades": 43,
+            "win_rate_pct": 27.91,
+            "avg_trade_pct": -0.191,
+            "trades_per_year": 43.1,
+            "max_open": 6,
+            "underwater_days": 154
+          },
+          "allocation": {
+            "reject_cash": 62,
+            "reject_capacity": 0,
+            "cash_limited_entries": 15,
+            "allocation_ratio": 0.2997,
+            "capital_share_by_tier": {
+              "low": 0.6469,
+              "mid": 0.3308,
+              "high": 0.0223
+            },
+            "trades_by_tier": {
+              "low": 27,
+              "mid": 15,
+              "high": 1
+            }
+          }
+        },
+        "current_tiered": {
+          "test": {
+            "ending": 3064522.36,
+            "return_pct": 2.15,
+            "cagr_pct": 2.16,
+            "mdd_pct": -9.64,
+            "trades": 53,
+            "win_rate_pct": 30.19,
+            "avg_trade_pct": 0.009,
+            "trades_per_year": 53.2,
+            "max_open": 8,
+            "underwater_days": 154
+          },
+          "allocation": {
+            "reject_cash": 44,
+            "reject_capacity": 0,
+            "cash_limited_entries": 8,
+            "allocation_ratio": 0.4643,
+            "capital_share_by_tier": {
+              "low": 0.5287,
+              "mid": 0.4401,
+              "high": 0.0312
+            },
+            "trades_by_tier": {
+              "low": 34,
+              "mid": 18,
+              "high": 1
+            }
+          }
+        },
+        "donchian_body_tiered": {
+          "test": {
+            "ending": 3009411.4,
+            "return_pct": 0.31,
+            "cagr_pct": 0.31,
+            "mdd_pct": -10.21,
+            "trades": 51,
+            "win_rate_pct": 31.37,
+            "avg_trade_pct": 0.248,
+            "trades_per_year": 51.2,
+            "max_open": 7,
+            "underwater_days": 154
+          },
+          "allocation": {
+            "reject_cash": 43,
+            "reject_capacity": 0,
+            "cash_limited_entries": 8,
+            "allocation_ratio": 0.4452,
+            "capital_share_by_tier": {
+              "low": 0.4198,
+              "mid": 0.5485,
+              "high": 0.0317
+            },
+            "trades_by_tier": {
+              "low": 26,
+              "mid": 24,
+              "high": 1
+            }
+          }
+        }
+      },
+      "thresholds": {
+        "confirmed_pullback": 71.75528,
+        "sma200_20_squeeze": 34.232014,
+        "donchian_55": 34.6982
+      }
+    },
+    {
+      "fold": "2023",
+      "train_start": "2019-01-01",
+      "train_end": "2022-12-31",
+      "test_start": "2023-01-01",
+      "test_end": "2023-12-31",
+      "variants": {
+        "v1_flat": {
+          "test": {
+            "ending": 3304345.35,
+            "return_pct": 10.14,
+            "cagr_pct": 10.18,
+            "mdd_pct": -12.56,
+            "trades": 73,
+            "win_rate_pct": 36.99,
+            "avg_trade_pct": 1.588,
+            "trades_per_year": 73.3,
+            "max_open": 10,
+            "underwater_days": 105
+          },
+          "allocation": {
+            "reject_cash": 136,
+            "reject_capacity": 6,
+            "cash_limited_entries": 36,
+            "allocation_ratio": 0.2199,
+            "capital_share_by_tier": {
+              "low": 0.4727,
+              "mid": 0.4708,
+              "high": 0.0565
+            },
+            "trades_by_tier": {
+              "low": 29,
+              "mid": 39,
+              "high": 5
+            }
+          }
+        },
+        "current_tiered": {
+          "test": {
+            "ending": 3101542.96,
+            "return_pct": 3.38,
+            "cagr_pct": 3.4,
+            "mdd_pct": -12.91,
+            "trades": 89,
+            "win_rate_pct": 31.46,
+            "avg_trade_pct": 0.824,
+            "trades_per_year": 89.3,
+            "max_open": 10,
+            "underwater_days": 105
+          },
+          "allocation": {
+            "reject_cash": 71,
+            "reject_capacity": 37,
+            "cash_limited_entries": 24,
+            "allocation_ratio": 0.4451,
+            "capital_share_by_tier": {
+              "low": 0.3966,
+              "mid": 0.534,
+              "high": 0.0695
+            },
+            "trades_by_tier": {
+              "low": 40,
+              "mid": 44,
+              "high": 5
+            }
+          }
+        },
+        "donchian_body_tiered": {
+          "test": {
+            "ending": 2868229.14,
+            "return_pct": -4.39,
+            "cagr_pct": -4.41,
+            "mdd_pct": -15.03,
+            "trades": 90,
+            "win_rate_pct": 30.0,
+            "avg_trade_pct": 0.012,
+            "trades_per_year": 90.3,
+            "max_open": 10,
+            "underwater_days": 115
+          },
+          "allocation": {
+            "reject_cash": 72,
+            "reject_capacity": 47,
+            "cash_limited_entries": 30,
+            "allocation_ratio": 0.4534,
+            "capital_share_by_tier": {
+              "low": 0.3332,
+              "mid": 0.5968,
+              "high": 0.07
+            },
+            "trades_by_tier": {
+              "low": 37,
+              "mid": 48,
+              "high": 5
+            }
+          }
+        }
+      },
+      "thresholds": {
+        "confirmed_pullback": 72.27105,
+        "sma200_20_squeeze": 34.453453,
+        "donchian_55": 34.061374
+      }
+    },
+    {
+      "fold": "2024",
+      "train_start": "2020-01-01",
+      "train_end": "2023-12-31",
+      "test_start": "2024-01-01",
+      "test_end": "2024-12-31",
+      "variants": {
+        "v1_flat": {
+          "test": {
+            "ending": 3148688.16,
+            "return_pct": 4.96,
+            "cagr_pct": 4.96,
+            "mdd_pct": -16.01,
+            "trades": 75,
+            "win_rate_pct": 36.0,
+            "avg_trade_pct": 0.986,
+            "trades_per_year": 75.1,
+            "max_open": 9,
+            "underwater_days": 206
+          },
+          "allocation": {
+            "reject_cash": 408,
+            "reject_capacity": 0,
+            "cash_limited_entries": 49,
+            "allocation_ratio": 0.0922,
+            "capital_share_by_tier": {
+              "low": 0.259,
+              "mid": 0.7013,
+              "high": 0.0397
+            },
+            "trades_by_tier": {
+              "low": 20,
+              "mid": 51,
+              "high": 4
+            }
+          }
+        },
+        "current_tiered": {
+          "test": {
+            "ending": 3413387.89,
+            "return_pct": 13.78,
+            "cagr_pct": 13.79,
+            "mdd_pct": -9.99,
+            "trades": 90,
+            "win_rate_pct": 36.67,
+            "avg_trade_pct": 1.231,
+            "trades_per_year": 90.1,
+            "max_open": 10,
+            "underwater_days": 168
+          },
+          "allocation": {
+            "reject_cash": 275,
+            "reject_capacity": 97,
+            "cash_limited_entries": 48,
+            "allocation_ratio": 0.1747,
+            "capital_share_by_tier": {
+              "low": 0.2653,
+              "mid": 0.6746,
+              "high": 0.0601
+            },
+            "trades_by_tier": {
+              "low": 30,
+              "mid": 55,
+              "high": 5
+            }
+          }
+        },
+        "donchian_body_tiered": {
+          "test": {
+            "ending": 3103920.45,
+            "return_pct": 3.46,
+            "cagr_pct": 3.47,
+            "mdd_pct": -14.38,
+            "trades": 95,
+            "win_rate_pct": 34.74,
+            "avg_trade_pct": 0.366,
+            "trades_per_year": 95.1,
+            "max_open": 10,
+            "underwater_days": 84
+          },
+          "allocation": {
+            "reject_cash": 221,
+            "reject_capacity": 142,
+            "cash_limited_entries": 49,
+            "allocation_ratio": 0.2111,
+            "capital_share_by_tier": {
+              "low": 0.2996,
+              "mid": 0.6472,
+              "high": 0.0532
+            },
+            "trades_by_tier": {
+              "low": 38,
+              "mid": 53,
+              "high": 4
+            }
+          }
+        }
+      },
+      "thresholds": {
+        "confirmed_pullback": 72.372,
+        "sma200_20_squeeze": 34.20318,
+        "donchian_55": 34.948818
+      }
+    },
+    {
+      "fold": "2025",
+      "train_start": "2021-01-01",
+      "train_end": "2024-12-31",
+      "test_start": "2025-01-01",
+      "test_end": "2025-12-31",
+      "variants": {
+        "v1_flat": {
+          "test": {
+            "ending": 3283001.96,
+            "return_pct": 9.43,
+            "cagr_pct": 9.47,
+            "mdd_pct": -13.89,
+            "trades": 67,
+            "win_rate_pct": 37.31,
+            "avg_trade_pct": 1.549,
+            "trades_per_year": 67.2,
+            "max_open": 8,
+            "underwater_days": 109
+          },
+          "allocation": {
+            "reject_cash": 346,
+            "reject_capacity": 0,
+            "cash_limited_entries": 30,
+            "allocation_ratio": 0.1119,
+            "capital_share_by_tier": {
+              "low": 0.3213,
+              "mid": 0.6394,
+              "high": 0.0393
+            },
+            "trades_by_tier": {
+              "low": 23,
+              "mid": 42,
+              "high": 2
+            }
+          }
+        },
+        "current_tiered": {
+          "test": {
+            "ending": 3079073.49,
+            "return_pct": 2.64,
+            "cagr_pct": 2.64,
+            "mdd_pct": -12.19,
+            "trades": 80,
+            "win_rate_pct": 33.75,
+            "avg_trade_pct": 1.062,
+            "trades_per_year": 80.3,
+            "max_open": 10,
+            "underwater_days": 139
+          },
+          "allocation": {
+            "reject_cash": 301,
+            "reject_capacity": 21,
+            "cash_limited_entries": 28,
+            "allocation_ratio": 0.1754,
+            "capital_share_by_tier": {
+              "low": 0.3119,
+              "mid": 0.647,
+              "high": 0.0411
+            },
+            "trades_by_tier": {
+              "low": 32,
+              "mid": 46,
+              "high": 2
+            }
+          }
+        },
+        "donchian_body_tiered": {
+          "test": {
+            "ending": 3335767.89,
+            "return_pct": 11.19,
+            "cagr_pct": 11.23,
+            "mdd_pct": -11.1,
+            "trades": 83,
+            "win_rate_pct": 38.55,
+            "avg_trade_pct": 1.199,
+            "trades_per_year": 83.3,
+            "max_open": 10,
+            "underwater_days": 107
+          },
+          "allocation": {
+            "reject_cash": 248,
+            "reject_capacity": 64,
+            "cash_limited_entries": 34,
+            "allocation_ratio": 0.1906,
+            "capital_share_by_tier": {
+              "low": 0.2882,
+              "mid": 0.6587,
+              "high": 0.0531
+            },
+            "trades_by_tier": {
+              "low": 28,
+              "mid": 52,
+              "high": 3
+            }
+          }
+        }
+      },
+      "thresholds": {
+        "confirmed_pullback": 73.546365,
+        "sma200_20_squeeze": 33.342556,
+        "donchian_55": 34.671551
+      }
+    },
+    {
+      "fold": "2026",
+      "train_start": "2022-01-01",
+      "train_end": "2025-12-31",
+      "test_start": "2026-01-01",
+      "test_end": "2026-08-13",
+      "variants": {
+        "v1_flat": {
+          "test": {
+            "ending": 3443934.93,
+            "return_pct": 14.8,
+            "cagr_pct": 25.24,
+            "mdd_pct": -15.09,
+            "trades": 47,
+            "win_rate_pct": 40.43,
+            "avg_trade_pct": 4.396,
+            "trades_per_year": 76.6,
+            "max_open": 10,
+            "underwater_days": 49
+          },
+          "allocation": {
+            "reject_cash": 217,
+            "reject_capacity": 45,
+            "cash_limited_entries": 16,
+            "allocation_ratio": 0.1169,
+            "capital_share_by_tier": {
+              "low": 0.3579,
+              "mid": 0.628,
+              "high": 0.0141
+            },
+            "trades_by_tier": {
+              "low": 15,
+              "mid": 31,
+              "high": 1
+            }
+          }
+        },
+        "current_tiered": {
+          "test": {
+            "ending": 3656347.21,
+            "return_pct": 21.88,
+            "cagr_pct": 38.07,
+            "mdd_pct": -11.7,
+            "trades": 52,
+            "win_rate_pct": 42.31,
+            "avg_trade_pct": 7.051,
+            "trades_per_year": 84.8,
+            "max_open": 10,
+            "underwater_days": 50
+          },
+          "allocation": {
+            "reject_cash": 119,
+            "reject_capacity": 120,
+            "cash_limited_entries": 13,
+            "allocation_ratio": 0.2293,
+            "capital_share_by_tier": {
+              "low": 0.288,
+              "mid": 0.6638,
+              "high": 0.0481
+            },
+            "trades_by_tier": {
+              "low": 17,
+              "mid": 33,
+              "high": 2
+            }
+          }
+        },
+        "donchian_body_tiered": {
+          "test": {
+            "ending": 3680159.06,
+            "return_pct": 22.67,
+            "cagr_pct": 39.54,
+            "mdd_pct": -11.67,
+            "trades": 54,
+            "win_rate_pct": 44.44,
+            "avg_trade_pct": 6.996,
+            "trades_per_year": 88.1,
+            "max_open": 10,
+            "underwater_days": 51
+          },
+          "allocation": {
+            "reject_cash": 116,
+            "reject_capacity": 120,
+            "cash_limited_entries": 8,
+            "allocation_ratio": 0.2565,
+            "capital_share_by_tier": {
+              "low": 0.2047,
+              "mid": 0.7562,
+              "high": 0.0391
+            },
+            "trades_by_tier": {
+              "low": 14,
+              "mid": 38,
+              "high": 2
+            }
+          }
+        }
+      },
+      "thresholds": {
+        "confirmed_pullback": 73.903205,
+        "sma200_20_squeeze": 32.747463,
+        "donchian_55": 34.290676
+      }
+    }
+  ],
+  "notes": [
+    "Frozen Challenger V1 is not changed.",
+    "No threshold or weight grid is searched.",
+    "This experiment simplifies Donchian ordering only; eligibility and risk ceilings remain unchanged.",
+    "Current-universe survivorship bias remains."
+  ]
+}
