@@ -26,8 +26,8 @@ def test_uniform_and_tiered_position_sizes_are_isolated():
     tiered=cma.mechanism_portfolio(rows,start,end,10,cma.POLICIES['tiered'])
     reversed_=cma.mechanism_portfolio(rows,start,end,10,cma.POLICIES['reversed'])
     assert flat75['trades']==3 and tiered['trades']==3 and reversed_['trades']==3
-    # 10% stop risk: 1% risk budget => 10% notional of 3m = 300k.
-    assert round(flat75['allocated_capital'],2)==675000.00
+    # 10% stop risk: 1% account-risk budget => 10% notional of 3m = 300k.
+    assert round(sum(flat75['capital_by_tier'].values()),2)==675000.00
     assert round(sum(tiered['capital_by_tier'].values()),2)==675000.00
     assert tiered['capital_by_tier']['low'] < tiered['capital_by_tier']['high']
     assert reversed_['capital_by_tier']['low'] > reversed_['capital_by_tier']['high']
