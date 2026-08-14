@@ -1,0 +1,81 @@
+name: Candidate Capital V2 Research
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'portfolio_candidate_capital_v2.py'
+      - 'tests/test_portfolio_candidate_capital_v2.py'
+      - 'tests/test_lab_ui.py'
+      - 'static/candidate_capital_v2_ui.js'
+      - 'static/candidate_capital_v2_ui.css'
+      - 'static/lab_dashboard.js'
+      - '.github/workflows/candidate-capital-v2.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'portfolio_candidate_capital_v2.py'
+      - 'static/replay_backtest_pool_v2.json'
+      - '.github/workflows/candidate-capital-v2.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: candidate-capital-v2-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: python -m pip install -r requirements.txt
+      - name: Compile research
+        run: python -m py_compile portfolio_candidate_capital_v2.py tests/test_portfolio_candidate_capital_v2.py tests/test_lab_ui.py
+      - name: JavaScript syntax
+        run: |
+          node --check static/candidate_capital_v2_ui.js
+          node --check static/lab_dashboard.js
+      - name: Deterministic V2 tests
+        run: PYTHONPATH=. python tests/test_portfolio_candidate_capital_v2.py
+      - name: Lab UI wiring
+        run: PYTHONPATH=. python tests/test_lab_ui.py
+      - name: Run candidate and capital research on current V4 pool
+        run: python portfolio_candidate_capital_v2.py
+      - name: Validate research artifact
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('static/portfolio_candidate_capital_v2.json').read_text(encoding='utf-8'))
+          assert d['ready'] is True
+          assert d['promotion_status']=='development_only_not_fresh_holdout'
+          assert d['method']['v1_untouched'] is True
+          assert d['method']['policies'].startswith('four pre-registered')
+          assert [x['id'] for x in d['policies']]==['v1_flat','tiered_all','selective','high_conviction']
+          assert max(x['risk_multiplier_by_tier']['high'] for x in d['policies']) <= 1.0
+          s=d['summary']
+          print('\nCandidate Capital V2 summary')
+          for pid,x in s['policies'].items():
+              print(pid,'ret',x['stitched_test_return_pct'],'mdd',x['worst_test_mdd_pct'],'positive',x['positive_test_folds'],'trades',x['total_test_trades'],'beats_v1',x.get('folds_beating_v1'),'delta',x.get('mean_delta_vs_v1_pct'))
+          print('diagnostics',json.dumps(s['candidate_diagnostics'],ensure_ascii=False))
+          PY
+      - name: Publish research result on main
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git config user.name "swing-lab-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add static/portfolio_candidate_capital_v2.json
+          if git diff --cached --quiet; then
+            echo "No V2 research changes"
+          else
+            git commit -m "research: refresh candidate capital V2 result [skip ci]"
+            git pull --rebase origin main
+            git push
+          fi
