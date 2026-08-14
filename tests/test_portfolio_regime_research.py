@@ -34,7 +34,7 @@ def test_source_guards_train_only_selection():
     assert 'test_selected' not in choose
     assert 'test_baseline' not in choose
     assert 'test_delta_return_pct' not in choose
-    assert 'signal_day close regime is known before' in src
+    assert 'signal-day close regime is known before' in src
     assert 'SPY and QQQ close vs trailing SMA200' in src
 
 
