@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated_at": "2026-08-14T12:40:00+00:00",
+  "generated_at": "2026-08-14T12:57:20+00:00",
   "status": "FORWARD_PROMOTION_REVIEW",
   "gate": "WAIT_FORWARD_SAMPLE",
   "headline": "기반시설은 준비 완료 · 미래 표본을 모으는 중",
@@ -55,6 +55,7 @@
       "status": "FORWARD_SHADOW",
       "freeze_date": "2026-08-13",
       "forward_start_date": "2026-08-14",
+      "updated_at": "2026-08-14T12:57:01+00:00",
       "return_pct": 0.0,
       "equity_krw": 3000000.0,
       "cash_krw": 3000000.0,
@@ -67,6 +68,14 @@
       "reject_max_positions": 0,
       "sample_progress_pct": 0.0,
       "sample_ready": false,
+      "safety": {
+        "forward_shadow_only": true,
+        "live_trading_disabled": true,
+        "production_mutation_disabled": true,
+        "auto_retune_disabled": true,
+        "human_intervention_disabled": true,
+        "no_state_errors": true
+      },
       "safety_pass": true,
       "error_count": 0
     },
@@ -79,6 +88,7 @@
       "status": "FORWARD_SHADOW",
       "freeze_date": "2026-08-13",
       "forward_start_date": "2026-08-14",
+      "updated_at": "2026-08-14T12:57:07+00:00",
       "return_pct": 0.0,
       "equity_krw": 3000000.0,
       "cash_krw": 3000000.0,
@@ -91,6 +101,14 @@
       "reject_max_positions": 0,
       "sample_progress_pct": 0.0,
       "sample_ready": false,
+      "safety": {
+        "forward_shadow_only": true,
+        "live_trading_disabled": true,
+        "production_mutation_disabled": true,
+        "auto_retune_disabled": true,
+        "human_intervention_disabled": true,
+        "no_state_errors": true
+      },
       "safety_pass": true,
       "error_count": 0
     },
@@ -103,6 +121,7 @@
       "status": "FORWARD_SHADOW",
       "freeze_date": "2026-08-14",
       "forward_start_date": "2026-08-14",
+      "updated_at": "2026-08-14T12:57:12+00:00",
       "return_pct": 0.0,
       "equity_krw": 3000000.0,
       "cash_krw": 3000000.0,
@@ -115,6 +134,14 @@
       "reject_max_positions": 0,
       "sample_progress_pct": 0.0,
       "sample_ready": false,
+      "safety": {
+        "forward_shadow_only": true,
+        "live_trading_disabled": true,
+        "production_mutation_disabled": true,
+        "auto_retune_disabled": true,
+        "human_intervention_disabled": true,
+        "no_state_errors": true
+      },
       "safety_pass": true,
       "error_count": 0
     },
@@ -127,6 +154,7 @@
       "status": "FORWARD_SHADOW",
       "freeze_date": "2026-08-14",
       "forward_start_date": "2026-08-14",
+      "updated_at": "2026-08-14T12:57:16+00:00",
       "return_pct": 0.0,
       "equity_krw": 3000000.0,
       "cash_krw": 3000000.0,
@@ -139,14 +167,49 @@
       "reject_max_positions": 0,
       "sample_progress_pct": 0.0,
       "sample_ready": false,
+      "safety": {
+        "forward_shadow_only": true,
+        "live_trading_disabled": true,
+        "production_mutation_disabled": true,
+        "auto_retune_disabled": true,
+        "human_intervention_disabled": true,
+        "no_state_errors": true
+      },
       "safety_pass": true,
       "error_count": 0
     }
   ],
   "comparisons": [
-    {"challenger": "v2", "baseline": "v1", "label": "V2 · CAPITAL 0.75 vs V1 · BASELINE", "return_delta_pct": 0.0, "equity_delta_krw": 0.0, "closed_trade_delta": 0, "cash_reject_delta": 0, "judgement_allowed": false},
-    {"challenger": "v3", "baseline": "v2", "label": "V3 · CORR DAMP vs V2 · CAPITAL 0.75", "return_delta_pct": 0.0, "equity_delta_krw": 0.0, "closed_trade_delta": 0, "cash_reject_delta": 0, "judgement_allowed": false},
-    {"challenger": "v4", "baseline": "v2", "label": "V4 · SAME-DAY RANK vs V2 · CAPITAL 0.75", "return_delta_pct": 0.0, "equity_delta_krw": 0.0, "closed_trade_delta": 0, "cash_reject_delta": 0, "judgement_allowed": false}
+    {
+      "challenger": "v2",
+      "baseline": "v1",
+      "label": "V2 · CAPITAL 0.75 vs V1 · BASELINE",
+      "return_delta_pct": 0.0,
+      "equity_delta_krw": 0.0,
+      "closed_trade_delta": 0,
+      "cash_reject_delta": 0,
+      "judgement_allowed": false
+    },
+    {
+      "challenger": "v3",
+      "baseline": "v2",
+      "label": "V3 · CORR DAMP vs V2 · CAPITAL 0.75",
+      "return_delta_pct": 0.0,
+      "equity_delta_krw": 0.0,
+      "closed_trade_delta": 0,
+      "cash_reject_delta": 0,
+      "judgement_allowed": false
+    },
+    {
+      "challenger": "v4",
+      "baseline": "v2",
+      "label": "V4 · SAME-DAY RANK vs V2 · CAPITAL 0.75",
+      "return_delta_pct": 0.0,
+      "equity_delta_krw": 0.0,
+      "closed_trade_delta": 0,
+      "cash_reject_delta": 0,
+      "judgement_allowed": false
+    }
   ],
   "promotion_rules": [
     "V1~V4 must stay frozen; correctness/safety fixes only.",
