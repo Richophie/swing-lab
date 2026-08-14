@@ -1,0 +1,78 @@
+name: Frozen Same-Day Rank Challenger V4 Validation
+
+on:
+  pull_request:
+    paths:
+      - 'priority_challenger_v4.py'
+      - 'tests/test_priority_challenger_v4.py'
+      - '.github/workflows/market-scan.yml'
+      - '.github/workflows/priority-challenger-v4-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: python -m pip install -r requirements.txt
+      - name: Compile
+        run: python -m py_compile priority_challenger_v4.py tests/test_priority_challenger_v4.py
+      - name: Deterministic rank isolation tests
+        run: PYTHONPATH=. python tests/test_priority_challenger_v4.py
+      - name: Snapshot earlier challenger files
+        run: |
+          sha256sum static/priority_challenger_v1_calibration.json static/priority_challenger_v1_state.json static/priority_challenger_v2_calibration.json static/priority_challenger_v2_state.json static/priority_challenger_v3_calibration.json static/priority_challenger_v3_state.json > /tmp/before.sha
+      - name: Freeze V4 from exact V2 calibration clone
+        run: PYTHONPATH=. python priority_challenger_v4.py freeze
+      - name: Verify frozen rule and calibration parity
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          v2=json.loads(Path('static/priority_challenger_v2_calibration.json').read_text(encoding='utf-8'))
+          v4=json.loads(Path('static/priority_challenger_v4_calibration.json').read_text(encoding='utf-8'))
+          assert v4['challenger_id']=='priority_challenger_v4_same_day_rank1_full'
+          assert v4['comparison_baseline']==v2['challenger_id']=='priority_challenger_v2_capital075'
+          assert v4['forward_start_date']==v2['forward_start_date']=='2026-08-14'
+          assert v4['hypothesis_freeze_date']=='2026-08-14'
+          rule=v4['same_day_rank_risk']
+          assert rule['rank1_risk_budget_pct']==0.75
+          assert rule['other_risk_budget_pct']==0.375
+          assert rule['candidate_rejection'] is False
+          assert rule['priority_formula_changed'] is False
+          for key in ('family','frozen_symbols','quality_filter','priority','reference','reference_counts','max_positions'):
+              assert v4[key]==v2[key], key
+          assert v4['ab_isolation']['only_changed_rule']=='same_entry_day_rank_conditioned_risk_budget'
+          print('V4 freeze parity PASS')
+          PY
+      - name: Smoke run V4 with current daily data
+        run: PYTHONPATH=. python priority_challenger_v4.py run
+      - name: Verify V4 forward state and safety flags
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          s=json.loads(Path('static/priority_challenger_v4_state.json').read_text(encoding='utf-8'))
+          assert s['challenger_id']=='priority_challenger_v4_same_day_rank1_full'
+          assert s['status']=='FORWARD_SHADOW'
+          assert s['forward_start_date']=='2026-08-14'
+          assert s['live_trading_enabled'] is False
+          assert s['production_mutation_enabled'] is False
+          assert s['meta']['production_main_picker_mutated'] is False
+          assert s['meta']['live_orders_mutated'] is False
+          assert s['meta']['rank1_risk_budget_pct']==0.75
+          assert s['meta']['other_rank_risk_budget_pct']==0.375
+          print('V4 forward smoke PASS',s.get('summary'))
+          PY
+      - name: Verify V1 V2 V3 files untouched
+        run: |
+          sha256sum static/priority_challenger_v1_calibration.json static/priority_challenger_v1_state.json static/priority_challenger_v2_calibration.json static/priority_challenger_v2_state.json static/priority_challenger_v3_calibration.json static/priority_challenger_v3_state.json > /tmp/after.sha
+          diff -u /tmp/before.sha /tmp/after.sha
