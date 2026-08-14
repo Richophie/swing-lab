@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 import json
 import math
 from pathlib import Path
@@ -95,6 +95,20 @@ def quantile(values: list[float], q: float) -> float:
     return xs[lo] * (1.0 - w) + xs[hi] * w
 
 
+def holdout_dates(candidates: list[dict]) -> tuple[date, date, date, date, date]:
+    """Use the exact same candidate-count 70/30 boundary as strategy_optimizer_v2."""
+    dates = sorted(opt.parse_day(c["entry_date"]) for c in candidates if c.get("entry_date"))
+    if not dates:
+        raise ValueError("No candidate dates")
+    start = dates[0]
+    end = dates[-1]
+    split = dates[min(len(dates) - 1, int(len(dates) * 0.70))]
+    oos_start = split
+    train_end = date.fromordinal(split.toordinal() - 1) if split > start else split
+    recent_start = max(oos_start, date.fromordinal(end.toordinal() - 730))
+    return start, train_end, oos_start, recent_start, end
+
+
 def metric(x: dict) -> dict:
     return {
         "ending": round(x["ending"], 2),
@@ -124,12 +138,7 @@ def main():
         raise SystemExit("Replay pool V4 with signal-day quality_features is required")
 
     candidates = list(pool.get("trades") or [])
-    available_start = opt.parse_day(pool["available_start"])
-    available_end = opt.parse_day(pool["available_end"])
-    total_days = (available_end - available_start).days
-    train_end = available_start.fromordinal(available_start.toordinal() + int(total_days * 0.70))
-    oos_start = train_end.fromordinal(train_end.toordinal() + 1)
-    recent_start = available_end.fromordinal(available_end.toordinal() - min(730, total_days))
+    available_start, train_end, oos_start, recent_start, available_end = holdout_dates(candidates)
 
     for c in candidates:
         c["_quality"] = quality_score(c)
@@ -202,7 +211,7 @@ def main():
         })
 
     payload = {
-        "version": 1,
+        "version": 2,
         "ready": True,
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "pool_generated_at": pool.get("generated_at"),
@@ -210,6 +219,7 @@ def main():
         "method": {
             "quality_score": "fixed ex-ante strategy-specific formula; signal-day data only",
             "thresholds": "within-strategy percentiles calculated on TRAIN candidate distribution only",
+            "holdout_boundary": "same candidate-count chronological 70/30 split as strategy_optimizer_v2",
             "intensities": [
                 {"id": i, "label": label, "keep_fraction": keep}
                 for i, label, keep in INTENSITIES
@@ -228,6 +238,7 @@ def main():
         "notes": [
             "엄선은 전략마다 다른 신호일 품질 feature를 사용하며 미래 수익률을 품질점수에 넣지 않습니다.",
             "상위 50/30/15% 임계값은 TRAIN의 신호 분포에서만 정하고 OOS에는 그대로 고정합니다.",
+            "TRAIN/OOS 경계는 자동 최적화 엔진과 동일한 후보 발생 순서 기준 70/30을 사용합니다.",
             "TRAIN 선택 결과가 OOS에서 나빠지면 엄선 가설을 폐기하거나 약화해야 하며 OOS에 맞춰 컷을 다시 조정하지 않습니다.",
             "현재 후보풀은 여전히 현재 유동성 종목을 과거로 되감아 survivorship bias가 남아 있습니다.",
         ],
