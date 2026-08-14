@@ -13,6 +13,7 @@ on:
       - 'portfolio_regime_research.py'
       - 'portfolio_volatility_diagnostic.py'
       - 'portfolio_priority_audit.py'
+      - 'portfolio_flow_selection_diagnostic.py'
       - '.github/workflows/replay-lab-v2.yml'
   schedule:
     - cron: '40 22 * * 1-5'
@@ -176,11 +177,31 @@ jobs:
           print('priority audit PASS',[(f['id'],f['summary']['rules']['current']['stitched_test_return_pct']) for f in d['families']])
           PY
 
+      - name: 8. Diagnose whether signal-day sector Flow predicts trade quality
+        run: python portfolio_flow_selection_diagnostic.py
+      - name: Validate Flow selection diagnostic
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('static/portfolio_flow_selection_diagnostic.json').read_text(encoding='utf-8'))
+          assert d.get('ready') is True
+          assert d.get('promotion_status') == 'development_only_report_no_main_picker_mutation'
+          assert d.get('method',{}).get('type') == 'rolling OOS trade-level Flow selection diagnostic'
+          assert d.get('method',{}).get('production_main_picker_mutated') is False
+          assert d.get('method',{}).get('portfolio_filter_applied') is False
+          assert d.get('family',{}).get('id') == 'confirmed_sma_donchian'
+          assert d.get('family',{}).get('quality_intensity') == 'loose'
+          assert len(d.get('folds',[])) >= 3
+          assert d.get('summary',{}).get('pattern') in {'insufficient','repeats_but_development_only','mixed_positive','not_supported'}
+          print('Flow selection PASS',d['summary']['pattern'],d['summary']['strong_minus_weak_mean_return_pp'])
+          PY
+
       - name: Commit all research outputs together
         run: |
           git config user.name "swing-lab-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add static/replay_backtest_pool_v2.json static/strategy_optimizer_results.json static/strategy_selection_results.json static/portfolio_walkforward_results.json static/portfolio_regime_results.json static/portfolio_volatility_diagnostic.json static/portfolio_priority_audit.json
+          git add static/replay_backtest_pool_v2.json static/strategy_optimizer_results.json static/strategy_selection_results.json static/portfolio_walkforward_results.json static/portfolio_regime_results.json static/portfolio_volatility_diagnostic.json static/portfolio_priority_audit.json static/portfolio_flow_selection_diagnostic.json
           if git diff --cached --quiet; then
             echo "No research data changes"
             exit 0
