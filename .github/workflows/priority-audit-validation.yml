@@ -62,10 +62,13 @@ jobs:
           assert d.get('donchian_current_priority_values') == [2.0]
           for f in d.get('families',[]):
               s=f['summary']
-              print(f['name'])
+              print('\n',f['name'])
               for rid in ('current','quality_pct','hybrid_50'):
                   x=s['rules'][rid]
-                  print(' ',rid,x['stitched_test_return_pct'],x['worst_test_mdd_pct'])
-              print(' rejects',s['current_slot_audit'])
+                  print(' ',rid,'stitched',x['stitched_test_return_pct'],'worst_mdd',x['worst_test_mdd_pct'],'positive',x['positive_test_folds'],'beats_current',x.get('folds_beating_current'),'mean_delta',x.get('mean_delta_vs_current_pct'))
+              print(' current rejects',s['current_slot_audit'])
               print(' 2024',s.get('test_2024'))
+              for fold in f.get('folds',[]):
+                  vals={rid:fold['rankers'][rid]['test']['return_pct'] for rid in ('current','quality_pct','hybrid_50')}
+                  print('  ',fold['fold'],vals)
           PY
