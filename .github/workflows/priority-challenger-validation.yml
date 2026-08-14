@@ -18,7 +18,7 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 18
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -38,7 +38,7 @@ jobs:
         run: PYTHONPATH=. python tests/test_lab_ui.py
       - name: Build one-time calibration from current committed V4 pool
         run: |
-          rm -f static/priority_challenger_v1_calibration.json
+          rm -f static/priority_challenger_v1_calibration.json static/priority_challenger_v1_state.json
           python priority_challenger_v1.py freeze
       - name: Validate frozen artifact and no production mutation
         run: |
@@ -65,4 +65,22 @@ jobs:
           assert 'priority_challenger_v1.py freeze' in w and 'priority_challenger_v1.py run' in w
           assert 'priority_challenger_v1_calibration.json' in w and 'priority_challenger_v1_state.json' in w
           print('frozen challenger artifact PASS',d['reference_counts'],len(d['frozen_symbols']))
+          PY
+      - name: Smoke test forward engine with current daily data
+        run: python priority_challenger_v1.py run
+      - name: Validate forward state starts after the freeze
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          s=json.loads(Path('static/priority_challenger_v1_state.json').read_text(encoding='utf-8'))
+          assert s['status']=='FORWARD_SHADOW'
+          assert s['live_trading_enabled'] is False
+          assert s['production_mutation_enabled'] is False
+          assert s['forward_start_date']=='2026-08-14'
+          assert all(str(x.get('signal_date','')) >= '2026-08-14' for x in s.get('pending',[]))
+          assert all(str(x.get('signal_date','')) >= '2026-08-14' for x in s.get('positions',[]))
+          assert all(str(x.get('signal_date','')) >= '2026-08-14' for x in s.get('closed',[]))
+          assert s['summary']['open_positions'] <= 10
+          print('forward smoke PASS',s['summary'],'errors',len(s.get('errors',[])))
           PY
