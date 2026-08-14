@@ -1,0 +1,44 @@
+name: Exit Recycle Research
+
+on:
+  pull_request:
+    paths:
+      - 'exit_recycle_research.py'
+      - 'tests/test_exit_recycle_research.py'
+      - '.github/workflows/exit-recycle-research.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: python -m pip install -r requirements.txt
+      - name: Compile
+        run: python -m py_compile exit_recycle_research.py tests/test_exit_recycle_research.py
+      - name: Deterministic tests
+        run: PYTHONPATH=. python tests/test_exit_recycle_research.py
+      - name: Run exit recycle research
+        run: python exit_recycle_research.py
+      - name: Validate artifact
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('static/exit_recycle_research.json').read_text(encoding='utf-8'))
+          assert d['ready'] is True
+          assert d['promotion_status']=='development_only_exit_recycle_not_fresh_holdout'
+          assert d['method']['grid_search'] is False
+          assert d['method']['v1_v2_forward_untouched'] is True
+          assert len(d['summary'])==6
+          print('exit recycle artifact PASS')
+          for k,v in d['summary'].items():
+              print(k,v['stitched_test_return_pct'],v['worst_mdd_pct'],v['total_fresh_trades'],v['total_cash_rejects'],v['total_partial_events'],v['total_trail_exits'])
+          PY
