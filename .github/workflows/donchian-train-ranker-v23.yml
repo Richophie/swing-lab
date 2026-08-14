@@ -1,0 +1,71 @@
+name: Donchian TRAIN Ranker V2.3 Research
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'donchian_train_ranker_v23.py'
+      - 'tests/test_donchian_train_ranker_v23.py'
+      - '.github/workflows/donchian-train-ranker-v23.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'donchian_train_ranker_v23.py'
+      - 'static/replay_backtest_pool_v2.json'
+      - '.github/workflows/donchian-train-ranker-v23.yml'
+
+permissions:
+  contents: write
+concurrency:
+  group: donchian-train-ranker-v23-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: python -m pip install -r requirements.txt
+      - name: Compile
+        run: python -m py_compile donchian_train_ranker_v23.py tests/test_donchian_train_ranker_v23.py
+      - name: Deterministic tests
+        run: PYTHONPATH=. python tests/test_donchian_train_ranker_v23.py
+      - name: Run V2.3
+        run: python donchian_train_ranker_v23.py
+      - name: Validate result
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('static/donchian_train_ranker_v23.json').read_text(encoding='utf-8'))
+          assert d['ready'] is True
+          assert d['promotion_status']=='development_only_train_fitted_not_fresh_holdout'
+          assert d['model']['hyperparameter_search'] is False
+          assert d['method']['test_never_fits_model'] is True
+          assert d['method']['v1_untouched'] is True
+          assert min(f['model']['train_labels'] for f in d['folds']) >= 100
+          print('\nDonchian TRAIN ranker V2.3 summary')
+          for key,x in d['summary'].items():
+              print(key,'ret',x['stitched_test_return_pct'],'mdd',x['worst_test_mdd_pct'],'positive',x['positive_test_folds'],'trades',x['total_test_trades'],'beats_v1',x.get('folds_beating_v1'),'beats_current',x.get('folds_beating_current_tiered'),'delta_current',x.get('mean_delta_vs_current_tiered_pct'))
+          print('coefficients',json.dumps(d['coefficient_stability'],ensure_ascii=False))
+          for f in d['folds']:
+              print(f['fold'],'labels',f['model']['train_labels'],{k:v['test']['return_pct'] for k,v in f['variants'].items()})
+          PY
+      - name: Publish on main
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git config user.name "swing-lab-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add static/donchian_train_ranker_v23.json
+          if git diff --cached --quiet; then
+            echo "No V2.3 changes"
+          else
+            git commit -m "research: refresh Donchian TRAIN ranker V2.3 [skip ci]"
+            git pull --rebase origin main
+            git push
+          fi
