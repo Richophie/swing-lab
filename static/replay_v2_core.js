@@ -30,8 +30,10 @@ function exec(c,p,f){
     if(exitMode==='donchian20_close'&&Number.isFinite(dc20)&&cl<dc20){out=cl;date=d;why='Donchian 20일 하단 이탈';break}
     if(i===hold-1){out=cl;date=d;why=exitMode==='sma20_close'?'최대보유 종료':exitMode==='donchian20_close'?'최대보유 종료':'기간종료'}
   }
-  const paid=entry*(1+comm),recv=out*(1-fr)*(1-comm);
-  return{start_date:c.entry_date,end_date:date,change:recv/paid-1,risk_fraction:Math.max(.001,(entry-stop)/entry),priority:N(c.net_risk_reward,N(c.elite_score)/100),key:`${c.symbol}|${c.strategy_id}|${c.signal_date}`,symbol:c.symbol,strategy_id:c.strategy_id,strategy_name:c.strategy_name||c.strategy_id,reason:why,market_state:c.market_state||'unknown'};
+  const paid=entry*(1+comm),recv=out*(1-fr)*(1-comm),riskFraction=Math.max(.001,(entry-stop)/entry);
+  const marks=q.filter(b=>String(b?.[0]||'')<=date).map(b=>[String(b?.[0]||''),Math.max(0,N(b?.[4])*(1-fr)*(1-comm)/paid)]);
+  const stressFactor=hard>0?Math.max(0,hard*(1-fr)*(1-comm)/paid):Math.max(0,1-riskFraction);
+  return{start_date:c.entry_date,end_date:date,change:recv/paid-1,risk_fraction:riskFraction,stress_factor:stressFactor,marks,priority:N(c.net_risk_reward,N(c.elite_score)/100),key:`${c.symbol}|${c.strategy_id}|${c.signal_date}`,symbol:c.symbol,strategy_id:c.strategy_id,strategy_name:c.strategy_name||c.strategy_id,reason:why,market_state:c.market_state||'unknown'};
 }
 window.makeSwingReplayRows=(p,a,b,s)=>{if(+p?.version<2)return baseRows(p,a,b,s);const on=document.getElementById('btForceProfit')?.checked,f=on?Math.max(.1,Math.min(50,N(document.getElementById('btForceProfitPct')?.value,3))):0,o=[];for(const c of p.trades||[]){if(!s.includes(c.strategy_id)||String(c.entry_date||'')<a||String(c.entry_date||'')>b)continue;const clipped={...c,path:(c.path||[]).filter(x=>String(x?.[0]||'')<=b)};if(!clipped.path.length)continue;const r=exec(clipped,p,f);if(r)o.push(r)}return o};
 })();
