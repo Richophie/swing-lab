@@ -29,6 +29,7 @@ on:
       - 'shadow_lab.py'
       - 'signal_log.py'
       - 'journal.py'
+      - 'history_marks.py'
       - 'rebuild_journal_day.py'
       - 'refresh_fx_cache.py'
       - 'backtest_engine.py'
@@ -39,6 +40,8 @@ on:
       - 'static/dashboard.js'
       - 'static/detail_overlay.js'
       - 'static/ui_controls.js'
+      - 'static/history_polish.js'
+      - 'static/history_returns_v2.css'
       - 'static/lab_dashboard.js'
       - 'static/lab_dashboard.css'
       - 'static/signal_event_polish.js'
@@ -65,7 +68,7 @@ jobs:
           cache: 'pip'
       - run: pip install -r requirements.txt
       - name: Compile clean modules
-        run: python -m py_compile config.py baseline_rules.py baseline_journal.py intraday_execution.py intraday_outcome_repair.py market_data.py strategy_rules.py strategy_engine.py stock_names.py scanner.py earnings_events.py risk_observability.py paper_broker.py paper_broker_service.py paper_plan.py paper_manual.py paper_entry.py repo_data.py shadow_lab.py signal_log.py journal.py rebuild_journal_day.py refresh_fx_cache.py backtest_engine.py app.py qa.py
+        run: python -m py_compile config.py baseline_rules.py baseline_journal.py intraday_execution.py intraday_outcome_repair.py market_data.py strategy_rules.py strategy_engine.py stock_names.py scanner.py earnings_events.py risk_observability.py paper_broker.py paper_broker_service.py paper_plan.py paper_manual.py paper_entry.py repo_data.py shadow_lab.py signal_log.py journal.py history_marks.py rebuild_journal_day.py refresh_fx_cache.py backtest_engine.py app.py qa.py
       - name: Rebuild Aug 12 journal with current strategy logic
         run: python rebuild_journal_day.py
       - name: Build latest live candidates
@@ -78,6 +81,8 @@ jobs:
         run: python qa.py
       - name: Freeze close-confirmed signals and update outcomes
         run: python journal.py
+      - name: Mark recommendation archive to current market
+        run: python history_marks.py
       - name: Freeze baseline metadata on official recommendations
         run: python baseline_journal.py
       - name: Resolve same-day STOP/TARGET order with minute data
