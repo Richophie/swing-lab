@@ -28,12 +28,15 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
+      - name: Install research dependencies
+        run: python -m pip install -r requirements.txt
       - name: Compile research Python
         run: python -m py_compile portfolio_walkforward_research.py portfolio_regime_research.py strategy_selection_research.py strategy_optimizer_runner.py tests/test_portfolio_walkforward_research.py tests/test_portfolio_regime_research.py tests/test_lab_ui.py
       - name: JavaScript syntax
