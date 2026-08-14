@@ -1,0 +1,68 @@
+name: Frozen Priority Challenger Validation
+
+on:
+  pull_request:
+    paths:
+      - 'priority_challenger_v1.py'
+      - 'tests/test_priority_challenger_v1.py'
+      - 'tests/test_lab_ui.py'
+      - 'static/priority_challenger_v1.js'
+      - 'static/priority_challenger_v1.css'
+      - 'static/lab_dashboard.js'
+      - '.github/workflows/market-scan.yml'
+      - '.github/workflows/priority-challenger-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: python -m pip install -r requirements.txt
+      - name: Compile challenger
+        run: python -m py_compile priority_challenger_v1.py tests/test_priority_challenger_v1.py tests/test_lab_ui.py
+      - name: JavaScript syntax
+        run: |
+          node --check static/priority_challenger_v1.js
+          node --check static/lab_dashboard.js
+      - name: Deterministic freeze and safety tests
+        run: PYTHONPATH=. python tests/test_priority_challenger_v1.py
+      - name: Lab UI wiring tests
+        run: PYTHONPATH=. python tests/test_lab_ui.py
+      - name: Build one-time calibration from current committed V4 pool
+        run: |
+          rm -f static/priority_challenger_v1_calibration.json
+          python priority_challenger_v1.py freeze
+      - name: Validate frozen artifact and no production mutation
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('static/priority_challenger_v1_calibration.json').read_text(encoding='utf-8'))
+          assert d['challenger_id']=='priority_challenger_v1'
+          assert d['status']=='FROZEN_FORWARD_ONLY'
+          assert d['freeze_date']=='2026-08-13'
+          assert d['forward_start_date']=='2026-08-14'
+          assert d['mutable'] is False
+          assert d['family']==['confirmed_pullback','sma200_20_squeeze','donchian_55']
+          assert d['max_positions']==10
+          assert d['quality_filter']['min_percentile']==0.5
+          assert d['priority']['current_weight']==0.5 and d['priority']['quality_weight']==0.5
+          assert len(d['frozen_symbols']) >= 50
+          assert all(d['reference_counts'][sid] >= 20 for sid in d['family'])
+          s=Path('priority_challenger_v1.py').read_text(encoding='utf-8')
+          assert 'submit_order' not in s
+          assert "'live_trading_enabled': False" in s
+          assert "'production_mutation_enabled': False" in s
+          w=Path('.github/workflows/market-scan.yml').read_text(encoding='utf-8')
+          assert 'priority_challenger_v1.py freeze' in w and 'priority_challenger_v1.py run' in w
+          assert 'priority_challenger_v1_calibration.json' in w and 'priority_challenger_v1_state.json' in w
+          print('frozen challenger artifact PASS',d['reference_counts'],len(d['frozen_symbols']))
+          PY
