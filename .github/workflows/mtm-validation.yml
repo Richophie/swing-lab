@@ -1,0 +1,40 @@
+name: MTM Validation
+
+on:
+  pull_request:
+    paths:
+      - 'strategy_optimizer_runner.py'
+      - 'strategy_optimizer_v2.py'
+      - 'static/replay_math.js'
+      - 'static/replay_v2_core.js'
+      - 'static/lab_replay_ui.js'
+      - 'static/strategy_optimizer_ui.js'
+      - 'static/lab_dashboard.js'
+      - 'tests/test_mtm_portfolio.py'
+      - 'tests/test_strategy_optimizer.py'
+      - 'tests/test_lab_ui.py'
+      - '.github/workflows/mtm-validation.yml'
+      - '.github/workflows/strategy-optimizer.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile MTM Python
+        run: python -m py_compile strategy_optimizer_v2.py strategy_optimizer_runner.py tests/test_mtm_portfolio.py tests/test_strategy_optimizer.py tests/test_lab_ui.py
+      - name: JavaScript syntax
+        run: node --check static/replay_math.js && node --check static/replay_v2_core.js && node --check static/lab_replay_ui.js && node --check static/strategy_optimizer_ui.js && node --check static/lab_dashboard.js
+      - name: MTM deterministic portfolio test
+        run: PYTHONPATH=. python tests/test_mtm_portfolio.py
+      - name: Optimizer wiring test
+        run: PYTHONPATH=. python tests/test_strategy_optimizer.py
+      - name: Replay lab wiring test
+        run: PYTHONPATH=. python tests/test_lab_ui.py
