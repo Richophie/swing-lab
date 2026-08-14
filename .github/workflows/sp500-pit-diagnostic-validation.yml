@@ -1,0 +1,84 @@
+name: S&P 500 PIT Diagnostic Validation
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'sp500_pit_diagnostic.py'
+      - 'sp500_pit_price_coverage.py'
+      - 'tests/test_sp500_pit_diagnostic.py'
+      - 'tests/test_sp500_pit_price_coverage.py'
+      - '.github/workflows/sp500-pit-diagnostic-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: pip install -r requirements.txt
+      - name: Compile
+        run: python -m py_compile sp500_pit_diagnostic.py sp500_pit_price_coverage.py tests/test_sp500_pit_diagnostic.py tests/test_sp500_pit_price_coverage.py
+      - name: Deterministic reconstruction tests
+        run: |
+          PYTHONPATH=. python tests/test_sp500_pit_diagnostic.py
+          PYTHONPATH=. python tests/test_sp500_pit_price_coverage.py
+      - name: Snapshot production and frozen Forward files
+        run: |
+          sha256sum static/replay_backtest_pool_v2.json \
+            static/priority_challenger_v1_calibration.json static/priority_challenger_v1_state.json \
+            static/priority_challenger_v2_calibration.json static/priority_challenger_v2_state.json \
+            static/priority_challenger_v3_calibration.json static/priority_challenger_v3_state.json \
+            static/priority_challenger_v4_calibration.json static/priority_challenger_v4_state.json > /tmp/core.before
+      - name: Load maintained community S&P 500 historical snapshots
+        run: python sp500_pit_diagnostic.py
+      - name: Validate historical membership envelope
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path('static/sp500_pit_diagnostic.json').read_text(encoding='utf-8'))
+          assert p['ready'] is True, p
+          assert p['promotion_status']=='DIAGNOSTIC_ONLY_COMMUNITY_MEMBERSHIP', p
+          counts=[x['member_count'] for x in p['monthly_member_counts']]
+          assert min(counts)>=450 and max(counts)<=550, (min(counts),max(counts))
+          assert len(p['historical_removed_tickers'])>50, len(p['historical_removed_tickers'])
+          assert p['coverage_checks']['target_start_covered'] is True, p
+          assert p['coverage_checks']['source_fresh_enough'] is True, p
+          assert p['production_main_picker_mutated'] is False
+          assert p['forward_challengers_mutated'] is False
+          print('membership', p['source_coverage_end'], p['source_age_days'], p['current_member_count'], p['snapshot_count'], p['unique_historical_ticker_count'], len(p['historical_removed_tickers']), min(counts), max(counts))
+          PY
+      - name: Probe free history coverage for historical non-current tickers
+        run: python sp500_pit_price_coverage.py
+      - name: Validate free-price probe remains diagnostic only
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path('static/sp500_pit_price_coverage.json').read_text(encoding='utf-8'))
+          assert p['ready'] is True, p
+          assert p['research_grade_pit_ready'] is False, p
+          assert p['promotion_status']=='DIAGNOSTIC_ONLY_NOT_RESEARCH_GRADE_PIT', p
+          assert p['removed_ticker_count']>50, p
+          assert 0 <= p['usable_warmup_and_near_removal_pct'] <= 100
+          assert p['production_main_picker_mutated'] is False
+          assert p['forward_challengers_mutated'] is False
+          print('free-price coverage', p['removed_ticker_count'], p['with_any_history_pct'], p['near_removal_pct'], p['usable_warmup_and_near_removal_pct'])
+          print('missing examples', p['missing_or_incomplete_tickers'][:25])
+          PY
+      - name: Verify production and V1 V2 V3 V4 untouched
+        run: |
+          sha256sum static/replay_backtest_pool_v2.json \
+            static/priority_challenger_v1_calibration.json static/priority_challenger_v1_state.json \
+            static/priority_challenger_v2_calibration.json static/priority_challenger_v2_state.json \
+            static/priority_challenger_v3_calibration.json static/priority_challenger_v3_state.json \
+            static/priority_challenger_v4_calibration.json static/priority_challenger_v4_state.json > /tmp/core.after
+          diff -u /tmp/core.before /tmp/core.after
