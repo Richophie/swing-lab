@@ -1,0 +1,57 @@
+name: Walk-forward and Backtest UI Validation
+
+on:
+  pull_request:
+    paths:
+      - 'portfolio_walkforward_research.py'
+      - 'strategy_selection_research.py'
+      - 'static/walkforward_ui.js'
+      - 'static/walkforward_ui.css'
+      - 'static/lab_replay_ui.js'
+      - 'static/lab_replay_boot.js'
+      - 'static/lab_replay.css'
+      - 'static/backtest_result_tabs.js'
+      - 'static/backtest_result_tabs.css'
+      - 'static/lab_dashboard.js'
+      - 'tests/test_portfolio_walkforward_research.py'
+      - 'tests/test_lab_ui.py'
+      - '.github/workflows/replay-lab-v2.yml'
+      - '.github/workflows/walkforward-ui-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile research Python
+        run: python -m py_compile portfolio_walkforward_research.py strategy_selection_research.py strategy_optimizer_runner.py tests/test_portfolio_walkforward_research.py tests/test_lab_ui.py
+      - name: JavaScript syntax
+        run: |
+          node --check static/walkforward_ui.js
+          node --check static/lab_replay_ui.js
+          node --check static/lab_replay_boot.js
+          node --check static/backtest_result_tabs.js
+          node --check static/lab_dashboard.js
+      - name: Rolling walk-forward deterministic tests
+        run: PYTHONPATH=. python tests/test_portfolio_walkforward_research.py
+      - name: Backtest UI wiring tests
+        run: PYTHONPATH=. python tests/test_lab_ui.py
+      - name: Guard next-period outcome isolation
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('portfolio_walkforward_research.py').read_text(encoding='utf-8')
+          threshold=s[s.index('def thresholds_for'):s.index('def filtered_rows')]
+          assert '_quality' in threshold
+          for forbidden in ('change', 'return_pct', 'mdd_pct', 'test_end'):
+              assert forbidden not in threshold, forbidden
+          assert 'train_start' in threshold and 'train_end' in threshold
+          print('walk-forward leakage guard PASS')
+          PY
