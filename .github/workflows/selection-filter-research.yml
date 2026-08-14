@@ -1,0 +1,66 @@
+name: Strategy Selection Filter Research
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'static/replay_backtest_pool_v2.json'
+  schedule:
+    - cron: '25 23 * * 1-5'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: selection-filter-main
+  cancel-in-progress: true
+
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run strategy-specific selection research
+        run: python strategy_selection_research.py
+      - name: Validate result
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('static/strategy_selection_results.json').read_text(encoding='utf-8'))
+          assert d.get('ready') is True
+          assert d.get('promotion_status') == 'research_only'
+          assert d.get('method',{}).get('equity') == 'daily_close_mark_to_market'
+          assert len(d.get('families',[])) == 3
+          for f in d['families']:
+              assert [v['intensity'] for v in f['variants']] == ['raw','loose','normal','strong']
+              assert sum(1 for v in f['variants'] if v.get('train_pick')) == 1
+          print([(f['id'],f['train_selected_intensity']) for f in d['families']])
+          PY
+      - name: Commit research result
+        run: |
+          git config user.name "swing-lab-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add static/strategy_selection_results.json
+          if git diff --cached --quiet; then
+            echo "No selection research changes"
+            exit 0
+          fi
+          git commit -m "data: refresh strategy selection research [skip render]"
+          for attempt in 1 2 3 4; do
+            git fetch origin main
+            git rebase origin/main
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            echo "Push raced with another data writer; retry $attempt"
+            sleep 3
+          done
+          exit 1
