@@ -12,6 +12,8 @@ import requests
 ROOT = Path(__file__).parent
 OUT = ROOT / 'static' / 'sp500_pit_diagnostic.json'
 PAGE_URL = 'https://en.wikipedia.org/wiki/List_of_S%26P_500_companies'
+API_URL = 'https://en.wikipedia.org/w/api.php'
+PAGE_NAME = 'List of S&P 500 companies'
 TARGET_START = date(2017, 1, 1)
 TARGET_END = date(2026, 8, 13)
 
@@ -55,7 +57,9 @@ def normalize_current_table(df: pd.DataFrame) -> list[dict]:
 
 
 def normalize_changes_table(df: pd.DataFrame) -> list[dict]:
-    date_col = _find_col(df, 'date') or _find_col(df, 'effective', 'date')
+    date_col = _find_col(df, 'effective', 'date')
+    if date_col is None:
+        date_col = _find_col(df, 'date')
     added_col = _find_col(df, 'added', 'ticker')
     removed_col = _find_col(df, 'removed', 'ticker')
     added_name_col = _find_col(df, 'added', 'security')
@@ -82,17 +86,22 @@ def normalize_changes_table(df: pd.DataFrame) -> list[dict]:
     return out
 
 
+def _table_columns_debug(tables: list[pd.DataFrame]) -> list[list[str]]:
+    return [[_flat_column(c) for c in df.columns] for df in tables]
+
+
 def identify_tables(tables: list[pd.DataFrame]) -> tuple[pd.DataFrame, pd.DataFrame]:
     current = None
     changes = None
     for df in tables:
         flats = [_flat_column(c) for c in df.columns]
-        if current is None and any(x == 'symbol' or x.endswith(' symbol') for x in flats) and any('security' in x for x in flats):
-            current = df
-        if changes is None and any('added' in x and 'ticker' in x for x in flats) and any('removed' in x and 'ticker' in x for x in flats):
+        if current is None and any('symbol' in x for x in flats) and any('security' in x for x in flats):
+            if not any('added' in x or 'removed' in x for x in flats):
+                current = df
+        if changes is None and any('added' in x and ('ticker' in x or 'symbol' in x) for x in flats) and any('removed' in x and ('ticker' in x or 'symbol' in x) for x in flats):
             changes = df
     if current is None or changes is None:
-        raise ValueError('could not identify current/changes tables')
+        raise ValueError(f'could not identify current/changes tables; columns={_table_columns_debug(tables)}')
     return current, changes
 
 
@@ -163,9 +172,20 @@ def build_from_tables(tables: list[pd.DataFrame], *, as_of: date) -> dict:
 
 
 def fetch_tables() -> list[pd.DataFrame]:
-    response = requests.get(PAGE_URL, timeout=30, headers={'User-Agent': 'swing-lab-research/1.0'})
+    response = requests.get(
+        API_URL,
+        params={'action': 'parse', 'page': PAGE_NAME, 'prop': 'text', 'format': 'json', 'formatversion': 2},
+        timeout=30,
+        headers={'User-Agent': 'swing-lab-research/1.0 (historical-index diagnostic)'},
+    )
     response.raise_for_status()
-    return pd.read_html(StringIO(response.text))
+    payload = response.json()
+    html = ((payload.get('parse') or {}).get('text'))
+    if isinstance(html, dict):
+        html = html.get('*')
+    if not html:
+        raise ValueError(f'Wikipedia parse API returned no page HTML: {payload.get("error") or "unknown response"}')
+    return pd.read_html(StringIO(str(html)))
 
 
 def run() -> dict:
