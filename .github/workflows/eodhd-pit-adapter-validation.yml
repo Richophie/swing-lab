@@ -1,0 +1,40 @@
+name: EODHD PIT Adapter Validation
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'eodhd_pit_adapter.py'
+      - 'tests/test_eodhd_pit_adapter.py'
+      - 'docs/PIT_DATA_SOURCE_OPTIONS_2026-08-14.md'
+      - '.github/workflows/eodhd-pit-adapter-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: pip install -r requirements.txt
+      - name: Compile
+        run: python -m py_compile eodhd_pit_adapter.py tests/test_eodhd_pit_adapter.py
+      - name: Deterministic vendor-response parsing and safety tests
+        run: PYTHONPATH=. python tests/test_eodhd_pit_adapter.py
+      - name: Verify adapter does not require or expose a token in CI
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          text=Path('eodhd_pit_adapter.py').read_text(encoding='utf-8')
+          assert 'EODHD_API_TOKEN' in text
+          assert 'api_token=demo' not in text
+          assert 'submit_order' not in text
+          assert 'source_manifest.json' not in text
+          print('adapter is token-gated and does not mutate source verification')
+          PY
