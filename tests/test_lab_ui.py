@@ -17,11 +17,11 @@ def test_replay_lab_wiring():
     deep=(ROOT/'static'/'backtest_result_tabs.js').read_text(encoding='utf-8')
     css=(ROOT/'static'/'backtest_result_tabs.css').read_text(encoding='utf-8')
     core=(ROOT/'static'/'replay_v2_core.js').read_text(encoding='utf-8')
-    for name in ('replay_math.js','lab_data.js','lab_replay_ui.js','lab_run_core.js','lab_result_ui.js','lab_replay_boot.js','backtest_result_tabs.js','lab_nav_hotfix.js','strategy_optimizer_ui.js','selection_filter_ui.js','walkforward_ui.js','regime_walkforward_ui.js','volatility_regime_ui.js','priority_audit_ui.js'):
+    for name in ('replay_math.js','lab_data.js','lab_replay_ui.js','lab_run_core.js','lab_result_ui.js','lab_replay_boot.js','backtest_result_tabs.js','lab_nav_hotfix.js','strategy_optimizer_ui.js','selection_filter_ui.js','walkforward_ui.js','regime_walkforward_ui.js','volatility_regime_ui.js','priority_audit_ui.js','priority_challenger_v1.js'):
         assert name in loader
     assert '백테스트 연구소' in boot
     assert 'US STOCKS' in boot and 'DAILY MTM' in boot
-    assert '<option selected>10</option>' in boot
+    assert '최대 동시보유' in boot and '<option selected>10</option>' in boot
     assert '고급 민감도 실험 · 고정익절/강제 보유상한' in boot
     assert 'capacity:3' in math
     assert 'riskBudget:.01' in math
@@ -87,6 +87,18 @@ def test_priority_audit_ui_is_loaded():
     assert '.pa-rules' in css and '.pa-audit' in css
 
 
+def test_frozen_priority_challenger_ui_is_loaded():
+    ui=(ROOT/'static'/'priority_challenger_v1.js').read_text(encoding='utf-8')
+    css=(ROOT/'static'/'priority_challenger_v1.css').read_text(encoding='utf-8')
+    assert 'priority_challenger_v1_state.json' in ui
+    assert 'priority_challenger_v1_calibration.json' in ui
+    assert '과거는 여기서 끝. 이제 앞으로만 본다' in ui
+    assert 'NO RETUNE · NO LIVE ORDER' in ui
+    assert '최대 10개 · 위험기준 순차 사이징' in ui
+    assert '현금부족 탈락' in ui
+    assert '.pcv1-kpis' in css and '.pcv1-grid' in css
+
+
 def test_lab_sections_are_hoisted_out_of_detail_overlay():
     js=(ROOT/'static'/'lab_nav_hotfix.js').read_text(encoding='utf-8')
     assert "['lab','backtestlab']" in js
@@ -104,7 +116,7 @@ def test_paper_mark_ui_keeps_holding_visible():
 
 
 def main():
-    test_lab_loader_and_paper_marks();test_replay_lab_wiring();test_walkforward_ui_is_loaded();test_regime_walkforward_ui_is_loaded();test_volatility_diagnostic_ui_is_loaded();test_priority_audit_ui_is_loaded();test_lab_sections_are_hoisted_out_of_detail_overlay();test_paper_mark_ui_keeps_holding_visible();print('lab ui PASS')
+    test_lab_loader_and_paper_marks();test_replay_lab_wiring();test_walkforward_ui_is_loaded();test_regime_walkforward_ui_is_loaded();test_volatility_diagnostic_ui_is_loaded();test_priority_audit_ui_is_loaded();test_frozen_priority_challenger_ui_is_loaded();test_lab_sections_are_hoisted_out_of_detail_overlay();test_paper_mark_ui_keeps_holding_visible();print('lab ui PASS')
 
 
 if __name__=='__main__':main()
