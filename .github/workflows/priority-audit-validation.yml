@@ -1,0 +1,74 @@
+name: Priority Slot Audit Validation
+
+on:
+  pull_request:
+    paths:
+      - 'portfolio_priority_audit.py'
+      - 'static/priority_audit_ui.js'
+      - 'static/priority_audit_ui.css'
+      - 'static/lab_dashboard.js'
+      - 'tests/test_portfolio_priority_audit.py'
+      - 'tests/test_lab_ui.py'
+      - '.github/workflows/replay-lab-v2.yml'
+      - '.github/workflows/priority-audit-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: python -m pip install -r requirements.txt
+      - name: Compile priority audit
+        run: python -m py_compile portfolio_priority_audit.py tests/test_portfolio_priority_audit.py tests/test_lab_ui.py
+      - name: JavaScript syntax
+        run: |
+          node --check static/priority_audit_ui.js
+          node --check static/lab_dashboard.js
+      - name: Deterministic priority audit tests
+        run: PYTHONPATH=. python tests/test_portfolio_priority_audit.py
+      - name: Lab UI wiring tests
+        run: PYTHONPATH=. python tests/test_lab_ui.py
+      - name: Guard ranking from future outcomes
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('portfolio_priority_audit.py').read_text(encoding='utf-8')
+          rank=s[s.index('def rank_value'):s.index('def rows_for_ranker')]
+          for forbidden in ('change','return_pct','mdd_pct','test_end'):
+              assert forbidden not in rank, forbidden
+          choose=s[s.index('def choose_quality_intensity'):s.index('def train_distributions')]
+          assert 'train_pick_score' in choose
+          assert 'test_start' not in choose and 'test_end' not in choose
+          assert 'TRAIN-only within-strategy empirical percentiles' in s
+          print('priority audit leakage guards PASS')
+          PY
+      - name: Run audit on current committed V4 pool
+        run: python portfolio_priority_audit.py
+      - name: Validate real audit output
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('static/portfolio_priority_audit.json').read_text(encoding='utf-8'))
+          assert d.get('ready') is True
+          assert d.get('donchian_current_priority_values') == [2.0]
+          for f in d.get('families',[]):
+              s=f['summary']
+              print('\n',f['name'])
+              for rid in ('current','quality_pct','hybrid_50'):
+                  x=s['rules'][rid]
+                  print(' ',rid,'stitched',x['stitched_test_return_pct'],'worst_mdd',x['worst_test_mdd_pct'],'positive',x['positive_test_folds'],'beats_current',x.get('folds_beating_current'),'mean_delta',x.get('mean_delta_vs_current_pct'))
+              print(' current rejects',s['current_slot_audit'])
+              print(' 2024',s.get('test_2024'))
+              for fold in f.get('folds',[]):
+                  vals={rid:fold['rankers'][rid]['test']['return_pct'] for rid in ('current','quality_pct','hybrid_50')}
+                  print('  ',fold['fold'],vals)
+          PY
