@@ -37,9 +37,9 @@ jobs:
             static/priority_challenger_v2_calibration.json static/priority_challenger_v2_state.json \
             static/priority_challenger_v3_calibration.json static/priority_challenger_v3_state.json \
             static/priority_challenger_v4_calibration.json static/priority_challenger_v4_state.json > /tmp/core.before
-      - name: Reconstruct live community S&P 500 membership history
+      - name: Load maintained community S&P 500 historical snapshots
         run: python sp500_pit_diagnostic.py
-      - name: Validate reconstructed membership envelope
+      - name: Validate historical membership envelope
         run: |
           python - <<'PY'
           import json
@@ -50,11 +50,13 @@ jobs:
           counts=[x['member_count'] for x in p['monthly_member_counts']]
           assert min(counts)>=450 and max(counts)<=550, (min(counts),max(counts))
           assert len(p['historical_removed_tickers'])>50, len(p['historical_removed_tickers'])
+          assert p['coverage_checks']['target_start_covered'] is True, p
+          assert p['coverage_checks']['source_fresh_enough'] is True, p
           assert p['production_main_picker_mutated'] is False
           assert p['forward_challengers_mutated'] is False
-          print('membership', p['current_member_count'], p['change_event_count'], p['unique_historical_ticker_count'], min(counts), max(counts))
+          print('membership', p['source_coverage_end'], p['source_age_days'], p['current_member_count'], p['snapshot_count'], p['unique_historical_ticker_count'], len(p['historical_removed_tickers']), min(counts), max(counts))
           PY
-      - name: Probe free history coverage for removed tickers
+      - name: Probe free history coverage for historical non-current tickers
         run: python sp500_pit_price_coverage.py
       - name: Validate free-price probe remains diagnostic only
         run: |
@@ -69,7 +71,7 @@ jobs:
           assert 0 <= p['usable_warmup_and_near_removal_pct'] <= 100
           assert p['production_main_picker_mutated'] is False
           assert p['forward_challengers_mutated'] is False
-          print('free-price coverage', p['with_any_history_pct'], p['near_removal_pct'], p['usable_warmup_and_near_removal_pct'])
+          print('free-price coverage', p['removed_ticker_count'], p['with_any_history_pct'], p['near_removal_pct'], p['usable_warmup_and_near_removal_pct'])
           print('missing examples', p['missing_or_incomplete_tickers'][:25])
           PY
       - name: Verify production and V1 V2 V3 V4 untouched
