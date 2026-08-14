@@ -136,6 +136,62 @@
       "last_fx": 1411.44,
       "filled_at": "2026-08-14T14:14:23+00:00",
       "last_close_usd": 116.790001
+    },
+    {
+      "id": "PAPER-F1BD941D9EAD",
+      "symbol": "TROW",
+      "strategy_id": "rsi2_trend_reversion",
+      "strategy_name": "RSI2 추세내 과매도",
+      "status": "PENDING",
+      "created_at": "2026-08-14T22:49:38+00:00",
+      "submitted_market_date": "2026-08-14",
+      "signal_date": "2026-08-14",
+      "buy_low": 110.22,
+      "buy_high": 110.9,
+      "target": 115.72,
+      "stop": 106.27,
+      "atr": 2.86,
+      "gap_guard": 2.145,
+      "max_hold_bars": 5,
+      "held_bars": 0,
+      "qty": 4,
+      "planned_entry_usd": 110.56,
+      "planned_notional_krw": 626424.12,
+      "risk_budget_krw": 30035.25,
+      "planned_risk_krw": 24306.8,
+      "reserved_cash_krw": 627050.54,
+      "fx_at_submit": 1416.48,
+      "last_processed_date": "2026-08-14",
+      "commission_pct_per_side": 0.1,
+      "slippage_bps": 5.0,
+      "half_spread_bps": 2.5,
+      "live_order_sent": false,
+      "order_origin": "AUTO_CONFIRMED_CLOSE",
+      "signal_origin": "official_close_confirmed",
+      "shadow_signal_key": "2026-08-14|TROW|rsi2_trend_reversion",
+      "track_id": "A_NEXT_OPEN",
+      "entry_mode": "NEXT_OPEN_GAP_GUARD",
+      "baseline_version": "baseline-v1.0-2026-08-13",
+      "app_version_at_signal": "16.5",
+      "core_version_at_signal": "4.4",
+      "market_state": "좋음",
+      "official_score": 83.5,
+      "raw_strategy_score": 91.0,
+      "official_risk_reward": 1.2,
+      "official_selection_reason": "현재 자리 91 · 수급 80 · 손익비 1.20:1 · 비용후 1.04:1",
+      "event_risk_snapshot": {
+        "risk_code": "CLEAR",
+        "risk_label": "실적까지 77일",
+        "earnings_date": "2026-10-30",
+        "days_until": 77,
+        "confidence": "confirmed",
+        "stale": false,
+        "hold_calendar_days": 8,
+        "source_day_diff": 0,
+        "checked_at": "2026-08-14T14:12:56+00:00"
+      },
+      "atr_source": "derived_from_stop_atr_multiple",
+      "risk_observability_only": true
     }
   ],
   "events": [
@@ -170,6 +226,14 @@
       "strategy_id": "rsi2_trend_reversion",
       "event": "FILLED",
       "detail": "3주 · $116.2471 · 492,720원 · next_open"
+    },
+    {
+      "at": "2026-08-14T22:49:38+00:00",
+      "order_id": "PAPER-F1BD941D9EAD",
+      "symbol": "TROW",
+      "strategy_id": "rsi2_trend_reversion",
+      "event": "SUBMITTED",
+      "detail": "다음 거래일 시가 대기 · 4주 · BUY 110.22~110.90"
     }
   ],
   "shadow_decisions": [
@@ -206,10 +270,27 @@
       "atr": 4.386667,
       "atr_source": "derived_from_stop_atr_multiple",
       "gap_guard": 3.29
+    },
+    {
+      "signal_key": "2026-08-14|TROW|rsi2_trend_reversion",
+      "market_date": "2026-08-14",
+      "symbol": "TROW",
+      "strategy_id": "rsi2_trend_reversion",
+      "strategy_name": "RSI2 추세내 과매도",
+      "score": 83.5,
+      "risk_reward": 1.2,
+      "baseline_version": "baseline-v1.0-2026-08-13",
+      "track_id": "A_NEXT_OPEN",
+      "at": "2026-08-14T22:49:38+00:00",
+      "decision": "SUBMITTED",
+      "order_id": "PAPER-F1BD941D9EAD",
+      "atr": 2.86,
+      "atr_source": "derived_from_stop_atr_multiple",
+      "gap_guard": 2.145
     }
   ],
   "created_at": "2026-08-13T10:30:00+00:00",
-  "updated_at": "2026-08-14T22:18:13+00:00",
+  "updated_at": "2026-08-14T22:49:38+00:00",
   "live_trading_enabled": false,
   "lab_meta": {
     "version": 2,
@@ -218,9 +299,9 @@
     "allocator": "risk_reward_priority",
     "human_intervention": false,
     "live_trading_enabled": false,
-    "last_run_at": "2026-08-14T22:18:13+00:00",
+    "last_run_at": "2026-08-14T22:49:38+00:00",
     "last_ingest": {
-      "submitted": 0,
+      "submitted": 1,
       "skipped": 0
     },
     "track_id": "A_NEXT_OPEN",
