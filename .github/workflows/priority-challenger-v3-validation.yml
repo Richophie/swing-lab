@@ -1,0 +1,72 @@
+name: Frozen Correlation Challenger V3 Validation
+
+on:
+  pull_request:
+    paths:
+      - 'priority_challenger_v3.py'
+      - 'tests/test_priority_challenger_v3.py'
+      - '.github/workflows/priority-challenger-v3-validation.yml'
+      - '.github/workflows/market-scan.yml'
+      - 'static/priority_challenger_ab.js'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: python -m pip install -r requirements.txt
+      - name: Compile
+        run: python -m py_compile priority_challenger_v3.py tests/test_priority_challenger_v3.py
+      - name: Deterministic V3 tests
+        run: PYTHONPATH=. python tests/test_priority_challenger_v3.py
+      - name: Freeze V3 from immutable V2 calibration
+        run: python priority_challenger_v3.py freeze
+      - name: Validate frozen metadata
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('static/priority_challenger_v3_calibration.json').read_text(encoding='utf-8'))
+          assert d['challenger_id']=='priority_challenger_v3_corr075_half'
+          assert d['status']=='FROZEN_FORWARD_ONLY'
+          assert d['hypothesis_freeze_date']=='2026-08-14'
+          assert d['forward_start_date']=='2026-08-14'
+          assert d['comparison_baseline']=='priority_challenger_v2_capital075'
+          r=d['correlation_risk_damp']
+          assert r['lookback_sessions']==60
+          assert r['minimum_overlap_sessions']==40
+          assert r['threshold']==0.75
+          assert r['base_risk_budget_pct']==0.75
+          assert r['damped_risk_budget_pct']==0.375
+          assert r['candidate_rejection'] is False
+          assert d['mutable'] is False
+          print('V3 frozen metadata PASS')
+          PY
+      - name: Initial forward run
+        run: python priority_challenger_v3.py run
+      - name: Validate isolated shadow state
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          s=json.loads(Path('static/priority_challenger_v3_state.json').read_text(encoding='utf-8'))
+          assert s['challenger_id']=='priority_challenger_v3_corr075_half'
+          assert s['status']=='FORWARD_SHADOW'
+          assert s['live_trading_enabled'] is False
+          assert s['production_mutation_enabled'] is False
+          assert s['meta']['production_main_picker_mutated'] is False
+          assert s['meta']['auto_retune'] is False
+          assert s['meta']['correlation_threshold']==0.75
+          assert s['meta']['correlation_lookback_sessions']==60
+          assert s['summary']['correlation_risk']['damped_risk_budget_pct']==0.375
+          print('V3 forward state PASS', s['summary'])
+          PY
