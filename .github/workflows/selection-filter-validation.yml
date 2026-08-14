@@ -1,0 +1,43 @@
+name: Strategy Selection Filter Validation
+
+on:
+  pull_request:
+    paths:
+      - 'replay_pool_v2.py'
+      - 'strategy_selection_research.py'
+      - 'static/selection_filter_ui.js'
+      - 'static/selection_filter.css'
+      - 'static/lab_dashboard.js'
+      - 'tests/test_strategy_selection_research.py'
+      - '.github/workflows/selection-filter-research.yml'
+      - '.github/workflows/selection-filter-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile research modules
+        run: python -m py_compile replay_pool_v2.py strategy_selection_research.py tests/test_strategy_selection_research.py
+      - name: JavaScript syntax
+        run: node --check static/selection_filter_ui.js && node --check static/lab_dashboard.js
+      - name: Strategy quality deterministic tests
+        run: PYTHONPATH=. python tests/test_strategy_selection_research.py
+      - name: Guard against outcome leakage in quality score
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('strategy_selection_research.py').read_text(encoding='utf-8')
+          block=s[s.index('def quality_score'):s.index('def quantile')]
+          for forbidden in ('change', 'ending', 'return_pct', 'cagr', 'mdd', 'end_date'):
+              assert forbidden not in block, forbidden
+          assert 'quality_features' in block
+          print('quality score leakage guard PASS')
+          PY
