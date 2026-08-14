@@ -1,0 +1,65 @@
+name: Strategy Optimizer
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'strategy_optimizer.py'
+      - 'static/replay_backtest_pool_v2.json'
+      - '.github/workflows/strategy-optimizer.yml'
+  schedule:
+    - cron: '15 23 * * 1-5'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: strategy-optimizer-main
+  cancel-in-progress: true
+
+jobs:
+  optimize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run strategy optimizer
+        run: python strategy_optimizer.py
+      - name: Validate result
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('static/strategy_optimizer_results.json')
+          d=json.loads(p.read_text(encoding='utf-8'))
+          assert d.get('ready') is True
+          assert d.get('tested_configurations',0) > 0
+          assert 'balanced' in d.get('leaders',{})
+          print('tested',d['tested_configurations'],'eligible',d['eligible_configurations'])
+          PY
+      - name: Commit optimizer result
+        run: |
+          git config user.name "swing-lab-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add static/strategy_optimizer_results.json
+          if git diff --cached --quiet; then
+            echo "No optimizer changes"
+            exit 0
+          fi
+          git commit -m "data: refresh strategy optimizer [skip render]"
+          for attempt in 1 2 3 4; do
+            git fetch origin main
+            git rebase origin/main
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            echo "Push raced with another data writer; retry $attempt"
+            sleep 3
+          done
+          exit 1
