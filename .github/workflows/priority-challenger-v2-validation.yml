@@ -1,0 +1,75 @@
+name: Frozen Capital Challenger V2 Validation
+
+on:
+  pull_request:
+    paths:
+      - 'priority_challenger_v2.py'
+      - 'tests/test_priority_challenger_v2.py'
+      - '.github/workflows/market-scan.yml'
+      - '.github/workflows/priority-challenger-v2-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: python -m pip install -r requirements.txt
+      - name: Compile
+        run: python -m py_compile priority_challenger_v2.py tests/test_priority_challenger_v2.py
+      - name: Deterministic A/B isolation tests
+        run: PYTHONPATH=. python tests/test_priority_challenger_v2.py
+      - name: Freeze V2 from exact V1 calibration clone
+        run: |
+          rm -f static/priority_challenger_v2_calibration.json static/priority_challenger_v2_state.json
+          cp static/priority_challenger_v1_calibration.json /tmp/v1_before.json
+          cp static/priority_challenger_v1_state.json /tmp/v1_state_before.json
+          python priority_challenger_v2.py freeze
+      - name: Verify exact calibration parity except V2 metadata
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          v1=json.loads(Path('/tmp/v1_before.json').read_text(encoding='utf-8'))
+          v2=json.loads(Path('static/priority_challenger_v2_calibration.json').read_text(encoding='utf-8'))
+          assert v2['challenger_id']=='priority_challenger_v2_capital075'
+          assert v2['risk_budget_pct']==0.75
+          assert v2['freeze_date']==v1['freeze_date']=='2026-08-13'
+          assert v2['forward_start_date']==v1['forward_start_date']=='2026-08-14'
+          assert v2['family']==v1['family']
+          assert v2['frozen_symbols']==v1['frozen_symbols']
+          assert v2['reference']==v1['reference']
+          assert v2['quality_filter']==v1['quality_filter']
+          assert v2['priority']==v1['priority']
+          assert v2['ab_isolation']['only_changed_variable']=='risk_budget_pct'
+          assert v2['ab_isolation']['same_reference_distributions'] is True
+          print('V1/V2 calibration parity PASS',len(v2['frozen_symbols']),v2['reference_counts'])
+          PY
+      - name: Smoke run V2 with current daily data
+        run: python priority_challenger_v2.py run
+      - name: Verify forward state and V1 files untouched
+        run: |
+          cmp --silent static/priority_challenger_v1_calibration.json /tmp/v1_before.json
+          cmp --silent static/priority_challenger_v1_state.json /tmp/v1_state_before.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          s=json.loads(Path('static/priority_challenger_v2_state.json').read_text(encoding='utf-8'))
+          assert s['challenger_id']=='priority_challenger_v2_capital075'
+          assert s['risk_budget_pct']==0.75
+          assert s['live_trading_enabled'] is False
+          assert s['production_mutation_enabled'] is False
+          assert s['meta']['auto_retune'] is False
+          assert s['meta']['ab_only_changed_variable']=='risk_budget_pct'
+          assert all(str(x.get('signal_date','')) >= '2026-08-14' for x in s.get('pending',[]))
+          assert all(str(x.get('signal_date','')) >= '2026-08-14' for x in s.get('positions',[]))
+          assert all(str(x.get('signal_date','')) >= '2026-08-14' for x in s.get('closed',[]))
+          print('V2 forward smoke PASS',s['summary'],'errors',len(s.get('errors',[])))
+          PY
