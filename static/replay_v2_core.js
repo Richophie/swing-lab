@@ -19,6 +19,8 @@ function exec(c,p,f){
   let out=N(q.at(-1)?.[4]),date=String(q.at(-1)?.[0]||c.entry_date),why='기간종료',hold=Math.max(1,Math.min(q.length,N(c.max_hold,q.length)));
   for(let i=0;i<hold;i++){
     const b=q[i]||[],d=String(b[0]||''),o=N(b[1]),h=N(b[2]),l=N(b[3]),cl=N(b[4]),s20=N(b[5],NaN),dc20=N(b[7],NaN),has=Number.isFinite(target)&&target>entry;
+    const intradayDayClose=mode==='intraday_trigger'&&exitMode==='day_close'&&i===0;
+    if(intradayDayClose){out=cl;date=d;why='당일 종가 청산 · 일봉순서 안전판';break}
     if(hard>0&&o<=hard){out=o;date=d;why='손절 · 갭';break}
     if(hard>0&&l<=hard&&has&&h>=target){out=hard;date=d;why='손절 · 동시터치';break}
     if(hard>0&&l<=hard){out=hard;date=d;why=mode==='intraday_trigger'&&i===0?'손절 · 장중순서 보수판정':'손절';break}
@@ -31,5 +33,5 @@ function exec(c,p,f){
   const paid=entry*(1+comm),recv=out*(1-fr)*(1-comm);
   return{start_date:c.entry_date,end_date:date,change:recv/paid-1,risk_fraction:Math.max(.001,(entry-stop)/entry),priority:N(c.net_risk_reward,N(c.elite_score)/100),key:`${c.symbol}|${c.strategy_id}|${c.signal_date}`,symbol:c.symbol,strategy_id:c.strategy_id,strategy_name:c.strategy_name||c.strategy_id,reason:why,market_state:c.market_state||'unknown'};
 }
-window.makeSwingReplayRows=(p,a,b,s)=>{if(+p?.version<2)return baseRows(p,a,b,s);const on=document.getElementById('btForceProfit')?.checked,f=on?Math.max(.1,Math.min(50,N(document.getElementById('btForceProfitPct')?.value,3))):0,o=[];for(const c of p.trades||[]){if(!s.includes(c.strategy_id)||String(c.entry_date||'')<a||String(c.entry_date||'')>b)continue;const r=exec(c,p,f);if(r)o.push(r)}return o};
+window.makeSwingReplayRows=(p,a,b,s)=>{if(+p?.version<2)return baseRows(p,a,b,s);const on=document.getElementById('btForceProfit')?.checked,f=on?Math.max(.1,Math.min(50,N(document.getElementById('btForceProfitPct')?.value,3))):0,o=[];for(const c of p.trades||[]){if(!s.includes(c.strategy_id)||String(c.entry_date||'')<a||String(c.entry_date||'')>b)continue;const clipped={...c,path:(c.path||[]).filter(x=>String(x?.[0]||'')<=b)};if(!clipped.path.length)continue;const r=exec(clipped,p,f);if(r)o.push(r)}return o};
 })();
