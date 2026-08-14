@@ -5,6 +5,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def test_strategy_optimizer_is_wired():
     script = (ROOT / 'strategy_optimizer_v2.py').read_text(encoding='utf-8')
+    runner = (ROOT / 'strategy_optimizer_runner.py').read_text(encoding='utf-8')
     ui = (ROOT / 'static' / 'strategy_optimizer_ui.js').read_text(encoding='utf-8')
     loader = (ROOT / 'static' / 'lab_dashboard.js').read_text(encoding='utf-8')
     workflow = (ROOT / '.github' / 'workflows' / 'strategy-optimizer.yml').read_text(encoding='utf-8')
@@ -18,11 +19,13 @@ def test_strategy_optimizer_is_wired():
     assert "OOS is pass/fail validation" in script
     assert "promotion_status" in script and "research_only" in script
     assert '"ablation"' in script and '"full"' in script
+    assert "memory_lean_portfolio" in runner
+    assert "opt.portfolio = memory_lean_portfolio" in runner
     assert "strategy_optimizer_results.json" in ui
     assert "자동 전략 최적화 연구소" in ui
     assert "1~5개 기법 조합" in ui
     assert "strategy_optimizer_ui.js" in loader
-    assert "python strategy_optimizer_v2.py" in workflow
+    assert "python strategy_optimizer_runner.py" in workflow
     assert "timeout-minutes: 60" in workflow
 
 
