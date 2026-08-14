@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "status": "SOURCE_REQUIRED",
+  "target": {
+    "start": "2017-01-01",
+    "end": "2026-08-13",
+    "purpose": "Survivorship-bias-resistant validation of the frozen confirmed + SMA200/20 + Donchian research family"
+  },
+  "strict_no_current_universe_fallback": true,
+  "prohibited_fallbacks": [
+    "market_data.prefilter_symbols(current universe)",
+    "rsi2_broad_regime_research.research_universe(current universe)",
+    "static list containing only securities active today"
+  ],
+  "membership_source": {
+    "status": "UNCONFIGURED",
+    "source_id": null,
+    "provider": null,
+    "license": null,
+    "coverage": {"start": null, "end": null},
+    "includes_inactive": false,
+    "stable_security_ids": false,
+    "ticker_history": false,
+    "notes": "Must include additions/removals and historical identifier continuity. A current constituent list is not sufficient."
+  },
+  "price_source": {
+    "status": "UNCONFIGURED",
+    "source_id": null,
+    "provider": null,
+    "license": null,
+    "coverage": {"start": null, "end": null},
+    "includes_inactive": false,
+    "daily_ohlcv": false,
+    "corporate_action_adjustment": false,
+    "notes": "Must retain historical OHLCV for securities that later delisted/merged. Yahoo coverage alone is not assumed complete."
+  },
+  "source_quality_policy": {
+    "research_grade": "Licensed/authoritative source with inactive securities, stable identifiers, full target coverage and auditable corporate actions.",
+    "diagnostic_only": "Community-reconstructed index membership or incomplete inactive-security price coverage may be used only as a sensitivity check and must never set ready=true.",
+    "promotion_rule": "No PIT result may be called survivorship-free or used to promote production until both membership_source and price_source are VERIFIED."
+  }
+}
