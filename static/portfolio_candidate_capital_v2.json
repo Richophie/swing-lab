@@ -1,0 +1,1748 @@
+{
+  "version": 1,
+  "ready": true,
+  "generated_at": "2026-08-14T06:22:18+00:00",
+  "pool_generated_at": "2026-08-14T05:30:36+00:00",
+  "promotion_status": "development_only_not_fresh_holdout",
+  "family": {
+    "id": "confirmed_sma_donchian",
+    "name": "확인형 + SMA200·20 + Donchian",
+    "strategies": [
+      "confirmed_pullback",
+      "sma200_20_squeeze",
+      "donchian_55"
+    ],
+    "capacity": 10
+  },
+  "method": {
+    "purpose": "candidate discrimination and coarse capital-allocation research for a future Challenger V2",
+    "v1_untouched": true,
+    "quality_filter": "fixed top 50% within each strategy using each fold TRAIN distribution",
+    "ranking": "fixed hybrid_50 = 50% TRAIN-frozen current-priority percentile + 50% TRAIN-frozen signal-quality percentile",
+    "policies": "four pre-registered coarse structures; no parameter grid and no OOS-based retuning",
+    "risk_budget_base_pct": 1.0,
+    "max_position_pct": 40.0,
+    "equity": "daily_close_mark_to_market",
+    "mfe_mae_note": "candidate MFE/MAE uses daily-close liquidation marks, not intraday extremes",
+    "historical_status": "development data already inspected in prior research; rolling TEST is useful robustness evidence but not a fresh final holdout"
+  },
+  "policies": [
+    {
+      "id": "v1_flat",
+      "label": "V1 기준 · 모두 1.0% 위험",
+      "description": "품질 상위 50% + 혼합 priority, 통과 후보는 모두 기존 1% 계좌위험 예산",
+      "min_conviction": 0.0,
+      "risk_multiplier_by_tier": {
+        "low": 1.0,
+        "mid": 1.0,
+        "high": 1.0
+      }
+    },
+    {
+      "id": "tiered_all",
+      "label": "순위가중 · 0.5 / 0.75 / 1.0%",
+      "description": "낮은 확신 후보도 거래하되 위험예산을 절반으로 줄이고 상위 후보에 기존 1%를 유지",
+      "min_conviction": 0.0,
+      "risk_multiplier_by_tier": {
+        "low": 0.5,
+        "mid": 0.75,
+        "high": 1.0
+      }
+    },
+    {
+      "id": "selective",
+      "label": "선별형 · 하위 확신 제외",
+      "description": "혼합 확신 50% 미만은 건너뛰고 중간 0.75%, 상위 1.0% 위험예산",
+      "min_conviction": 0.5,
+      "risk_multiplier_by_tier": {
+        "low": 0.0,
+        "mid": 0.75,
+        "high": 1.0
+      }
+    },
+    {
+      "id": "high_conviction",
+      "label": "집중형 · 상위 확신만",
+      "description": "혼합 확신 75% 이상 후보만 기존 1% 위험예산으로 거래",
+      "min_conviction": 0.75,
+      "risk_multiplier_by_tier": {
+        "low": 0.0,
+        "mid": 0.0,
+        "high": 1.0
+      }
+    }
+  ],
+  "summary": {
+    "fold_count": 6,
+    "policies": {
+      "v1_flat": {
+        "stitched_test_return_pct": 57.89,
+        "median_test_return_pct": 9.79,
+        "positive_test_folds": 5,
+        "worst_test_return_pct": -1.37,
+        "worst_test_mdd_pct": -16.01,
+        "total_test_trades": 378
+      },
+      "tiered_all": {
+        "stitched_test_return_pct": 77.28,
+        "median_test_return_pct": 8.58,
+        "positive_test_folds": 6,
+        "worst_test_return_pct": 2.15,
+        "worst_test_mdd_pct": -12.91,
+        "total_test_trades": 454,
+        "folds_beating_v1": 4,
+        "mean_delta_vs_v1_pct": 2.26
+      },
+      "selective": {
+        "stitched_test_return_pct": 19.91,
+        "median_test_return_pct": -1.91,
+        "positive_test_folds": 2,
+        "worst_test_return_pct": -7.11,
+        "worst_test_mdd_pct": -16.02,
+        "total_test_trades": 388,
+        "folds_beating_v1": 1,
+        "mean_delta_vs_v1_pct": -4.21
+      },
+      "high_conviction": {
+        "stitched_test_return_pct": 5.09,
+        "median_test_return_pct": -0.65,
+        "positive_test_folds": 2,
+        "worst_test_return_pct": -2.81,
+        "worst_test_mdd_pct": -4.0,
+        "total_test_trades": 33,
+        "folds_beating_v1": 1,
+        "mean_delta_vs_v1_pct": -7.11
+      }
+    },
+    "candidate_diagnostics": {
+      "conviction_tiers": {
+        "low": {
+          "signals": 1297,
+          "mean_fold_avg_realized_r": 0.137,
+          "mean_fold_avg_trade_pct": 0.947,
+          "folds_positive_avg_r": 4
+        },
+        "mid": {
+          "signals": 1275,
+          "mean_fold_avg_realized_r": 0.026,
+          "mean_fold_avg_trade_pct": 0.414,
+          "folds_positive_avg_r": 3
+        },
+        "high": {
+          "signals": 36,
+          "mean_fold_avg_realized_r": 0.006,
+          "mean_fold_avg_trade_pct": -0.069,
+          "folds_positive_avg_r": 2
+        }
+      },
+      "same_day_rank": {
+        "rank1": {
+          "signals": 840,
+          "mean_fold_avg_realized_r": 0.213,
+          "mean_fold_avg_trade_pct": 1.648
+        },
+        "rank2_3": {
+          "signals": 909,
+          "mean_fold_avg_realized_r": 0.056,
+          "mean_fold_avg_trade_pct": 0.087
+        },
+        "rank4_plus": {
+          "signals": 859,
+          "mean_fold_avg_realized_r": -0.022,
+          "mean_fold_avg_trade_pct": 0.457
+        }
+      },
+      "high_beats_low_folds": 1,
+      "high_vs_low_eligible_folds": 6,
+      "rank1_beats_rank4_plus_folds": 5,
+      "rank_comparison_eligible_folds": 6
+    }
+  },
+  "folds": [
+    {
+      "fold": "2021",
+      "train_start": "2017-06-09",
+      "train_end": "2020-12-31",
+      "test_start": "2021-01-01",
+      "test_end": "2021-12-31",
+      "quality_intensity": "loose",
+      "thresholds": {
+        "confirmed_pullback": 71.77554,
+        "sma200_20_squeeze": 34.638975,
+        "donchian_55": 34.14883
+      },
+      "policies": {
+        "v1_flat": {
+          "label": "V1 기준 · 모두 1.0% 위험",
+          "description": "품질 상위 50% + 혼합 priority, 통과 후보는 모두 기존 1% 계좌위험 예산",
+          "train": {
+            "ending": 3916564.89,
+            "return_pct": 30.55,
+            "cagr_pct": 7.77,
+            "mdd_pct": -28.67,
+            "trades": 201,
+            "win_rate_pct": 35.32,
+            "avg_trade_pct": 1.433,
+            "trades_per_year": 56.4,
+            "max_open": 8,
+            "underwater_days": 498
+          },
+          "test": {
+            "ending": 3306957.62,
+            "return_pct": 10.23,
+            "cagr_pct": 10.27,
+            "mdd_pct": -15.15,
+            "trades": 73,
+            "win_rate_pct": 38.36,
+            "avg_trade_pct": 1.212,
+            "trades_per_year": 73.3,
+            "max_open": 9,
+            "underwater_days": 91
+          },
+          "allocation": {
+            "reject_cash": 446,
+            "reject_capacity": 0,
+            "cash_limited_entries": 41,
+            "allocation_ratio": 0.0833,
+            "capital_share_by_tier": {
+              "low": 0.3807,
+              "mid": 0.6016,
+              "high": 0.0177
+            },
+            "trades_by_tier": {
+              "low": 27,
+              "mid": 44,
+              "high": 2
+            }
+          }
+        },
+        "tiered_all": {
+          "label": "순위가중 · 0.5 / 0.75 / 1.0%",
+          "description": "낮은 확신 후보도 거래하되 위험예산을 절반으로 줄이고 상위 후보에 기존 1%를 유지",
+          "train": {
+            "ending": 3539862.78,
+            "return_pct": 18.0,
+            "cagr_pct": 4.76,
+            "mdd_pct": -27.94,
+            "trades": 273,
+            "win_rate_pct": 33.33,
+            "avg_trade_pct": 0.523,
+            "trades_per_year": 76.6,
+            "max_open": 10,
+            "underwater_days": 497
+          },
+          "test": {
+            "ending": 3538178.45,
+            "return_pct": 17.94,
+            "cagr_pct": 18.01,
+            "mdd_pct": -11.28,
+            "trades": 90,
+            "win_rate_pct": 42.22,
+            "avg_trade_pct": 1.303,
+            "trades_per_year": 90.3,
+            "max_open": 10,
+            "underwater_days": 91
+          },
+          "allocation": {
+            "reject_cash": 299,
+            "reject_capacity": 102,
+            "cash_limited_entries": 44,
+            "allocation_ratio": 0.1686,
+            "capital_share_by_tier": {
+              "low": 0.3811,
+              "mid": 0.5869,
+              "high": 0.0319
+            },
+            "trades_by_tier": {
+              "low": 38,
+              "mid": 50,
+              "high": 2
+            }
+          }
+        },
+        "selective": {
+          "label": "선별형 · 하위 확신 제외",
+          "description": "혼합 확신 50% 미만은 건너뛰고 중간 0.75%, 상위 1.0% 위험예산",
+          "train": {
+            "ending": 2967946.19,
+            "return_pct": -1.07,
+            "cagr_pct": -0.3,
+            "mdd_pct": -22.8,
+            "trades": 196,
+            "win_rate_pct": 34.18,
+            "avg_trade_pct": 0.438,
+            "trades_per_year": 55.0,
+            "max_open": 10,
+            "underwater_days": 567
+          },
+          "test": {
+            "ending": 2888504.32,
+            "return_pct": -3.72,
+            "cagr_pct": -3.73,
+            "mdd_pct": -15.12,
+            "trades": 91,
+            "win_rate_pct": 30.77,
+            "avg_trade_pct": -0.842,
+            "trades_per_year": 91.3,
+            "max_open": 10,
+            "underwater_days": 180
+          },
+          "allocation": {
+            "reject_cash": 153,
+            "reject_capacity": 17,
+            "cash_limited_entries": 39,
+            "allocation_ratio": 0.2669,
+            "capital_share_by_tier": {
+              "low": 0.0,
+              "mid": 0.9274,
+              "high": 0.0726
+            },
+            "trades_by_tier": {
+              "low": 0,
+              "mid": 85,
+              "high": 6
+            }
+          }
+        },
+        "high_conviction": {
+          "label": "집중형 · 상위 확신만",
+          "description": "혼합 확신 75% 이상 후보만 기존 1% 위험예산으로 거래",
+          "train": {
+            "ending": 2982050.73,
+            "return_pct": -0.6,
+            "cagr_pct": -0.17,
+            "mdd_pct": -4.58,
+            "trades": 16,
+            "win_rate_pct": 50.0,
+            "avg_trade_pct": -0.004,
+            "trades_per_year": 4.5,
+            "max_open": 4,
+            "underwater_days": 29
+          },
+          "test": {
+            "ending": 3317729.0,
+            "return_pct": 10.59,
+            "cagr_pct": 10.63,
+            "mdd_pct": -1.49,
+            "trades": 8,
+            "win_rate_pct": 87.5,
+            "avg_trade_pct": 6.016,
+            "trades_per_year": 8.0,
+            "max_open": 2,
+            "underwater_days": 13
+          },
+          "allocation": {
+            "reject_cash": 0,
+            "reject_capacity": 0,
+            "cash_limited_entries": 0,
+            "allocation_ratio": 1.0,
+            "capital_share_by_tier": {
+              "low": 0.0,
+              "mid": 0.0,
+              "high": 1.0
+            },
+            "trades_by_tier": {
+              "low": 0,
+              "mid": 0,
+              "high": 8
+            }
+          }
+        }
+      },
+      "candidate_diagnostics": {
+        "by_conviction_tier": {
+          "low": {
+            "signals": 322,
+            "win_rate_pct": 30.43,
+            "avg_trade_pct": -0.238,
+            "avg_realized_r": -0.023,
+            "median_realized_r": -1.039,
+            "avg_mfe_close_r": 1.156,
+            "avg_mae_close_r": -0.842,
+            "realized_2r_plus_pct": 15.53,
+            "realized_loss_08r_pct": 58.7
+          },
+          "mid": {
+            "signals": 303,
+            "win_rate_pct": 29.7,
+            "avg_trade_pct": -0.729,
+            "avg_realized_r": -0.069,
+            "median_realized_r": -1.039,
+            "avg_mfe_close_r": 1.265,
+            "avg_mae_close_r": -0.856,
+            "realized_2r_plus_pct": 12.87,
+            "realized_loss_08r_pct": 60.4
+          },
+          "high": {
+            "signals": 9,
+            "win_rate_pct": 88.89,
+            "avg_trade_pct": 5.469,
+            "avg_realized_r": 1.16,
+            "median_realized_r": 0.843,
+            "avg_mfe_close_r": 1.548,
+            "avg_mae_close_r": -0.198,
+            "realized_2r_plus_pct": 22.22,
+            "realized_loss_08r_pct": 0.0
+          }
+        },
+        "by_same_day_rank": {
+          "rank1": {
+            "signals": 191,
+            "win_rate_pct": 35.08,
+            "avg_trade_pct": -0.069,
+            "avg_realized_r": 0.083,
+            "median_realized_r": -1.034,
+            "avg_mfe_close_r": 1.354,
+            "avg_mae_close_r": -0.792,
+            "realized_2r_plus_pct": 16.23,
+            "realized_loss_08r_pct": 57.07
+          },
+          "rank2_3": {
+            "signals": 227,
+            "win_rate_pct": 30.4,
+            "avg_trade_pct": -0.458,
+            "avg_realized_r": -0.026,
+            "median_realized_r": -1.039,
+            "avg_mfe_close_r": 1.228,
+            "avg_mae_close_r": -0.826,
+            "realized_2r_plus_pct": 12.78,
+            "realized_loss_08r_pct": 57.71
+          },
+          "rank4_plus": {
+            "signals": 216,
+            "win_rate_pct": 27.78,
+            "avg_trade_pct": -0.608,
+            "avg_realized_r": -0.129,
+            "median_realized_r": -1.043,
+            "avg_mfe_close_r": 1.074,
+            "avg_mae_close_r": -0.896,
+            "realized_2r_plus_pct": 14.35,
+            "realized_loss_08r_pct": 61.11
+          }
+        }
+      }
+    },
+    {
+      "fold": "2022",
+      "train_start": "2018-01-01",
+      "train_end": "2021-12-31",
+      "test_start": "2022-01-01",
+      "test_end": "2022-12-31",
+      "quality_intensity": "loose",
+      "thresholds": {
+        "confirmed_pullback": 71.75528,
+        "sma200_20_squeeze": 34.232014,
+        "donchian_55": 34.6982
+      },
+      "policies": {
+        "v1_flat": {
+          "label": "V1 기준 · 모두 1.0% 위험",
+          "description": "품질 상위 50% + 혼합 priority, 통과 후보는 모두 기존 1% 계좌위험 예산",
+          "train": {
+            "ending": 4501473.08,
+            "return_pct": 50.05,
+            "cagr_pct": 10.68,
+            "mdd_pct": -28.38,
+            "trades": 244,
+            "win_rate_pct": 34.02,
+            "avg_trade_pct": 1.692,
+            "trades_per_year": 61.0,
+            "max_open": 9,
+            "underwater_days": 498
+          },
+          "test": {
+            "ending": 2958820.16,
+            "return_pct": -1.37,
+            "cagr_pct": -1.38,
+            "mdd_pct": -15.09,
+            "trades": 43,
+            "win_rate_pct": 27.91,
+            "avg_trade_pct": -0.191,
+            "trades_per_year": 43.1,
+            "max_open": 6,
+            "underwater_days": 154
+          },
+          "allocation": {
+            "reject_cash": 62,
+            "reject_capacity": 0,
+            "cash_limited_entries": 15,
+            "allocation_ratio": 0.2997,
+            "capital_share_by_tier": {
+              "low": 0.6469,
+              "mid": 0.3308,
+              "high": 0.0223
+            },
+            "trades_by_tier": {
+              "low": 27,
+              "mid": 15,
+              "high": 1
+            }
+          }
+        },
+        "tiered_all": {
+          "label": "순위가중 · 0.5 / 0.75 / 1.0%",
+          "description": "낮은 확신 후보도 거래하되 위험예산을 절반으로 줄이고 상위 후보에 기존 1%를 유지",
+          "train": {
+            "ending": 4304727.84,
+            "return_pct": 43.49,
+            "cagr_pct": 9.45,
+            "mdd_pct": -28.6,
+            "trades": 328,
+            "win_rate_pct": 34.45,
+            "avg_trade_pct": 1.038,
+            "trades_per_year": 82.1,
+            "max_open": 10,
+            "underwater_days": 498
+          },
+          "test": {
+            "ending": 3064522.36,
+            "return_pct": 2.15,
+            "cagr_pct": 2.16,
+            "mdd_pct": -9.64,
+            "trades": 53,
+            "win_rate_pct": 30.19,
+            "avg_trade_pct": 0.009,
+            "trades_per_year": 53.2,
+            "max_open": 8,
+            "underwater_days": 154
+          },
+          "allocation": {
+            "reject_cash": 44,
+            "reject_capacity": 0,
+            "cash_limited_entries": 8,
+            "allocation_ratio": 0.4643,
+            "capital_share_by_tier": {
+              "low": 0.5287,
+              "mid": 0.4401,
+              "high": 0.0312
+            },
+            "trades_by_tier": {
+              "low": 34,
+              "mid": 18,
+              "high": 1
+            }
+          }
+        },
+        "selective": {
+          "label": "선별형 · 하위 확신 제외",
+          "description": "혼합 확신 50% 미만은 건너뛰고 중간 0.75%, 상위 1.0% 위험예산",
+          "train": {
+            "ending": 3180169.44,
+            "return_pct": 6.01,
+            "cagr_pct": 1.47,
+            "mdd_pct": -24.64,
+            "trades": 261,
+            "win_rate_pct": 33.72,
+            "avg_trade_pct": 0.703,
+            "trades_per_year": 65.3,
+            "max_open": 10,
+            "underwater_days": 603
+          },
+          "test": {
+            "ending": 2831840.91,
+            "return_pct": -5.61,
+            "cagr_pct": -5.62,
+            "mdd_pct": -14.58,
+            "trades": 31,
+            "win_rate_pct": 19.35,
+            "avg_trade_pct": -2.038,
+            "trades_per_year": 31.1,
+            "max_open": 6,
+            "underwater_days": 94
+          },
+          "allocation": {
+            "reject_cash": 15,
+            "reject_capacity": 0,
+            "cash_limited_entries": 3,
+            "allocation_ratio": 0.6081,
+            "capital_share_by_tier": {
+              "low": 0.0,
+              "mid": 0.9621,
+              "high": 0.0379
+            },
+            "trades_by_tier": {
+              "low": 0,
+              "mid": 30,
+              "high": 1
+            }
+          }
+        },
+        "high_conviction": {
+          "label": "집중형 · 상위 확신만",
+          "description": "혼합 확신 75% 이상 후보만 기존 1% 위험예산으로 거래",
+          "train": {
+            "ending": 3363092.48,
+            "return_pct": 12.1,
+            "cagr_pct": 2.9,
+            "mdd_pct": -5.13,
+            "trades": 24,
+            "win_rate_pct": 58.33,
+            "avg_trade_pct": 2.107,
+            "trades_per_year": 6.0,
+            "max_open": 5,
+            "underwater_days": 80
+          },
+          "test": {
+            "ending": 2952679.53,
+            "return_pct": -1.58,
+            "cagr_pct": -1.58,
+            "mdd_pct": -1.58,
+            "trades": 2,
+            "win_rate_pct": 0.0,
+            "avg_trade_pct": -4.213,
+            "trades_per_year": 2.0,
+            "max_open": 1,
+            "underwater_days": 15
+          },
+          "allocation": {
+            "reject_cash": 0,
+            "reject_capacity": 0,
+            "cash_limited_entries": 0,
+            "allocation_ratio": 1.0,
+            "capital_share_by_tier": {
+              "low": 0.0,
+              "mid": 0.0,
+              "high": 1.0
+            },
+            "trades_by_tier": {
+              "low": 0,
+              "mid": 0,
+              "high": 2
+            }
+          }
+        }
+      },
+      "candidate_diagnostics": {
+        "by_conviction_tier": {
+          "low": {
+            "signals": 84,
+            "win_rate_pct": 22.62,
+            "avg_trade_pct": -0.737,
+            "avg_realized_r": -0.233,
+            "median_realized_r": -1.038,
+            "avg_mfe_close_r": 1.17,
+            "avg_mae_close_r": -0.791,
+            "realized_2r_plus_pct": 9.52,
+            "realized_loss_08r_pct": 53.57
+          },
+          "mid": {
+            "signals": 62,
+            "win_rate_pct": 17.74,
+            "avg_trade_pct": -2.122,
+            "avg_realized_r": -0.433,
+            "median_realized_r": -1.06,
+            "avg_mfe_close_r": 1.079,
+            "avg_mae_close_r": -0.925,
+            "realized_2r_plus_pct": 6.45,
+            "realized_loss_08r_pct": 77.42
+          },
+          "high": {
+            "signals": 2,
+            "win_rate_pct": 0.0,
+            "avg_trade_pct": -4.213,
+            "avg_realized_r": -0.791,
+            "median_realized_r": -0.791,
+            "avg_mfe_close_r": 0.043,
+            "avg_mae_close_r": -0.791,
+            "realized_2r_plus_pct": 0.0,
+            "realized_loss_08r_pct": 50.0
+          }
+        },
+        "by_same_day_rank": {
+          "rank1": {
+            "signals": 71,
+            "win_rate_pct": 23.94,
+            "avg_trade_pct": -1.393,
+            "avg_realized_r": -0.309,
+            "median_realized_r": -1.039,
+            "avg_mfe_close_r": 1.046,
+            "avg_mae_close_r": -0.835,
+            "realized_2r_plus_pct": 8.45,
+            "realized_loss_08r_pct": 60.56
+          },
+          "rank2_3": {
+            "signals": 47,
+            "win_rate_pct": 23.4,
+            "avg_trade_pct": -0.487,
+            "avg_realized_r": -0.053,
+            "median_realized_r": -1.04,
+            "avg_mfe_close_r": 1.492,
+            "avg_mae_close_r": -0.757,
+            "realized_2r_plus_pct": 10.64,
+            "realized_loss_08r_pct": 59.57
+          },
+          "rank4_plus": {
+            "signals": 30,
+            "win_rate_pct": 6.67,
+            "avg_trade_pct": -2.67,
+            "avg_realized_r": -0.786,
+            "median_realized_r": -1.071,
+            "avg_mfe_close_r": 0.694,
+            "avg_mae_close_r": -1.016,
+            "realized_2r_plus_pct": 3.33,
+            "realized_loss_08r_pct": 76.67
+          }
+        }
+      }
+    },
+    {
+      "fold": "2023",
+      "train_start": "2019-01-01",
+      "train_end": "2022-12-31",
+      "test_start": "2023-01-01",
+      "test_end": "2023-12-31",
+      "quality_intensity": "loose",
+      "thresholds": {
+        "confirmed_pullback": 72.27105,
+        "sma200_20_squeeze": 34.453453,
+        "donchian_55": 34.061374
+      },
+      "policies": {
+        "v1_flat": {
+          "label": "V1 기준 · 모두 1.0% 위험",
+          "description": "품질 상위 50% + 혼합 priority, 통과 후보는 모두 기존 1% 계좌위험 예산",
+          "train": {
+            "ending": 6441047.91,
+            "return_pct": 114.7,
+            "cagr_pct": 21.06,
+            "mdd_pct": -16.2,
+            "trades": 234,
+            "win_rate_pct": 36.32,
+            "avg_trade_pct": 2.67,
+            "trades_per_year": 58.5,
+            "max_open": 9,
+            "underwater_days": 158
+          },
+          "test": {
+            "ending": 3304345.35,
+            "return_pct": 10.14,
+            "cagr_pct": 10.18,
+            "mdd_pct": -12.56,
+            "trades": 73,
+            "win_rate_pct": 36.99,
+            "avg_trade_pct": 1.588,
+            "trades_per_year": 73.3,
+            "max_open": 10,
+            "underwater_days": 105
+          },
+          "allocation": {
+            "reject_cash": 136,
+            "reject_capacity": 6,
+            "cash_limited_entries": 36,
+            "allocation_ratio": 0.2199,
+            "capital_share_by_tier": {
+              "low": 0.4727,
+              "mid": 0.4708,
+              "high": 0.0565
+            },
+            "trades_by_tier": {
+              "low": 29,
+              "mid": 39,
+              "high": 5
+            }
+          }
+        },
+        "tiered_all": {
+          "label": "순위가중 · 0.5 / 0.75 / 1.0%",
+          "description": "낮은 확신 후보도 거래하되 위험예산을 절반으로 줄이고 상위 후보에 기존 1%를 유지",
+          "train": {
+            "ending": 5097365.78,
+            "return_pct": 69.91,
+            "cagr_pct": 14.18,
+            "mdd_pct": -14.57,
+            "trades": 308,
+            "win_rate_pct": 36.04,
+            "avg_trade_pct": 1.626,
+            "trades_per_year": 77.1,
+            "max_open": 10,
+            "underwater_days": 162
+          },
+          "test": {
+            "ending": 3101542.96,
+            "return_pct": 3.38,
+            "cagr_pct": 3.4,
+            "mdd_pct": -12.91,
+            "trades": 89,
+            "win_rate_pct": 31.46,
+            "avg_trade_pct": 0.824,
+            "trades_per_year": 89.3,
+            "max_open": 10,
+            "underwater_days": 105
+          },
+          "allocation": {
+            "reject_cash": 71,
+            "reject_capacity": 37,
+            "cash_limited_entries": 24,
+            "allocation_ratio": 0.4451,
+            "capital_share_by_tier": {
+              "low": 0.3966,
+              "mid": 0.534,
+              "high": 0.0695
+            },
+            "trades_by_tier": {
+              "low": 40,
+              "mid": 44,
+              "high": 5
+            }
+          }
+        },
+        "selective": {
+          "label": "선별형 · 하위 확신 제외",
+          "description": "혼합 확신 50% 미만은 건너뛰고 중간 0.75%, 상위 1.0% 위험예산",
+          "train": {
+            "ending": 4161336.56,
+            "return_pct": 38.71,
+            "cagr_pct": 8.53,
+            "mdd_pct": -13.8,
+            "trades": 244,
+            "win_rate_pct": 36.89,
+            "avg_trade_pct": 1.303,
+            "trades_per_year": 61.0,
+            "max_open": 10,
+            "underwater_days": 199
+          },
+          "test": {
+            "ending": 2786686.83,
+            "return_pct": -7.11,
+            "cagr_pct": -7.13,
+            "mdd_pct": -14.81,
+            "trades": 70,
+            "win_rate_pct": 30.0,
+            "avg_trade_pct": 0.259,
+            "trades_per_year": 70.2,
+            "max_open": 9,
+            "underwater_days": 136
+          },
+          "allocation": {
+            "reject_cash": 40,
+            "reject_capacity": 0,
+            "cash_limited_entries": 21,
+            "allocation_ratio": 0.5379,
+            "capital_share_by_tier": {
+              "low": 0.0,
+              "mid": 0.9315,
+              "high": 0.0685
+            },
+            "trades_by_tier": {
+              "low": 0,
+              "mid": 66,
+              "high": 4
+            }
+          }
+        },
+        "high_conviction": {
+          "label": "집중형 · 상위 확신만",
+          "description": "혼합 확신 75% 이상 후보만 기존 1% 위험예산으로 거래",
+          "train": {
+            "ending": 3296781.23,
+            "return_pct": 9.89,
+            "cagr_pct": 2.39,
+            "mdd_pct": -5.12,
+            "trades": 19,
+            "win_rate_pct": 57.89,
+            "avg_trade_pct": 2.226,
+            "trades_per_year": 4.8,
+            "max_open": 3,
+            "underwater_days": 80
+          },
+          "test": {
+            "ending": 2915848.11,
+            "return_pct": -2.81,
+            "cagr_pct": -2.81,
+            "mdd_pct": -3.61,
+            "trades": 6,
+            "win_rate_pct": 16.67,
+            "avg_trade_pct": -2.361,
+            "trades_per_year": 6.0,
+            "max_open": 1,
+            "underwater_days": 63
+          },
+          "allocation": {
+            "reject_cash": 0,
+            "reject_capacity": 0,
+            "cash_limited_entries": 0,
+            "allocation_ratio": 1.0,
+            "capital_share_by_tier": {
+              "low": 0.0,
+              "mid": 0.0,
+              "high": 1.0
+            },
+            "trades_by_tier": {
+              "low": 0,
+              "mid": 0,
+              "high": 6
+            }
+          }
+        }
+      },
+      "candidate_diagnostics": {
+        "by_conviction_tier": {
+          "low": {
+            "signals": 147,
+            "win_rate_pct": 34.69,
+            "avg_trade_pct": 1.559,
+            "avg_realized_r": 0.286,
+            "median_realized_r": -1.043,
+            "avg_mfe_close_r": 1.41,
+            "avg_mae_close_r": -0.879,
+            "realized_2r_plus_pct": 19.05,
+            "realized_loss_08r_pct": 55.78
+          },
+          "mid": {
+            "signals": 145,
+            "win_rate_pct": 28.28,
+            "avg_trade_pct": -0.028,
+            "avg_realized_r": -0.064,
+            "median_realized_r": -1.046,
+            "avg_mfe_close_r": 1.022,
+            "avg_mae_close_r": -0.889,
+            "realized_2r_plus_pct": 12.41,
+            "realized_loss_08r_pct": 66.21
+          },
+          "high": {
+            "signals": 8,
+            "win_rate_pct": 25.0,
+            "avg_trade_pct": -2.013,
+            "avg_realized_r": -0.41,
+            "median_realized_r": -0.515,
+            "avg_mfe_close_r": 0.29,
+            "avg_mae_close_r": -0.664,
+            "realized_2r_plus_pct": 0.0,
+            "realized_loss_08r_pct": 37.5
+          }
+        },
+        "by_same_day_rank": {
+          "rank1": {
+            "signals": 124,
+            "win_rate_pct": 31.45,
+            "avg_trade_pct": 0.813,
+            "avg_realized_r": 0.089,
+            "median_realized_r": -1.041,
+            "avg_mfe_close_r": 1.169,
+            "avg_mae_close_r": -0.845,
+            "realized_2r_plus_pct": 14.52,
+            "realized_loss_08r_pct": 58.87
+          },
+          "rank2_3": {
+            "signals": 105,
+            "win_rate_pct": 31.43,
+            "avg_trade_pct": 0.155,
+            "avg_realized_r": 0.051,
+            "median_realized_r": -1.045,
+            "avg_mfe_close_r": 1.187,
+            "avg_mae_close_r": -0.863,
+            "realized_2r_plus_pct": 16.19,
+            "realized_loss_08r_pct": 60.0
+          },
+          "rank4_plus": {
+            "signals": 71,
+            "win_rate_pct": 30.99,
+            "avg_trade_pct": 1.296,
+            "avg_realized_r": 0.183,
+            "median_realized_r": -1.048,
+            "avg_mfe_close_r": 1.242,
+            "avg_mae_close_r": -0.959,
+            "realized_2r_plus_pct": 15.49,
+            "realized_loss_08r_pct": 63.38
+          }
+        }
+      }
+    },
+    {
+      "fold": "2024",
+      "train_start": "2020-01-01",
+      "train_end": "2023-12-31",
+      "test_start": "2024-01-01",
+      "test_end": "2024-12-31",
+      "quality_intensity": "loose",
+      "thresholds": {
+        "confirmed_pullback": 72.372,
+        "sma200_20_squeeze": 34.20318,
+        "donchian_55": 34.948818
+      },
+      "policies": {
+        "v1_flat": {
+          "label": "V1 기준 · 모두 1.0% 위험",
+          "description": "품질 상위 50% + 혼합 priority, 통과 후보는 모두 기존 1% 계좌위험 예산",
+          "train": {
+            "ending": 4924084.31,
+            "return_pct": 64.14,
+            "cagr_pct": 13.2,
+            "mdd_pct": -16.89,
+            "trades": 248,
+            "win_rate_pct": 35.48,
+            "avg_trade_pct": 1.627,
+            "trades_per_year": 62.0,
+            "max_open": 9,
+            "underwater_days": 272
+          },
+          "test": {
+            "ending": 3148688.16,
+            "return_pct": 4.96,
+            "cagr_pct": 4.96,
+            "mdd_pct": -16.01,
+            "trades": 75,
+            "win_rate_pct": 36.0,
+            "avg_trade_pct": 0.986,
+            "trades_per_year": 75.1,
+            "max_open": 9,
+            "underwater_days": 206
+          },
+          "allocation": {
+            "reject_cash": 408,
+            "reject_capacity": 0,
+            "cash_limited_entries": 49,
+            "allocation_ratio": 0.0922,
+            "capital_share_by_tier": {
+              "low": 0.259,
+              "mid": 0.7013,
+              "high": 0.0397
+            },
+            "trades_by_tier": {
+              "low": 20,
+              "mid": 51,
+              "high": 4
+            }
+          }
+        },
+        "tiered_all": {
+          "label": "순위가중 · 0.5 / 0.75 / 1.0%",
+          "description": "낮은 확신 후보도 거래하되 위험예산을 절반으로 줄이고 상위 후보에 기존 1%를 유지",
+          "train": {
+            "ending": 4775871.9,
+            "return_pct": 59.2,
+            "cagr_pct": 12.34,
+            "mdd_pct": -14.48,
+            "trades": 317,
+            "win_rate_pct": 35.33,
+            "avg_trade_pct": 1.333,
+            "trades_per_year": 79.3,
+            "max_open": 10,
+            "underwater_days": 262
+          },
+          "test": {
+            "ending": 3413387.89,
+            "return_pct": 13.78,
+            "cagr_pct": 13.79,
+            "mdd_pct": -9.99,
+            "trades": 90,
+            "win_rate_pct": 36.67,
+            "avg_trade_pct": 1.231,
+            "trades_per_year": 90.1,
+            "max_open": 10,
+            "underwater_days": 168
+          },
+          "allocation": {
+            "reject_cash": 275,
+            "reject_capacity": 97,
+            "cash_limited_entries": 48,
+            "allocation_ratio": 0.1747,
+            "capital_share_by_tier": {
+              "low": 0.2653,
+              "mid": 0.6746,
+              "high": 0.0601
+            },
+            "trades_by_tier": {
+              "low": 30,
+              "mid": 55,
+              "high": 5
+            }
+          }
+        },
+        "selective": {
+          "label": "선별형 · 하위 확신 제외",
+          "description": "혼합 확신 50% 미만은 건너뛰고 중간 0.75%, 상위 1.0% 위험예산",
+          "train": {
+            "ending": 3460426.18,
+            "return_pct": 15.35,
+            "cagr_pct": 3.64,
+            "mdd_pct": -19.46,
+            "trades": 259,
+            "win_rate_pct": 32.43,
+            "avg_trade_pct": 0.695,
+            "trades_per_year": 64.8,
+            "max_open": 10,
+            "underwater_days": 353
+          },
+          "test": {
+            "ending": 2997365.35,
+            "return_pct": -0.09,
+            "cagr_pct": -0.09,
+            "mdd_pct": -16.02,
+            "trades": 86,
+            "win_rate_pct": 25.58,
+            "avg_trade_pct": -0.199,
+            "trades_per_year": 86.1,
+            "max_open": 10,
+            "underwater_days": 200
+          },
+          "allocation": {
+            "reject_cash": 151,
+            "reject_capacity": 28,
+            "cash_limited_entries": 44,
+            "allocation_ratio": 0.2329,
+            "capital_share_by_tier": {
+              "low": 0.0,
+              "mid": 0.9737,
+              "high": 0.0263
+            },
+            "trades_by_tier": {
+              "low": 0,
+              "mid": 83,
+              "high": 3
+            }
+          }
+        },
+        "high_conviction": {
+          "label": "집중형 · 상위 확신만",
+          "description": "혼합 확신 75% 이상 후보만 기존 1% 위험예산으로 거래",
+          "train": {
+            "ending": 3128009.42,
+            "return_pct": 4.27,
+            "cagr_pct": 1.05,
+            "mdd_pct": -5.36,
+            "trades": 19,
+            "win_rate_pct": 47.37,
+            "avg_trade_pct": 0.983,
+            "trades_per_year": 4.8,
+            "max_open": 2,
+            "underwater_days": 81
+          },
+          "test": {
+            "ending": 2965020.93,
+            "return_pct": -1.17,
+            "cagr_pct": -1.17,
+            "mdd_pct": -4.0,
+            "trades": 10,
+            "win_rate_pct": 50.0,
+            "avg_trade_pct": -0.243,
+            "trades_per_year": 10.0,
+            "max_open": 2,
+            "underwater_days": 70
+          },
+          "allocation": {
+            "reject_cash": 0,
+            "reject_capacity": 0,
+            "cash_limited_entries": 0,
+            "allocation_ratio": 1.0,
+            "capital_share_by_tier": {
+              "low": 0.0,
+              "mid": 0.0,
+              "high": 1.0
+            },
+            "trades_by_tier": {
+              "low": 0,
+              "mid": 0,
+              "high": 10
+            }
+          }
+        }
+      },
+      "candidate_diagnostics": {
+        "by_conviction_tier": {
+          "low": {
+            "signals": 272,
+            "win_rate_pct": 29.78,
+            "avg_trade_pct": 0.504,
+            "avg_realized_r": 0.121,
+            "median_realized_r": -1.043,
+            "avg_mfe_close_r": 1.427,
+            "avg_mae_close_r": -0.916,
+            "realized_2r_plus_pct": 12.87,
+            "realized_loss_08r_pct": 62.5
+          },
+          "mid": {
+            "signals": 304,
+            "win_rate_pct": 28.62,
+            "avg_trade_pct": 0.592,
+            "avg_realized_r": 0.086,
+            "median_realized_r": -1.044,
+            "avg_mfe_close_r": 1.392,
+            "avg_mae_close_r": -0.938,
+            "realized_2r_plus_pct": 14.14,
+            "realized_loss_08r_pct": 61.18
+          },
+          "high": {
+            "signals": 10,
+            "win_rate_pct": 50.0,
+            "avg_trade_pct": -0.243,
+            "avg_realized_r": -0.114,
+            "median_realized_r": -0.334,
+            "avg_mfe_close_r": 0.662,
+            "avg_mae_close_r": -0.454,
+            "realized_2r_plus_pct": 0.0,
+            "realized_loss_08r_pct": 30.0
+          }
+        },
+        "by_same_day_rank": {
+          "rank1": {
+            "signals": 181,
+            "win_rate_pct": 34.81,
+            "avg_trade_pct": 1.334,
+            "avg_realized_r": 0.218,
+            "median_realized_r": -1.028,
+            "avg_mfe_close_r": 1.467,
+            "avg_mae_close_r": -0.852,
+            "realized_2r_plus_pct": 14.36,
+            "realized_loss_08r_pct": 53.04
+          },
+          "rank2_3": {
+            "signals": 202,
+            "win_rate_pct": 30.69,
+            "avg_trade_pct": 0.708,
+            "avg_realized_r": 0.201,
+            "median_realized_r": -1.038,
+            "avg_mfe_close_r": 1.535,
+            "avg_mae_close_r": -0.927,
+            "realized_2r_plus_pct": 13.86,
+            "realized_loss_08r_pct": 58.91
+          },
+          "rank4_plus": {
+            "signals": 203,
+            "win_rate_pct": 23.65,
+            "avg_trade_pct": -0.344,
+            "avg_realized_r": -0.108,
+            "median_realized_r": -1.052,
+            "avg_mfe_close_r": 1.193,
+            "avg_mae_close_r": -0.972,
+            "realized_2r_plus_pct": 11.82,
+            "realized_loss_08r_pct": 70.94
+          }
+        }
+      }
+    },
+    {
+      "fold": "2025",
+      "train_start": "2021-01-01",
+      "train_end": "2024-12-31",
+      "test_start": "2025-01-01",
+      "test_end": "2025-12-31",
+      "quality_intensity": "loose",
+      "thresholds": {
+        "confirmed_pullback": 73.546365,
+        "sma200_20_squeeze": 33.342556,
+        "donchian_55": 34.671551
+      },
+      "policies": {
+        "v1_flat": {
+          "label": "V1 기준 · 모두 1.0% 위험",
+          "description": "품질 상위 50% + 혼합 priority, 통과 후보는 모두 기존 1% 계좌위험 예산",
+          "train": {
+            "ending": 4411427.0,
+            "return_pct": 47.05,
+            "cagr_pct": 10.13,
+            "mdd_pct": -17.28,
+            "trades": 257,
+            "win_rate_pct": 39.3,
+            "avg_trade_pct": 1.387,
+            "trades_per_year": 64.3,
+            "max_open": 10,
+            "underwater_days": 273
+          },
+          "test": {
+            "ending": 3283001.96,
+            "return_pct": 9.43,
+            "cagr_pct": 9.47,
+            "mdd_pct": -13.89,
+            "trades": 67,
+            "win_rate_pct": 37.31,
+            "avg_trade_pct": 1.549,
+            "trades_per_year": 67.2,
+            "max_open": 8,
+            "underwater_days": 109
+          },
+          "allocation": {
+            "reject_cash": 346,
+            "reject_capacity": 0,
+            "cash_limited_entries": 30,
+            "allocation_ratio": 0.1119,
+            "capital_share_by_tier": {
+              "low": 0.3213,
+              "mid": 0.6394,
+              "high": 0.0393
+            },
+            "trades_by_tier": {
+              "low": 23,
+              "mid": 42,
+              "high": 2
+            }
+          }
+        },
+        "tiered_all": {
+          "label": "순위가중 · 0.5 / 0.75 / 1.0%",
+          "description": "낮은 확신 후보도 거래하되 위험예산을 절반으로 줄이고 상위 후보에 기존 1%를 유지",
+          "train": {
+            "ending": 5155593.73,
+            "return_pct": 71.85,
+            "cagr_pct": 14.51,
+            "mdd_pct": -13.5,
+            "trades": 324,
+            "win_rate_pct": 37.65,
+            "avg_trade_pct": 1.041,
+            "trades_per_year": 81.1,
+            "max_open": 10,
+            "underwater_days": 262
+          },
+          "test": {
+            "ending": 3079073.49,
+            "return_pct": 2.64,
+            "cagr_pct": 2.64,
+            "mdd_pct": -12.19,
+            "trades": 80,
+            "win_rate_pct": 33.75,
+            "avg_trade_pct": 1.062,
+            "trades_per_year": 80.3,
+            "max_open": 10,
+            "underwater_days": 139
+          },
+          "allocation": {
+            "reject_cash": 301,
+            "reject_capacity": 21,
+            "cash_limited_entries": 28,
+            "allocation_ratio": 0.1754,
+            "capital_share_by_tier": {
+              "low": 0.3119,
+              "mid": 0.647,
+              "high": 0.0411
+            },
+            "trades_by_tier": {
+              "low": 32,
+              "mid": 46,
+              "high": 2
+            }
+          }
+        },
+        "selective": {
+          "label": "선별형 · 하위 확신 제외",
+          "description": "혼합 확신 50% 미만은 건너뛰고 중간 0.75%, 상위 1.0% 위험예산",
+          "train": {
+            "ending": 3028449.59,
+            "return_pct": 0.95,
+            "cagr_pct": 0.24,
+            "mdd_pct": -20.03,
+            "trades": 270,
+            "win_rate_pct": 31.48,
+            "avg_trade_pct": -0.145,
+            "trades_per_year": 67.5,
+            "max_open": 10,
+            "underwater_days": 482
+          },
+          "test": {
+            "ending": 3265371.09,
+            "return_pct": 8.85,
+            "cagr_pct": 8.88,
+            "mdd_pct": -8.45,
+            "trades": 56,
+            "win_rate_pct": 33.93,
+            "avg_trade_pct": 1.059,
+            "trades_per_year": 56.2,
+            "max_open": 9,
+            "underwater_days": 80
+          },
+          "allocation": {
+            "reject_cash": 146,
+            "reject_capacity": 0,
+            "cash_limited_entries": 17,
+            "allocation_ratio": 0.2363,
+            "capital_share_by_tier": {
+              "low": 0.0,
+              "mid": 0.9512,
+              "high": 0.0488
+            },
+            "trades_by_tier": {
+              "low": 0,
+              "mid": 54,
+              "high": 2
+            }
+          }
+        },
+        "high_conviction": {
+          "label": "집중형 · 상위 확신만",
+          "description": "혼합 확신 75% 이상 후보만 기존 1% 위험예산으로 거래",
+          "train": {
+            "ending": 3150285.79,
+            "return_pct": 5.01,
+            "cagr_pct": 1.23,
+            "mdd_pct": -7.11,
+            "trades": 24,
+            "win_rate_pct": 50.0,
+            "avg_trade_pct": 1.293,
+            "trades_per_year": 6.0,
+            "max_open": 2,
+            "underwater_days": 158
+          },
+          "test": {
+            "ending": 2996403.1,
+            "return_pct": -0.12,
+            "cagr_pct": -0.12,
+            "mdd_pct": -1.7,
+            "trades": 4,
+            "win_rate_pct": 50.0,
+            "avg_trade_pct": -0.149,
+            "trades_per_year": 4.0,
+            "max_open": 2,
+            "underwater_days": 21
+          },
+          "allocation": {
+            "reject_cash": 0,
+            "reject_capacity": 0,
+            "cash_limited_entries": 0,
+            "allocation_ratio": 1.0,
+            "capital_share_by_tier": {
+              "low": 0.0,
+              "mid": 0.0,
+              "high": 1.0
+            },
+            "trades_by_tier": {
+              "low": 0,
+              "mid": 0,
+              "high": 4
+            }
+          }
+        }
+      },
+      "candidate_diagnostics": {
+        "by_conviction_tier": {
+          "low": {
+            "signals": 281,
+            "win_rate_pct": 35.94,
+            "avg_trade_pct": 1.15,
+            "avg_realized_r": 0.26,
+            "median_realized_r": -1.032,
+            "avg_mfe_close_r": 1.484,
+            "avg_mae_close_r": -0.778,
+            "realized_2r_plus_pct": 18.15,
+            "realized_loss_08r_pct": 53.74
+          },
+          "mid": {
+            "signals": 240,
+            "win_rate_pct": 34.17,
+            "avg_trade_pct": 1.008,
+            "avg_realized_r": 0.164,
+            "median_realized_r": -1.034,
+            "avg_mfe_close_r": 1.481,
+            "avg_mae_close_r": -0.831,
+            "realized_2r_plus_pct": 17.92,
+            "realized_loss_08r_pct": 58.33
+          },
+          "high": {
+            "signals": 4,
+            "win_rate_pct": 50.0,
+            "avg_trade_pct": -0.149,
+            "avg_realized_r": -0.026,
+            "median_realized_r": 0.132,
+            "avg_mfe_close_r": 0.367,
+            "avg_mae_close_r": -0.445,
+            "realized_2r_plus_pct": 0.0,
+            "realized_loss_08r_pct": 25.0
+          }
+        },
+        "by_same_day_rank": {
+          "rank1": {
+            "signals": 160,
+            "win_rate_pct": 41.25,
+            "avg_trade_pct": 2.076,
+            "avg_realized_r": 0.388,
+            "median_realized_r": -1.023,
+            "avg_mfe_close_r": 1.619,
+            "avg_mae_close_r": -0.77,
+            "realized_2r_plus_pct": 20.0,
+            "realized_loss_08r_pct": 50.62
+          },
+          "rank2_3": {
+            "signals": 186,
+            "win_rate_pct": 30.65,
+            "avg_trade_pct": -0.119,
+            "avg_realized_r": 0.018,
+            "median_realized_r": -1.04,
+            "avg_mfe_close_r": 1.255,
+            "avg_mae_close_r": -0.855,
+            "realized_2r_plus_pct": 16.67,
+            "realized_loss_08r_pct": 59.14
+          },
+          "rank4_plus": {
+            "signals": 179,
+            "win_rate_pct": 34.64,
+            "avg_trade_pct": 1.421,
+            "avg_realized_r": 0.262,
+            "median_realized_r": -1.035,
+            "avg_mfe_close_r": 1.573,
+            "avg_mae_close_r": -0.77,
+            "realized_2r_plus_pct": 17.32,
+            "realized_loss_08r_pct": 56.42
+          }
+        }
+      }
+    },
+    {
+      "fold": "2026",
+      "train_start": "2022-01-01",
+      "train_end": "2025-12-31",
+      "test_start": "2026-01-01",
+      "test_end": "2026-08-13",
+      "quality_intensity": "loose",
+      "thresholds": {
+        "confirmed_pullback": 73.903205,
+        "sma200_20_squeeze": 32.747463,
+        "donchian_55": 34.290676
+      },
+      "policies": {
+        "v1_flat": {
+          "label": "V1 기준 · 모두 1.0% 위험",
+          "description": "품질 상위 50% + 혼합 priority, 통과 후보는 모두 기존 1% 계좌위험 예산",
+          "train": {
+            "ending": 3574130.09,
+            "return_pct": 19.14,
+            "cagr_pct": 4.48,
+            "mdd_pct": -16.9,
+            "trades": 255,
+            "win_rate_pct": 38.43,
+            "avg_trade_pct": 1.341,
+            "trades_per_year": 63.8,
+            "max_open": 9,
+            "underwater_days": 392
+          },
+          "test": {
+            "ending": 3443934.93,
+            "return_pct": 14.8,
+            "cagr_pct": 25.24,
+            "mdd_pct": -15.09,
+            "trades": 47,
+            "win_rate_pct": 40.43,
+            "avg_trade_pct": 4.396,
+            "trades_per_year": 76.6,
+            "max_open": 10,
+            "underwater_days": 49
+          },
+          "allocation": {
+            "reject_cash": 217,
+            "reject_capacity": 45,
+            "cash_limited_entries": 16,
+            "allocation_ratio": 0.1169,
+            "capital_share_by_tier": {
+              "low": 0.3579,
+              "mid": 0.628,
+              "high": 0.0141
+            },
+            "trades_by_tier": {
+              "low": 15,
+              "mid": 31,
+              "high": 1
+            }
+          }
+        },
+        "tiered_all": {
+          "label": "순위가중 · 0.5 / 0.75 / 1.0%",
+          "description": "낮은 확신 후보도 거래하되 위험예산을 절반으로 줄이고 상위 후보에 기존 1%를 유지",
+          "train": {
+            "ending": 4307676.32,
+            "return_pct": 43.59,
+            "cagr_pct": 9.47,
+            "mdd_pct": -12.61,
+            "trades": 311,
+            "win_rate_pct": 35.37,
+            "avg_trade_pct": 1.087,
+            "trades_per_year": 77.8,
+            "max_open": 10,
+            "underwater_days": 262
+          },
+          "test": {
+            "ending": 3656347.21,
+            "return_pct": 21.88,
+            "cagr_pct": 38.07,
+            "mdd_pct": -11.7,
+            "trades": 52,
+            "win_rate_pct": 42.31,
+            "avg_trade_pct": 7.051,
+            "trades_per_year": 84.8,
+            "max_open": 10,
+            "underwater_days": 50
+          },
+          "allocation": {
+            "reject_cash": 119,
+            "reject_capacity": 120,
+            "cash_limited_entries": 13,
+            "allocation_ratio": 0.2293,
+            "capital_share_by_tier": {
+              "low": 0.288,
+              "mid": 0.6638,
+              "high": 0.0481
+            },
+            "trades_by_tier": {
+              "low": 17,
+              "mid": 33,
+              "high": 2
+            }
+          }
+        },
+        "selective": {
+          "label": "선별형 · 하위 확신 제외",
+          "description": "혼합 확신 50% 미만은 건너뛰고 중간 0.75%, 상위 1.0% 위험예산",
+          "train": {
+            "ending": 3181098.49,
+            "return_pct": 6.04,
+            "cagr_pct": 1.48,
+            "mdd_pct": -20.29,
+            "trades": 237,
+            "win_rate_pct": 32.49,
+            "avg_trade_pct": 0.478,
+            "trades_per_year": 59.3,
+            "max_open": 10,
+            "underwater_days": 409
+          },
+          "test": {
+            "ending": 3918345.93,
+            "return_pct": 30.61,
+            "cagr_pct": 54.57,
+            "mdd_pct": -11.27,
+            "trades": 54,
+            "win_rate_pct": 42.59,
+            "avg_trade_pct": 6.701,
+            "trades_per_year": 88.1,
+            "max_open": 10,
+            "underwater_days": 50
+          },
+          "allocation": {
+            "reject_cash": 64,
+            "reject_capacity": 39,
+            "cash_limited_entries": 15,
+            "allocation_ratio": 0.3411,
+            "capital_share_by_tier": {
+              "low": 0.0,
+              "mid": 0.9221,
+              "high": 0.0779
+            },
+            "trades_by_tier": {
+              "low": 0,
+              "mid": 51,
+              "high": 3
+            }
+          }
+        },
+        "high_conviction": {
+          "label": "집중형 · 상위 확신만",
+          "description": "혼합 확신 75% 이상 후보만 기존 1% 위험예산으로 거래",
+          "train": {
+            "ending": 2844670.7,
+            "return_pct": -5.18,
+            "cagr_pct": -1.32,
+            "mdd_pct": -6.03,
+            "trades": 19,
+            "win_rate_pct": 31.58,
+            "avg_trade_pct": -1.085,
+            "trades_per_year": 4.8,
+            "max_open": 2,
+            "underwater_days": 201
+          },
+          "test": {
+            "ending": 3019148.86,
+            "return_pct": 0.64,
+            "cagr_pct": 1.04,
+            "mdd_pct": -1.23,
+            "trades": 3,
+            "win_rate_pct": 33.33,
+            "avg_trade_pct": 0.734,
+            "trades_per_year": 4.9,
+            "max_open": 1,
+            "underwater_days": 20
+          },
+          "allocation": {
+            "reject_cash": 0,
+            "reject_capacity": 0,
+            "cash_limited_entries": 0,
+            "allocation_ratio": 1.0,
+            "capital_share_by_tier": {
+              "low": 0.0,
+              "mid": 0.0,
+              "high": 1.0
+            },
+            "trades_by_tier": {
+              "low": 0,
+              "mid": 0,
+              "high": 3
+            }
+          }
+        }
+      },
+      "candidate_diagnostics": {
+        "by_conviction_tier": {
+          "low": {
+            "signals": 191,
+            "win_rate_pct": 39.79,
+            "avg_trade_pct": 3.442,
+            "avg_realized_r": 0.409,
+            "median_realized_r": -1.02,
+            "avg_mfe_close_r": 1.806,
+            "avg_mae_close_r": -0.766,
+            "realized_2r_plus_pct": 17.8,
+            "realized_loss_08r_pct": 54.45
+          },
+          "mid": {
+            "signals": 221,
+            "win_rate_pct": 32.58,
+            "avg_trade_pct": 3.764,
+            "avg_realized_r": 0.472,
+            "median_realized_r": -1.025,
+            "avg_mfe_close_r": 2.026,
+            "avg_mae_close_r": -0.825,
+            "realized_2r_plus_pct": 19.46,
+            "realized_loss_08r_pct": 58.37
+          },
+          "high": {
+            "signals": 3,
+            "win_rate_pct": 33.33,
+            "avg_trade_pct": 0.734,
+            "avg_realized_r": 0.218,
+            "median_realized_r": -0.343,
+            "avg_mfe_close_r": 0.666,
+            "avg_mae_close_r": -0.31,
+            "realized_2r_plus_pct": 0.0,
+            "realized_loss_08r_pct": 0.0
+          }
+        },
+        "by_same_day_rank": {
+          "rank1": {
+            "signals": 113,
+            "win_rate_pct": 37.17,
+            "avg_trade_pct": 7.128,
+            "avg_realized_r": 0.809,
+            "median_realized_r": -0.778,
+            "avg_mfe_close_r": 2.094,
+            "avg_mae_close_r": -0.714,
+            "realized_2r_plus_pct": 19.47,
+            "realized_loss_08r_pct": 49.56
+          },
+          "rank2_3": {
+            "signals": 142,
+            "win_rate_pct": 32.39,
+            "avg_trade_pct": 0.722,
+            "avg_realized_r": 0.142,
+            "median_realized_r": -1.023,
+            "avg_mfe_close_r": 1.699,
+            "avg_mae_close_r": -0.85,
+            "realized_2r_plus_pct": 16.2,
+            "realized_loss_08r_pct": 60.56
+          },
+          "rank4_plus": {
+            "signals": 160,
+            "win_rate_pct": 38.12,
+            "avg_trade_pct": 3.647,
+            "avg_realized_r": 0.447,
+            "median_realized_r": -1.027,
+            "avg_mfe_close_r": 1.98,
+            "avg_mae_close_r": -0.801,
+            "realized_2r_plus_pct": 20.0,
+            "realized_loss_08r_pct": 56.88
+          }
+        }
+      }
+    }
+  ],
+  "notes": [
+    "Frozen Challenger V1의 규칙과 forward state는 이 연구가 수정하지 않습니다.",
+    "V2 연구에서는 신호일에 알 수 있는 정보만 후보 선택/배분에 사용합니다. 미래수익·MFE·MAE는 결과 진단에만 사용합니다.",
+    "상위 후보에 1%보다 더 큰 위험을 싣는 실험은 아직 하지 않습니다. 먼저 낮은 확신 후보의 자본을 줄이거나 제외하는 효과부터 봅니다.",
+    "같은 날 후보 중 rank1 성과와 하위 후보 성과를 따로 보고, 점수가 실제로 자본 우선순위를 설명하는지 확인합니다.",
+    "survivorship bias는 현재 77종목 과거재생 데이터에 여전히 남아 있습니다."
+  ]
+}
