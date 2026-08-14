@@ -3,68 +3,57 @@ from __future__ import annotations
 from datetime import date
 from pathlib import Path
 
-import pandas as pd
-
 import sp500_pit_diagnostic as diag
 
 
-def fixture_tables():
-    fillers = [f'X{i:03d}' for i in range(498)]
-    current = pd.DataFrame({
-        'Symbol': [*fillers, 'ADD1', 'ADD2'],
-        'Security': [f'Company {i}' for i in range(500)],
-    })
-    columns = pd.MultiIndex.from_tuples([
-        ('Effective Date', 'Effective Date'),
-        ('Added', 'Ticker'),
-        ('Added', 'Security'),
-        ('Removed', 'Ticker'),
-        ('Removed', 'Security'),
-        ('Reason', 'Reason'),
-    ])
-    changes = pd.DataFrame([
-        ['January 2, 2020', 'ADD2', 'Added Two', 'REM2', 'Removed Two', 'fixture'],
-        ['January 5, 2026', 'ADD1', 'Added One', 'REM1', 'Removed One', 'fixture'],
-    ], columns=columns)
-    return [current, changes]
+def fixture_csv() -> str:
+    base = [f'X{i:03d}' for i in range(498)]
+    old = ','.join([*base, 'REM1', 'REM2'])
+    mid = ','.join([*base, 'REM1', 'ADD2'])
+    latest = ','.join([*base, 'ADD1', 'ADD2'])
+    return (
+        'date,tickers\n'
+        f'2016-12-30,"{old}"\n'
+        f'2019-12-31,"{old}"\n'
+        f'2020-01-02,"{mid}"\n'
+        f'2025-12-31,"{mid}"\n'
+        f'2026-01-05,"{latest}"\n'
+        f'2026-08-01,"{latest}"\n'
+    )
 
 
-def test_table_detection_and_normalization():
-    current, changes = diag.identify_tables(fixture_tables())
-    cur = diag.normalize_current_table(current)
-    chg = diag.normalize_changes_table(changes)
-    assert len(cur) == 500
-    assert cur[-1]['symbol'] == 'ADD2'
-    assert [x['effective_date'] for x in chg] == ['2020-01-02', '2026-01-05']
-    assert chg[0]['added'] == 'ADD2' and chg[0]['removed'] == 'REM2'
-
-
-def test_reverse_reconstruction_restores_removed_names_without_count_drift():
-    current, changes = diag.identify_tables(fixture_tables())
-    current_symbols = {x['symbol'] for x in diag.normalize_current_table(current)}
-    ledger = diag.normalize_changes_table(changes)
-    as_of = date(2026, 8, 14)
-
-    now_members = diag.members_on(as_of, current_symbols, ledger, as_of=as_of)
-    assert 'ADD1' in now_members and 'ADD2' in now_members
-    assert 'REM1' not in now_members and 'REM2' not in now_members
-    assert len(now_members) == 500
-
-    old = diag.members_on(date(2019, 12, 31), current_symbols, ledger, as_of=as_of)
+def test_parse_and_snapshot_lookup():
+    rows = diag.parse_snapshot_csv(fixture_csv())
+    assert len(rows) == 6
+    old = diag.snapshot_on(date(2019, 12, 31), rows)
     assert 'REM1' in old and 'REM2' in old
     assert 'ADD1' not in old and 'ADD2' not in old
-    assert len(old) == 500
+    latest = diag.snapshot_on(date(2026, 8, 13), rows)
+    assert 'ADD1' in latest and 'ADD2' in latest
+    assert len(latest) == 500
 
 
-def test_build_is_diagnostic_only_even_when_membership_counts_are_plausible():
-    payload = diag.build_from_tables(fixture_tables(), as_of=date(2026, 8, 14))
+def test_build_tracks_noncurrent_last_seen_without_count_drift():
+    rows = diag.parse_snapshot_csv(fixture_csv())
+    payload = diag.build_from_snapshots(rows, as_of=date(2026, 8, 14))
     assert payload['ready'] is True
     assert payload['status'] == 'DIAGNOSTIC_MEMBERSHIP_READY'
     assert payload['promotion_status'] == 'DIAGNOSTIC_ONLY_COMMUNITY_MEMBERSHIP'
     assert payload['current_member_count'] == 500
+    assert payload['source_coverage_end'] == '2026-08-01'
     assert min(x['member_count'] for x in payload['monthly_member_counts']) == 500
     assert max(x['member_count'] for x in payload['monthly_member_counts']) == 500
     assert {'REM1', 'REM2'} <= set(payload['historical_removed_tickers'])
+    assert payload['ticker_last_seen']['REM2'] == '2019-12-31'
+    assert payload['ticker_last_seen']['REM1'] == '2025-12-31'
+
+
+def test_stale_source_is_not_ready_even_if_counts_look_good():
+    rows = diag.parse_snapshot_csv(fixture_csv().replace('2026-08-01', '2026-01-06'))
+    payload = diag.build_from_snapshots(rows, as_of=date(2026, 8, 14))
+    assert payload['ready'] is False
+    assert payload['coverage_checks']['monthly_member_count_plausible'] is True
+    assert payload['coverage_checks']['source_fresh_enough'] is False
 
 
 def test_diagnostic_never_imports_or_mutates_forward_challengers():
@@ -73,12 +62,13 @@ def test_diagnostic_never_imports_or_mutates_forward_challengers():
         assert name not in src
     assert "'production_main_picker_mutated'] = False" in src
     assert "'forward_challengers_mutated'] = False" in src
+    assert 'DIAGNOSTIC_ONLY_COMMUNITY_MEMBERSHIP' in src
 
 
 def main():
-    test_table_detection_and_normalization()
-    test_reverse_reconstruction_restores_removed_names_without_count_drift()
-    test_build_is_diagnostic_only_even_when_membership_counts_are_plausible()
+    test_parse_and_snapshot_lookup()
+    test_build_tracks_noncurrent_last_seen_without_count_drift()
+    test_stale_source_is_not_ready_even_if_counts_look_good()
     test_diagnostic_never_imports_or_mutates_forward_challengers()
     print('S&P 500 PIT diagnostic PASS')
 
