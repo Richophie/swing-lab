@@ -1,23 +1,13 @@
-name: Strategy Optimizer
+name: Strategy Optimizer · Manual Backup
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - 'strategy_optimizer.py'
-      - 'strategy_optimizer_v2.py'
-      - 'strategy_optimizer_runner.py'
-      - 'static/replay_backtest_pool_v2.json'
-      - '.github/workflows/strategy-optimizer.yml'
-  schedule:
-    - cron: '15 23 * * 1-5'
 
 permissions:
   contents: write
 
 concurrency:
-  group: strategy-optimizer-main
+  group: strategy-optimizer-manual
   cancel-in-progress: true
 
 jobs:
