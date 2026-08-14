@@ -121,7 +121,7 @@ def _paper_infrastructure() -> dict:
     files = {str(p.relative_to(ROOT)): p.exists() for p in PAPER_REQUIRED_FILES}
     app_text = (ROOT / 'app.py').read_text(encoding='utf-8') if (ROOT / 'app.py').exists() else ''
     routes = {
-        'status': '/api/paper/status' in app_text,
+        'status': "@app.route('/api/paper',methods=['GET'])" in app_text,
         'submit': '/api/paper/submit' in app_text,
         'refresh': '/api/paper/refresh' in app_text,
         'reset': '/api/paper/reset' in app_text,
