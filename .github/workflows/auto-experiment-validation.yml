@@ -1,0 +1,34 @@
+name: Auto Experiment Validation
+
+on:
+  pull_request:
+    paths:
+      - 'auto_experiment_queue.py'
+      - 'auto_experiment_runner.py'
+      - 'static/auto_experiment_queue.js'
+      - 'static/auto_experiment_queue.css'
+      - 'static/lab_dashboard.js'
+      - 'tests/test_auto_experiment_loop.py'
+      - '.github/workflows/auto-experiment-loop.yml'
+      - '.github/workflows/auto-experiment-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: pip install -r requirements.txt
+      - name: Compile autonomous research modules
+        run: python -m py_compile auto_experiment_queue.py auto_experiment_runner.py tests/test_auto_experiment_loop.py
+      - name: Deterministic queue and decision tests
+        run: PYTHONPATH=. python tests/test_auto_experiment_loop.py
+      - name: UI syntax checks
+        run: node --check static/auto_experiment_queue.js && node --check static/lab_dashboard.js
