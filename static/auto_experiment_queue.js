@@ -1,6 +1,6 @@
 (()=>{
 const ID='autoExperimentQueuePanel',REMOTE='https://raw.githubusercontent.com/Richophie/swing-lab/main/static/';
-const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[m]));
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const n=v=>{const x=Number(v);return Number.isFinite(x)?x:0};
 function css(){if(document.getElementById('autoExperimentQueueCss'))return;const l=document.createElement('link');l.id='autoExperimentQueueCss';l.rel='stylesheet';l.href='/static/auto_experiment_queue.css?v=20260815-1';document.head.appendChild(l)}
 async function json(){for(const url of [`${REMOTE}auto_experiment_queue.json?ts=${Date.now()}`,`/static/auto_experiment_queue.json?ts=${Date.now()}`]){try{const r=await fetch(url,{cache:'no-store'});if(r.ok)return await r.json()}catch{}}return null}
