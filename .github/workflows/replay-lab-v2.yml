@@ -14,6 +14,7 @@ on:
       - 'portfolio_volatility_diagnostic.py'
       - 'portfolio_priority_audit.py'
       - 'portfolio_flow_selection_diagnostic.py'
+      - 'research_journal.py'
       - '.github/workflows/replay-lab-v2.yml'
   schedule:
     - cron: '40 22 * * 1-5'
@@ -197,11 +198,29 @@ jobs:
           print('Flow selection PASS',d['summary']['pattern'],d['summary']['strong_minus_weak_mean_return_pp'])
           PY
 
+      - name: 9. Build human-readable AI research journal snapshot
+        run: python research_journal.py
+      - name: Validate research journal
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('static/research_journal.json').read_text(encoding='utf-8'))
+          assert d.get('version') == 1
+          assert d.get('current',{}).get('date_kst')
+          assert d.get('judgement',{}).get('status')
+          assert d.get('changes')
+          assert d.get('policy',{}).get('production_auto_mutation') is False
+          assert d.get('policy',{}).get('automatic_promotion') is False
+          assert d.get('policy',{}).get('live_broker_orders') is False
+          print('journal PASS',d['current']['date_kst'],d['judgement']['status'])
+          PY
+
       - name: Commit all research outputs together
         run: |
           git config user.name "swing-lab-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add static/replay_backtest_pool_v2.json static/strategy_optimizer_results.json static/strategy_selection_results.json static/portfolio_walkforward_results.json static/portfolio_regime_results.json static/portfolio_volatility_diagnostic.json static/portfolio_priority_audit.json static/portfolio_flow_selection_diagnostic.json
+          git add static/replay_backtest_pool_v2.json static/strategy_optimizer_results.json static/strategy_selection_results.json static/portfolio_walkforward_results.json static/portfolio_regime_results.json static/portfolio_volatility_diagnostic.json static/portfolio_priority_audit.json static/portfolio_flow_selection_diagnostic.json static/research_journal.json
           if git diff --cached --quiet; then
             echo "No research data changes"
             exit 0
