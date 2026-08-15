@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="/static/event_risk.css?v=20260813-1">
 <link rel="stylesheet" href="/static/lab_dashboard.css?v=20260814-5">
 <link rel="stylesheet" href="/static/forward_review.css?v=20260814-1">
+<link rel="stylesheet" href="/static/workspace_polish.css?v=20260815-1">
 </head>
 <body>
 <main class="shell">
@@ -35,8 +36,8 @@
     </article>
     <article class="panel">
       <div class="panel-head"><div><div class="eyebrow">엄선 · 현재 자리의 질</div><h2>오늘 눈여겨볼 자리</h2></div><div class="scan-meta"><button class="icon-refresh" id="reload" type="button" aria-label="최신 저장 결과 불러오기" title="최신 저장 결과"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.65 6.35A7.95 7.95 0 0 0 12 4a8 8 0 1 0 7.75 10h-2.1A6 6 0 1 1 12 6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35Z"/></svg></button><span id="scanTime" class="scan-time">불러오는 중…</span></div></div>
-      <div class="seg" id="todayTabs" aria-label="추천 전략"></div><div class="grid" id="todayGrid"></div><div class="status" id="status">추천을 불러오는 중…</div>
-      <div class="note">전략별 탭은 각 엔진의 S 신호를 보여줍니다. 엄선은 그중 현재 차트·수급/유동성·시장환경·손익비를 다시 보고 우선순위를 정합니다. 백테스트는 추천 탈락조건이 아니라 과거 참고자료로만 사용합니다. 금액은 원화를 먼저, 달러를 함께 표기합니다.</div>
+      <div class="seg" id="todayTabs" aria-label="추천 전략"></div><div id="researchMode" class="rl-banner" hidden></div><div class="grid" id="todayGrid"></div><div class="status" id="status">추천을 불러오는 중…</div>
+      <div class="note">전략별 탭은 각 엔진의 S 신호를 보여줍니다. 엄선은 현재 차트·수급/유동성·시장환경·손익비로 합격 여부를 정하고, 자동연구 결과는 합격한 후보의 우선순위에만 최대 ±2점으로 반영합니다. 연구 결과만으로 후보를 탈락시키거나 BUY/TARGET/STOP을 바꾸지 않습니다.</div>
     </article>
     <article class="panel"><div class="panel-head"><div><div class="eyebrow">추천 기록</div><h2>지난 추천도 그대로 남겨둬요</h2></div><div id="historySummary" class="ticker">—</div></div><div id="historyDays"></div><div class="status" id="historyMore">아래로 내리면 이전 날짜를 더 불러옵니다.</div></article>
   </section>
@@ -44,7 +45,7 @@
   <section id="state" style="display:none"><article class="panel"><div class="eyebrow">엔진 상태</div><h2>현재 구조</h2><div class="detail-copy" id="engineState">불러오는 중…</div></article></section>
   <section id="backtestlab" style="display:none"><article class="panel"><div class="panel-head"><div><div class="eyebrow">REPLAY LAB · 과거 시뮬레이션</div><h2>백테스트연구소</h2><p class="paper-head-note">기간·기법·자금·동시보유 수와 청산 방식을 바꿔 비교합니다.</p></div></div><div class="bt-extra-controls"><div class="bt-extra-box"><label><input id="btForceProfit" type="checkbox"> 고정 익절 사용</label><input id="btForceProfitPct" type="number" min="0.1" max="50" step="0.1" value="3.0" inputmode="decimal">%<small>선택하면 매수가 대비 +N%에 도달한 날 바로 청산합니다. 비용 후 순수익률은 N%보다 조금 낮습니다.</small></div><div class="bt-extra-box"><label><input type="checkbox" data-bt-strategy="sma200_20_squeeze"> SMA200·20 스퀴즈 · 실험</label><small>200일선 상승추세 + 20/200 수렴 + 강한 돌파. 생산 추천에는 아직 넣지 않습니다.</small></div></div><div id="btLabBody"><div class="paper-empty">백테스트 데이터를 불러오는 중…</div></div></article></section>
   <section class="panel detail" id="detail">
-    <div class="detail-top"><div><div class="detail-name" id="detailName">—</div><div class="detail-ticker" id="detailTicker">—</div></div><div class="actions"><button class="ai-copy-icon detail-ai-copy" id="copySignal" type="button" aria-label="AI 검증용 복사" title="AI 검증용 복사"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v12h2V4h9V2Zm3 4H10a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Zm0 14h-8V8h8v12Z"/></svg></button><div class="detail-score" id="detailScore">—</div></div></div><div class="detail-copy" id="detailReason">—</div>
+    <div class="detail-top"><div><div class="detail-name" id="detailName">—</div><div class="detail-ticker" id="detailTicker">—</div></div><div class="actions"><button class="ai-copy-icon detail-ai-copy" id="copySignal" type="button" aria-label="AI 검증용 복사" title="AI 검증용 복사"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v12h2V4h9V2Zm3 4H10a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Zm0 14h-8V8h8v12Z"/></svg></button><div class="detail-score" id="detailScore">—</div></div></div><div class="detail-copy" id="detailReason">—</div><div id="detailResearch" hidden></div>
     <div class="plan-grid"><div class="plan-box"><span>BUY 엔진 진입구간</span><b id="dBuy">—</b></div><div class="plan-box target"><span>TARGET 목표가 · 예상수익률</span><b id="dTarget">—</b></div><div class="plan-box stop"><span>STOP 손절가 · 예상손실률</span><b id="dStop">—</b></div></div>
     <div class="chart-wrap" id="bigChart">차트 불러오는 중…</div><div class="legend"><span><i class="dot" style="background:#111"></i>종가</span><span><i class="dot" style="background:#4b75c7"></i>120일선</span><span><i class="dot" style="background:#d3d7d2"></i>볼린저 상/하단</span><span><i class="boxdot" style="background:#e8f6ed"></i>BUY 구간</span><span><i class="dot" style="background:#d83b42"></i>TARGET</span><span><i class="dot" style="background:#3267c8"></i>STOP</span><span><i class="dot" style="background:#7867a7"></i>RSI 30/70</span></div><div class="detail-copy" id="metricsCopy">—</div>
     <div class="panel-head" style="margin-top:24px"><div><div class="eyebrow">백테스트 · 참고자료</div><h2>같은 전략을 과거에 적용하면</h2></div><button class="btn" id="btBtn">10년 검증</button></div><div id="btArea" class="status">버튼을 누르면 현재 선택 전략으로 검증합니다. 이 결과는 오늘 추천의 합격/탈락 조건으로 사용하지 않습니다.</div>
@@ -70,5 +71,6 @@
 <script src="/static/signal_event_polish.js?v=20260813-3" defer></script>
 <script src="/static/event_risk_ui.js?v=20260813-1" defer></script>
 <script src="/static/lab_dashboard.js?v=20260814-6" defer></script>
+<script src="/static/research_live_ui.js?v=20260815-1" defer></script>
 </body>
 </html>

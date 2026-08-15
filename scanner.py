@@ -14,6 +14,7 @@ from strategy_engine import evaluate_strategies, trade_plan, public_s_signals, e
 from backtest_engine import run_backtest_on_frame
 from stock_names import korean_name
 from earnings_events import enrich_elite_rows
+from research_overlay import overlay_for_strategy, research_profiles
 
 OUT=Path(__file__).parent/'static'/'latest_scan.json'
 NY=ZoneInfo('America/New_York')
@@ -144,25 +145,39 @@ def enrich_plans(rows,market_state=None):
             for sig in row['strategy_signals']:
                 sid=sig['strategy_id'];plan=trade_plan(d,sid);plans[sid]=plan
                 if sig.get('experimental'):
-                    sig.update({'elite_pass':False,'elite_score':sig['strategy_score'],'selection_reason':'실험 전략 · 엄선에서 제외'});continue
+                    sig.update({'elite_pass':False,'elite_score':sig['strategy_score'],'base_elite_score':sig['strategy_score'],'research_rank_score':sig['strategy_score'],'selection_reason':'실험 전략 · 엄선에서 제외'});continue
                 overlay_bonus=bool(overlay['active'] and sid in {'confirmed_pullback','momentum_pullback'})
-                assessment=_current_selection(sig['strategy_score'],plan,row.get('flow'),overlay_bonus,market_state,sid);sig.update(assessment);sig['first_20d_overlay']=overlay_bonus
+                assessment=_current_selection(sig['strategy_score'],plan,row.get('flow'),overlay_bonus,market_state,sid)
+                base_elite_score=assessment['elite_score']
+                research=overlay_for_strategy(sid,base_elite_score)
+                assessment['research']=research
+                assessment['base_elite_score']=base_elite_score
+                assessment['research_rank_score']=research['research_rank_score']
+                # Pass/fail was already frozen from base_elite_score above. From this
+                # point on elite_score is the visible/ranking score with a capped
+                # research overlay, so existing API/UI paths automatically honor it.
+                assessment['elite_score']=research['research_rank_score']
+                sig.update(assessment);sig['first_20d_overlay']=overlay_bonus
                 try:sig['backtest']=run_backtest_on_frame(d,sid)
                 except Exception as exc:sig['backtest_error']=str(exc)
                 if assessment['elite_pass']:elite.append(sig)
             row['strategy_trade_plans']=plans
             if elite:
-                elite.sort(key=lambda s:s['elite_score'],reverse=True);best=elite[0];row.update({'strategy_id':best['strategy_id'],'strategy_name':best['strategy_name'],'strategy_reason':best['evidence'],'score':best['elite_score'],'elite_pass':True,'elite_score':best['elite_score'],'trade_plan':plans[best['strategy_id']]})
-            else:row['elite_pass']=False;row['trade_plan']=plans.get(row['strategy_id'])
+                elite.sort(key=lambda s:(float(s.get('research_rank_score') or s['elite_score']),float(s.get('base_elite_score') or s['elite_score'])),reverse=True);best=elite[0];row.update({'strategy_id':best['strategy_id'],'strategy_name':best['strategy_name'],'strategy_reason':best['evidence'],'score':best['elite_score'],'elite_pass':True,'elite_score':best['elite_score'],'base_elite_score':best.get('base_elite_score',best['elite_score']),'research_rank_score':best.get('research_rank_score',best['elite_score']),'research':best.get('research'),'trade_plan':plans[best['strategy_id']]})
+            else:
+                row['elite_pass']=False;row['trade_plan']=plans.get(row['strategy_id'])
+                best_public=sorted([s for s in row['strategy_signals'] if not s.get('experimental')],key=lambda s:(float(s.get('research_rank_score') or s.get('elite_score') or s.get('strategy_score') or 0),float(s.get('base_elite_score') or s.get('elite_score') or s.get('strategy_score') or 0)),reverse=True)
+                if best_public:
+                    best=best_public[0];row['score']=best.get('elite_score',best.get('strategy_score'));row['elite_score']=best.get('elite_score');row['base_elite_score']=best.get('base_elite_score');row['research_rank_score']=best.get('research_rank_score',best.get('elite_score',best.get('strategy_score')));row['research']=best.get('research')
             out.append(row)
         except Exception as exc:row['detail_error']=str(exc);row['elite_pass']=False;out.append(row)
     return out
 
 
 def main():
-    scan_now=datetime.now(timezone.utc);universe=load_us_universe();names={x['symbol']:x['security_name'] for x in universe};symbols=prefilter_symbols(universe,SCAN_CANDIDATE_LIMIT);market=market_snapshot();rows,failed=scan_candidates(symbols,market,names,scan_now);rows=_dedupe_share_classes(rows);rows=enrich_plans(rows,market.get('state'));rows,event_meta=enrich_elite_rows(rows,scan_now);rows.sort(key=lambda r:(bool(r.get('elite_pass')),float(r.get('elite_score') or r.get('score') or 0)),reverse=True)
-    public_count=sum(any(not s.get('experimental') and float(s.get('strategy_score',0))>=S_THRESHOLD for s in r['strategy_signals']) for r in rows);aggregate_count=sum(any(not s.get('experimental') and s.get('elite_pass') for s in r['strategy_signals']) for r in rows);experimental_count=sum(any(s.get('experimental') for s in r['strategy_signals']) for r in rows);completed_flow_count=sum(r.get('flow_basis')=='previous_completed_session' for r in rows)
-    payload={'status':'ready','version':APP_VERSION,'core_version':CORE_VERSION,'scanned_at':scan_now.isoformat(timespec='seconds'),'universe_count':len(universe),'candidate_count':len(symbols),'failed_count':len(failed),'failed':failed[:100],'market':market,'results':rows,'public_s_count':public_count,'aggregate_eligible_count':aggregate_count,'experimental_s_count':experimental_count,'flow_completed_session_count':completed_flow_count,'flow_policy':'during an incomplete US daily bar, elite flow/liquidity scoring uses the previous completed session; live partial flow is stored separately','rr_policy':'gross RR >= 1.20 is evaluated from price-level precision; 2-decimal RR is display only; net RR is diagnostic only','event_policy':'earnings event risk is informational only and cache-first; it never changes score, signal, BUY/TARGET/STOP or hard-gate status','display_filter':'strategy tabs show raw public S; aggregate ranks current signal + completed-session flow/liquidity + precise gross risk/reward + entry viability + ATR stop margin; no count cap','s_threshold':S_THRESHOLD,'elite_policy':'backtest is informational only; aggregate uses current setup, completed-session flow/liquidity during intraday scans, precise gross risk-reward, market regime, entry viability, ATR stop margin and first-20DMA overlay',**event_meta}
-    OUT.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding='utf-8');print('saved',OUT,len(rows),'rows','public S',public_count,'aggregate eligible',aggregate_count,'completed-session flow',completed_flow_count,'earnings queried',event_meta.get('earnings_cache_queried'))
+    scan_now=datetime.now(timezone.utc);universe=load_us_universe();names={x['symbol']:x['security_name'] for x in universe};symbols=prefilter_symbols(universe,SCAN_CANDIDATE_LIMIT);market=market_snapshot();rows,failed=scan_candidates(symbols,market,names,scan_now);rows=_dedupe_share_classes(rows);rows=enrich_plans(rows,market.get('state'));rows,event_meta=enrich_elite_rows(rows,scan_now);rows.sort(key=lambda r:(bool(r.get('elite_pass')),float(r.get('research_rank_score') or r.get('elite_score') or r.get('score') or 0),float(r.get('base_elite_score') or r.get('elite_score') or r.get('score') or 0)),reverse=True)
+    public_count=sum(any(not s.get('experimental') and float(s.get('strategy_score',0))>=S_THRESHOLD for s in r['strategy_signals']) for r in rows);aggregate_count=sum(any(not s.get('experimental') and s.get('elite_pass') for s in r['strategy_signals']) for r in rows);experimental_count=sum(any(s.get('experimental') for s in r['strategy_signals']) for r in rows);completed_flow_count=sum(r.get('flow_basis')=='previous_completed_session' for r in rows);research_meta=research_profiles()
+    payload={'status':'ready','version':APP_VERSION,'core_version':CORE_VERSION,'scanned_at':scan_now.isoformat(timespec='seconds'),'universe_count':len(universe),'candidate_count':len(symbols),'failed_count':len(failed),'failed':failed[:100],'market':market,'results':rows,'public_s_count':public_count,'aggregate_eligible_count':aggregate_count,'experimental_s_count':experimental_count,'flow_completed_session_count':completed_flow_count,'research_overlay':{'ready':research_meta.get('ready',False),'generated_at':research_meta.get('generated_at'),'policy':research_meta.get('policy')},'flow_policy':'during an incomplete US daily bar, elite flow/liquidity scoring uses the previous completed session; live partial flow is stored separately','rr_policy':'gross RR >= 1.20 is evaluated from price-level precision; 2-decimal RR is display only; net RR is diagnostic only','event_policy':'earnings event risk is informational only and cache-first; it never changes score, signal, BUY/TARGET/STOP or hard-gate status','display_filter':'strategy tabs show raw public S; aggregate eligibility keeps the existing hard gate, then uses a capped research overlay as a soft ranking adjustment','s_threshold':S_THRESHOLD,'elite_policy':'hard gate = current setup + completed-session flow/liquidity + precise gross risk-reward + market regime + entry viability + ATR stop margin + first-20DMA overlay; displayed/ranking elite score may move by at most 2 research points, but pass/fail and BUY/TARGET/STOP use the frozen base score and rules',**event_meta}
+    OUT.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding='utf-8');print('saved',OUT,len(rows),'rows','public S',public_count,'aggregate eligible',aggregate_count,'completed-session flow',completed_flow_count,'research overlay',research_meta.get('ready'))
 
 if __name__=='__main__':main()

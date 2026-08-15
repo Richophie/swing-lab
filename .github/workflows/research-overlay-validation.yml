@@ -1,0 +1,33 @@
+name: Research Overlay Validation
+
+on:
+  pull_request:
+    paths:
+      - 'research_overlay.py'
+      - 'scanner.py'
+      - 'static/dashboard.html'
+      - 'static/research_live_ui.js'
+      - 'static/research_live_ui.css'
+      - 'static/workspace_polish.css'
+      - 'tests/test_research_overlay.py'
+      - '.github/workflows/research-overlay-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile research overlay
+        run: python -m py_compile research_overlay.py tests/test_research_overlay.py
+      - name: Research safety test
+        run: PYTHONPATH=. python tests/test_research_overlay.py
+      - name: Research UI syntax
+        run: node --check static/research_live_ui.js
