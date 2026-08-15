@@ -1,0 +1,105 @@
+name: Auto Experiment Research Loop
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'auto_experiment_queue.py'
+      - 'auto_experiment_runner.py'
+      - 'static/auto_experiment_queue.js'
+      - 'static/auto_experiment_queue.css'
+      - '.github/workflows/auto-experiment-loop.yml'
+  workflow_run:
+    workflows: ['Daily Backtest Research Pipeline']
+    types: [completed]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: auto-experiment-loop-main
+  cancel-in-progress: true
+
+jobs:
+  research:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: pip install -r requirements.txt
+
+      - name: Compile autonomous research modules
+        run: python -m py_compile auto_experiment_queue.py auto_experiment_runner.py
+
+      - name: Generate next experiment hypotheses
+        run: python auto_experiment_queue.py
+      - name: Validate experiment queue safety
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('static/auto_experiment_queue.json').read_text(encoding='utf-8'))
+          assert d.get('ready') is True
+          p=d.get('policy') or {}
+          assert p.get('automatic_hypothesis_generation') is True
+          assert p.get('production_rule_mutation') is False
+          assert p.get('buy_target_stop_mutation') is False
+          assert p.get('automatic_forward_spawn') is False
+          assert p.get('automatic_production_promotion') is False
+          assert p.get('live_broker_orders') is False
+          assert len(d.get('items') or []) <= int(p.get('max_active_experiments') or 12)
+          print('queue PASS',d.get('counts'))
+          PY
+
+      - name: Consume queued experiments
+        run: python auto_experiment_runner.py
+      - name: Validate experiment decisions
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          q=json.loads(Path('static/auto_experiment_queue.json').read_text(encoding='utf-8'))
+          r=json.loads(Path('static/auto_experiment_results.json').read_text(encoding='utf-8'))
+          assert r.get('ready') is True
+          assert set((r.get('queue_counts') or {})).issubset({'QUEUED','RETEST','WATCH','DROP','CHALLENGER_CANDIDATE','BLOCKED'})
+          p=r.get('policy') or {}
+          assert p.get('train_only_selection') is True
+          assert p.get('oos_is_report_only') is True
+          assert p.get('production_rule_mutation') is False
+          assert p.get('automatic_forward_spawn') is False
+          assert p.get('automatic_production_promotion') is False
+          assert p.get('live_broker_orders') is False
+          for x in q.get('items') or []:
+              assert x.get('status') in {'QUEUED','RETEST','WATCH','DROP','CHALLENGER_CANDIDATE','BLOCKED'}
+          print('runner PASS',r.get('executed'),r.get('queue_counts'))
+          PY
+
+      - name: Commit experiment queue and results
+        run: |
+          git config user.name "swing-lab-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add static/auto_experiment_queue.json static/auto_experiment_results.json
+          if git diff --cached --quiet; then
+            echo "No experiment data changes"
+            exit 0
+          fi
+          git commit -m "data: refresh autonomous experiment queue [skip render]"
+          for attempt in 1 2 3 4; do
+            git fetch origin main
+            git rebase origin/main
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            echo "Push raced with another data writer; retry $attempt"
+            sleep 3
+          done
+          exit 1
