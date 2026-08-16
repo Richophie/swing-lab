@@ -1,0 +1,36 @@
+name: Backtest Worker Validation
+
+on:
+  pull_request:
+    paths:
+      - 'static/replay_worker.js'
+      - 'static/replay_math.js'
+      - 'static/replay_v2_core.js'
+      - 'static/lab_replay_ui.js'
+      - 'static/worker_result_ui.js'
+      - 'static/lab_dashboard.js'
+      - 'static/dashboard.html'
+      - 'tests/test_backtest_worker_ui.py'
+      - '.github/workflows/backtest-worker-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: JavaScript syntax
+        run: |
+          node --check static/replay_worker.js
+          node --check static/replay_math.js
+          node --check static/replay_v2_core.js
+          node --check static/lab_replay_ui.js
+          node --check static/worker_result_ui.js
+          node --check static/lab_dashboard.js
+      - name: Worker architecture regression
+        run: PYTHONPATH=. python tests/test_backtest_worker_ui.py

@@ -18,7 +18,9 @@ def test_replay_lab_wiring():
     deep=(ROOT/'static'/'backtest_result_tabs.js').read_text(encoding='utf-8')
     css=(ROOT/'static'/'backtest_result_tabs.css').read_text(encoding='utf-8')
     core=(ROOT/'static'/'replay_v2_core.js').read_text(encoding='utf-8')
-    for name in ('replay_math.js','lab_data.js','lab_replay_ui.js','lab_run_core.js','lab_result_ui.js','lab_replay_boot.js','backtest_result_tabs.js','lab_nav_hotfix.js','global_flow_map.js','lab_front_simplify.js','lab_research_archive.js'):
+    worker=(ROOT/'static'/'replay_worker.js').read_text(encoding='utf-8')
+    execution=core+worker
+    for name in ('replay_math.js','lab_data.js','lab_replay_ui.js','lab_run_core.js','lab_result_ui.js','lab_replay_boot.js','backtest_result_tabs.js','worker_result_ui.js','lab_nav_hotfix.js','global_flow_map.js','lab_front_simplify.js','lab_research_archive.js'):
         assert name in loader
     for name in ('strategy_optimizer_ui.js','selection_filter_ui.js','walkforward_ui.js','regime_walkforward_ui.js','volatility_regime_ui.js','priority_audit_ui.js','priority_challenger_v1.js','priority_challenger_ab.js','candidate_capital_v2_ui.js'):
         assert name not in loader
@@ -35,6 +37,7 @@ def test_replay_lab_wiring():
     assert '어떤 조건으로 돌려볼까요?' in ui
     assert 'btLabStart' in ui and 'btLabEnd' in ui and 'btLabCapital' in ui
     assert 'bt-strategy-grid' in ui and 'DAILY MTM' in ui
+    assert 'SwingReplayWorker.run' in ui
     for tab in ('한눈에','전략','기간','체결','진단'):
         assert tab in deep
     assert '전략 하나씩 빼보기' in deep
@@ -46,9 +49,11 @@ def test_replay_lab_wiring():
     assert '@media(max-width:900px)' in css
     assert 'span[data-label]::before' in css
     assert '.bt-month-grid' in css
-    assert '당일 종가 청산 · 일봉순서 안전판' in core
-    assert 'const marks=' in core and 'stress_factor:stressFactor' in core
-    assert "filter(x=>String(x?.[0]||'')<=b)" in core
+    assert '당일 종가 청산 · 일봉순서 안전판' in execution
+    assert 'const marks=' in execution and 'stress_factor:stressFactor' in execution
+    assert "String(x?.[0]||'')<=end" in execution
+    assert "fetch('/static/replay_backtest_pool_v2.json'" not in core
+    assert "new Worker('/static/replay_worker.js" in core
 
 
 def test_beginner_front_and_korean_market_palette():

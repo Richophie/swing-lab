@@ -19,5 +19,5 @@
     const months=monthly(curve,initial),worstMonth=months.length?[...months].sort((a,b)=>a.return_pct-b.return_pct)[0]:null;
     return {ending:cash,change:cash/initial-1,maxDrawdown,stressDrawdown,accepted,curve,maxOpen,rejectCapacity,rejectCash,rejectDuplicate,underwaterDays:maxUnderwater,monthly:months,worstMonth,mtm:true}
   }
-  window.SwingSequenceReplay={run};
+  globalThis.SwingSequenceReplay={run};
 })();
