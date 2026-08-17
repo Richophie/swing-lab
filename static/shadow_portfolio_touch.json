@@ -195,6 +195,62 @@
       "last_fx": 1412.18,
       "filled_at": "2026-08-17T13:39:28+00:00",
       "last_close_usd": 110.75
+    },
+    {
+      "id": "PAPER-4960D81CD6B8",
+      "symbol": "ROST",
+      "strategy_id": "rsi2_trend_reversion",
+      "strategy_name": "RSI2 추세내 과매도",
+      "status": "PENDING",
+      "created_at": "2026-08-17T20:21:27+00:00",
+      "submitted_market_date": "2026-08-17",
+      "signal_date": "2026-08-17",
+      "buy_low": 234.69,
+      "buy_high": 235.87,
+      "target": 247.13,
+      "stop": 227.95,
+      "atr": 4.886667,
+      "gap_guard": 3.665,
+      "max_hold_bars": 5,
+      "held_bars": 0,
+      "qty": 2,
+      "planned_entry_usd": 235.28,
+      "planned_notional_krw": 665851.81,
+      "risk_budget_krw": 30071.94,
+      "planned_risk_krw": 20744.19,
+      "reserved_cash_krw": 666517.66,
+      "fx_at_submit": 1415.02,
+      "last_processed_date": "2026-08-17",
+      "commission_pct_per_side": 0.1,
+      "slippage_bps": 5.0,
+      "half_spread_bps": 2.5,
+      "live_order_sent": false,
+      "order_origin": "AUTO_CONFIRMED_CLOSE",
+      "signal_origin": "official_close_confirmed",
+      "shadow_signal_key": "2026-08-17|ROST|rsi2_trend_reversion",
+      "track_id": "B_BUY_TOUCH",
+      "entry_mode": "NEXT_SESSION_BUY_TOUCH",
+      "baseline_version": "baseline-v1.0-2026-08-13",
+      "app_version_at_signal": "16.5",
+      "core_version_at_signal": "4.4",
+      "market_state": "좋음",
+      "official_score": 83.95,
+      "raw_strategy_score": 95,
+      "official_risk_reward": 1.62,
+      "official_selection_reason": "현재 자리 95 · 수급 60 · 손익비 1.62:1 · 비용후 1.37:1",
+      "event_risk_snapshot": {
+        "risk_code": "IMMINENT",
+        "risk_label": "실적 3일 전",
+        "earnings_date": "2026-08-20",
+        "days_until": 3,
+        "confidence": "confirmed",
+        "stale": false,
+        "hold_calendar_days": 8,
+        "source_day_diff": 0,
+        "checked_at": "2026-08-17T15:48:52+00:00"
+      },
+      "atr_source": "derived_from_stop_atr_multiple",
+      "risk_observability_only": true
     }
   ],
   "events": [
@@ -245,6 +301,14 @@
       "strategy_id": "rsi2_trend_reversion",
       "event": "FILLED",
       "detail": "4주 · $110.5529 · 625,107원 · 1m_open_at_or_better_than_buy"
+    },
+    {
+      "at": "2026-08-17T20:21:27+00:00",
+      "order_id": "PAPER-4960D81CD6B8",
+      "symbol": "ROST",
+      "strategy_id": "rsi2_trend_reversion",
+      "event": "SUBMITTED",
+      "detail": "다음 거래일 BUY 구간 터치 대기 · 2주 · BUY 234.69~235.87"
     }
   ],
   "shadow_decisions": [
@@ -298,10 +362,27 @@
       "atr": 2.86,
       "atr_source": "derived_from_stop_atr_multiple",
       "gap_guard": 2.145
+    },
+    {
+      "signal_key": "2026-08-17|ROST|rsi2_trend_reversion",
+      "market_date": "2026-08-17",
+      "symbol": "ROST",
+      "strategy_id": "rsi2_trend_reversion",
+      "strategy_name": "RSI2 추세내 과매도",
+      "score": 83.95,
+      "risk_reward": 1.62,
+      "baseline_version": "baseline-v1.0-2026-08-13",
+      "track_id": "B_BUY_TOUCH",
+      "at": "2026-08-17T20:21:27+00:00",
+      "decision": "SUBMITTED",
+      "order_id": "PAPER-4960D81CD6B8",
+      "atr": 4.886667,
+      "atr_source": "derived_from_stop_atr_multiple",
+      "gap_guard": 3.665
     }
   ],
   "created_at": "2026-08-13T11:20:00+00:00",
-  "updated_at": "2026-08-17T19:51:56+00:00",
+  "updated_at": "2026-08-17T20:21:27+00:00",
   "live_trading_enabled": false,
   "lab_meta": {
     "version": 2,
@@ -358,9 +439,9 @@
         "formal_review_target_closed_trades": 50
       }
     },
-    "last_run_at": "2026-08-17T19:51:56+00:00",
+    "last_run_at": "2026-08-17T20:21:27+00:00",
     "last_ingest": {
-      "submitted": 0,
+      "submitted": 1,
       "skipped": 0
     }
   }
