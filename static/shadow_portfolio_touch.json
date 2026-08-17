@@ -1,7 +1,7 @@
 {
   "version": 1,
   "starting_cash_krw": 3000000.0,
-  "cash_krw": 2507280.25,
+  "cash_krw": 1882173.65,
   "orders": [
     {
       "id": "PAPER-F55B0833D38A",
@@ -78,7 +78,7 @@
       "atr": 4.386667,
       "gap_guard": 3.29,
       "max_hold_bars": 5,
-      "held_bars": 0,
+      "held_bars": 1,
       "qty": 3,
       "planned_entry_usd": 116.51,
       "planned_notional_krw": 495759.37,
@@ -86,7 +86,7 @@
       "planned_risk_krw": 27998.43,
       "reserved_cash_krw": 0.0,
       "fx_at_submit": 1418.36,
-      "last_processed_date": "2026-08-14",
+      "last_processed_date": "2026-08-17",
       "commission_pct_per_side": 0.1,
       "slippage_bps": 5.0,
       "half_spread_bps": 2.5,
@@ -125,16 +125,16 @@
       "entry_commission_krw": 492.23,
       "entry_cost_krw": 492719.75,
       "fx_at_entry": 1411.44,
-      "last_fx": 1411.44,
+      "last_fx": 1412.18,
       "filled_at": "2026-08-14T14:14:24+00:00",
-      "last_close_usd": 116.790001
+      "last_close_usd": 117.885002
     },
     {
       "id": "PAPER-BF111A68BE9D",
       "symbol": "TROW",
       "strategy_id": "rsi2_trend_reversion",
       "strategy_name": "RSI2 추세내 과매도",
-      "status": "PENDING",
+      "status": "FILLED",
       "created_at": "2026-08-14T22:49:38+00:00",
       "submitted_market_date": "2026-08-14",
       "signal_date": "2026-08-14",
@@ -151,9 +151,9 @@
       "planned_notional_krw": 626424.12,
       "risk_budget_krw": 30018.06,
       "planned_risk_krw": 24306.8,
-      "reserved_cash_krw": 627050.54,
+      "reserved_cash_krw": 0.0,
       "fx_at_submit": 1416.48,
-      "last_processed_date": "2026-08-14",
+      "last_processed_date": "2026-08-17",
       "commission_pct_per_side": 0.1,
       "slippage_bps": 5.0,
       "half_spread_bps": 2.5,
@@ -183,7 +183,18 @@
         "checked_at": "2026-08-14T14:12:56+00:00"
       },
       "atr_source": "derived_from_stop_atr_multiple",
-      "risk_observability_only": true
+      "risk_observability_only": true,
+      "entry_date": "2026-08-17",
+      "entry_fill_usd": 110.552854,
+      "entry_raw_open_usd": 110.470001,
+      "entry_timestamp": "2026-08-17T09:30:00-04:00",
+      "entry_resolution_quality": "1m_open_at_or_better_than_buy",
+      "entry_commission_krw": 624.48,
+      "entry_cost_krw": 625106.6,
+      "fx_at_entry": 1412.18,
+      "last_fx": 1412.18,
+      "filled_at": "2026-08-17T13:39:28+00:00",
+      "last_close_usd": 110.75
     }
   ],
   "events": [
@@ -226,6 +237,14 @@
       "strategy_id": "rsi2_trend_reversion",
       "event": "SUBMITTED",
       "detail": "다음 거래일 BUY 구간 터치 대기 · 4주 · BUY 110.22~110.90"
+    },
+    {
+      "at": "2026-08-17T13:39:28+00:00",
+      "order_id": "PAPER-BF111A68BE9D",
+      "symbol": "TROW",
+      "strategy_id": "rsi2_trend_reversion",
+      "event": "FILLED",
+      "detail": "4주 · $110.5529 · 625,107원 · 1m_open_at_or_better_than_buy"
     }
   ],
   "shadow_decisions": [
@@ -282,7 +301,7 @@
     }
   ],
   "created_at": "2026-08-13T11:20:00+00:00",
-  "updated_at": "2026-08-16T06:52:40+00:00",
+  "updated_at": "2026-08-17T13:39:28+00:00",
   "live_trading_enabled": false,
   "lab_meta": {
     "version": 2,
@@ -339,7 +358,7 @@
         "formal_review_target_closed_trades": 50
       }
     },
-    "last_run_at": "2026-08-16T06:52:40+00:00",
+    "last_run_at": "2026-08-17T13:39:28+00:00",
     "last_ingest": {
       "submitted": 0,
       "skipped": 0
