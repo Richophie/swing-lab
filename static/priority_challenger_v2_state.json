@@ -50,10 +50,10 @@
       "entry_fill_usd": 109.832313,
       "notional_krw": 941357.24,
       "risk_fraction": 0.023902,
-      "held_bars": 4,
-      "last_close_processed": "2026-08-20",
+      "held_bars": 5,
+      "last_close_processed": "2026-08-21",
       "opened_at": "2026-08-17T13:38:47+00:00",
-      "last_close_usd": 112.0
+      "last_close_usd": 112.300003
     },
     {
       "strategy_id": "donchian_55",
@@ -95,10 +95,10 @@
       "entry_fill_usd": 164.473269,
       "notional_krw": 580851.47,
       "risk_fraction": 0.038884,
-      "held_bars": 2,
-      "last_close_processed": "2026-08-20",
+      "held_bars": 3,
+      "last_close_processed": "2026-08-21",
       "opened_at": "2026-08-19T13:41:02+00:00",
-      "last_close_usd": 165.054993
+      "last_close_usd": 165.110001
     },
     {
       "strategy_id": "donchian_55",
@@ -140,10 +140,10 @@
       "entry_fill_usd": 436.166876,
       "notional_krw": 550177.18,
       "risk_fraction": 0.041114,
-      "held_bars": 1,
-      "last_close_processed": "2026-08-20",
+      "held_bars": 2,
+      "last_close_processed": "2026-08-21",
       "opened_at": "2026-08-20T13:43:03+00:00",
-      "last_close_usd": 438.98999
+      "last_close_usd": 439.329987
     },
     {
       "strategy_id": "donchian_55",
@@ -185,10 +185,10 @@
       "entry_fill_usd": 1246.744416,
       "notional_krw": 482474.68,
       "risk_fraction": 0.046832,
-      "held_bars": 1,
-      "last_close_processed": "2026-08-20",
+      "held_bars": 2,
+      "last_close_processed": "2026-08-21",
       "opened_at": "2026-08-20T13:43:03+00:00",
-      "last_close_usd": 1255.5
+      "last_close_usd": 1255.400024
     }
   ],
   "closed": [],
@@ -434,6 +434,18 @@
       "priority": 0.507468,
       "decision": "REJECT_GAP",
       "raw_open_usd": 609.849976
+    },
+    {
+      "at": "2026-08-21T20:20:05+00:00",
+      "decision": "REJECT_FROZEN_QUALITY",
+      "signal_key": "2026-08-21|SCHW|donchian_55",
+      "signal_date": "2026-08-21",
+      "symbol": "SCHW",
+      "strategy_id": "donchian_55",
+      "quality_percentile": 0.464576,
+      "current_priority_percentile": 0.5,
+      "challenger_priority": 0.482288,
+      "passes_frozen_quality": false
     }
   ],
   "seen_signal_keys": [
@@ -450,18 +462,19 @@
     "2026-08-19|MRK|donchian_55",
     "2026-08-19|TMO|donchian_55",
     "2026-08-19|VZ|donchian_55",
-    "2026-08-20|TMO|donchian_55"
+    "2026-08-20|TMO|donchian_55",
+    "2026-08-21|SCHW|donchian_55"
   ],
   "last_candidates": [
     {
       "strategy_id": "donchian_55",
       "strategy_name": "Donchian 55일 돌파",
-      "signal_date": "2026-08-20",
-      "signal_close": 627.549988,
-      "buy_low": 624.885731,
-      "buy_high": 630.214245,
-      "atr": 14.801426,
-      "stop": 597.947135,
+      "signal_date": "2026-08-21",
+      "signal_close": 112.300003,
+      "buy_low": 111.96366,
+      "buy_high": 112.636346,
+      "atr": 1.868571,
+      "stop": 108.562861,
       "target": null,
       "max_hold": 40,
       "exit_mode": "donchian20_close",
@@ -469,22 +482,22 @@
       "net_risk_reward": 2.0,
       "market_state": "strategy_only",
       "quality_features": {
-        "breakout_atr": 0.4776571592168931,
-        "volume_ratio": 1.2988067941654997,
-        "close_position": 0.7383819998883367,
-        "body_atr": 1.195831512076845,
-        "sma200_slope_20d_pct": 0.007367549310165922,
-        "distance_sma200_pct": 0.1763309708848788,
-        "atr_pct": 0.023586051735655027
+        "breakout_atr": 0.053520094095880155,
+        "volume_ratio": 0.7582020878135344,
+        "close_position": 0.9552579656318912,
+        "body_atr": 1.0863950317935234,
+        "sma200_slope_20d_pct": 0.01468451236542978,
+        "distance_sma200_pct": 0.16164926487543263,
+        "atr_pct": 0.016639101464073103
       },
-      "symbol": "TMO",
-      "quality_score": 37.635169,
-      "quality_percentile": 0.565297,
+      "symbol": "SCHW",
+      "quality_score": 33.404122,
+      "quality_percentile": 0.464576,
       "current_priority": 2.0,
       "current_priority_percentile": 0.5,
-      "challenger_priority": 0.532649,
-      "passes_frozen_quality": true,
-      "signal_key": "2026-08-20|TMO|donchian_55"
+      "challenger_priority": 0.482288,
+      "passes_frozen_quality": false,
+      "signal_key": "2026-08-21|SCHW|donchian_55"
     }
   ],
   "errors": [],
@@ -510,13 +523,13 @@
     "comparison_baseline": "priority_challenger_v1",
     "ab_only_changed_variable": "risk_budget_pct"
   },
-  "updated_at": "2026-08-21T19:47:38+00:00",
+  "updated_at": "2026-08-21T20:20:05+00:00",
   "summary": {
     "cash_krw": 445139.43,
-    "equity_krw": 3020490.01,
-    "return_pct": 0.683,
+    "equity_krw": 3023637.07,
+    "return_pct": 0.788,
     "realized_pnl_krw": 0,
-    "unrealized_pnl_krw": 20490.01,
+    "unrealized_pnl_krw": 23637.07,
     "pending": 0,
     "open_positions": 4,
     "closed_trades": 0,
