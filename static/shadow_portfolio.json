@@ -1,7 +1,7 @@
 {
   "version": 1,
   "starting_cash_krw": 3000000.0,
-  "cash_krw": 1847827.27,
+  "cash_krw": 2031861.04,
   "orders": [
     {
       "id": "PAPER-56B72AC20AF2",
@@ -86,7 +86,7 @@
       "symbol": "FMX",
       "strategy_id": "rsi2_trend_reversion",
       "strategy_name": "RSI2 추세내 과매도",
-      "status": "FILLED",
+      "status": "CLOSED",
       "created_at": "2026-08-13T20:37:00+00:00",
       "submitted_market_date": "2026-08-13",
       "signal_date": "2026-08-13",
@@ -97,7 +97,7 @@
       "atr": 4.386667,
       "gap_guard": 3.29,
       "max_hold_bars": 5,
-      "held_bars": 4,
+      "held_bars": 5,
       "qty": 3,
       "planned_entry_usd": 116.51,
       "planned_notional_krw": 495759.37,
@@ -105,7 +105,7 @@
       "planned_risk_krw": 27998.43,
       "reserved_cash_krw": 0.0,
       "fx_at_submit": 1418.36,
-      "last_processed_date": "2026-08-20",
+      "last_processed_date": "2026-08-21",
       "commission_pct_per_side": 0.1,
       "slippage_bps": 5.0,
       "half_spread_bps": 2.5,
@@ -144,9 +144,19 @@
       "entry_commission_krw": 492.23,
       "entry_cost_krw": 492719.75,
       "fx_at_entry": 1411.44,
-      "last_fx": 1393.13,
+      "last_fx": 1385.51,
       "filled_at": "2026-08-14T14:14:23+00:00",
-      "last_close_usd": 119.824997
+      "last_close_usd": 119.13558,
+      "exit_resolution_quality": "time_exit_close",
+      "exit_date": "2026-08-21",
+      "exit_fill_usd": 119.13558,
+      "exit_raw_trigger_usd": 119.224998,
+      "exit_reason": "기간종료",
+      "exit_commission_krw": 495.19,
+      "exit_proceeds_krw": 494695.42,
+      "pnl_krw": 1975.67,
+      "return_pct": 0.401,
+      "closed_at": "2026-08-21T13:42:21+00:00"
     },
     {
       "id": "PAPER-F1BD941D9EAD",
@@ -164,7 +174,7 @@
       "atr": 2.86,
       "gap_guard": 2.145,
       "max_hold_bars": 5,
-      "held_bars": 3,
+      "held_bars": 4,
       "qty": 4,
       "planned_entry_usd": 110.56,
       "planned_notional_krw": 626424.12,
@@ -172,7 +182,7 @@
       "planned_risk_krw": 24306.8,
       "reserved_cash_krw": 0.0,
       "fx_at_submit": 1416.48,
-      "last_processed_date": "2026-08-20",
+      "last_processed_date": "2026-08-21",
       "commission_pct_per_side": 0.1,
       "slippage_bps": 5.0,
       "half_spread_bps": 2.5,
@@ -211,16 +221,16 @@
       "entry_commission_krw": 624.48,
       "entry_cost_krw": 625106.6,
       "fx_at_entry": 1412.18,
-      "last_fx": 1393.13,
+      "last_fx": 1385.51,
       "filled_at": "2026-08-17T13:39:27+00:00",
-      "last_close_usd": 112.139999
+      "last_close_usd": 113.290001
     },
     {
       "id": "PAPER-F522AE119AA4",
       "symbol": "STLD",
       "strategy_id": "rsi2_trend_reversion",
       "strategy_name": "RSI2 추세내 과매도",
-      "status": "PENDING",
+      "status": "FILLED",
       "created_at": "2026-08-20T20:23:55+00:00",
       "submitted_market_date": "2026-08-20",
       "signal_date": "2026-08-20",
@@ -237,9 +247,9 @@
       "planned_notional_krw": 305198.4,
       "risk_budget_krw": 29735.25,
       "planned_risk_krw": 21210.59,
-      "reserved_cash_krw": 305503.6,
+      "reserved_cash_krw": 0.0,
       "fx_at_submit": 1393.6,
-      "last_processed_date": "2026-08-20",
+      "last_processed_date": "2026-08-21",
       "commission_pct_per_side": 0.1,
       "slippage_bps": 5.0,
       "half_spread_bps": 2.5,
@@ -269,7 +279,18 @@
         "checked_at": "2026-08-20T13:41:32+00:00"
       },
       "atr_source": "derived_from_stop_atr_multiple",
-      "risk_observability_only": true
+      "risk_observability_only": true,
+      "entry_date": "2026-08-21",
+      "entry_fill_usd": 223.997874,
+      "entry_raw_open_usd": 223.830002,
+      "entry_timestamp": "2026-08-21T09:30:00-04:00",
+      "entry_resolution_quality": "next_open",
+      "entry_commission_krw": 310.35,
+      "entry_cost_krw": 310661.65,
+      "fx_at_entry": 1385.51,
+      "last_fx": 1385.51,
+      "filled_at": "2026-08-21T13:42:21+00:00",
+      "last_close_usd": 227.550003
     }
   ],
   "events": [
@@ -336,6 +357,22 @@
       "strategy_id": "rsi2_trend_reversion",
       "event": "SUBMITTED",
       "detail": "다음 거래일 시가 대기 · 1주 · BUY 217.78~220.22"
+    },
+    {
+      "at": "2026-08-21T13:42:21+00:00",
+      "order_id": "PAPER-06F0F153AC1B",
+      "symbol": "FMX",
+      "strategy_id": "rsi2_trend_reversion",
+      "event": "CLOSED",
+      "detail": "기간종료 · +0.401% · +1,976원"
+    },
+    {
+      "at": "2026-08-21T13:42:21+00:00",
+      "order_id": "PAPER-F522AE119AA4",
+      "symbol": "STLD",
+      "strategy_id": "rsi2_trend_reversion",
+      "event": "FILLED",
+      "detail": "1주 · $223.9979 · 310,662원 · next_open"
     }
   ],
   "shadow_decisions": [
@@ -815,7 +852,7 @@
     }
   ],
   "created_at": "2026-08-13T10:30:00+00:00",
-  "updated_at": "2026-08-20T22:55:23+00:00",
+  "updated_at": "2026-08-21T13:42:22+00:00",
   "live_trading_enabled": false,
   "lab_meta": {
     "version": 2,
@@ -824,7 +861,7 @@
     "allocator": "risk_reward_priority",
     "human_intervention": false,
     "live_trading_enabled": false,
-    "last_run_at": "2026-08-20T22:55:23+00:00",
+    "last_run_at": "2026-08-21T13:42:22+00:00",
     "last_ingest": {
       "submitted": 0,
       "skipped": 0
