@@ -1,7 +1,7 @@
 {
   "version": 1,
   "starting_cash_krw": 3000000.0,
-  "cash_krw": 2323713.2,
+  "cash_krw": 2662004.86,
   "orders": [
     {
       "id": "PAPER-F55B0833D38A",
@@ -221,7 +221,7 @@
       "symbol": "ROST",
       "strategy_id": "rsi2_trend_reversion",
       "strategy_name": "RSI2 추세내 과매도",
-      "status": "FILLED",
+      "status": "CLOSED",
       "created_at": "2026-08-17T20:21:27+00:00",
       "submitted_market_date": "2026-08-17",
       "signal_date": "2026-08-17",
@@ -232,7 +232,7 @@
       "atr": 4.886667,
       "gap_guard": 3.665,
       "max_hold_bars": 5,
-      "held_bars": 4,
+      "held_bars": 5,
       "qty": 2,
       "planned_entry_usd": 235.28,
       "planned_notional_krw": 665851.81,
@@ -240,7 +240,7 @@
       "planned_risk_krw": 20744.19,
       "reserved_cash_krw": 0.0,
       "fx_at_submit": 1415.02,
-      "last_processed_date": "2026-08-24",
+      "last_processed_date": "2026-08-25",
       "commission_pct_per_side": 0.1,
       "slippage_bps": 5.0,
       "half_spread_bps": 2.5,
@@ -279,9 +279,19 @@
       "entry_commission_krw": 668.64,
       "entry_cost_krw": 669304.53,
       "fx_at_entry": 1416.32,
-      "last_fx": 1382.68,
+      "last_fx": 1385.04,
       "filled_at": "2026-08-18T13:39:16+00:00",
-      "last_close_usd": 238.419998
+      "last_close_usd": 237.381828,
+      "exit_resolution_quality": "time_exit_close",
+      "exit_date": "2026-08-25",
+      "exit_fill_usd": 237.381828,
+      "exit_raw_trigger_usd": 237.559998,
+      "exit_reason": "기간종료",
+      "exit_commission_krw": 657.57,
+      "exit_proceeds_krw": 656909.09,
+      "pnl_krw": -12395.44,
+      "return_pct": -1.852,
+      "closed_at": "2026-08-25T13:45:20+00:00"
     },
     {
       "id": "PAPER-F5ADC9F7C301",
@@ -347,7 +357,7 @@
       "symbol": "STLD",
       "strategy_id": "confirmed_pullback",
       "strategy_name": "확인형 눌림반등",
-      "status": "PENDING",
+      "status": "FILLED",
       "created_at": "2026-08-24T20:24:42+00:00",
       "submitted_market_date": "2026-08-24",
       "signal_date": "2026-08-24",
@@ -364,9 +374,9 @@
       "planned_notional_krw": 314731.76,
       "risk_budget_krw": 29830.3,
       "planned_risk_krw": 21338.92,
-      "reserved_cash_krw": 315046.49,
+      "reserved_cash_krw": 0.0,
       "fx_at_submit": 1382.95,
-      "last_processed_date": "2026-08-24",
+      "last_processed_date": "2026-08-25",
       "commission_pct_per_side": 0.1,
       "slippage_bps": 5.0,
       "half_spread_bps": 2.5,
@@ -396,14 +406,25 @@
         "checked_at": "2026-08-24T20:23:06+00:00"
       },
       "atr_source": "derived_from_stop_atr_multiple",
-      "risk_observability_only": true
+      "risk_observability_only": true,
+      "entry_date": "2026-08-25",
+      "entry_fill_usd": 229.81223,
+      "entry_raw_open_usd": 229.64,
+      "entry_timestamp": "2026-08-25T09:30:00-04:00",
+      "entry_resolution_quality": "1m_first_buy_ceiling_touch",
+      "entry_commission_krw": 318.3,
+      "entry_cost_krw": 318617.43,
+      "fx_at_entry": 1385.04,
+      "last_fx": 1385.04,
+      "filled_at": "2026-08-25T13:45:21+00:00",
+      "last_close_usd": 228.830002
     },
     {
       "id": "PAPER-52FB65B4E65C",
       "symbol": "HWM",
       "strategy_id": "rsi2_trend_reversion",
       "strategy_name": "RSI2 추세내 과매도",
-      "status": "PENDING",
+      "status": "CANCELLED",
       "created_at": "2026-08-24T20:24:42+00:00",
       "submitted_market_date": "2026-08-24",
       "signal_date": "2026-08-24",
@@ -420,9 +441,9 @@
       "planned_notional_krw": 364116.91,
       "risk_budget_krw": 29830.3,
       "planned_risk_krw": 18559.19,
-      "reserved_cash_krw": 364481.02,
+      "reserved_cash_krw": 0.0,
       "fx_at_submit": 1382.95,
-      "last_processed_date": "2026-08-24",
+      "last_processed_date": "2026-08-25",
       "commission_pct_per_side": 0.1,
       "slippage_bps": 5.0,
       "half_spread_bps": 2.5,
@@ -452,7 +473,10 @@
         "checked_at": "2026-08-24T15:33:36+00:00"
       },
       "atr_source": "derived_from_stop_atr_multiple",
-      "risk_observability_only": true
+      "risk_observability_only": true,
+      "cancel_date": "2026-08-25",
+      "cancel_reason": "다음 거래일 장중 BUY 구간 미도달",
+      "closed_at": "2026-08-25T13:45:20+00:00"
     }
   ],
   "events": [
@@ -567,6 +591,30 @@
       "strategy_id": "rsi2_trend_reversion",
       "event": "SUBMITTED",
       "detail": "다음 거래일 BUY 구간 터치 대기 · 1주 · BUY 262.22~264.36"
+    },
+    {
+      "at": "2026-08-25T13:45:20+00:00",
+      "order_id": "PAPER-52FB65B4E65C",
+      "symbol": "HWM",
+      "strategy_id": "rsi2_trend_reversion",
+      "event": "CANCELLED",
+      "detail": "다음 거래일 장중 BUY 구간 미도달"
+    },
+    {
+      "at": "2026-08-25T13:45:20+00:00",
+      "order_id": "PAPER-4960D81CD6B8",
+      "symbol": "ROST",
+      "strategy_id": "rsi2_trend_reversion",
+      "event": "CLOSED",
+      "detail": "기간종료 · -1.852% · -12,395원"
+    },
+    {
+      "at": "2026-08-25T13:45:21+00:00",
+      "order_id": "PAPER-1F28CBDC29F7",
+      "symbol": "STLD",
+      "strategy_id": "confirmed_pullback",
+      "event": "FILLED",
+      "detail": "1주 · $229.8122 · 318,617원 · 1m_first_buy_ceiling_touch"
     }
   ],
   "shadow_decisions": [
@@ -1139,7 +1187,7 @@
     }
   ],
   "created_at": "2026-08-13T11:20:00+00:00",
-  "updated_at": "2026-08-24T22:53:15+00:00",
+  "updated_at": "2026-08-25T13:45:21+00:00",
   "live_trading_enabled": false,
   "lab_meta": {
     "version": 2,
@@ -1196,7 +1244,7 @@
         "formal_review_target_closed_trades": 50
       }
     },
-    "last_run_at": "2026-08-24T22:53:15+00:00",
+    "last_run_at": "2026-08-25T13:45:21+00:00",
     "last_ingest": {
       "submitted": 0,
       "skipped": 0
