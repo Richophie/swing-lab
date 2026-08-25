@@ -1,13 +1,13 @@
 {
   "version": 1,
-  "generated_at": "2026-08-24T23:03:45+00:00",
+  "generated_at": "2026-08-25T23:04:47+00:00",
   "current": {
-    "generated_at": "2026-08-24T23:03:45+00:00",
-    "date_kst": "2026-08-25",
+    "generated_at": "2026-08-25T23:04:47+00:00",
+    "date_kst": "2026-08-26",
     "optimizer": {
-      "source_generated_at": "2026-08-24T23:02:24+00:00",
+      "source_generated_at": "2026-08-25T23:03:27+00:00",
       "tested": 595,
-      "validated": 134,
+      "validated": 130,
       "leader_strategies": [
         "모멘텀 눌림 지속"
       ],
@@ -15,24 +15,24 @@
         "momentum_pullback"
       ],
       "leader_grade": "B",
-      "leader_oos_return_pct": 1.64,
-      "leader_oos_cagr_pct": 0.72,
+      "leader_oos_return_pct": 1.58,
+      "leader_oos_cagr_pct": 0.7,
       "leader_oos_mdd_pct": -3.07,
-      "leader_recent_cagr_pct": 0.86
+      "leader_recent_cagr_pct": 0.83
     },
     "walkforward": {
-      "source_generated_at": "2026-08-24T23:02:34+00:00",
-      "best_family_id": "confirmed_sma_donchian",
-      "best_family_name": "확인형 + SMA200·20 + Donchian",
+      "source_generated_at": "2026-08-25T23:03:37+00:00",
+      "best_family_id": "donchian_core",
+      "best_family_name": "Donchian 단독",
       "grade": "C",
-      "positive_folds": 3,
+      "positive_folds": 2,
       "fold_count": 6,
-      "stitched_return_pct": 33.42,
-      "median_test_return_pct": -0.85,
-      "worst_fold_mdd_pct": -19.82
+      "stitched_return_pct": 33.1,
+      "median_test_return_pct": -1.78,
+      "worst_fold_mdd_pct": -18.52
     },
     "forward": {
-      "source_generated_at": "2026-08-24T22:53:06+00:00",
+      "source_generated_at": "2026-08-25T22:54:49+00:00",
       "gate": "WAIT_FORWARD_SAMPLE",
       "headline": "기반시설은 준비 완료 · 미래 표본을 모으는 중",
       "minimum_closed_trades_observed": 0,
@@ -52,18 +52,18 @@
   "changes": [
     {
       "kind": "leader_oos",
-      "tone": "up",
-      "text": "현재 선두의 OOS 누적수익이 이전 실행 대비 +0.19%p 변했습니다."
+      "tone": "down",
+      "text": "현재 선두의 OOS 누적수익이 이전 실행 대비 -0.06%p 변했습니다."
     },
     {
       "kind": "validated",
-      "tone": "up",
-      "text": "검증 통과 조합 수가 +45개 변했습니다."
+      "tone": "down",
+      "text": "검증 통과 조합 수가 -4개 변했습니다."
     },
     {
       "kind": "walkforward_family",
       "tone": "change",
-      "text": "Walk-forward 최상위 가족이 Donchian 단독 → 확인형 + SMA200·20 + Donchian로 바뀌었습니다."
+      "text": "Walk-forward 최상위 가족이 확인형 + SMA200·20 + Donchian → Donchian 단독로 바뀌었습니다."
     }
   ],
   "history": [
@@ -314,6 +314,49 @@
       },
       "forward": {
         "source_generated_at": "2026-08-21T22:50:50+00:00",
+        "gate": "WAIT_FORWARD_SAMPLE",
+        "headline": "기반시설은 준비 완료 · 미래 표본을 모으는 중",
+        "minimum_closed_trades_observed": 0,
+        "minimum_closed_trades_required": 30,
+        "sample_progress_pct": 0.0,
+        "safety_pass": true,
+        "automatic_promotion_enabled": false,
+        "live_order_submission_enabled": false,
+        "next_action": "V1~V4 각각 종료 30건까지 규칙 변경 없이 관찰"
+      }
+    },
+    {
+      "generated_at": "2026-08-24T23:03:45+00:00",
+      "date_kst": "2026-08-25",
+      "optimizer": {
+        "source_generated_at": "2026-08-24T23:02:24+00:00",
+        "tested": 595,
+        "validated": 134,
+        "leader_strategies": [
+          "모멘텀 눌림 지속"
+        ],
+        "leader_strategy_ids": [
+          "momentum_pullback"
+        ],
+        "leader_grade": "B",
+        "leader_oos_return_pct": 1.64,
+        "leader_oos_cagr_pct": 0.72,
+        "leader_oos_mdd_pct": -3.07,
+        "leader_recent_cagr_pct": 0.86
+      },
+      "walkforward": {
+        "source_generated_at": "2026-08-24T23:02:34+00:00",
+        "best_family_id": "confirmed_sma_donchian",
+        "best_family_name": "확인형 + SMA200·20 + Donchian",
+        "grade": "C",
+        "positive_folds": 3,
+        "fold_count": 6,
+        "stitched_return_pct": 33.42,
+        "median_test_return_pct": -0.85,
+        "worst_fold_mdd_pct": -19.82
+      },
+      "forward": {
+        "source_generated_at": "2026-08-24T22:53:06+00:00",
         "gate": "WAIT_FORWARD_SAMPLE",
         "headline": "기반시설은 준비 완료 · 미래 표본을 모으는 중",
         "minimum_closed_trades_observed": 0,
