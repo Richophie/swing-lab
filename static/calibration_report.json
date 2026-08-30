@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-08-23T13:50:06+00:00",
+  "generated_at": "2026-08-30T17:38:06+00:00",
   "mode": "suggest-only",
   "minimum_closed_trades": 20,
   "safety_rule": "실전 코드는 자동 수정하지 않음; 제안 -> OOS/walk-forward -> QA -> 수동 승격",
   "strategies": [
     {
       "strategy_id": "confirmed_pullback",
-      "closed_trades": 3,
-      "avg_return_pct": -3.85,
-      "win_rate_pct": 0.0,
+      "closed_trades": 5,
+      "avg_return_pct": -2.13,
+      "win_rate_pct": 40.0,
       "walkforward": {
         "strategy_id": "confirmed_pullback",
         "strategy_name": "확인형 눌림반등",
@@ -665,9 +665,9 @@
     },
     {
       "strategy_id": "momentum_pullback",
-      "closed_trades": 1,
-      "avg_return_pct": -5.36,
-      "win_rate_pct": 0.0,
+      "closed_trades": 4,
+      "avg_return_pct": 0.31,
+      "win_rate_pct": 50.0,
       "walkforward": {
         "strategy_id": "momentum_pullback",
         "strategy_name": "모멘텀 눌림 지속",
@@ -1324,9 +1324,9 @@
     },
     {
       "strategy_id": "rsi2_trend_reversion",
-      "closed_trades": 6,
-      "avg_return_pct": 1.61,
-      "win_rate_pct": 83.3,
+      "closed_trades": 31,
+      "avg_return_pct": 1.31,
+      "win_rate_pct": 83.9,
       "walkforward": {
         "strategy_id": "rsi2_trend_reversion",
         "strategy_name": "RSI2 추세내 과매도",
@@ -1978,8 +1978,8 @@
           }
         ]
       },
-      "action": "WAIT",
-      "suggestion": "실전 종료 표본이 20건 미만이라 파라미터를 조정하지 않습니다."
+      "action": "REVIEW",
+      "suggestion": "성과가 혼재합니다. 한 번에 한 파라미터만 ±10~15% 범위에서 후보를 만들고 walk-forward로 비교하세요."
     }
   ]
 }
