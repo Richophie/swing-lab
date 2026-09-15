@@ -1,13 +1,13 @@
 {
   "version": 1,
-  "generated_at": "2026-09-12T00:41:44+00:00",
+  "generated_at": "2026-09-15T00:58:08+00:00",
   "current": {
-    "generated_at": "2026-09-12T00:41:44+00:00",
-    "date_kst": "2026-09-12",
+    "generated_at": "2026-09-15T00:58:08+00:00",
+    "date_kst": "2026-09-15",
     "optimizer": {
-      "source_generated_at": "2026-09-12T00:40:20+00:00",
+      "source_generated_at": "2026-09-15T00:56:45+00:00",
       "tested": 595,
-      "validated": 99,
+      "validated": 103,
       "leader_strategies": [
         "모멘텀 눌림 지속",
         "SMA200·20 스퀴즈"
@@ -17,50 +17,60 @@
         "sma200_20_squeeze"
       ],
       "leader_grade": "B",
-      "leader_oos_return_pct": 7.61,
-      "leader_oos_cagr_pct": 3.29,
+      "leader_oos_return_pct": 11.94,
+      "leader_oos_cagr_pct": 5.09,
       "leader_oos_mdd_pct": -3.27,
-      "leader_recent_cagr_pct": 3.92
+      "leader_recent_cagr_pct": 5.63
     },
     "walkforward": {
-      "source_generated_at": "2026-09-12T00:40:31+00:00",
+      "source_generated_at": "2026-09-15T00:56:54+00:00",
       "best_family_id": "confirmed_sma_donchian",
       "best_family_name": "확인형 + SMA200·20 + Donchian",
       "grade": "C",
-      "positive_folds": 3,
+      "positive_folds": 4,
       "fold_count": 6,
-      "stitched_return_pct": 13.76,
-      "median_test_return_pct": -2.1,
-      "worst_fold_mdd_pct": -21.78
+      "stitched_return_pct": 44.11,
+      "median_test_return_pct": 6.19,
+      "worst_fold_mdd_pct": -14.44
     },
     "forward": {
-      "source_generated_at": "2026-09-11T23:49:44+00:00",
-      "gate": "WAIT_FORWARD_SAMPLE",
-      "headline": "기반시설은 준비 완료 · 미래 표본을 모으는 중",
-      "minimum_closed_trades_observed": 6,
+      "source_generated_at": "2026-09-15T00:18:28+00:00",
+      "gate": "BLOCKED_SAFETY",
+      "headline": "안전조건부터 확인해야 해요",
+      "minimum_closed_trades_observed": 7,
       "minimum_closed_trades_required": 30,
-      "sample_progress_pct": 20.0,
-      "safety_pass": true,
+      "sample_progress_pct": 23.3,
+      "safety_pass": false,
       "automatic_promotion_enabled": false,
       "live_order_submission_enabled": false,
-      "next_action": "V1~V4 각각 종료 30건까지 규칙 변경 없이 관찰"
+      "next_action": "Forward state 오류/안전 플래그를 수정하고 전략 규칙은 동결 유지"
     }
   },
   "judgement": {
-    "status": "REPRODUCIBILITY_WEAK",
-    "headline": "백테스트 선두는 있지만 여러 다음 구간에서 재현성이 아직 약합니다.",
-    "next_action": "V1~V4 각각 종료 30건까지 규칙 변경 없이 관찰"
+    "status": "BLOCKED",
+    "headline": "성과 비교보다 안전조건 확인이 먼저입니다.",
+    "next_action": "Forward state 오류/안전 플래그를 수정하고 전략 규칙은 동결 유지"
   },
   "changes": [
     {
-      "kind": "leader",
-      "tone": "change",
-      "text": "균형형 선두 조합이 모멘텀 눌림 지속 → 모멘텀 눌림 지속 + SMA200·20 스퀴즈로 바뀌었습니다."
+      "kind": "leader_oos",
+      "tone": "up",
+      "text": "현재 선두의 OOS 누적수익이 이전 실행 대비 +4.33%p 변했습니다."
     },
     {
       "kind": "validated",
-      "tone": "down",
-      "text": "검증 통과 조합 수가 -29개 변했습니다."
+      "tone": "up",
+      "text": "검증 통과 조합 수가 +4개 변했습니다."
+    },
+    {
+      "kind": "forward_gate",
+      "tone": "change",
+      "text": "Forward 게이트가 WAIT_FORWARD_SAMPLE → BLOCKED_SAFETY로 바뀌었습니다."
+    },
+    {
+      "kind": "forward_progress",
+      "tone": "up",
+      "text": "Forward 최소표본 진행률이 +3.3%p 늘었습니다."
     }
   ],
   "history": [
@@ -913,6 +923,51 @@
       },
       "forward": {
         "source_generated_at": "2026-09-10T23:39:34+00:00",
+        "gate": "WAIT_FORWARD_SAMPLE",
+        "headline": "기반시설은 준비 완료 · 미래 표본을 모으는 중",
+        "minimum_closed_trades_observed": 6,
+        "minimum_closed_trades_required": 30,
+        "sample_progress_pct": 20.0,
+        "safety_pass": true,
+        "automatic_promotion_enabled": false,
+        "live_order_submission_enabled": false,
+        "next_action": "V1~V4 각각 종료 30건까지 규칙 변경 없이 관찰"
+      }
+    },
+    {
+      "generated_at": "2026-09-12T00:41:44+00:00",
+      "date_kst": "2026-09-12",
+      "optimizer": {
+        "source_generated_at": "2026-09-12T00:40:20+00:00",
+        "tested": 595,
+        "validated": 99,
+        "leader_strategies": [
+          "모멘텀 눌림 지속",
+          "SMA200·20 스퀴즈"
+        ],
+        "leader_strategy_ids": [
+          "momentum_pullback",
+          "sma200_20_squeeze"
+        ],
+        "leader_grade": "B",
+        "leader_oos_return_pct": 7.61,
+        "leader_oos_cagr_pct": 3.29,
+        "leader_oos_mdd_pct": -3.27,
+        "leader_recent_cagr_pct": 3.92
+      },
+      "walkforward": {
+        "source_generated_at": "2026-09-12T00:40:31+00:00",
+        "best_family_id": "confirmed_sma_donchian",
+        "best_family_name": "확인형 + SMA200·20 + Donchian",
+        "grade": "C",
+        "positive_folds": 3,
+        "fold_count": 6,
+        "stitched_return_pct": 13.76,
+        "median_test_return_pct": -2.1,
+        "worst_fold_mdd_pct": -21.78
+      },
+      "forward": {
+        "source_generated_at": "2026-09-11T23:49:44+00:00",
         "gate": "WAIT_FORWARD_SAMPLE",
         "headline": "기반시설은 준비 완료 · 미래 표본을 모으는 중",
         "minimum_closed_trades_observed": 6,
