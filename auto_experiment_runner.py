@@ -21,6 +21,7 @@ POOL = STATIC / "replay_backtest_pool_v2.json"
 REGIME = STATIC / "portfolio_regime_results.json"
 PRIORITY = STATIC / "portfolio_priority_audit.json"
 FLOW = STATIC / "portfolio_flow_selection_diagnostic.json"
+SMART_MONEY = STATIC / "smart_money_flow_research.json"
 
 MAX_RUNS = 8
 RISK_MULTIPLIERS = (1.0, 0.75, 0.5, 0.0)
@@ -279,6 +280,33 @@ def evidence_flow_selection(item: dict, data: dict) -> dict:
     }
 
 
+def evidence_smart_money_selection(item: dict, data: dict) -> dict:
+    family=family_by_id(data,item.get("family_id"))
+    s=(family or {}).get("summary") or {}
+    pattern=str(s.get("pattern") or "insufficient")
+    fixed=(item.get("params") or {}).get("fixed_filter") or s.get("best_fixed_filter") or "watch_plus"
+    v=(s.get("variants") or {}).get(fixed) or {}
+    evidence={
+        "pattern":pattern,
+        "fixed_filter":fixed,
+        "fold_count":v.get("fold_count"),
+        "folds_beating_baseline":v.get("folds_beating_baseline"),
+        "mean_delta_return_vs_baseline_pct":v.get("mean_delta_return_vs_baseline_pct"),
+        "stitched_delta_vs_baseline_pct":v.get("stitched_delta_vs_baseline_pct"),
+        "worst_mdd_delta_vs_baseline_pct":v.get("worst_mdd_delta_vs_baseline_pct"),
+        "total_test_trades":v.get("total_test_trades"),
+    }
+    if pattern=="not_supported":
+        return {"status":"DROP","decision":"Smart Money 고정필터가 OOS 계좌 성과를 안정적으로 개선하지 못해 현재 가설을 폐기합니다.","evidence":evidence}
+    if pattern=="insufficient":
+        return {"status":"WATCH","decision":"Smart Money 표본이 아직 부족합니다. 생산 추천은 건드리지 않고 개발용 관찰만 유지합니다.","evidence":evidence}
+    return {
+        "status":"WATCH",
+        "decision":"Smart Money 방향성은 OOS 개발검증에서 관찰됐지만 survivorship bias와 개발 이력이 남아 있어 자동 Challenger 승격은 금지하고 WATCH로 유지합니다.",
+        "evidence":evidence,
+    }
+
+
 def short_summary(result: dict) -> str:
     e = result.get("evidence") or {}
     if "folds_beating_baseline" in e:
@@ -287,6 +315,8 @@ def short_summary(result: dict) -> str:
         return f"gate 도움 {e.get('gate_helped_folds')}/{e.get('fold_count')} · stitched Δ {num(e.get('stitched_delta_pct')):+.2f}%p"
     if "folds_beating_current" in e:
         return f"현재 priority 우위 fold {e.get('folds_beating_current')} · 평균 Δ {num(e.get('mean_delta_vs_current_pct')):+.2f}%p"
+    if "fixed_filter" in e:
+        return f"Smart Money {e.get('fixed_filter')} · fold {e.get('folds_beating_baseline')}/{e.get('fold_count')} · stitched Δ {num(e.get('stitched_delta_vs_baseline_pct')):+.2f}%p"
     if "pattern" in e:
         return f"Flow {e.get('pattern')} · strong-weak {num(e.get('strong_minus_weak_mean_return_pp')):+.2f}%p"
     return result.get("decision") or "실험 완료"
@@ -305,7 +335,7 @@ def main():
     if not queue.get("ready"):
         raise SystemExit("auto experiment queue not ready")
     pool = load(POOL)
-    regime, priority, flow = load(REGIME), load(PRIORITY), load(FLOW)
+    regime, priority, flow, smart_money = load(REGIME), load(PRIORITY), load(FLOW), load(SMART_MONEY)
     now = datetime.now(timezone.utc).isoformat(timespec="seconds")
     completed = []
 
@@ -321,6 +351,8 @@ def main():
                 result = evidence_priority_ranker(item, priority)
             elif runner == "evidence_flow_selection":
                 result = evidence_flow_selection(item, flow)
+            elif runner == "evidence_smart_money_selection":
+                result = evidence_smart_money_selection(item, smart_money)
             else:
                 result = {"status": "BLOCKED", "decision": f"지원하지 않는 runner: {runner}", "evidence": {}}
         except Exception as exc:
