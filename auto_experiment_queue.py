@@ -68,8 +68,9 @@ def proposal(kind: str, runner: str, family: dict | None, priority: int, hypothe
     }
 
 
-def generate(walkforward: dict, regime: dict, volatility: dict, priority: dict, flow: dict, smart_money: dict) -> list[dict]:
+def generate(walkforward: dict, regime: dict, volatility: dict, priority: dict, flow: dict, smart_money: dict | None = None) -> list[dict]:
     out = []
+    smart_money = smart_money or {}
     wf_map = family_map(walkforward)
     reg_map = family_map(regime)
     vol_map = family_map(volatility)
