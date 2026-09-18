@@ -13,6 +13,7 @@ REGIME = STATIC / "portfolio_regime_results.json"
 VOL = STATIC / "portfolio_volatility_diagnostic.json"
 PRIORITY = STATIC / "portfolio_priority_audit.json"
 FLOW = STATIC / "portfolio_flow_selection_diagnostic.json"
+SMART_MONEY = STATIC / "smart_money_flow_research.json"
 
 MAX_ACTIVE = 12
 MAX_HISTORY = 80
@@ -67,7 +68,7 @@ def proposal(kind: str, runner: str, family: dict | None, priority: int, hypothe
     }
 
 
-def generate(walkforward: dict, regime: dict, volatility: dict, priority: dict, flow: dict) -> list[dict]:
+def generate(walkforward: dict, regime: dict, volatility: dict, priority: dict, flow: dict, smart_money: dict) -> list[dict]:
     out = []
     wf_map = family_map(walkforward)
     reg_map = family_map(regime)
@@ -163,6 +164,36 @@ def generate(walkforward: dict, regime: dict, volatility: dict, priority: dict, 
             fp,
         ))
 
+    if smart_money.get("ready"):
+        for family in smart_money.get("families") or []:
+            s=family.get("summary") or {}
+            pattern=str(s.get("pattern") or "insufficient")
+            best=str(s.get("best_fixed_filter") or "watch_plus")
+            v=(s.get("variants") or {}).get(best) or {}
+            beats=int(num(v.get("folds_beating_baseline")))
+            fold_count=int(num(v.get("fold_count")))
+            stitched=num(v.get("stitched_delta_vs_baseline_pct"))
+            if pattern=="not_supported" and stitched<=0:
+                priority_score=42
+            elif pattern=="supported_development_only":
+                priority_score=68
+            elif pattern=="mixed_positive":
+                priority_score=56
+            else:
+                priority_score=48
+            fp=stamp(smart_money.get("generated_at"),family.get("id"),pattern,best,beats,fold_count,stitched)
+            out.append(proposal(
+                "smart_money_selection_review",
+                "evidence_smart_money_selection",
+                family,
+                priority_score,
+                f"{family.get('name')}에서 신호일 Smart Money Flow가 강한 후보만 남기면 다음 구간 계좌 성과가 개선되는가?",
+                f"패턴 {pattern} · 고정필터 {best} · 기준보다 우수한 fold {beats}/{fold_count} · stitched Δ {stitched:+.2f}%p.",
+                "62/75점 임계값은 사전에 고정하고, 기존 품질 강도만 각 fold TRAIN에서 결정한 뒤 다음 해 TEST에서 baseline과 비교합니다. 개발증거이므로 자동 승격은 금지합니다.",
+                fp,
+                {"fixed_filter":best},
+            ))
+
     return sorted(out, key=lambda x: (-x["priority"], x["key"]))[:MAX_ACTIVE]
 
 
@@ -210,6 +241,7 @@ def main():
         "volatility": load(VOL),
         "priority": load(PRIORITY),
         "flow": load(FLOW),
+        "smart_money": load(SMART_MONEY),
     }
     if not sources["walkforward"].get("ready"):
         raise SystemExit("walk-forward result not ready")
