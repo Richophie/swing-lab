@@ -1,0 +1,1186 @@
+{
+  "version": 1,
+  "ready": true,
+  "generated_at": "2026-09-18T01:52:33+00:00",
+  "pool_generated_at": "2026-09-18T01:50:00+00:00",
+  "promotion_status": "development_only_no_main_picker_mutation",
+  "method": {
+    "type": "rolling OOS fixed-threshold Smart Money Flow diagnostic",
+    "quality_selection": "existing strategy quality intensity is selected on each fold TRAIN only",
+    "smart_money_thresholds": {
+      "watch_plus_gte": 62.0,
+      "strong_gte": 75.0
+    },
+    "smart_money_threshold_selection": "frozen before TEST; thresholds are not optimized on returns",
+    "smart_money_formula": "same participation/absorption/liquidity score used by live Smart Money Flow Radar V1",
+    "timing": "all Smart Money features use signal-day close/volume or earlier only",
+    "test": "next calendar year is report-only",
+    "production_main_picker_mutated": false,
+    "buy_target_stop_mutated": false,
+    "live_orders_mutated": false,
+    "automatic_promotion": false,
+    "development_warning": "current-universe replay retains survivorship bias and project history has informed hypotheses; this is development evidence, not pristine final proof"
+  },
+  "available_start": "2017-08-01",
+  "available_end": "2026-09-16",
+  "families": [
+    {
+      "id": "donchian_core",
+      "name": "Donchian 단독",
+      "strategies": [
+        "donchian_55"
+      ],
+      "capacity": 10,
+      "summary": {
+        "pattern": "mixed_positive",
+        "best_fixed_filter": "strong",
+        "variants": {
+          "baseline": {
+            "fold_count": 6,
+            "positive_folds": 2,
+            "mean_test_return_pct": 0.83,
+            "median_test_return_pct": -3.58,
+            "stitched_test_return_pct": 1.98,
+            "worst_test_mdd_pct": -25.16,
+            "total_test_trades": 312,
+            "mean_win_rate_pct": 29.82
+          },
+          "watch_plus": {
+            "fold_count": 6,
+            "positive_folds": 2,
+            "mean_test_return_pct": 0.7,
+            "median_test_return_pct": -1.98,
+            "stitched_test_return_pct": -1.67,
+            "worst_test_mdd_pct": -21.5,
+            "total_test_trades": 292,
+            "mean_win_rate_pct": 29.29,
+            "folds_beating_baseline": 2,
+            "mean_delta_return_vs_baseline_pct": -0.13,
+            "median_delta_return_vs_baseline_pct": -0.4,
+            "stitched_delta_vs_baseline_pct": -3.65,
+            "worst_mdd_delta_vs_baseline_pct": -0.02
+          },
+          "strong": {
+            "fold_count": 6,
+            "positive_folds": 2,
+            "mean_test_return_pct": 3.31,
+            "median_test_return_pct": -1.92,
+            "stitched_test_return_pct": 13.06,
+            "worst_test_mdd_pct": -26.47,
+            "total_test_trades": 254,
+            "mean_win_rate_pct": 27.69,
+            "folds_beating_baseline": 4,
+            "mean_delta_return_vs_baseline_pct": 2.49,
+            "median_delta_return_vs_baseline_pct": 1.9,
+            "stitched_delta_vs_baseline_pct": 11.08,
+            "worst_mdd_delta_vs_baseline_pct": -7.33
+          }
+        },
+        "selected_quality_intensity_counts": {
+          "strong": 2,
+          "loose": 3,
+          "normal": 1
+        }
+      },
+      "folds": [
+        {
+          "fold": "2021",
+          "train_start": "2017-08-01",
+          "train_end": "2020-12-31",
+          "test_start": "2021-01-01",
+          "test_end": "2021-12-31",
+          "selected_quality_intensity": "strong",
+          "quality_thresholds": {
+            "donchian_55": 54.571705
+          },
+          "variants": {
+            "baseline": {
+              "ending": 3139815.26,
+              "return_pct": 4.66,
+              "cagr_pct": 4.68,
+              "mdd_pct": -8.32,
+              "trades": 50,
+              "win_rate_pct": 36.0,
+              "avg_trade_pct": 0.101,
+              "trades_per_year": 50.2,
+              "max_open": 7,
+              "underwater_days": 200
+            },
+            "watch_plus": {
+              "ending": 3115708.55,
+              "return_pct": 3.86,
+              "cagr_pct": 3.87,
+              "mdd_pct": -8.34,
+              "trades": 50,
+              "win_rate_pct": 36.0,
+              "avg_trade_pct": -0.036,
+              "trades_per_year": 50.2,
+              "max_open": 7,
+              "underwater_days": 201,
+              "delta_return_vs_baseline_pct": -0.8,
+              "delta_mdd_vs_baseline_pct": -0.02
+            },
+            "strong": {
+              "ending": 2904626.74,
+              "return_pct": -3.18,
+              "cagr_pct": -3.19,
+              "mdd_pct": -10.39,
+              "trades": 43,
+              "win_rate_pct": 32.56,
+              "avg_trade_pct": -0.671,
+              "trades_per_year": 43.1,
+              "max_open": 6,
+              "underwater_days": 203,
+              "delta_return_vs_baseline_pct": -7.84,
+              "delta_mdd_vs_baseline_pct": -2.07
+            }
+          }
+        },
+        {
+          "fold": "2022",
+          "train_start": "2018-01-01",
+          "train_end": "2021-12-31",
+          "test_start": "2022-01-01",
+          "test_end": "2022-12-31",
+          "selected_quality_intensity": "strong",
+          "quality_thresholds": {
+            "donchian_55": 54.683867
+          },
+          "variants": {
+            "baseline": {
+              "ending": 2904833.94,
+              "return_pct": -3.17,
+              "cagr_pct": -3.18,
+              "mdd_pct": -12.11,
+              "trades": 16,
+              "win_rate_pct": 18.75,
+              "avg_trade_pct": -0.673,
+              "trades_per_year": 16.1,
+              "max_open": 4,
+              "underwater_days": 68
+            },
+            "watch_plus": {
+              "ending": 2904833.94,
+              "return_pct": -3.17,
+              "cagr_pct": -3.18,
+              "mdd_pct": -12.11,
+              "trades": 16,
+              "win_rate_pct": 18.75,
+              "avg_trade_pct": -0.673,
+              "trades_per_year": 16.1,
+              "max_open": 4,
+              "underwater_days": 68,
+              "delta_return_vs_baseline_pct": 0.0,
+              "delta_mdd_vs_baseline_pct": 0.0
+            },
+            "strong": {
+              "ending": 2980442.8,
+              "return_pct": -0.65,
+              "cagr_pct": -0.65,
+              "mdd_pct": -9.24,
+              "trades": 12,
+              "win_rate_pct": 16.67,
+              "avg_trade_pct": -0.497,
+              "trades_per_year": 12.0,
+              "max_open": 4,
+              "underwater_days": 58,
+              "delta_return_vs_baseline_pct": 2.52,
+              "delta_mdd_vs_baseline_pct": 2.87
+            }
+          }
+        },
+        {
+          "fold": "2023",
+          "train_start": "2019-01-01",
+          "train_end": "2022-12-31",
+          "test_start": "2023-01-01",
+          "test_end": "2023-12-31",
+          "selected_quality_intensity": "loose",
+          "quality_thresholds": {
+            "donchian_55": 34.139136
+          },
+          "variants": {
+            "baseline": {
+              "ending": 2852190.15,
+              "return_pct": -4.93,
+              "cagr_pct": -4.94,
+              "mdd_pct": -11.14,
+              "trades": 54,
+              "win_rate_pct": 25.93,
+              "avg_trade_pct": 0.009,
+              "trades_per_year": 54.2,
+              "max_open": 7,
+              "underwater_days": 96
+            },
+            "watch_plus": {
+              "ending": 2792281.99,
+              "return_pct": -6.92,
+              "cagr_pct": -6.95,
+              "mdd_pct": -11.14,
+              "trades": 53,
+              "win_rate_pct": 26.42,
+              "avg_trade_pct": 0.5,
+              "trades_per_year": 53.2,
+              "max_open": 8,
+              "underwater_days": 135,
+              "delta_return_vs_baseline_pct": -1.99,
+              "delta_mdd_vs_baseline_pct": 0.0
+            },
+            "strong": {
+              "ending": 2584495.6,
+              "return_pct": -13.85,
+              "cagr_pct": -13.89,
+              "mdd_pct": -18.47,
+              "trades": 46,
+              "win_rate_pct": 23.91,
+              "avg_trade_pct": -0.309,
+              "trades_per_year": 46.2,
+              "max_open": 7,
+              "underwater_days": 115,
+              "delta_return_vs_baseline_pct": -8.92,
+              "delta_mdd_vs_baseline_pct": -7.33
+            }
+          }
+        },
+        {
+          "fold": "2024",
+          "train_start": "2020-01-01",
+          "train_end": "2023-12-31",
+          "test_start": "2024-01-01",
+          "test_end": "2024-12-31",
+          "selected_quality_intensity": "normal",
+          "quality_thresholds": {
+            "donchian_55": 44.438841
+          },
+          "variants": {
+            "baseline": {
+              "ending": 2709169.89,
+              "return_pct": -9.69,
+              "cagr_pct": -9.7,
+              "mdd_pct": -25.16,
+              "trades": 71,
+              "win_rate_pct": 23.94,
+              "avg_trade_pct": -0.189,
+              "trades_per_year": 71.0,
+              "max_open": 8,
+              "underwater_days": 205
+            },
+            "watch_plus": {
+              "ending": 2455422.1,
+              "return_pct": -18.15,
+              "cagr_pct": -18.16,
+              "mdd_pct": -21.5,
+              "trades": 70,
+              "win_rate_pct": 18.57,
+              "avg_trade_pct": -1.638,
+              "trades_per_year": 70.0,
+              "max_open": 8,
+              "underwater_days": 180,
+              "delta_return_vs_baseline_pct": -8.46,
+              "delta_mdd_vs_baseline_pct": 3.66
+            },
+            "strong": {
+              "ending": 2747480.18,
+              "return_pct": -8.42,
+              "cagr_pct": -8.42,
+              "mdd_pct": -26.47,
+              "trades": 70,
+              "win_rate_pct": 18.57,
+              "avg_trade_pct": -0.878,
+              "trades_per_year": 70.0,
+              "max_open": 8,
+              "underwater_days": 200,
+              "delta_return_vs_baseline_pct": 1.27,
+              "delta_mdd_vs_baseline_pct": -1.31
+            }
+          }
+        },
+        {
+          "fold": "2025",
+          "train_start": "2021-01-01",
+          "train_end": "2024-12-31",
+          "test_start": "2025-01-01",
+          "test_end": "2025-12-31",
+          "selected_quality_intensity": "loose",
+          "quality_thresholds": {
+            "donchian_55": 34.876685
+          },
+          "variants": {
+            "baseline": {
+              "ending": 2880376.55,
+              "return_pct": -3.99,
+              "cagr_pct": -4.0,
+              "mdd_pct": -13.53,
+              "trades": 67,
+              "win_rate_pct": 29.85,
+              "avg_trade_pct": 0.144,
+              "trades_per_year": 67.2,
+              "max_open": 9,
+              "underwater_days": 163
+            },
+            "watch_plus": {
+              "ending": 2976126.43,
+              "return_pct": -0.8,
+              "cagr_pct": -0.8,
+              "mdd_pct": -10.12,
+              "trades": 58,
+              "win_rate_pct": 29.31,
+              "avg_trade_pct": -0.045,
+              "trades_per_year": 58.2,
+              "max_open": 8,
+              "underwater_days": 98,
+              "delta_return_vs_baseline_pct": 3.19,
+              "delta_mdd_vs_baseline_pct": 3.41
+            },
+            "strong": {
+              "ending": 3237321.79,
+              "return_pct": 7.91,
+              "cagr_pct": 7.94,
+              "mdd_pct": -9.6,
+              "trades": 36,
+              "win_rate_pct": 36.11,
+              "avg_trade_pct": 1.426,
+              "trades_per_year": 36.1,
+              "max_open": 8,
+              "underwater_days": 149,
+              "delta_return_vs_baseline_pct": 11.9,
+              "delta_mdd_vs_baseline_pct": 3.93
+            }
+          }
+        },
+        {
+          "fold": "2026",
+          "train_start": "2022-01-01",
+          "train_end": "2025-12-31",
+          "test_start": "2026-01-01",
+          "test_end": "2026-09-16",
+          "selected_quality_intensity": "loose",
+          "quality_thresholds": {
+            "donchian_55": 34.297134
+          },
+          "variants": {
+            "baseline": {
+              "ending": 3661984.88,
+              "return_pct": 22.07,
+              "cagr_pct": 32.62,
+              "mdd_pct": -16.33,
+              "trades": 54,
+              "win_rate_pct": 44.44,
+              "avg_trade_pct": 5.273,
+              "trades_per_year": 76.4,
+              "max_open": 10,
+              "underwater_days": 72
+            },
+            "watch_plus": {
+              "ending": 3881137.65,
+              "return_pct": 29.37,
+              "cagr_pct": 43.99,
+              "mdd_pct": -14.66,
+              "trades": 45,
+              "win_rate_pct": 46.67,
+              "avg_trade_pct": 7.886,
+              "trades_per_year": 63.7,
+              "max_open": 8,
+              "underwater_days": 45,
+              "delta_return_vs_baseline_pct": 7.3,
+              "delta_mdd_vs_baseline_pct": 1.67
+            },
+            "strong": {
+              "ending": 4141903.69,
+              "return_pct": 38.06,
+              "cagr_pct": 57.87,
+              "mdd_pct": -12.85,
+              "trades": 47,
+              "win_rate_pct": 38.3,
+              "avg_trade_pct": 5.507,
+              "trades_per_year": 66.5,
+              "max_open": 9,
+              "underwater_days": 54,
+              "delta_return_vs_baseline_pct": 15.99,
+              "delta_mdd_vs_baseline_pct": 3.48
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "donchian_momentum",
+      "name": "Donchian + 모멘텀",
+      "strategies": [
+        "momentum_pullback",
+        "donchian_55"
+      ],
+      "capacity": 10,
+      "summary": {
+        "pattern": "mixed_positive",
+        "best_fixed_filter": "strong",
+        "variants": {
+          "baseline": {
+            "fold_count": 6,
+            "positive_folds": 2,
+            "mean_test_return_pct": 0.33,
+            "median_test_return_pct": -3.87,
+            "stitched_test_return_pct": -1.17,
+            "worst_test_mdd_pct": -24.79,
+            "total_test_trades": 323,
+            "mean_win_rate_pct": 30.16
+          },
+          "watch_plus": {
+            "fold_count": 6,
+            "positive_folds": 2,
+            "mean_test_return_pct": -0.6,
+            "median_test_return_pct": -4.81,
+            "stitched_test_return_pct": -9.37,
+            "worst_test_mdd_pct": -21.0,
+            "total_test_trades": 293,
+            "mean_win_rate_pct": 29.15,
+            "folds_beating_baseline": 2,
+            "mean_delta_return_vs_baseline_pct": -0.93,
+            "median_delta_return_vs_baseline_pct": -0.4,
+            "stitched_delta_vs_baseline_pct": -8.2,
+            "worst_mdd_delta_vs_baseline_pct": -4.6
+          },
+          "strong": {
+            "fold_count": 6,
+            "positive_folds": 2,
+            "mean_test_return_pct": 3.64,
+            "median_test_return_pct": -1.92,
+            "stitched_test_return_pct": 15.58,
+            "worst_test_mdd_pct": -26.47,
+            "total_test_trades": 251,
+            "mean_win_rate_pct": 27.89,
+            "folds_beating_baseline": 4,
+            "mean_delta_return_vs_baseline_pct": 3.3,
+            "median_delta_return_vs_baseline_pct": 1.68,
+            "stitched_delta_vs_baseline_pct": 16.75,
+            "worst_mdd_delta_vs_baseline_pct": -5.27
+          }
+        },
+        "selected_quality_intensity_counts": {
+          "strong": 2,
+          "normal": 2,
+          "loose": 2
+        }
+      },
+      "folds": [
+        {
+          "fold": "2021",
+          "train_start": "2017-08-01",
+          "train_end": "2020-12-31",
+          "test_start": "2021-01-01",
+          "test_end": "2021-12-31",
+          "selected_quality_intensity": "strong",
+          "quality_thresholds": {
+            "momentum_pullback": 53.568685,
+            "donchian_55": 54.571705
+          },
+          "variants": {
+            "baseline": {
+              "ending": 3139815.26,
+              "return_pct": 4.66,
+              "cagr_pct": 4.68,
+              "mdd_pct": -8.32,
+              "trades": 50,
+              "win_rate_pct": 36.0,
+              "avg_trade_pct": 0.101,
+              "trades_per_year": 50.2,
+              "max_open": 7,
+              "underwater_days": 200
+            },
+            "watch_plus": {
+              "ending": 3115708.55,
+              "return_pct": 3.86,
+              "cagr_pct": 3.87,
+              "mdd_pct": -8.34,
+              "trades": 50,
+              "win_rate_pct": 36.0,
+              "avg_trade_pct": -0.036,
+              "trades_per_year": 50.2,
+              "max_open": 7,
+              "underwater_days": 201,
+              "delta_return_vs_baseline_pct": -0.8,
+              "delta_mdd_vs_baseline_pct": -0.02
+            },
+            "strong": {
+              "ending": 2904626.74,
+              "return_pct": -3.18,
+              "cagr_pct": -3.19,
+              "mdd_pct": -10.39,
+              "trades": 43,
+              "win_rate_pct": 32.56,
+              "avg_trade_pct": -0.671,
+              "trades_per_year": 43.1,
+              "max_open": 6,
+              "underwater_days": 203,
+              "delta_return_vs_baseline_pct": -7.84,
+              "delta_mdd_vs_baseline_pct": -2.07
+            }
+          }
+        },
+        {
+          "fold": "2022",
+          "train_start": "2018-01-01",
+          "train_end": "2021-12-31",
+          "test_start": "2022-01-01",
+          "test_end": "2022-12-31",
+          "selected_quality_intensity": "strong",
+          "quality_thresholds": {
+            "momentum_pullback": 53.68571,
+            "donchian_55": 54.683867
+          },
+          "variants": {
+            "baseline": {
+              "ending": 2904833.94,
+              "return_pct": -3.17,
+              "cagr_pct": -3.18,
+              "mdd_pct": -12.11,
+              "trades": 16,
+              "win_rate_pct": 18.75,
+              "avg_trade_pct": -0.673,
+              "trades_per_year": 16.1,
+              "max_open": 4,
+              "underwater_days": 68
+            },
+            "watch_plus": {
+              "ending": 2904833.94,
+              "return_pct": -3.17,
+              "cagr_pct": -3.18,
+              "mdd_pct": -12.11,
+              "trades": 16,
+              "win_rate_pct": 18.75,
+              "avg_trade_pct": -0.673,
+              "trades_per_year": 16.1,
+              "max_open": 4,
+              "underwater_days": 68,
+              "delta_return_vs_baseline_pct": 0.0,
+              "delta_mdd_vs_baseline_pct": 0.0
+            },
+            "strong": {
+              "ending": 2980442.8,
+              "return_pct": -0.65,
+              "cagr_pct": -0.65,
+              "mdd_pct": -9.24,
+              "trades": 12,
+              "win_rate_pct": 16.67,
+              "avg_trade_pct": -0.497,
+              "trades_per_year": 12.0,
+              "max_open": 4,
+              "underwater_days": 58,
+              "delta_return_vs_baseline_pct": 2.52,
+              "delta_mdd_vs_baseline_pct": 2.87
+            }
+          }
+        },
+        {
+          "fold": "2023",
+          "train_start": "2019-01-01",
+          "train_end": "2022-12-31",
+          "test_start": "2023-01-01",
+          "test_end": "2023-12-31",
+          "selected_quality_intensity": "normal",
+          "quality_thresholds": {
+            "momentum_pullback": 50.74609,
+            "donchian_55": 43.462611
+          },
+          "variants": {
+            "baseline": {
+              "ending": 2862992.11,
+              "return_pct": -4.57,
+              "cagr_pct": -4.58,
+              "mdd_pct": -11.42,
+              "trades": 58,
+              "win_rate_pct": 29.31,
+              "avg_trade_pct": 0.199,
+              "trades_per_year": 58.2,
+              "max_open": 9,
+              "underwater_days": 104
+            },
+            "watch_plus": {
+              "ending": 2711846.98,
+              "return_pct": -9.61,
+              "cagr_pct": -9.64,
+              "mdd_pct": -16.02,
+              "trades": 48,
+              "win_rate_pct": 25.0,
+              "avg_trade_pct": -0.184,
+              "trades_per_year": 48.2,
+              "max_open": 7,
+              "underwater_days": 104,
+              "delta_return_vs_baseline_pct": -5.04,
+              "delta_mdd_vs_baseline_pct": -4.6
+            },
+            "strong": {
+              "ending": 2638883.7,
+              "return_pct": -12.04,
+              "cagr_pct": -12.08,
+              "mdd_pct": -16.69,
+              "trades": 41,
+              "win_rate_pct": 24.39,
+              "avg_trade_pct": -0.208,
+              "trades_per_year": 41.1,
+              "max_open": 7,
+              "underwater_days": 115,
+              "delta_return_vs_baseline_pct": -7.47,
+              "delta_mdd_vs_baseline_pct": -5.27
+            }
+          }
+        },
+        {
+          "fold": "2024",
+          "train_start": "2020-01-01",
+          "train_end": "2023-12-31",
+          "test_start": "2024-01-01",
+          "test_end": "2024-12-31",
+          "selected_quality_intensity": "normal",
+          "quality_thresholds": {
+            "momentum_pullback": 47.811655,
+            "donchian_55": 44.438841
+          },
+          "variants": {
+            "baseline": {
+              "ending": 2722592.77,
+              "return_pct": -9.25,
+              "cagr_pct": -9.25,
+              "mdd_pct": -24.79,
+              "trades": 73,
+              "win_rate_pct": 24.66,
+              "avg_trade_pct": -0.155,
+              "trades_per_year": 73.0,
+              "max_open": 8,
+              "underwater_days": 205
+            },
+            "watch_plus": {
+              "ending": 2471297.17,
+              "return_pct": -17.62,
+              "cagr_pct": -17.63,
+              "mdd_pct": -21.0,
+              "trades": 72,
+              "win_rate_pct": 19.44,
+              "avg_trade_pct": -1.564,
+              "trades_per_year": 72.0,
+              "max_open": 8,
+              "underwater_days": 180,
+              "delta_return_vs_baseline_pct": -8.37,
+              "delta_mdd_vs_baseline_pct": 3.79
+            },
+            "strong": {
+              "ending": 2747480.18,
+              "return_pct": -8.42,
+              "cagr_pct": -8.42,
+              "mdd_pct": -26.47,
+              "trades": 70,
+              "win_rate_pct": 18.57,
+              "avg_trade_pct": -0.878,
+              "trades_per_year": 70.0,
+              "max_open": 8,
+              "underwater_days": 200,
+              "delta_return_vs_baseline_pct": 0.83,
+              "delta_mdd_vs_baseline_pct": -1.68
+            }
+          }
+        },
+        {
+          "fold": "2025",
+          "train_start": "2021-01-01",
+          "train_end": "2024-12-31",
+          "test_start": "2025-01-01",
+          "test_end": "2025-12-31",
+          "selected_quality_intensity": "loose",
+          "quality_thresholds": {
+            "momentum_pullback": 42.94467,
+            "donchian_55": 34.876685
+          },
+          "variants": {
+            "baseline": {
+              "ending": 2767520.98,
+              "return_pct": -7.75,
+              "cagr_pct": -7.77,
+              "mdd_pct": -13.31,
+              "trades": 72,
+              "win_rate_pct": 27.78,
+              "avg_trade_pct": -0.453,
+              "trades_per_year": 72.2,
+              "max_open": 8,
+              "underwater_days": 166
+            },
+            "watch_plus": {
+              "ending": 2806605.91,
+              "return_pct": -6.45,
+              "cagr_pct": -6.47,
+              "mdd_pct": -11.73,
+              "trades": 62,
+              "win_rate_pct": 29.03,
+              "avg_trade_pct": -0.463,
+              "trades_per_year": 62.2,
+              "max_open": 8,
+              "underwater_days": 209,
+              "delta_return_vs_baseline_pct": 1.3,
+              "delta_mdd_vs_baseline_pct": 1.58
+            },
+            "strong": {
+              "ending": 3241276.92,
+              "return_pct": 8.04,
+              "cagr_pct": 8.07,
+              "mdd_pct": -10.38,
+              "trades": 38,
+              "win_rate_pct": 36.84,
+              "avg_trade_pct": 1.748,
+              "trades_per_year": 38.1,
+              "max_open": 8,
+              "underwater_days": 153,
+              "delta_return_vs_baseline_pct": 15.79,
+              "delta_mdd_vs_baseline_pct": 2.93
+            }
+          }
+        },
+        {
+          "fold": "2026",
+          "train_start": "2022-01-01",
+          "train_end": "2025-12-31",
+          "test_start": "2026-01-01",
+          "test_end": "2026-09-16",
+          "selected_quality_intensity": "loose",
+          "quality_thresholds": {
+            "momentum_pullback": 42.92592,
+            "donchian_55": 34.297134
+          },
+          "variants": {
+            "baseline": {
+              "ending": 3661984.88,
+              "return_pct": 22.07,
+              "cagr_pct": 32.62,
+              "mdd_pct": -16.33,
+              "trades": 54,
+              "win_rate_pct": 44.44,
+              "avg_trade_pct": 5.273,
+              "trades_per_year": 76.4,
+              "max_open": 10,
+              "underwater_days": 72
+            },
+            "watch_plus": {
+              "ending": 3881137.65,
+              "return_pct": 29.37,
+              "cagr_pct": 43.99,
+              "mdd_pct": -14.66,
+              "trades": 45,
+              "win_rate_pct": 46.67,
+              "avg_trade_pct": 7.886,
+              "trades_per_year": 63.7,
+              "max_open": 8,
+              "underwater_days": 45,
+              "delta_return_vs_baseline_pct": 7.3,
+              "delta_mdd_vs_baseline_pct": 1.67
+            },
+            "strong": {
+              "ending": 4141903.69,
+              "return_pct": 38.06,
+              "cagr_pct": 57.87,
+              "mdd_pct": -12.85,
+              "trades": 47,
+              "win_rate_pct": 38.3,
+              "avg_trade_pct": 5.507,
+              "trades_per_year": 66.5,
+              "max_open": 9,
+              "underwater_days": 54,
+              "delta_return_vs_baseline_pct": 15.99,
+              "delta_mdd_vs_baseline_pct": 3.48
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "confirmed_sma_donchian",
+      "name": "확인형 + SMA200·20 + Donchian",
+      "strategies": [
+        "confirmed_pullback",
+        "sma200_20_squeeze",
+        "donchian_55"
+      ],
+      "capacity": 10,
+      "summary": {
+        "pattern": "mixed_positive",
+        "best_fixed_filter": "watch_plus",
+        "variants": {
+          "baseline": {
+            "fold_count": 6,
+            "positive_folds": 3,
+            "mean_test_return_pct": 3.74,
+            "median_test_return_pct": 0.48,
+            "stitched_test_return_pct": 22.29,
+            "worst_test_mdd_pct": -20.15,
+            "total_test_trades": 358,
+            "mean_win_rate_pct": 31.28
+          },
+          "watch_plus": {
+            "fold_count": 6,
+            "positive_folds": 2,
+            "mean_test_return_pct": 4.82,
+            "median_test_return_pct": -2.94,
+            "stitched_test_return_pct": 23.21,
+            "worst_test_mdd_pct": -18.21,
+            "total_test_trades": 343,
+            "mean_win_rate_pct": 29.2,
+            "folds_beating_baseline": 2,
+            "mean_delta_return_vs_baseline_pct": 1.08,
+            "median_delta_return_vs_baseline_pct": -0.03,
+            "stitched_delta_vs_baseline_pct": 0.92,
+            "worst_mdd_delta_vs_baseline_pct": -0.3
+          },
+          "strong": {
+            "fold_count": 6,
+            "positive_folds": 3,
+            "mean_test_return_pct": 2.18,
+            "median_test_return_pct": 0.39,
+            "stitched_test_return_pct": 8.38,
+            "worst_test_mdd_pct": -27.93,
+            "total_test_trades": 265,
+            "mean_win_rate_pct": 25.58,
+            "folds_beating_baseline": 3,
+            "mean_delta_return_vs_baseline_pct": -1.56,
+            "median_delta_return_vs_baseline_pct": -2.45,
+            "stitched_delta_vs_baseline_pct": -13.91,
+            "worst_mdd_delta_vs_baseline_pct": -8.44
+          }
+        },
+        "selected_quality_intensity_counts": {
+          "loose": 3,
+          "strong": 1,
+          "normal": 2
+        }
+      },
+      "folds": [
+        {
+          "fold": "2021",
+          "train_start": "2017-08-01",
+          "train_end": "2020-12-31",
+          "test_start": "2021-01-01",
+          "test_end": "2021-12-31",
+          "selected_quality_intensity": "loose",
+          "quality_thresholds": {
+            "confirmed_pullback": 71.7958,
+            "sma200_20_squeeze": 35.489288,
+            "donchian_55": 34.127036
+          },
+          "variants": {
+            "baseline": {
+              "ending": 3335547.86,
+              "return_pct": 11.18,
+              "cagr_pct": 11.23,
+              "mdd_pct": -12.02,
+              "trades": 77,
+              "win_rate_pct": 36.36,
+              "avg_trade_pct": 1.207,
+              "trades_per_year": 77.3,
+              "max_open": 10,
+              "underwater_days": 103
+            },
+            "watch_plus": {
+              "ending": 3534773.24,
+              "return_pct": 17.83,
+              "cagr_pct": 17.89,
+              "mdd_pct": -11.11,
+              "trades": 70,
+              "win_rate_pct": 38.57,
+              "avg_trade_pct": 1.059,
+              "trades_per_year": 70.2,
+              "max_open": 9,
+              "underwater_days": 95,
+              "delta_return_vs_baseline_pct": 6.65,
+              "delta_mdd_vs_baseline_pct": 0.91
+            },
+            "strong": {
+              "ending": 3077620.61,
+              "return_pct": 2.59,
+              "cagr_pct": 2.6,
+              "mdd_pct": -13.65,
+              "trades": 47,
+              "win_rate_pct": 36.17,
+              "avg_trade_pct": 0.089,
+              "trades_per_year": 47.2,
+              "max_open": 7,
+              "underwater_days": 215,
+              "delta_return_vs_baseline_pct": -8.59,
+              "delta_mdd_vs_baseline_pct": -1.63
+            }
+          }
+        },
+        {
+          "fold": "2022",
+          "train_start": "2018-01-01",
+          "train_end": "2021-12-31",
+          "test_start": "2022-01-01",
+          "test_end": "2022-12-31",
+          "selected_quality_intensity": "strong",
+          "quality_thresholds": {
+            "confirmed_pullback": 85.3334,
+            "sma200_20_squeeze": 45.875278,
+            "donchian_55": 54.683867
+          },
+          "variants": {
+            "baseline": {
+              "ending": 2870975.54,
+              "return_pct": -4.3,
+              "cagr_pct": -4.32,
+              "mdd_pct": -12.8,
+              "trades": 18,
+              "win_rate_pct": 16.67,
+              "avg_trade_pct": -0.868,
+              "trades_per_year": 18.1,
+              "max_open": 4,
+              "underwater_days": 73
+            },
+            "watch_plus": {
+              "ending": 2870975.54,
+              "return_pct": -4.3,
+              "cagr_pct": -4.32,
+              "mdd_pct": -12.8,
+              "trades": 18,
+              "win_rate_pct": 16.67,
+              "avg_trade_pct": -0.868,
+              "trades_per_year": 18.1,
+              "max_open": 4,
+              "underwater_days": 73,
+              "delta_return_vs_baseline_pct": 0.0,
+              "delta_mdd_vs_baseline_pct": 0.0
+            },
+            "strong": {
+              "ending": 2945707.16,
+              "return_pct": -1.81,
+              "cagr_pct": -1.82,
+              "mdd_pct": -10.3,
+              "trades": 14,
+              "win_rate_pct": 14.29,
+              "avg_trade_pct": -0.773,
+              "trades_per_year": 14.0,
+              "max_open": 4,
+              "underwater_days": 63,
+              "delta_return_vs_baseline_pct": 2.49,
+              "delta_mdd_vs_baseline_pct": 2.5
+            }
+          }
+        },
+        {
+          "fold": "2023",
+          "train_start": "2019-01-01",
+          "train_end": "2022-12-31",
+          "test_start": "2023-01-01",
+          "test_end": "2023-12-31",
+          "selected_quality_intensity": "loose",
+          "quality_thresholds": {
+            "confirmed_pullback": 71.06728,
+            "sma200_20_squeeze": 35.296519,
+            "donchian_55": 34.139136
+          },
+          "variants": {
+            "baseline": {
+              "ending": 3114543.61,
+              "return_pct": 3.82,
+              "cagr_pct": 3.83,
+              "mdd_pct": -10.45,
+              "trades": 60,
+              "win_rate_pct": 35.0,
+              "avg_trade_pct": 0.71,
+              "trades_per_year": 60.2,
+              "max_open": 8,
+              "underwater_days": 116
+            },
+            "watch_plus": {
+              "ending": 2933120.09,
+              "return_pct": -2.23,
+              "cagr_pct": -2.24,
+              "mdd_pct": -10.75,
+              "trades": 60,
+              "win_rate_pct": 31.67,
+              "avg_trade_pct": 0.821,
+              "trades_per_year": 60.2,
+              "max_open": 8,
+              "underwater_days": 136,
+              "delta_return_vs_baseline_pct": -6.05,
+              "delta_mdd_vs_baseline_pct": -0.3
+            },
+            "strong": {
+              "ending": 2628318.29,
+              "return_pct": -12.39,
+              "cagr_pct": -12.43,
+              "mdd_pct": -16.96,
+              "trades": 47,
+              "win_rate_pct": 19.15,
+              "avg_trade_pct": -0.66,
+              "trades_per_year": 47.2,
+              "max_open": 7,
+              "underwater_days": 115,
+              "delta_return_vs_baseline_pct": -16.21,
+              "delta_mdd_vs_baseline_pct": -6.51
+            }
+          }
+        },
+        {
+          "fold": "2024",
+          "train_start": "2020-01-01",
+          "train_end": "2023-12-31",
+          "test_start": "2024-01-01",
+          "test_end": "2024-12-31",
+          "selected_quality_intensity": "normal",
+          "quality_thresholds": {
+            "confirmed_pullback": 78.82256,
+            "sma200_20_squeeze": 39.224329,
+            "donchian_55": 44.438841
+          },
+          "variants": {
+            "baseline": {
+              "ending": 2914364.15,
+              "return_pct": -2.85,
+              "cagr_pct": -2.86,
+              "mdd_pct": -19.49,
+              "trades": 74,
+              "win_rate_pct": 25.68,
+              "avg_trade_pct": 0.59,
+              "trades_per_year": 74.1,
+              "max_open": 9,
+              "underwater_days": 205
+            },
+            "watch_plus": {
+              "ending": 2558526.75,
+              "return_pct": -14.72,
+              "cagr_pct": -14.73,
+              "mdd_pct": -18.21,
+              "trades": 74,
+              "win_rate_pct": 18.92,
+              "avg_trade_pct": -1.65,
+              "trades_per_year": 74.1,
+              "max_open": 8,
+              "underwater_days": 180,
+              "delta_return_vs_baseline_pct": -11.87,
+              "delta_mdd_vs_baseline_pct": 1.28
+            },
+            "strong": {
+              "ending": 2692718.85,
+              "return_pct": -10.24,
+              "cagr_pct": -10.25,
+              "mdd_pct": -27.93,
+              "trades": 69,
+              "win_rate_pct": 20.29,
+              "avg_trade_pct": -0.864,
+              "trades_per_year": 69.0,
+              "max_open": 8,
+              "underwater_days": 200,
+              "delta_return_vs_baseline_pct": -7.39,
+              "delta_mdd_vs_baseline_pct": -8.44
+            }
+          }
+        },
+        {
+          "fold": "2025",
+          "train_start": "2021-01-01",
+          "train_end": "2024-12-31",
+          "test_start": "2025-01-01",
+          "test_end": "2025-12-31",
+          "selected_quality_intensity": "loose",
+          "quality_thresholds": {
+            "confirmed_pullback": 71.98073,
+            "sma200_20_squeeze": 34.383633,
+            "donchian_55": 34.876685
+          },
+          "variants": {
+            "baseline": {
+              "ending": 2891992.46,
+              "return_pct": -3.6,
+              "cagr_pct": -3.61,
+              "mdd_pct": -13.97,
+              "trades": 73,
+              "win_rate_pct": 32.88,
+              "avg_trade_pct": 0.083,
+              "trades_per_year": 73.3,
+              "max_open": 9,
+              "underwater_days": 166
+            },
+            "watch_plus": {
+              "ending": 2890403.62,
+              "return_pct": -3.65,
+              "cagr_pct": -3.67,
+              "mdd_pct": -14.17,
+              "trades": 69,
+              "win_rate_pct": 28.99,
+              "avg_trade_pct": -0.339,
+              "trades_per_year": 69.2,
+              "max_open": 9,
+              "underwater_days": 209,
+              "delta_return_vs_baseline_pct": -0.05,
+              "delta_mdd_vs_baseline_pct": -0.2
+            },
+            "strong": {
+              "ending": 3197177.15,
+              "return_pct": 6.57,
+              "cagr_pct": 6.6,
+              "mdd_pct": -10.25,
+              "trades": 42,
+              "win_rate_pct": 30.95,
+              "avg_trade_pct": 0.694,
+              "trades_per_year": 42.1,
+              "max_open": 8,
+              "underwater_days": 157,
+              "delta_return_vs_baseline_pct": 10.17,
+              "delta_mdd_vs_baseline_pct": 3.72
+            }
+          }
+        },
+        {
+          "fold": "2026",
+          "train_start": "2022-01-01",
+          "train_end": "2025-12-31",
+          "test_start": "2026-01-01",
+          "test_end": "2026-09-16",
+          "selected_quality_intensity": "normal",
+          "quality_thresholds": {
+            "confirmed_pullback": 84.02,
+            "sma200_20_squeeze": 38.310392,
+            "donchian_55": 43.237788
+          },
+          "variants": {
+            "baseline": {
+              "ending": 3546437.36,
+              "return_pct": 18.21,
+              "cagr_pct": 26.73,
+              "mdd_pct": -20.15,
+              "trades": 56,
+              "win_rate_pct": 41.07,
+              "avg_trade_pct": 4.861,
+              "trades_per_year": 79.3,
+              "max_open": 10,
+              "underwater_days": 72
+            },
+            "watch_plus": {
+              "ending": 4080376.68,
+              "return_pct": 36.01,
+              "cagr_pct": 54.56,
+              "mdd_pct": -14.61,
+              "trades": 52,
+              "win_rate_pct": 40.38,
+              "avg_trade_pct": 6.267,
+              "trades_per_year": 73.6,
+              "max_open": 9,
+              "underwater_days": 74,
+              "delta_return_vs_baseline_pct": 17.8,
+              "delta_mdd_vs_baseline_pct": 5.54
+            },
+            "strong": {
+              "ending": 3851387.77,
+              "return_pct": 28.38,
+              "cagr_pct": 42.43,
+              "mdd_pct": -12.63,
+              "trades": 46,
+              "win_rate_pct": 32.61,
+              "avg_trade_pct": 4.645,
+              "trades_per_year": 65.1,
+              "max_open": 9,
+              "underwater_days": 54,
+              "delta_return_vs_baseline_pct": 10.17,
+              "delta_mdd_vs_baseline_pct": 7.52
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
