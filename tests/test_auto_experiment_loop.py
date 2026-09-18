@@ -1,5 +1,5 @@
 from auto_experiment_queue import generate, merge_previous
-from auto_experiment_runner import evidence_flow_selection, evidence_priority_ranker, evidence_regime_gate
+from auto_experiment_runner import evidence_flow_selection, evidence_priority_ranker, evidence_regime_gate, evidence_smart_money_selection
 
 
 def fake_sources():
@@ -57,23 +57,51 @@ def fake_sources():
             "comparable_folds": 5, "strong_beats_weak_folds": 4
         }
     }
-    return wf, regime, vol, priority, flow
+    smart = {
+        "ready": True, "generated_at": "2026-08-15T00:05:00+00:00",
+        "families": [{
+            "id": "f1", "name": "Family 1", "strategies": ["s1"],
+            "summary": {
+                "pattern": "supported_development_only",
+                "best_fixed_filter": "strong",
+                "variants": {
+                    "baseline": {"fold_count": 6, "stitched_test_return_pct": 8, "total_test_trades": 120},
+                    "watch_plus": {
+                        "fold_count": 6, "folds_beating_baseline": 4,
+                        "mean_delta_return_vs_baseline_pct": 1.1,
+                        "stitched_delta_vs_baseline_pct": 5.0,
+                        "worst_mdd_delta_vs_baseline_pct": 1.0,
+                        "total_test_trades": 80,
+                    },
+                    "strong": {
+                        "fold_count": 6, "folds_beating_baseline": 5,
+                        "mean_delta_return_vs_baseline_pct": 1.6,
+                        "stitched_delta_vs_baseline_pct": 8.0,
+                        "worst_mdd_delta_vs_baseline_pct": 0.5,
+                        "total_test_trades": 60,
+                    },
+                },
+            },
+        }],
+    }
+    return wf, regime, vol, priority, flow, smart
 
 
 def test_queue_generation_and_safety():
-    wf, regime, vol, priority, flow = fake_sources()
-    items = generate(wf, regime, vol, priority, flow)
+    wf, regime, vol, priority, flow, smart = fake_sources()
+    items = generate(wf, regime, vol, priority, flow, smart)
     kinds = {x["kind"] for x in items}
     assert "adaptive_volatility_sizing" in kinds
     assert "regime_gate_review" in kinds
     assert "priority_ranker_review" in kinds
     assert "flow_selection_review" in kinds
+    assert "smart_money_selection_review" in kinds
     assert all(x["status"] == "QUEUED" for x in items)
 
 
 def test_terminal_result_is_stable_until_source_changes():
-    wf, regime, vol, priority, flow = fake_sources()
-    items = generate(wf, regime, vol, priority, flow)
+    wf, regime, vol, priority, flow, smart = fake_sources()
+    items = generate(wf, regime, vol, priority, flow, smart)
     first = items[0]
     old = {"items": [{**first, "status": "DROP", "decision": "done", "attempts": 1}]}
     merged, _ = merge_previous(items, old, "2026-08-15T01:00:00+00:00")
@@ -87,11 +115,14 @@ def test_terminal_result_is_stable_until_source_changes():
 
 
 def test_evidence_decisions():
-    _, regime, _, priority, flow = fake_sources()
+    _, regime, _, priority, flow, smart = fake_sources()
     base = {"family_id": "f1"}
     assert evidence_regime_gate(base, regime)["status"] == "CHALLENGER_CANDIDATE"
     assert evidence_priority_ranker({**base, "params": {"ranker": "quality_pct"}}, priority)["status"] == "CHALLENGER_CANDIDATE"
     assert evidence_flow_selection(base, flow)["status"] == "WATCH"
+    sm=evidence_smart_money_selection({**base,"params":{"fixed_filter":"strong"}},smart)
+    assert sm["status"] == "WATCH"
+    assert sm["evidence"]["stitched_delta_vs_baseline_pct"] == 8.0
 
 
 if __name__ == "__main__":
