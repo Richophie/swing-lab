@@ -14,6 +14,8 @@ on:
       - 'portfolio_volatility_diagnostic.py'
       - 'portfolio_priority_audit.py'
       - 'portfolio_flow_selection_diagnostic.py'
+      - 'smart_money_flow.py'
+      - 'smart_money_flow_research.py'
       - 'research_journal.py'
       - '.github/workflows/replay-lab-v2.yml'
   schedule:
@@ -51,11 +53,15 @@ jobs:
           assert d.get('ready') is True
           assert d.get('version',0) >= 4
           assert d.get('quality_features_version') == 1
+          assert d.get('smart_money_features_version') == 1
           don=[x for x in d.get('trades',[]) if x.get('strategy_id')=='donchian_55']
           sma=[x for x in d.get('trades',[]) if x.get('strategy_id')=='sma200_20_squeeze']
           assert don and sma
           assert all('breakout_atr' in (x.get('quality_features') or {}) for x in don[:100])
           assert all('ma_spread_pct' in (x.get('quality_features') or {}) for x in sma[:100])
+          sample=(d.get('trades') or [])[:200]
+          assert sample and all('smart_money_flow' in x for x in sample)
+          assert all('relative_volume' in (x.get('smart_money_flow') or {}) for x in sample)
           print('quality cache PASS',len(don),len(sma))
           PY
 
@@ -198,7 +204,30 @@ jobs:
           print('Flow selection PASS',d['summary']['pattern'],d['summary']['strong_minus_weak_mean_return_pp'])
           PY
 
-      - name: 9. Build human-readable AI research journal snapshot
+      - name: 9. Run fixed-threshold Smart Money Flow rolling OOS
+        run: python smart_money_flow_research.py
+      - name: Validate Smart Money Flow research
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('static/smart_money_flow_research.json').read_text(encoding='utf-8'))
+          assert d.get('ready') is True
+          assert d.get('promotion_status') == 'development_only_no_main_picker_mutation'
+          m=d.get('method') or {}
+          assert m.get('production_main_picker_mutated') is False
+          assert m.get('buy_target_stop_mutated') is False
+          assert m.get('automatic_promotion') is False
+          assert m.get('smart_money_thresholds') == {'watch_plus_gte':62.0,'strong_gte':75.0}
+          assert len(d.get('families') or []) == 3
+          for f in d['families']:
+              assert len(f.get('folds') or []) >= 3
+              assert f.get('summary',{}).get('pattern') in {'supported_development_only','mixed_positive','not_supported','insufficient'}
+              assert set((f.get('summary',{}).get('variants') or {})) == {'baseline','watch_plus','strong'}
+          print('smart money OOS PASS',[(f['id'],f['summary']['pattern'],f['summary']['best_fixed_filter']) for f in d['families']])
+          PY
+
+      - name: 10. Build human-readable AI research journal snapshot
         run: python research_journal.py
       - name: Validate research journal
         run: |
@@ -220,7 +249,7 @@ jobs:
         run: |
           git config user.name "swing-lab-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add static/replay_backtest_pool_v2.json static/strategy_optimizer_results.json static/strategy_selection_results.json static/portfolio_walkforward_results.json static/portfolio_regime_results.json static/portfolio_volatility_diagnostic.json static/portfolio_priority_audit.json static/portfolio_flow_selection_diagnostic.json static/research_journal.json
+          git add static/replay_backtest_pool_v2.json static/strategy_optimizer_results.json static/strategy_selection_results.json static/portfolio_walkforward_results.json static/portfolio_regime_results.json static/portfolio_volatility_diagnostic.json static/portfolio_priority_audit.json static/portfolio_flow_selection_diagnostic.json static/smart_money_flow_research.json static/research_journal.json
           if git diff --cached --quiet; then
             echo "No research data changes"
             exit 0
