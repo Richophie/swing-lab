@@ -49,6 +49,31 @@ def _clean_features(values: dict | None) -> dict:
     return out
 
 
+def _smart_money_flow_features(d: pd.DataFrame, i: int) -> dict:
+    """Signal-day flow features matching strategy_engine._context semantics."""
+    if i < 20 or i >= len(d):
+        return {}
+    c=d['Close'].astype(float).iloc[:i+1]
+    o=d['Open'].astype(float).iloc[:i+1]
+    v=d['Volume'].astype(float).iloc[:i+1]
+    vol20=float(v.tail(20).mean())
+    if not np.isfinite(vol20) or vol20 <= 0:
+        return {}
+    price_reversal=bool(float(c.iloc[-1]) > float(c.iloc[-2]) or float(c.iloc[-1]) > float(o.iloc[-1]))
+    down=c < c.shift(1)
+    up=c > c.shift(1)
+    down_vol=float(v.where(down).tail(10).mean()) if down.tail(10).any() else 0.0
+    up_vol=float(v.where(up).tail(10).mean()) if up.tail(10).any() else 0.0
+    up_down=(up_vol/down_vol) if down_vol > 0 else None
+    return _clean_features({
+        'relative_volume': float(v.iloc[-1]) / vol20,
+        'volume_5d_vs_20d': float(v.tail(5).mean()) / vol20,
+        'reversal_volume': float(v.iloc[-1]) / vol20 if price_reversal else 0.0,
+        'up_down_volume_ratio': up_down,
+        'avg_dollar_volume_20d': float((c*v).tail(20).mean()),
+    })
+
+
 def _path(d: pd.DataFrame, ind: dict, entry_i: int, bars: int) -> list[list]:
     out = []
     s20, s200 = ind['sma20'], ind['sma200']
@@ -94,6 +119,7 @@ def _candidate(symbol, sid, name, d, ind, i, *, stop, target, max_hold,
         'net_risk_reward': round(float(rr), 6),
         'market_state': 'strategy_only',
         'quality_features': _clean_features(quality_features),
+        'smart_money_flow': _smart_money_flow_features(d, i),
         'exit_mode': exit_mode, 'entry_mode': entry_mode, 'path': path,
     }
     if trigger is not None:
@@ -273,6 +299,7 @@ def build():
                         'elite_score': round(float(info['elite_score']), 4),
                         'net_risk_reward': round(float(info['net_risk_reward']), 6),
                     },
+                    'smart_money_flow': _smart_money_flow_features(d, int(signal_i)),
                     'exit_mode': 'price_plan', 'entry_mode': 'next_open', 'path': path,
                 })
         candidates.extend(_sma_candidates(d, ind, symbol))
@@ -285,13 +312,13 @@ def build():
         'selection_source':source,'requested_symbol_count':len(requested),'eligible_symbol_count':len(eligible),
         'available_start':min(dates) if dates else None,'available_end':max(dates) if dates else None,
         'strategies':all_strategies,'strategy_names':names,'candidate_count':len(candidates),'trade_count':len(candidates),
-        'path_bars':PATH_BARS,'larry_k':.50,'quality_features_version':1,
+        'path_bars':PATH_BARS,'larry_k':.50,'quality_features_version':1,'smart_money_features_version':1,
         'costs':{'commission_pct_per_side':BACKTEST_COMMISSION_PCT,'slippage_bps':BACKTEST_SLIPPAGE_BPS,'half_spread_bps':BACKTEST_HALF_SPREAD_BPS},
         'errors':errors,'trades':candidates,
         'limitations':[
             '현재 유동성 종목을 과거로 되감는 연구용 후보풀이라 survivorship bias가 있습니다.',
             '같은 일봉에서 목표와 손절을 모두 터치하면 보수적으로 손절 우선 처리합니다.',
-            'quality_features는 신호일 종가까지 알려진 데이터만 저장하며 미래 수익률은 포함하지 않습니다.',
+            'quality_features와 smart_money_flow는 신호일 종가까지 알려진 데이터만 저장하며 미래 수익률은 포함하지 않습니다.',
             '실험전략은 백테스트 전용이며 생산 추천에는 자동 반영되지 않습니다.',
             'Larry Williams식 변동성 돌파는 공개된 변동성 확장 아이디어를 K=0.50으로 수치화한 연구형 구현이며 저자의 전체 시스템을 그대로 복제한다고 주장하지 않습니다.',
             'Larry 연구형은 일봉 OHLC만으로 장중 순서를 알 수 없는 경우 자동 최적화 랭킹에서 제외합니다.',
