@@ -309,14 +309,14 @@ def evidence_smart_money_selection(item: dict, data: dict) -> dict:
 
 def short_summary(result: dict) -> str:
     e = result.get("evidence") or {}
+    if "fixed_filter" in e:
+        return f"Smart Money {e.get('fixed_filter')} · fold {e.get('folds_beating_baseline')}/{e.get('fold_count')} · stitched Δ {num(e.get('stitched_delta_vs_baseline_pct')):+.2f}%p"
     if "folds_beating_baseline" in e:
         return f"{e.get('folds_beating_baseline')}/{e.get('fold_count')} fold 개선 · stitched Δ {num(e.get('stitched_delta_pct')):+.2f}%p"
     if "gate_helped_folds" in e:
         return f"gate 도움 {e.get('gate_helped_folds')}/{e.get('fold_count')} · stitched Δ {num(e.get('stitched_delta_pct')):+.2f}%p"
     if "folds_beating_current" in e:
         return f"현재 priority 우위 fold {e.get('folds_beating_current')} · 평균 Δ {num(e.get('mean_delta_vs_current_pct')):+.2f}%p"
-    if "fixed_filter" in e:
-        return f"Smart Money {e.get('fixed_filter')} · fold {e.get('folds_beating_baseline')}/{e.get('fold_count')} · stitched Δ {num(e.get('stitched_delta_vs_baseline_pct')):+.2f}%p"
     if "pattern" in e:
         return f"Flow {e.get('pattern')} · strong-weak {num(e.get('strong_minus_weak_mean_return_pp')):+.2f}%p"
     return result.get("decision") or "실험 완료"
