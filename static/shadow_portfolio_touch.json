@@ -1202,6 +1202,62 @@
       "last_fx": 1374.36,
       "filled_at": "2026-09-21T18:27:41+00:00",
       "last_close_usd": 468.285004
+    },
+    {
+      "id": "PAPER-CBB75525B938",
+      "symbol": "CSX",
+      "strategy_id": "rsi2_trend_reversion",
+      "strategy_name": "RSI2 추세내 과매도",
+      "status": "PENDING",
+      "created_at": "2026-09-21T22:07:27+00:00",
+      "submitted_market_date": "2026-09-21",
+      "signal_date": "2026-09-21",
+      "buy_low": 45.86,
+      "buy_high": 46.12,
+      "target": 49.28,
+      "stop": 44.38,
+      "atr": 1.073333,
+      "gap_guard": 0.805,
+      "max_hold_bars": 5,
+      "held_bars": 0,
+      "qty": 13,
+      "planned_entry_usd": 45.99,
+      "planned_notional_krw": 821856.02,
+      "risk_budget_krw": 30024.29,
+      "planned_risk_krw": 28771.22,
+      "reserved_cash_krw": 822677.87,
+      "fx_at_submit": 1374.64,
+      "last_processed_date": "2026-09-21",
+      "commission_pct_per_side": 0.1,
+      "slippage_bps": 5.0,
+      "half_spread_bps": 2.5,
+      "live_order_sent": false,
+      "order_origin": "AUTO_CONFIRMED_CLOSE",
+      "signal_origin": "official_close_confirmed",
+      "shadow_signal_key": "2026-09-21|CSX|rsi2_trend_reversion",
+      "track_id": "B_BUY_TOUCH",
+      "entry_mode": "NEXT_SESSION_BUY_TOUCH",
+      "baseline_version": "baseline-v1.0-2026-08-13",
+      "app_version_at_signal": "16.5",
+      "core_version_at_signal": "4.4",
+      "market_state": "좋음",
+      "official_score": 87.15,
+      "raw_strategy_score": 95,
+      "official_risk_reward": 2.04,
+      "official_selection_reason": "현재 자리 95 · 수급 68 · 손익비 2.04:1 · 비용후 1.79:1",
+      "event_risk_snapshot": {
+        "risk_code": "CLEAR",
+        "risk_label": "실적까지 31일",
+        "earnings_date": "2026-10-22",
+        "days_until": 31,
+        "confidence": "confirmed",
+        "stale": false,
+        "hold_calendar_days": 8,
+        "source_day_diff": 0,
+        "checked_at": "2026-09-21T18:25:46+00:00"
+      },
+      "atr_source": "derived_from_stop_atr_multiple",
+      "risk_observability_only": true
     }
   ],
   "events": [
@@ -1556,6 +1612,14 @@
       "strategy_id": "confirmed_pullback",
       "event": "FILLED",
       "detail": "3주 · $193.8953 · 800,245원 · 1m_open_at_or_better_than_buy"
+    },
+    {
+      "at": "2026-09-21T22:07:27+00:00",
+      "order_id": "PAPER-CBB75525B938",
+      "symbol": "CSX",
+      "strategy_id": "rsi2_trend_reversion",
+      "event": "SUBMITTED",
+      "detail": "다음 거래일 BUY 구간 터치 대기 · 13주 · BUY 45.86~46.12"
     }
   ],
   "shadow_decisions": [
@@ -4787,10 +4851,83 @@
       "at": "2026-09-18T21:47:19+00:00",
       "decision": "SKIPPED",
       "reason": "가상계좌 최대 동시 포지션 수에 도달했습니다"
+    },
+    {
+      "signal_key": "2026-09-21|CSX|rsi2_trend_reversion",
+      "market_date": "2026-09-21",
+      "symbol": "CSX",
+      "strategy_id": "rsi2_trend_reversion",
+      "strategy_name": "RSI2 추세내 과매도",
+      "score": 87.15,
+      "risk_reward": 2.04,
+      "baseline_version": "baseline-v1.0-2026-08-13",
+      "track_id": "B_BUY_TOUCH",
+      "at": "2026-09-21T22:07:27+00:00",
+      "decision": "SUBMITTED",
+      "order_id": "PAPER-CBB75525B938",
+      "atr": 1.073333,
+      "atr_source": "derived_from_stop_atr_multiple",
+      "gap_guard": 0.805
+    },
+    {
+      "signal_key": "2026-09-21|ALL|rsi2_trend_reversion",
+      "market_date": "2026-09-21",
+      "symbol": "ALL",
+      "strategy_id": "rsi2_trend_reversion",
+      "strategy_name": "RSI2 추세내 과매도",
+      "score": 84.15,
+      "risk_reward": 1.68,
+      "baseline_version": "baseline-v1.0-2026-08-13",
+      "track_id": "B_BUY_TOUCH",
+      "at": "2026-09-21T22:07:27+00:00",
+      "decision": "SKIPPED",
+      "reason": "가상계좌 최대 동시 포지션 수에 도달했습니다"
+    },
+    {
+      "signal_key": "2026-09-21|CHD|confirmed_pullback",
+      "market_date": "2026-09-21",
+      "symbol": "CHD",
+      "strategy_id": "confirmed_pullback",
+      "strategy_name": "확인형 눌림반등",
+      "score": 83.65,
+      "risk_reward": 1.57,
+      "baseline_version": "baseline-v1.0-2026-08-13",
+      "track_id": "B_BUY_TOUCH",
+      "at": "2026-09-21T22:07:27+00:00",
+      "decision": "SKIPPED",
+      "reason": "가상계좌 최대 동시 포지션 수에 도달했습니다"
+    },
+    {
+      "signal_key": "2026-09-21|FITB|confirmed_pullback",
+      "market_date": "2026-09-21",
+      "symbol": "FITB",
+      "strategy_id": "confirmed_pullback",
+      "strategy_name": "확인형 눌림반등",
+      "score": 86.25,
+      "risk_reward": 1.53,
+      "baseline_version": "baseline-v1.0-2026-08-13",
+      "track_id": "B_BUY_TOUCH",
+      "at": "2026-09-21T22:07:27+00:00",
+      "decision": "SKIPPED",
+      "reason": "가상계좌 최대 동시 포지션 수에 도달했습니다"
+    },
+    {
+      "signal_key": "2026-09-21|UNH|confirmed_pullback",
+      "market_date": "2026-09-21",
+      "symbol": "UNH",
+      "strategy_id": "confirmed_pullback",
+      "strategy_name": "확인형 눌림반등",
+      "score": 82.85,
+      "risk_reward": 1.3,
+      "baseline_version": "baseline-v1.0-2026-08-13",
+      "track_id": "B_BUY_TOUCH",
+      "at": "2026-09-21T22:07:27+00:00",
+      "decision": "SKIPPED",
+      "reason": "가상계좌 최대 동시 포지션 수에 도달했습니다"
     }
   ],
   "created_at": "2026-08-13T11:20:00+00:00",
-  "updated_at": "2026-09-21T18:27:42+00:00",
+  "updated_at": "2026-09-21T22:07:27+00:00",
   "live_trading_enabled": false,
   "lab_meta": {
     "version": 2,
@@ -4847,10 +4984,10 @@
         "formal_review_target_closed_trades": 50
       }
     },
-    "last_run_at": "2026-09-21T18:27:42+00:00",
+    "last_run_at": "2026-09-21T22:07:27+00:00",
     "last_ingest": {
-      "submitted": 0,
-      "skipped": 0
+      "submitted": 1,
+      "skipped": 4
     }
   }
 }
