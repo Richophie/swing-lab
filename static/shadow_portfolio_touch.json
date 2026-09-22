@@ -1280,6 +1280,62 @@
       "last_fx": 1358.52,
       "filled_at": "2026-09-22T17:30:51+00:00",
       "last_close_usd": 46.294998
+    },
+    {
+      "id": "PAPER-2F3556FA0103",
+      "symbol": "ALL",
+      "strategy_id": "rsi2_trend_reversion",
+      "strategy_name": "RSI2 추세내 과매도",
+      "status": "PENDING",
+      "created_at": "2026-09-22T20:27:41+00:00",
+      "submitted_market_date": "2026-09-22",
+      "signal_date": "2026-09-22",
+      "buy_low": 228.77,
+      "buy_high": 230.23,
+      "target": 254.64,
+      "stop": 220.4,
+      "atr": 6.066667,
+      "gap_guard": 4.55,
+      "max_hold_bars": 5,
+      "held_bars": 0,
+      "qty": 2,
+      "planned_entry_usd": 229.5,
+      "planned_notional_krw": 621582.39,
+      "risk_budget_krw": 29623.0,
+      "planned_risk_krw": 24646.62,
+      "reserved_cash_krw": 622203.97,
+      "fx_at_submit": 1354.21,
+      "last_processed_date": "2026-09-22",
+      "commission_pct_per_side": 0.1,
+      "slippage_bps": 5.0,
+      "half_spread_bps": 2.5,
+      "live_order_sent": false,
+      "order_origin": "AUTO_CONFIRMED_CLOSE",
+      "signal_origin": "official_close_confirmed",
+      "shadow_signal_key": "2026-09-22|ALL|rsi2_trend_reversion",
+      "track_id": "B_BUY_TOUCH",
+      "entry_mode": "NEXT_SESSION_BUY_TOUCH",
+      "baseline_version": "baseline-v1.0-2026-08-13",
+      "app_version_at_signal": "16.5",
+      "core_version_at_signal": "4.4",
+      "market_state": "좋음",
+      "official_score": 83.25,
+      "raw_strategy_score": 95,
+      "official_risk_reward": 2.76,
+      "official_selection_reason": "현재 자리 95 · 수급 42 · 손익비 2.76:1 · 비용후 2.48:1",
+      "event_risk_snapshot": {
+        "risk_code": "CLEAR",
+        "risk_label": "실적까지 43일",
+        "earnings_date": "2026-11-04",
+        "days_until": 43,
+        "confidence": "confirmed",
+        "stale": false,
+        "hold_calendar_days": 8,
+        "source_day_diff": 0,
+        "checked_at": "2026-09-22T20:26:07+00:00"
+      },
+      "atr_source": "derived_from_stop_atr_multiple",
+      "risk_observability_only": true
     }
   ],
   "events": [
@@ -1658,6 +1714,14 @@
       "strategy_id": "confirmed_pullback",
       "event": "CLOSED",
       "detail": "손절 · -4.101% · -32,817원"
+    },
+    {
+      "at": "2026-09-22T20:27:41+00:00",
+      "order_id": "PAPER-2F3556FA0103",
+      "symbol": "ALL",
+      "strategy_id": "rsi2_trend_reversion",
+      "event": "SUBMITTED",
+      "detail": "다음 거래일 BUY 구간 터치 대기 · 2주 · BUY 228.77~230.23"
     }
   ],
   "shadow_decisions": [
@@ -5074,10 +5138,97 @@
       "at": "2026-09-22T01:00:47+00:00",
       "decision": "SKIPPED",
       "reason": "가상계좌 최대 동시 포지션 수에 도달했습니다"
+    },
+    {
+      "signal_key": "2026-09-22|MCO|confirmed_pullback",
+      "market_date": "2026-09-22",
+      "symbol": "MCO",
+      "strategy_id": "confirmed_pullback",
+      "strategy_name": "확인형 눌림반등",
+      "score": 90.65,
+      "risk_reward": 3.23,
+      "baseline_version": "baseline-v1.0-2026-08-13",
+      "track_id": "B_BUY_TOUCH",
+      "at": "2026-09-22T20:27:41+00:00",
+      "decision": "SKIPPED",
+      "reason": "같은 종목·전략의 가상 주문이 이미 진행 중입니다"
+    },
+    {
+      "signal_key": "2026-09-22|ALL|rsi2_trend_reversion",
+      "market_date": "2026-09-22",
+      "symbol": "ALL",
+      "strategy_id": "rsi2_trend_reversion",
+      "strategy_name": "RSI2 추세내 과매도",
+      "score": 83.25,
+      "risk_reward": 2.76,
+      "baseline_version": "baseline-v1.0-2026-08-13",
+      "track_id": "B_BUY_TOUCH",
+      "at": "2026-09-22T20:27:41+00:00",
+      "decision": "SUBMITTED",
+      "order_id": "PAPER-2F3556FA0103",
+      "atr": 6.066667,
+      "atr_source": "derived_from_stop_atr_multiple",
+      "gap_guard": 4.55
+    },
+    {
+      "signal_key": "2026-09-22|VZ|rsi2_trend_reversion",
+      "market_date": "2026-09-22",
+      "symbol": "VZ",
+      "strategy_id": "rsi2_trend_reversion",
+      "strategy_name": "RSI2 추세내 과매도",
+      "score": 84.85,
+      "risk_reward": 2.05,
+      "baseline_version": "baseline-v1.0-2026-08-13",
+      "track_id": "B_BUY_TOUCH",
+      "at": "2026-09-22T20:27:41+00:00",
+      "decision": "SKIPPED",
+      "reason": "가상계좌 최대 동시 포지션 수에 도달했습니다"
+    },
+    {
+      "signal_key": "2026-09-22|WTW|rsi2_trend_reversion",
+      "market_date": "2026-09-22",
+      "symbol": "WTW",
+      "strategy_id": "rsi2_trend_reversion",
+      "strategy_name": "RSI2 추세내 과매도",
+      "score": 84.85,
+      "risk_reward": 2.05,
+      "baseline_version": "baseline-v1.0-2026-08-13",
+      "track_id": "B_BUY_TOUCH",
+      "at": "2026-09-22T20:27:41+00:00",
+      "decision": "SKIPPED",
+      "reason": "가상계좌 최대 동시 포지션 수에 도달했습니다"
+    },
+    {
+      "signal_key": "2026-09-22|AMP|rsi2_trend_reversion",
+      "market_date": "2026-09-22",
+      "symbol": "AMP",
+      "strategy_id": "rsi2_trend_reversion",
+      "strategy_name": "RSI2 추세내 과매도",
+      "score": 79.35,
+      "risk_reward": 1.74,
+      "baseline_version": "baseline-v1.0-2026-08-13",
+      "track_id": "B_BUY_TOUCH",
+      "at": "2026-09-22T20:27:41+00:00",
+      "decision": "SKIPPED",
+      "reason": "가상계좌 최대 동시 포지션 수에 도달했습니다"
+    },
+    {
+      "signal_key": "2026-09-22|OXY|rsi2_trend_reversion",
+      "market_date": "2026-09-22",
+      "symbol": "OXY",
+      "strategy_id": "rsi2_trend_reversion",
+      "strategy_name": "RSI2 추세내 과매도",
+      "score": 82.25,
+      "risk_reward": 1.53,
+      "baseline_version": "baseline-v1.0-2026-08-13",
+      "track_id": "B_BUY_TOUCH",
+      "at": "2026-09-22T20:27:41+00:00",
+      "decision": "SKIPPED",
+      "reason": "가상계좌 최대 동시 포지션 수에 도달했습니다"
     }
   ],
   "created_at": "2026-08-13T11:20:00+00:00",
-  "updated_at": "2026-09-22T17:30:52+00:00",
+  "updated_at": "2026-09-22T20:27:41+00:00",
   "live_trading_enabled": false,
   "lab_meta": {
     "version": 2,
@@ -5134,10 +5285,10 @@
         "formal_review_target_closed_trades": 50
       }
     },
-    "last_run_at": "2026-09-22T17:30:52+00:00",
+    "last_run_at": "2026-09-22T20:27:41+00:00",
     "last_ingest": {
-      "submitted": 0,
-      "skipped": 0
+      "submitted": 1,
+      "skipped": 5
     }
   }
 }

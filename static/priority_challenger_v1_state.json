@@ -8,7 +8,42 @@
   "production_mutation_enabled": false,
   "starting_cash_krw": 3000000.0,
   "cash_krw": 798457.46,
-  "pending": [],
+  "pending": [
+    {
+      "strategy_id": "donchian_55",
+      "strategy_name": "Donchian 55일 돌파",
+      "signal_date": "2026-09-22",
+      "signal_close": 623.77002,
+      "buy_low": 619.178511,
+      "buy_high": 628.361528,
+      "atr": 25.508381,
+      "stop": 572.753257,
+      "target": null,
+      "max_hold": 40,
+      "exit_mode": "donchian20_close",
+      "elite_score": 78.0,
+      "net_risk_reward": 2.0,
+      "market_state": "strategy_only",
+      "quality_features": {
+        "breakout_atr": 0.27755650071043286,
+        "volume_ratio": 1.3553906908056665,
+        "close_position": 0.9588082276274504,
+        "body_atr": 0.6744848603501908,
+        "sma200_slope_20d_pct": 0.08389203009358726,
+        "distance_sma200_pct": 0.7391857653301597,
+        "atr_pct": 0.040893888189782415
+      },
+      "symbol": "AMD",
+      "quality_score": 51.347357,
+      "quality_percentile": 0.810118,
+      "current_priority": 2.0,
+      "current_priority_percentile": 0.5,
+      "challenger_priority": 0.655059,
+      "passes_frozen_quality": true,
+      "signal_key": "2026-09-22|AMD|donchian_55",
+      "recorded_at": "2026-09-22T20:26:58+00:00"
+    }
+  ],
   "positions": [
     {
       "strategy_id": "donchian_55",
@@ -50,10 +85,10 @@
       "entry_fill_usd": 514.165364,
       "notional_krw": 255430.9,
       "risk_fraction": 0.113107,
-      "held_bars": 11,
-      "last_close_processed": "2026-09-21",
+      "held_bars": 12,
+      "last_close_processed": "2026-09-22",
       "opened_at": "2026-09-04T16:42:39+00:00",
-      "last_close_usd": 555.005005
+      "last_close_usd": 548.919983
     },
     {
       "strategy_id": "donchian_55",
@@ -95,10 +130,10 @@
       "entry_fill_usd": 232.946582,
       "notional_krw": 236029.48,
       "risk_fraction": 0.120067,
-      "held_bars": 5,
-      "last_close_processed": "2026-09-21",
+      "held_bars": 6,
+      "last_close_processed": "2026-09-22",
       "opened_at": "2026-09-15T17:27:49+00:00",
-      "last_close_usd": 249.089996
+      "last_close_usd": 250.059998
     },
     {
       "strategy_id": "sma200_20_squeeze",
@@ -140,10 +175,10 @@
       "entry_fill_usd": 343.412365,
       "notional_krw": 972652.28,
       "risk_fraction": 0.025504,
-      "held_bars": 5,
-      "last_close_processed": "2026-09-21",
+      "held_bars": 6,
+      "last_close_processed": "2026-09-22",
       "opened_at": "2026-09-15T17:27:49+00:00",
-      "last_close_usd": 347.820007
+      "last_close_usd": 347.410004
     },
     {
       "strategy_id": "confirmed_pullback",
@@ -177,10 +212,10 @@
       "entry_fill_usd": 1047.92537,
       "notional_krw": 486132.63,
       "risk_fraction": 0.029072,
-      "held_bars": 2,
-      "last_close_processed": "2026-09-21",
+      "held_bars": 3,
+      "last_close_processed": "2026-09-22",
       "opened_at": "2026-09-18T16:53:57+00:00",
-      "last_close_usd": 1073.045044
+      "last_close_usd": 1066.660034
     }
   ],
   "closed": [
@@ -1792,6 +1827,30 @@
       "date": "2026-09-22",
       "reason": "손절 · 갭",
       "pnl_krw": -37013.81
+    },
+    {
+      "at": "2026-09-22T20:26:58+00:00",
+      "decision": "PENDING_NEXT_OPEN",
+      "signal_key": "2026-09-22|AMD|donchian_55",
+      "signal_date": "2026-09-22",
+      "symbol": "AMD",
+      "strategy_id": "donchian_55",
+      "quality_percentile": 0.810118,
+      "current_priority_percentile": 0.5,
+      "challenger_priority": 0.655059,
+      "passes_frozen_quality": true
+    },
+    {
+      "at": "2026-09-22T20:26:58+00:00",
+      "decision": "REJECT_FROZEN_QUALITY",
+      "signal_key": "2026-09-22|MRVL|donchian_55",
+      "signal_date": "2026-09-22",
+      "symbol": "MRVL",
+      "strategy_id": "donchian_55",
+      "quality_percentile": 0.419938,
+      "current_priority_percentile": 0.5,
+      "challenger_priority": 0.459969,
+      "passes_frozen_quality": false
     }
   ],
   "seen_signal_keys": [
@@ -1851,18 +1910,20 @@
     "2026-09-18|UNH|confirmed_pullback",
     "2026-09-21|AMD|donchian_55",
     "2026-09-21|META|donchian_55",
-    "2026-09-21|UNH|confirmed_pullback"
+    "2026-09-21|UNH|confirmed_pullback",
+    "2026-09-22|AMD|donchian_55",
+    "2026-09-22|MRVL|donchian_55"
   ],
   "last_candidates": [
     {
       "strategy_id": "donchian_55",
       "strategy_name": "Donchian 55일 돌파",
-      "signal_date": "2026-09-21",
-      "signal_close": 615.52002,
-      "buy_low": 610.925779,
-      "buy_high": 620.11426,
-      "atr": 25.52356,
-      "stop": 564.4729,
+      "signal_date": "2026-09-22",
+      "signal_close": 623.77002,
+      "buy_low": 619.178511,
+      "buy_high": 628.361528,
+      "atr": 25.508381,
+      "stop": 572.753257,
       "target": null,
       "max_hold": 40,
       "exit_mode": "donchian20_close",
@@ -1870,32 +1931,32 @@
       "net_risk_reward": 2.0,
       "market_state": "strategy_only",
       "quality_features": {
-        "breakout_atr": 1.618896737752823,
-        "volume_ratio": 2.322561081336593,
-        "close_position": 0.9660086144374282,
-        "body_atr": 1.239639579317898,
-        "sma200_slope_20d_pct": 0.08113134769142105,
-        "distance_sma200_pct": 0.7259562725842597,
-        "atr_pct": 0.041466660320406794
+        "breakout_atr": 0.27755650071043286,
+        "volume_ratio": 1.3553906908056665,
+        "close_position": 0.9588082276274504,
+        "body_atr": 0.6744848603501908,
+        "sma200_slope_20d_pct": 0.08389203009358726,
+        "distance_sma200_pct": 0.7391857653301597,
+        "atr_pct": 0.040893888189782415
       },
       "symbol": "AMD",
-      "quality_score": 90.145967,
-      "quality_percentile": 0.998283,
+      "quality_score": 51.347357,
+      "quality_percentile": 0.810118,
       "current_priority": 2.0,
       "current_priority_percentile": 0.5,
-      "challenger_priority": 0.749142,
+      "challenger_priority": 0.655059,
       "passes_frozen_quality": true,
-      "signal_key": "2026-09-21|AMD|donchian_55"
+      "signal_key": "2026-09-22|AMD|donchian_55"
     },
     {
       "strategy_id": "donchian_55",
       "strategy_name": "Donchian 55일 돌파",
-      "signal_date": "2026-09-21",
-      "signal_close": 741.25,
-      "buy_low": 736.328928,
-      "buy_high": 746.171072,
-      "atr": 27.33929,
-      "stop": 686.57142,
+      "signal_date": "2026-09-22",
+      "signal_close": 262.359985,
+      "buy_low": 260.019086,
+      "buy_high": 264.700885,
+      "atr": 13.004997,
+      "stop": 236.349991,
       "target": null,
       "max_hold": 40,
       "exit_mode": "donchian20_close",
@@ -1903,47 +1964,22 @@
       "net_risk_reward": 2.0,
       "market_state": "strategy_only",
       "quality_features": {
-        "breakout_atr": 1.8691039689668771,
-        "volume_ratio": 2.6004720411832776,
-        "close_position": 0.8399183093766267,
-        "body_atr": 2.2293926448781427,
-        "sma200_slope_20d_pct": 0.0008027990097594362,
-        "distance_sma200_pct": 0.18670395707523202,
-        "atr_pct": 0.03688268475405023
+        "breakout_atr": 0.09073378892649321,
+        "volume_ratio": 0.8634903704645075,
+        "close_position": 0.6966654459635416,
+        "body_atr": 0.5467117918609214,
+        "sma200_slope_20d_pct": 0.09788118099656629,
+        "distance_sma200_pct": 0.6392545439635882,
+        "atr_pct": 0.04956928639857662
       },
-      "symbol": "META",
-      "quality_score": 75.273101,
-      "quality_percentile": 0.96944,
+      "symbol": "MRVL",
+      "quality_score": 31.570067,
+      "quality_percentile": 0.419938,
       "current_priority": 2.0,
       "current_priority_percentile": 0.5,
-      "challenger_priority": 0.73472,
-      "passes_frozen_quality": true,
-      "signal_key": "2026-09-21|META|donchian_55"
-    },
-    {
-      "strategy_id": "confirmed_pullback",
-      "strategy_name": "확인형 눌림반등",
-      "signal_date": "2026-09-21",
-      "signal_close": 377.559998,
-      "buy_low": 384.853613,
-      "buy_high": 388.884471,
-      "atr": 10.077144,
-      "stop": 371.753326,
-      "target": 406.529999,
-      "max_hold": 8,
-      "exit_mode": "price_plan",
-      "elite_score": 86.015667,
-      "net_risk_reward": 1.1298,
-      "market_state": "좋음",
-      "quality_features": {},
-      "symbol": "UNH",
-      "quality_score": 53.263234,
-      "quality_percentile": 0.129707,
-      "current_priority": 1.1298,
-      "current_priority_percentile": 0.016736,
-      "challenger_priority": 0.073222,
+      "challenger_priority": 0.459969,
       "passes_frozen_quality": false,
-      "signal_key": "2026-09-21|UNH|confirmed_pullback"
+      "signal_key": "2026-09-22|MRVL|donchian_55"
     }
   ],
   "errors": [],
@@ -1966,14 +2002,14 @@
     "last_market_state": "좋음",
     "last_completed_signal_date": "2026-09-22"
   },
-  "updated_at": "2026-09-22T17:30:07+00:00",
+  "updated_at": "2026-09-22T20:26:58+00:00",
   "summary": {
     "cash_krw": 798457.46,
-    "equity_krw": 2803961.99,
-    "return_pct": -6.535,
+    "equity_krw": 2797815.53,
+    "return_pct": -6.739,
     "realized_pnl_krw": -251297.25,
-    "unrealized_pnl_krw": 55259.24,
-    "pending": 0,
+    "unrealized_pnl_krw": 49112.78,
+    "pending": 1,
     "open_positions": 4,
     "closed_trades": 9,
     "win_rate_pct": 0.0,
