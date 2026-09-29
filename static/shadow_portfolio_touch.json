@@ -1357,6 +1357,62 @@
       "last_fx": 1354.16,
       "filled_at": "2026-09-23T17:41:03+00:00",
       "last_close_usd": 224.679993
+    },
+    {
+      "id": "PAPER-357DEAB2899A",
+      "symbol": "DASH",
+      "strategy_id": "confirmed_pullback",
+      "strategy_name": "확인형 눌림반등",
+      "status": "PENDING",
+      "created_at": "2026-09-29T22:31:18+00:00",
+      "submitted_market_date": "2026-09-29",
+      "signal_date": "2026-09-29",
+      "buy_low": 183.7,
+      "buy_high": 186.71,
+      "target": 232.87,
+      "stop": 173.9,
+      "atr": 7.536667,
+      "gap_guard": 5.6525,
+      "max_hold_bars": 8,
+      "held_bars": 0,
+      "qty": 1,
+      "planned_entry_usd": 185.205,
+      "planned_notional_krw": 250600.89,
+      "risk_budget_krw": 29248.44,
+      "planned_risk_krw": 15296.8,
+      "reserved_cash_krw": 250851.49,
+      "fx_at_submit": 1353.1,
+      "last_processed_date": "2026-09-29",
+      "commission_pct_per_side": 0.1,
+      "slippage_bps": 5.0,
+      "half_spread_bps": 2.5,
+      "live_order_sent": false,
+      "order_origin": "AUTO_CONFIRMED_CLOSE",
+      "signal_origin": "official_close_confirmed",
+      "shadow_signal_key": "2026-09-29|DASH|confirmed_pullback",
+      "track_id": "B_BUY_TOUCH",
+      "entry_mode": "NEXT_SESSION_BUY_TOUCH",
+      "baseline_version": "baseline-v1.0-2026-08-13",
+      "app_version_at_signal": "16.5",
+      "core_version_at_signal": "4.4",
+      "market_state": "좋음",
+      "official_score": 89.75,
+      "raw_strategy_score": 91.0,
+      "official_risk_reward": 4.22,
+      "official_selection_reason": "현재 자리 91 · 수급 80 · 손익비 4.22:1 · 비용후 3.95:1",
+      "event_risk_snapshot": {
+        "risk_code": "CLEAR",
+        "risk_label": "실적까지 36일",
+        "earnings_date": "2026-11-04",
+        "days_until": 36,
+        "confidence": "confirmed",
+        "stale": false,
+        "hold_calendar_days": 13,
+        "source_day_diff": 0,
+        "checked_at": "2026-09-29T22:29:57+00:00"
+      },
+      "atr_source": "derived_from_stop_atr_multiple",
+      "risk_observability_only": true
     }
   ],
   "events": [
@@ -1759,6 +1815,14 @@
       "strategy_id": "rsi2_trend_reversion",
       "event": "CLOSED",
       "detail": "기간종료 · +0.819% · +6,170원"
+    },
+    {
+      "at": "2026-09-29T22:31:18+00:00",
+      "order_id": "PAPER-357DEAB2899A",
+      "symbol": "DASH",
+      "strategy_id": "confirmed_pullback",
+      "event": "SUBMITTED",
+      "detail": "다음 거래일 BUY 구간 터치 대기 · 1주 · BUY 183.70~186.71"
     }
   ],
   "shadow_decisions": [
@@ -5514,10 +5578,97 @@
       "at": "2026-09-29T00:14:41+00:00",
       "decision": "SKIPPED",
       "reason": "가상계좌 최대 동시 포지션 수에 도달했습니다"
+    },
+    {
+      "signal_key": "2026-09-29|DASH|confirmed_pullback",
+      "market_date": "2026-09-29",
+      "symbol": "DASH",
+      "strategy_id": "confirmed_pullback",
+      "strategy_name": "확인형 눌림반등",
+      "score": 89.75,
+      "risk_reward": 4.22,
+      "baseline_version": "baseline-v1.0-2026-08-13",
+      "track_id": "B_BUY_TOUCH",
+      "at": "2026-09-29T22:31:18+00:00",
+      "decision": "SUBMITTED",
+      "order_id": "PAPER-357DEAB2899A",
+      "atr": 7.536667,
+      "atr_source": "derived_from_stop_atr_multiple",
+      "gap_guard": 5.6525
+    },
+    {
+      "signal_key": "2026-09-29|MT|rsi2_trend_reversion",
+      "market_date": "2026-09-29",
+      "symbol": "MT",
+      "strategy_id": "rsi2_trend_reversion",
+      "strategy_name": "RSI2 추세내 과매도",
+      "score": 86.45,
+      "risk_reward": 1.85,
+      "baseline_version": "baseline-v1.0-2026-08-13",
+      "track_id": "B_BUY_TOUCH",
+      "at": "2026-09-29T22:31:18+00:00",
+      "decision": "SKIPPED",
+      "reason": "가상계좌 최대 동시 포지션 수에 도달했습니다"
+    },
+    {
+      "signal_key": "2026-09-29|NTR|rsi2_trend_reversion",
+      "market_date": "2026-09-29",
+      "symbol": "NTR",
+      "strategy_id": "rsi2_trend_reversion",
+      "strategy_name": "RSI2 추세내 과매도",
+      "score": 83.05,
+      "risk_reward": 1.78,
+      "baseline_version": "baseline-v1.0-2026-08-13",
+      "track_id": "B_BUY_TOUCH",
+      "at": "2026-09-29T22:31:18+00:00",
+      "decision": "SKIPPED",
+      "reason": "가상계좌 최대 동시 포지션 수에 도달했습니다"
+    },
+    {
+      "signal_key": "2026-09-29|REGN|rsi2_trend_reversion",
+      "market_date": "2026-09-29",
+      "symbol": "REGN",
+      "strategy_id": "rsi2_trend_reversion",
+      "strategy_name": "RSI2 추세내 과매도",
+      "score": 86.65,
+      "risk_reward": 1.63,
+      "baseline_version": "baseline-v1.0-2026-08-13",
+      "track_id": "B_BUY_TOUCH",
+      "at": "2026-09-29T22:31:18+00:00",
+      "decision": "SKIPPED",
+      "reason": "가상계좌 최대 동시 포지션 수에 도달했습니다"
+    },
+    {
+      "signal_key": "2026-09-29|ADM|rsi2_trend_reversion",
+      "market_date": "2026-09-29",
+      "symbol": "ADM",
+      "strategy_id": "rsi2_trend_reversion",
+      "strategy_name": "RSI2 추세내 과매도",
+      "score": 86.35,
+      "risk_reward": 1.42,
+      "baseline_version": "baseline-v1.0-2026-08-13",
+      "track_id": "B_BUY_TOUCH",
+      "at": "2026-09-29T22:31:18+00:00",
+      "decision": "SKIPPED",
+      "reason": "가상계좌 최대 동시 포지션 수에 도달했습니다"
+    },
+    {
+      "signal_key": "2026-09-29|TRGP|rsi2_trend_reversion",
+      "market_date": "2026-09-29",
+      "symbol": "TRGP",
+      "strategy_id": "rsi2_trend_reversion",
+      "strategy_name": "RSI2 추세내 과매도",
+      "score": 86.05,
+      "risk_reward": 1.23,
+      "baseline_version": "baseline-v1.0-2026-08-13",
+      "track_id": "B_BUY_TOUCH",
+      "at": "2026-09-29T22:31:18+00:00",
+      "decision": "SKIPPED",
+      "reason": "가상계좌 최대 동시 포지션 수에 도달했습니다"
     }
   ],
   "created_at": "2026-08-13T11:20:00+00:00",
-  "updated_at": "2026-09-29T18:27:08+00:00",
+  "updated_at": "2026-09-29T22:31:18+00:00",
   "live_trading_enabled": false,
   "lab_meta": {
     "version": 2,
@@ -5574,10 +5725,10 @@
         "formal_review_target_closed_trades": 50
       }
     },
-    "last_run_at": "2026-09-29T18:27:08+00:00",
+    "last_run_at": "2026-09-29T22:31:18+00:00",
     "last_ingest": {
-      "submitted": 0,
-      "skipped": 0
+      "submitted": 1,
+      "skipped": 5
     }
   }
 }
