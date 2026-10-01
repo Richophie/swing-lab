@@ -1,7 +1,7 @@
 {
   "version": 1,
   "starting_cash_krw": 3000000.0,
-  "cash_krw": 2010942.3,
+  "cash_krw": 2935101.47,
   "orders": [
     {
       "id": "PAPER-56B72AC20AF2",
@@ -1070,7 +1070,7 @@
       "symbol": "FWONK",
       "strategy_id": "confirmed_pullback",
       "strategy_name": "확인형 눌림반등",
-      "status": "FILLED",
+      "status": "CLOSED",
       "created_at": "2026-09-18T21:47:19+00:00",
       "submitted_market_date": "2026-09-18",
       "signal_date": "2026-09-18",
@@ -1089,7 +1089,7 @@
       "planned_risk_krw": 25051.05,
       "reserved_cash_krw": 0.0,
       "fx_at_submit": 1385.95,
-      "last_processed_date": "2026-09-30",
+      "last_processed_date": "2026-10-01",
       "commission_pct_per_side": 0.1,
       "slippage_bps": 5.0,
       "half_spread_bps": 2.5,
@@ -1128,16 +1128,27 @@
       "entry_commission_krw": 525.67,
       "entry_cost_krw": 526200.04,
       "fx_at_entry": 1374.36,
-      "last_fx": 1355.39,
+      "last_fx": 1359.4,
       "filled_at": "2026-09-21T18:27:40+00:00",
-      "last_close_usd": 92.419998
+      "last_close_usd": 90.312215,
+      "exit_resolution_quality": "1m_first_touch",
+      "exit_timestamp": "2026-10-01T11:03:00-04:00",
+      "exit_date": "2026-10-01",
+      "exit_fill_usd": 90.312215,
+      "exit_raw_trigger_usd": 90.38,
+      "exit_reason": "손절",
+      "exit_commission_krw": 491.08,
+      "exit_proceeds_krw": 490590.62,
+      "pnl_krw": -35609.42,
+      "return_pct": -6.767,
+      "closed_at": "2026-10-01T18:41:28+00:00"
     },
     {
       "id": "PAPER-C6FE969526FB",
       "symbol": "ABNB",
       "strategy_id": "rsi2_trend_reversion",
       "strategy_name": "RSI2 추세내 과매도",
-      "status": "FILLED",
+      "status": "CLOSED",
       "created_at": "2026-09-23T20:59:16+00:00",
       "submitted_market_date": "2026-09-23",
       "signal_date": "2026-09-23",
@@ -1148,7 +1159,7 @@
       "atr": 5.346667,
       "gap_guard": 4.01,
       "max_hold_bars": 5,
-      "held_bars": 4,
+      "held_bars": 5,
       "qty": 2,
       "planned_entry_usd": 149.58,
       "planned_notional_krw": 408568.8,
@@ -1156,7 +1167,7 @@
       "planned_risk_krw": 21906.15,
       "reserved_cash_krw": 0.0,
       "fx_at_submit": 1365.72,
-      "last_processed_date": "2026-09-30",
+      "last_processed_date": "2026-10-01",
       "commission_pct_per_side": 0.1,
       "slippage_bps": 5.0,
       "half_spread_bps": 2.5,
@@ -1195,16 +1206,26 @@
       "entry_commission_krw": 412.37,
       "entry_cost_krw": 412777.39,
       "fx_at_entry": 1367.14,
-      "last_fx": 1355.39,
+      "last_fx": 1359.4,
       "filled_at": "2026-09-24T17:44:01+00:00",
-      "last_close_usd": 161.074997
+      "last_close_usd": 159.630188,
+      "exit_resolution_quality": "time_exit_close",
+      "exit_date": "2026-10-01",
+      "exit_fill_usd": 159.630188,
+      "exit_raw_trigger_usd": 159.75,
+      "exit_reason": "기간종료",
+      "exit_commission_krw": 434.0,
+      "exit_proceeds_krw": 433568.55,
+      "pnl_krw": 20791.16,
+      "return_pct": 5.037,
+      "closed_at": "2026-10-01T18:41:28+00:00"
     },
     {
       "id": "PAPER-CF420F39A430",
       "symbol": "MT",
       "strategy_id": "rsi2_trend_reversion",
       "strategy_name": "RSI2 추세내 과매도",
-      "status": "PENDING",
+      "status": "CANCELLED",
       "created_at": "2026-09-30T22:29:18+00:00",
       "submitted_market_date": "2026-09-30",
       "signal_date": "2026-09-30",
@@ -1221,9 +1242,9 @@
       "planned_notional_krw": 633748.36,
       "risk_budget_krw": 29486.42,
       "planned_risk_krw": 28012.55,
-      "reserved_cash_krw": 634382.11,
+      "reserved_cash_krw": 0.0,
       "fx_at_submit": 1356.54,
-      "last_processed_date": "2026-09-30",
+      "last_processed_date": "2026-10-01",
       "commission_pct_per_side": 0.1,
       "slippage_bps": 5.0,
       "half_spread_bps": 2.5,
@@ -1253,7 +1274,10 @@
         "checked_at": "2026-09-30T18:14:36+00:00"
       },
       "atr_source": "derived_from_stop_atr_multiple",
-      "risk_observability_only": true
+      "risk_observability_only": true,
+      "cancel_date": "2026-10-01",
+      "cancel_reason": "다음 시가 64.38가 허용 진입범위 65.03~68.45 이탈",
+      "closed_at": "2026-10-01T18:41:28+00:00"
     }
   ],
   "events": [
@@ -1624,6 +1648,30 @@
       "strategy_id": "rsi2_trend_reversion",
       "event": "SUBMITTED",
       "detail": "다음 거래일 시가 대기 · 7주 · BUY 66.50~66.98"
+    },
+    {
+      "at": "2026-10-01T18:41:28+00:00",
+      "order_id": "PAPER-C6FE969526FB",
+      "symbol": "ABNB",
+      "strategy_id": "rsi2_trend_reversion",
+      "event": "CLOSED",
+      "detail": "기간종료 · +5.037% · +20,791원"
+    },
+    {
+      "at": "2026-10-01T18:41:28+00:00",
+      "order_id": "PAPER-D8044AF2A718",
+      "symbol": "FWONK",
+      "strategy_id": "confirmed_pullback",
+      "event": "CLOSED",
+      "detail": "손절 · -6.767% · -35,609원"
+    },
+    {
+      "at": "2026-10-01T18:41:28+00:00",
+      "order_id": "PAPER-CF420F39A430",
+      "symbol": "MT",
+      "strategy_id": "rsi2_trend_reversion",
+      "event": "CANCELLED",
+      "detail": "다음 시가 64.38가 허용 진입범위 65.03~68.45 이탈"
     }
   ],
   "shadow_decisions": [
@@ -5656,7 +5704,7 @@
     }
   ],
   "created_at": "2026-08-13T10:30:00+00:00",
-  "updated_at": "2026-10-01T01:26:53+00:00",
+  "updated_at": "2026-10-01T18:41:28+00:00",
   "live_trading_enabled": false,
   "lab_meta": {
     "version": 2,
@@ -5665,10 +5713,10 @@
     "allocator": "risk_reward_priority",
     "human_intervention": false,
     "live_trading_enabled": false,
-    "last_run_at": "2026-10-01T01:26:53+00:00",
+    "last_run_at": "2026-10-01T18:41:28+00:00",
     "last_ingest": {
       "submitted": 0,
-      "skipped": 4
+      "skipped": 0
     },
     "track_id": "A_NEXT_OPEN",
     "track_label": "A · 다음 시가형",
