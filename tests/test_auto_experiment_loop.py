@@ -113,6 +113,14 @@ def fake_sources():
                     },
                 },
             },
+            "folds": [
+                {"variants": {"baseline": {"return_pct": 1.0}, "strong": {"return_pct": 3.0}}},
+                {"variants": {"baseline": {"return_pct": 0.5}, "strong": {"return_pct": 2.5}}},
+                {"variants": {"baseline": {"return_pct": 1.5}, "strong": {"return_pct": 3.5}}},
+                {"variants": {"baseline": {"return_pct": 0.0}, "strong": {"return_pct": 2.0}}},
+                {"variants": {"baseline": {"return_pct": 1.0}, "strong": {"return_pct": 2.8}}},
+                {"variants": {"baseline": {"return_pct": 0.5}, "strong": {"return_pct": 2.2}}},
+            ],
         }],
     }
     return wf, regime, vol, priority, flow, smart
@@ -174,6 +182,44 @@ def test_evidence_decisions():
     }
     weak = evidence_priority_ranker({**base, "params": {"ranker": "hybrid_50"}}, weak_priority)
     assert weak["status"] == "WATCH"
+
+
+    concentrated = {
+        "families": [{
+            "id": "f1",
+            "summary": {
+                "pattern": "supported_development_only",
+                "best_fixed_filter": "strong",
+                "variants": {
+                    "strong": {
+                        "fold_count": 6,
+                        "folds_beating_baseline": 4,
+                        "mean_delta_return_vs_baseline_pct": 7.6,
+                        "stitched_delta_vs_baseline_pct": 47.0,
+                        "worst_mdd_delta_vs_baseline_pct": -2.0,
+                        "total_test_trades": 235,
+                        "stitched_test_return_pct": 35.0,
+                        "positive_folds": 4,
+                        "median_test_return_pct": 3.0,
+                    }
+                },
+            },
+            "folds": [
+                {"variants": {"baseline": {"return_pct": 1.88}, "strong": {"return_pct": -6.95}}},
+                {"variants": {"baseline": {"return_pct": -0.19}, "strong": {"return_pct": 1.41}}},
+                {"variants": {"baseline": {"return_pct": -6.76}, "strong": {"return_pct": -10.4}}},
+                {"variants": {"baseline": {"return_pct": -22.77}, "strong": {"return_pct": 5.35}}},
+                {"variants": {"baseline": {"return_pct": -2.21}, "strong": {"return_pct": 8.13}}},
+                {"variants": {"baseline": {"return_pct": 21.83}, "strong": {"return_pct": 40.28}}},
+            ],
+        }]
+    }
+    concentration_guard = evidence_smart_money_selection(
+        {**base, "params": {"fixed_filter": "strong"}},
+        concentrated,
+    )
+    assert concentration_guard["status"] == "WATCH"
+    assert concentration_guard["evidence"]["leave_one_fold_out_min_absolute_stitched_pct"] < 0
 
 
 def test_state_profile_never_leverages_above_baseline():
