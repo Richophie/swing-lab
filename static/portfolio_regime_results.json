@@ -1,8 +1,8 @@
 {
   "version": 1,
   "ready": true,
-  "generated_at": "2026-10-03T01:27:52+00:00",
-  "pool_generated_at": "2026-10-03T01:26:56+00:00",
+  "generated_at": "2026-10-06T02:34:30+00:00",
+  "pool_generated_at": "2026-10-06T02:33:04+00:00",
   "promotion_status": "research_only",
   "method": {
     "type": "rolling walk-forward regime gate",
@@ -44,18 +44,18 @@
     "entry_timing": "signal-day close regime is known before the strategy's next-session entry",
     "equity": "daily_close_mark_to_market"
   },
-  "available_start": "2017-08-01",
-  "available_end": "2026-10-01",
+  "available_start": "2017-08-03",
+  "available_end": "2026-10-05",
   "latest_market_regime": {
-    "date": "2026-10-01",
+    "date": "2026-10-05",
     "regime": "risk_on",
-    "spy_close": 763.99,
-    "spy_sma200": 720.0264,
-    "qqq_close": 742.03,
-    "qqq_sma200": 667.9088
+    "spy_close": 774.83,
+    "spy_sma200": 720.9508,
+    "qqq_close": 756.2,
+    "qqq_sma200": 669.3263
   },
   "candidate_regime_counts": {
-    "risk_on": 29441,
+    "risk_on": 29451,
     "mixed": 863,
     "risk_off": 1731
   },
@@ -74,9 +74,9 @@
         "gate_helped_folds": 2,
         "median_gated_test_return_pct": 0.54,
         "median_no_gate_test_return_pct": -1.18,
-        "mean_gate_delta_return_pct": 3.4,
-        "stitched_gated_return_pct": 38.53,
-        "stitched_no_gate_return_pct": 15.01,
+        "mean_gate_delta_return_pct": 3.41,
+        "stitched_gated_return_pct": 38.91,
+        "stitched_no_gate_return_pct": 15.32,
         "worst_gated_mdd_pct": -22.01,
         "worst_no_gate_mdd_pct": -22.01,
         "total_gated_test_trades": 276,
@@ -94,7 +94,7 @@
       "folds": [
         {
           "fold": "2021",
-          "train_start": "2017-08-01",
+          "train_start": "2017-08-03",
           "train_end": "2020-12-31",
           "test_start": "2021-01-01",
           "test_end": "2021-12-31",
@@ -103,19 +103,19 @@
           "selected_gate": "avoid_risk_off",
           "selected_gate_label": "빨간장만 끄기",
           "thresholds": {
-            "donchian_55": 54.656289
+            "donchian_55": 54.669348
           },
           "train": {
-            "ending": 4054450.08,
-            "return_pct": 35.15,
-            "cagr_pct": 9.22,
-            "mdd_pct": -17.05,
+            "ending": 4012747.98,
+            "return_pct": 33.76,
+            "cagr_pct": 8.9,
+            "mdd_pct": -18.04,
             "trades": 119,
             "win_rate_pct": 33.61,
-            "avg_trade_pct": 1.484,
-            "trades_per_year": 34.8,
+            "avg_trade_pct": 1.497,
+            "trades_per_year": 34.9,
             "max_open": 9,
-            "underwater_days": 426
+            "underwater_days": 431
           },
           "test_gated": {
             "ending": 3056377.6,
@@ -492,7 +492,7 @@
           "train_start": "2022-01-01",
           "train_end": "2025-12-31",
           "test_start": "2026-01-01",
-          "test_end": "2026-10-01",
+          "test_end": "2026-10-05",
           "selected_intensity": "loose",
           "selected_intensity_label": "느슨한 엄선 · 상위 50%",
           "selected_gate": "risk_on_only",
@@ -513,37 +513,37 @@
             "underwater_days": 114
           },
           "test_gated": {
-            "ending": 3693843.63,
-            "return_pct": 23.13,
-            "cagr_pct": 32.1,
+            "ending": 3704029.92,
+            "return_pct": 23.47,
+            "cagr_pct": 32.04,
             "mdd_pct": -14.71,
             "trades": 55,
             "win_rate_pct": 43.64,
-            "avg_trade_pct": 5.809,
-            "trades_per_year": 73.6,
+            "avg_trade_pct": 5.933,
+            "trades_per_year": 72.5,
             "max_open": 9,
-            "underwater_days": 83
+            "underwater_days": 85
           },
           "test_same_quality_no_gate": {
-            "ending": 3645059.5,
-            "return_pct": 21.5,
-            "cagr_pct": 29.77,
+            "ending": 3654921.68,
+            "return_pct": 21.83,
+            "cagr_pct": 29.74,
             "mdd_pct": -16.33,
             "trades": 57,
             "win_rate_pct": 43.86,
-            "avg_trade_pct": 4.942,
-            "trades_per_year": 76.3,
+            "avg_trade_pct": 5.062,
+            "trades_per_year": 75.2,
             "max_open": 10,
-            "underwater_days": 83
+            "underwater_days": 85
           },
-          "test_delta_return_pct": 1.63,
+          "test_delta_return_pct": 1.64,
           "test_delta_mdd_pct": 1.62,
           "test_regime_trade_diagnosis": {
             "risk_on": {
               "label": "초록 · SPY/QQQ 모두 200일선 위",
-              "trades": 468,
-              "win_rate_pct": 35.9,
-              "avg_trade_pct": 3.819
+              "trades": 470,
+              "win_rate_pct": 35.96,
+              "avg_trade_pct": 3.855
             },
             "mixed": {
               "label": "노랑 · 둘 중 하나만 200일선 위",
@@ -584,18 +584,19 @@
         "median_gated_test_return_pct": -0.94,
         "median_no_gate_test_return_pct": -0.63,
         "mean_gate_delta_return_pct": 0.08,
-        "stitched_gated_return_pct": 5.37,
-        "stitched_no_gate_return_pct": 5.04,
+        "stitched_gated_return_pct": 6.02,
+        "stitched_no_gate_return_pct": 5.7,
         "worst_gated_mdd_pct": -21.14,
         "worst_no_gate_mdd_pct": -21.14,
-        "total_gated_test_trades": 324,
+        "total_gated_test_trades": 338,
         "selected_gate_counts": {
-          "avoid_risk_off": 2,
-          "all": 2,
-          "risk_on_only": 2
+          "risk_on_only": 3,
+          "avoid_risk_off": 1,
+          "all": 2
         },
         "selected_intensity_counts": {
-          "strong": 2,
+          "raw": 1,
+          "strong": 1,
           "normal": 2,
           "loose": 2
         },
@@ -604,62 +605,62 @@
       "folds": [
         {
           "fold": "2021",
-          "train_start": "2017-08-01",
+          "train_start": "2017-08-03",
           "train_end": "2020-12-31",
           "test_start": "2021-01-01",
           "test_end": "2021-12-31",
-          "selected_intensity": "strong",
-          "selected_intensity_label": "강한 엄선 · 상위 15%",
-          "selected_gate": "avoid_risk_off",
-          "selected_gate_label": "빨간장만 끄기",
+          "selected_intensity": "raw",
+          "selected_intensity_label": "원신호",
+          "selected_gate": "risk_on_only",
+          "selected_gate_label": "초록장만 켜기",
           "thresholds": {
-            "momentum_pullback": 53.568685,
-            "donchian_55": 54.656289
+            "momentum_pullback": null,
+            "donchian_55": null
           },
           "train": {
-            "ending": 4024141.09,
-            "return_pct": 34.14,
-            "cagr_pct": 8.98,
-            "mdd_pct": -17.05,
-            "trades": 124,
-            "win_rate_pct": 34.68,
-            "avg_trade_pct": 1.503,
-            "trades_per_year": 36.3,
+            "ending": 4026138.47,
+            "return_pct": 34.2,
+            "cagr_pct": 9.01,
+            "mdd_pct": -17.78,
+            "trades": 159,
+            "win_rate_pct": 39.62,
+            "avg_trade_pct": 1.543,
+            "trades_per_year": 46.6,
             "max_open": 9,
-            "underwater_days": 431
+            "underwater_days": 451
           },
           "test_gated": {
-            "ending": 3056377.6,
-            "return_pct": 1.88,
-            "cagr_pct": 1.89,
-            "mdd_pct": -14.11,
-            "trades": 52,
-            "win_rate_pct": 34.62,
-            "avg_trade_pct": 0.176,
-            "trades_per_year": 52.2,
-            "max_open": 7,
-            "underwater_days": 203
+            "ending": 3069116.41,
+            "return_pct": 2.3,
+            "cagr_pct": 2.31,
+            "mdd_pct": -14.8,
+            "trades": 66,
+            "win_rate_pct": 37.88,
+            "avg_trade_pct": 0.32,
+            "trades_per_year": 66.2,
+            "max_open": 8,
+            "underwater_days": 112
           },
           "test_same_quality_no_gate": {
-            "ending": 3056377.6,
-            "return_pct": 1.88,
-            "cagr_pct": 1.89,
-            "mdd_pct": -14.11,
-            "trades": 52,
-            "win_rate_pct": 34.62,
-            "avg_trade_pct": 0.176,
-            "trades_per_year": 52.2,
-            "max_open": 7,
-            "underwater_days": 203
+            "ending": 3069116.41,
+            "return_pct": 2.3,
+            "cagr_pct": 2.31,
+            "mdd_pct": -14.8,
+            "trades": 66,
+            "win_rate_pct": 37.88,
+            "avg_trade_pct": 0.32,
+            "trades_per_year": 66.2,
+            "max_open": 8,
+            "underwater_days": 112
           },
           "test_delta_return_pct": 0.0,
           "test_delta_mdd_pct": 0.0,
           "test_regime_trade_diagnosis": {
             "risk_on": {
               "label": "초록 · SPY/QQQ 모두 200일선 위",
-              "trades": 179,
-              "win_rate_pct": 27.93,
-              "avg_trade_pct": -1.286
+              "trades": 1143,
+              "win_rate_pct": 32.81,
+              "avg_trade_pct": 0.02
             },
             "mixed": {
               "label": "노랑 · 둘 중 하나만 200일선 위",
@@ -1007,7 +1008,7 @@
           "train_start": "2022-01-01",
           "train_end": "2025-12-31",
           "test_start": "2026-01-01",
-          "test_end": "2026-10-01",
+          "test_end": "2026-10-05",
           "selected_intensity": "loose",
           "selected_intensity_label": "느슨한 엄선 · 상위 50%",
           "selected_gate": "risk_on_only",
@@ -1029,37 +1030,37 @@
             "underwater_days": 114
           },
           "test_gated": {
-            "ending": 3666464.07,
-            "return_pct": 22.22,
-            "cagr_pct": 30.79,
+            "ending": 3674219.36,
+            "return_pct": 22.47,
+            "cagr_pct": 30.65,
             "mdd_pct": -14.71,
             "trades": 58,
             "win_rate_pct": 41.38,
-            "avg_trade_pct": 5.372,
-            "trades_per_year": 77.6,
+            "avg_trade_pct": 5.437,
+            "trades_per_year": 76.5,
             "max_open": 9,
-            "underwater_days": 83
+            "underwater_days": 85
           },
           "test_same_quality_no_gate": {
-            "ending": 3633072.59,
-            "return_pct": 21.1,
-            "cagr_pct": 29.2,
+            "ending": 3640793.75,
+            "return_pct": 21.36,
+            "cagr_pct": 29.08,
             "mdd_pct": -16.33,
             "trades": 60,
             "win_rate_pct": 41.67,
-            "avg_trade_pct": 4.563,
-            "trades_per_year": 80.3,
+            "avg_trade_pct": 4.626,
+            "trades_per_year": 79.1,
             "max_open": 10,
-            "underwater_days": 83
+            "underwater_days": 85
           },
           "test_delta_return_pct": 1.11,
           "test_delta_mdd_pct": 1.62,
           "test_regime_trade_diagnosis": {
             "risk_on": {
               "label": "초록 · SPY/QQQ 모두 200일선 위",
-              "trades": 477,
-              "win_rate_pct": 36.06,
-              "avg_trade_pct": 3.74
+              "trades": 479,
+              "win_rate_pct": 36.12,
+              "avg_trade_pct": 3.776
             },
             "mixed": {
               "label": "노랑 · 둘 중 하나만 200일선 위",
@@ -1100,12 +1101,12 @@
         "gate_helped_folds": 1,
         "median_gated_test_return_pct": 1.19,
         "median_no_gate_test_return_pct": 1.28,
-        "mean_gate_delta_return_pct": 0.05,
-        "stitched_gated_return_pct": 22.13,
-        "stitched_no_gate_return_pct": 21.85,
+        "mean_gate_delta_return_pct": 0.06,
+        "stitched_gated_return_pct": 21.9,
+        "stitched_no_gate_return_pct": 21.58,
         "worst_gated_mdd_pct": -16.58,
         "worst_no_gate_mdd_pct": -16.58,
-        "total_gated_test_trades": 325,
+        "total_gated_test_trades": 327,
         "selected_gate_counts": {
           "avoid_risk_off": 3,
           "all": 2,
@@ -1121,7 +1122,7 @@
       "folds": [
         {
           "fold": "2021",
-          "train_start": "2017-08-01",
+          "train_start": "2017-08-03",
           "train_end": "2020-12-31",
           "test_start": "2021-01-01",
           "test_end": "2021-12-31",
@@ -1131,20 +1132,20 @@
           "selected_gate_label": "빨간장만 끄기",
           "thresholds": {
             "confirmed_pullback": 84.945975,
-            "sma200_20_squeeze": 46.613763,
-            "donchian_55": 54.656289
+            "sma200_20_squeeze": 46.234049,
+            "donchian_55": 54.669348
           },
           "train": {
-            "ending": 3776390.74,
-            "return_pct": 25.88,
-            "cagr_pct": 6.97,
-            "mdd_pct": -17.67,
-            "trades": 130,
-            "win_rate_pct": 35.38,
-            "avg_trade_pct": 1.438,
-            "trades_per_year": 38.0,
+            "ending": 3718787.22,
+            "return_pct": 23.96,
+            "cagr_pct": 6.5,
+            "mdd_pct": -18.88,
+            "trades": 131,
+            "win_rate_pct": 35.11,
+            "avg_trade_pct": 1.417,
+            "trades_per_year": 38.4,
             "max_open": 9,
-            "underwater_days": 448
+            "underwater_days": 450
           },
           "test_gated": {
             "ending": 3117701.74,
@@ -1175,9 +1176,9 @@
           "test_regime_trade_diagnosis": {
             "risk_on": {
               "label": "초록 · SPY/QQQ 모두 200일선 위",
-              "trades": 186,
-              "win_rate_pct": 29.57,
-              "avg_trade_pct": -1.043
+              "trades": 187,
+              "win_rate_pct": 29.95,
+              "avg_trade_pct": -1.034
             },
             "mixed": {
               "label": "노랑 · 둘 중 하나만 200일선 위",
@@ -1529,7 +1530,7 @@
           "train_start": "2022-01-01",
           "train_end": "2025-12-31",
           "test_start": "2026-01-01",
-          "test_end": "2026-10-01",
+          "test_end": "2026-10-05",
           "selected_intensity": "loose",
           "selected_intensity_label": "느슨한 엄선 · 상위 50%",
           "selected_gate": "risk_on_only",
@@ -1552,37 +1553,37 @@
             "underwater_days": 167
           },
           "test_gated": {
-            "ending": 3654071.57,
-            "return_pct": 21.8,
-            "cagr_pct": 30.2,
+            "ending": 3647247.77,
+            "return_pct": 21.57,
+            "cagr_pct": 29.38,
             "mdd_pct": -14.75,
-            "trades": 58,
-            "win_rate_pct": 39.66,
-            "avg_trade_pct": 5.243,
-            "trades_per_year": 77.6,
+            "trades": 60,
+            "win_rate_pct": 40.0,
+            "avg_trade_pct": 5.115,
+            "trades_per_year": 79.1,
             "max_open": 9,
-            "underwater_days": 83
+            "underwater_days": 85
           },
           "test_same_quality_no_gate": {
-            "ending": 3639041.13,
-            "return_pct": 21.3,
-            "cagr_pct": 29.48,
+            "ending": 3630878.47,
+            "return_pct": 21.03,
+            "cagr_pct": 28.62,
             "mdd_pct": -15.56,
-            "trades": 59,
-            "win_rate_pct": 40.68,
-            "avg_trade_pct": 4.7,
-            "trades_per_year": 78.9,
+            "trades": 61,
+            "win_rate_pct": 40.98,
+            "avg_trade_pct": 4.592,
+            "trades_per_year": 80.4,
             "max_open": 10,
-            "underwater_days": 83
+            "underwater_days": 85
           },
-          "test_delta_return_pct": 0.5,
+          "test_delta_return_pct": 0.55,
           "test_delta_mdd_pct": 0.81,
           "test_regime_trade_diagnosis": {
             "risk_on": {
               "label": "초록 · SPY/QQQ 모두 200일선 위",
-              "trades": 485,
-              "win_rate_pct": 36.49,
-              "avg_trade_pct": 3.752
+              "trades": 487,
+              "win_rate_pct": 36.55,
+              "avg_trade_pct": 3.787
             },
             "mixed": {
               "label": "노랑 · 둘 중 하나만 200일선 위",
