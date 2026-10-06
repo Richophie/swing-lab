@@ -59,7 +59,7 @@ def test_summary_can_identify_repeating_component_without_promotion():
         f = fake_fold(
             1.0,
             4.0 if i < 5 else 0.5,
-            1.2,
+            .8,
             .8,
             2.0,
             3.0,
