@@ -468,6 +468,30 @@ def evidence_smart_money_selection(item: dict, data: dict) -> dict:
     total=int(num(v.get("total_test_trades")))
     abs_stitched=num(v.get("stitched_test_return_pct"))
     abs_positive=int(num(v.get("positive_folds")))
+
+    family_folds=list((family or {}).get("folds") or [])
+    loo_abs=[]
+    loo_delta=[]
+    if len(family_folds)>=4:
+        for drop_i in range(len(family_folds)):
+            variant_returns=[]
+            baseline_returns=[]
+            for i, fold in enumerate(family_folds):
+                if i==drop_i:
+                    continue
+                variants=fold.get("variants") or {}
+                variant_returns.append(num((variants.get(fixed) or {}).get("return_pct")))
+                baseline_returns.append(num((variants.get("baseline") or {}).get("return_pct")))
+            if variant_returns and baseline_returns:
+                va=compound_return(variant_returns)
+                ba=compound_return(baseline_returns)
+                loo_abs.append(va)
+                loo_delta.append(round(va-ba,2))
+    min_loo_abs=min(loo_abs) if loo_abs else None
+    min_loo_delta=min(loo_delta) if loo_delta else None
+    evidence["leave_one_fold_out_min_absolute_stitched_pct"]=min_loo_abs
+    evidence["leave_one_fold_out_min_delta_vs_baseline_pct"]=min_loo_delta
+
     if (
         pattern=="supported_development_only"
         and fold_count>=4
@@ -477,6 +501,10 @@ def evidence_smart_money_selection(item: dict, data: dict) -> dict:
         and total>=100
         and abs_stitched>=10.0
         and abs_positive>=math.ceil(fold_count*0.60)
+        and min_loo_abs is not None
+        and min_loo_abs>=0.0
+        and min_loo_delta is not None
+        and min_loo_delta>0.0
     ):
         return {
             "status":"CHALLENGER_CANDIDATE",
@@ -489,7 +517,7 @@ def evidence_smart_money_selection(item: dict, data: dict) -> dict:
         return {"status":"WATCH","decision":"Smart Money 표본이 아직 부족합니다. 생산 추천은 건드리지 않고 개발용 관찰만 유지합니다.","evidence":evidence}
     return {
         "status":"WATCH",
-        "decision":"Smart Money 방향성은 보이지만 절대 성과·MDD·반복성 중 하나 이상이 아직 Challenger 기준에 못 미칩니다.",
+        "decision":"Smart Money 방향성은 보이지만 절대 성과·MDD·반복성 또는 leave-one-fold-out 안정성 중 하나 이상이 아직 Challenger 기준에 못 미칩니다.",
         "evidence":evidence,
     }
 
