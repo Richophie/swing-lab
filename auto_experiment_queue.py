@@ -17,6 +17,7 @@ SMART_MONEY = STATIC / "smart_money_flow_research.json"
 
 MAX_ACTIVE = 12
 MAX_HISTORY = 80
+EVALUATION_POLICY_VERSION = "2026-10-06-oos-gates-v2"
 TERMINAL = {"DROP", "WATCH", "CHALLENGER_CANDIDATE", "BLOCKED"}
 
 
@@ -61,7 +62,7 @@ def proposal(kind: str, runner: str, family: dict | None, priority: int, hypothe
         "why_now": why_now,
         "test_plan": test_plan,
         "params": dict(params or {}),
-        "source_fingerprint": source_fingerprint,
+        "source_fingerprint": stamp(EVALUATION_POLICY_VERSION, source_fingerprint),
         "status": "QUEUED",
         "decision": None,
         "result_summary": None,
@@ -271,6 +272,7 @@ def main():
         "source_generated_at": {k: v.get("generated_at") for k, v in sources.items()},
         "policy": {
             "automatic_hypothesis_generation": True,
+            "evaluation_policy_version": EVALUATION_POLICY_VERSION,
             "max_active_experiments": MAX_ACTIVE,
             "production_rule_mutation": False,
             "buy_target_stop_mutation": False,
