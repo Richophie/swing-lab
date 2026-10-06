@@ -22,6 +22,7 @@ REGIME = STATIC / "portfolio_regime_results.json"
 PRIORITY = STATIC / "portfolio_priority_audit.json"
 FLOW = STATIC / "portfolio_flow_selection_diagnostic.json"
 SMART_MONEY = STATIC / "smart_money_flow_research.json"
+SMART_COMPONENT = STATIC / "smart_money_component_diagnostic.json"
 
 MAX_RUNS = 12
 RISK_MULTIPLIERS = (1.0, 0.75, 0.5, 0.0)
@@ -522,8 +523,95 @@ def evidence_smart_money_selection(item: dict, data: dict) -> dict:
     }
 
 
+def evidence_smart_money_component(item: dict, data: dict) -> dict:
+    family=family_by_id(data,item.get("family_id"))
+    summary=(family or {}).get("summary") or {}
+    variant=str((item.get("params") or {}).get("variant") or "participation_absorption_joint")
+    v=(summary.get("variants") or {}).get(variant) or {}
+    folds=list((family or {}).get("folds") or [])
+
+    fold_count=int(num(v.get("fold_count")))
+    beats=int(num(v.get("folds_beating_baseline")))
+    positive=int(num(v.get("positive_folds")))
+    stitched_delta=num(v.get("stitched_delta_vs_baseline_pct"))
+    abs_stitched=num(v.get("stitched_test_return_pct"))
+    total=int(num(v.get("total_test_trades")))
+    mdd_delta=num(v.get("worst_mdd_delta_vs_baseline_pct"))
+    concentration=num(v.get("max_top_symbol_share_pct"),100)
+
+    loo_abs=[]
+    loo_delta=[]
+    sufficient_trade_folds=0
+    for fold in folds:
+        fv=(fold.get("variants") or {}).get(variant) or {}
+        if int(num(fv.get("trades")))>=15:
+            sufficient_trade_folds+=1
+
+    if len(folds)>=4:
+        for drop_i in range(len(folds)):
+            vr=[]
+            br=[]
+            for i,fold in enumerate(folds):
+                if i==drop_i:
+                    continue
+                variants=fold.get("variants") or {}
+                vr.append(num((variants.get(variant) or {}).get("return_pct")))
+                br.append(num((variants.get("baseline") or {}).get("return_pct")))
+            if vr and br:
+                va=compound_return(vr)
+                ba=compound_return(br)
+                loo_abs.append(va)
+                loo_delta.append(round(va-ba,2))
+
+    min_loo_abs=min(loo_abs) if loo_abs else None
+    min_loo_delta=min(loo_delta) if loo_delta else None
+    evidence={
+        "component_variant":variant,
+        "fold_count":fold_count,
+        "folds_beating_baseline":beats,
+        "positive_folds":positive,
+        "stitched_test_return_pct":abs_stitched,
+        "stitched_delta_vs_baseline_pct":stitched_delta,
+        "total_test_trades":total,
+        "worst_mdd_delta_vs_baseline_pct":mdd_delta,
+        "max_top_symbol_share_pct":concentration,
+        "sufficient_trade_folds_gte15":sufficient_trade_folds,
+        "leave_one_fold_out_min_absolute_stitched_pct":min_loo_abs,
+        "leave_one_fold_out_min_delta_vs_baseline_pct":min_loo_delta,
+    }
+
+    strong=(
+        fold_count>=6
+        and beats>=4
+        and positive>=4
+        and stitched_delta>=20.0
+        and abs_stitched>=10.0
+        and total>=100
+        and mdd_delta>=-2.0
+        and concentration<=35.0
+        and sufficient_trade_folds>=4
+        and min_loo_abs is not None
+        and min_loo_abs>0.0
+        and min_loo_delta is not None
+        and min_loo_delta>0.0
+    )
+    if strong:
+        return {
+            "status":"CHALLENGER_CANDIDATE",
+            "decision":"Smart Money 구성요소 조합이 OOS 반복성·절대수익·MDD·표본·종목집중·leave-one-fold-out 기준을 모두 통과했습니다. 생산 변경 없이 Frozen Challenger 검토 후보로만 올립니다.",
+            "evidence":evidence,
+        }
+    return {
+        "status":"WATCH",
+        "decision":"Smart Money 구성요소 신호는 유망하지만 Frozen Challenger 기준 중 하나 이상을 통과하지 못했습니다. 생산 추천은 변경하지 않습니다.",
+        "evidence":evidence,
+    }
+
+
 def short_summary(result: dict) -> str:
     e = result.get("evidence") or {}
+    if "component_variant" in e:
+        return f"Smart Money {e.get('component_variant')} · {e.get('folds_beating_baseline')}/{e.get('fold_count')} fold · stitched Δ {num(e.get('stitched_delta_vs_baseline_pct')):+.2f}%p · LOO min {num(e.get('leave_one_fold_out_min_absolute_stitched_pct')):+.2f}%"
     if "fixed_filter" in e:
         return f"Smart Money {e.get('fixed_filter')} · fold {e.get('folds_beating_baseline')}/{e.get('fold_count')} · stitched Δ {num(e.get('stitched_delta_vs_baseline_pct')):+.2f}%p"
     if "folds_beating_baseline" in e:
@@ -550,7 +638,7 @@ def main():
     if not queue.get("ready"):
         raise SystemExit("auto experiment queue not ready")
     pool = load(POOL)
-    regime, priority, flow, smart_money = load(REGIME), load(PRIORITY), load(FLOW), load(SMART_MONEY)
+    regime, priority, flow, smart_money, smart_component = load(REGIME), load(PRIORITY), load(FLOW), load(SMART_MONEY), load(SMART_COMPONENT)
     now = datetime.now(timezone.utc).isoformat(timespec="seconds")
     completed = []
 
@@ -570,6 +658,8 @@ def main():
                 result = evidence_flow_selection(item, flow)
             elif runner == "evidence_smart_money_selection":
                 result = evidence_smart_money_selection(item, smart_money)
+            elif runner == "evidence_smart_money_component":
+                result = evidence_smart_money_component(item, smart_component)
             else:
                 result = {"status": "BLOCKED", "decision": f"지원하지 않는 runner: {runner}", "evidence": {}}
         except Exception as exc:
