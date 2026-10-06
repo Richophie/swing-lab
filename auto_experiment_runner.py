@@ -25,6 +25,12 @@ SMART_MONEY = STATIC / "smart_money_flow_research.json"
 
 MAX_RUNS = 8
 RISK_MULTIPLIERS = (1.0, 0.75, 0.5, 0.0)
+STATE_RISK_PROFILES = {
+    "baseline": {"green_low_vol": 1.0, "green_mid_vol": 1.0, "green_high_vol": 1.0},
+    "trim_low": {"green_low_vol": 0.5, "green_mid_vol": 1.0, "green_high_vol": 1.0},
+    "trim_low_mid": {"green_low_vol": 0.5, "green_mid_vol": 0.75, "green_high_vol": 1.0},
+    "high_focus": {"green_low_vol": 0.25, "green_mid_vol": 0.5, "green_high_vol": 1.0},
+}
 
 
 def load(path: Path, default=None):
@@ -198,6 +204,149 @@ def adaptive_volatility_sizing(item: dict, pool: dict) -> dict:
     }
 
 
+def adjusted_rows_by_state_profile(pairs: list[tuple[dict, dict]], profile: dict[str, float]) -> list[dict]:
+    rows = []
+    for c, raw in pairs:
+        state = str(c.get("_vol_state") or "unknown")
+        mult = float(profile.get(state, 1.0))
+        if mult <= 0:
+            continue
+        row = dict(raw)
+        if state in profile:
+            row["risk_fraction"] = num(row.get("risk_fraction")) * mult
+        rows.append(row)
+    return rows
+
+
+def adaptive_volatility_state_sizing(item: dict, pool: dict) -> dict:
+    family = next((x for x in selection.FAMILIES if x.get("id") == item.get("family_id")), None)
+    if not family:
+        return {"status": "BLOCKED", "decision": "가족 정의를 찾지 못했습니다.", "evidence": {}}
+
+    candidates = [dict(x) for x in pool.get("trades") or [] if x.get("strategy_id") in set(family["strategies"])]
+    for cand in candidates:
+        cand["_quality"] = selection.quality_score(cand)
+
+    state_map, latest = vol.market_state_history()
+    for cand in candidates:
+        signal_day = str(cand.get("signal_date") or cand.get("entry_date") or "")[:10]
+        cand["_vol_state"] = (state_map.get(signal_day) or {}).get("state", "unknown")
+
+    available_start = opt.parse_day(pool["available_start"])
+    available_end = opt.parse_day(pool["available_end"])
+    folds = wf.folds_for(available_start, available_end)
+    cache = {}
+
+    def executed(cand):
+        key = (cand.get("symbol"), cand.get("strategy_id"), cand.get("signal_date"))
+        if key not in cache:
+            cache[key] = mtm.execute_candidate_mtm(cand, pool, None, None)
+        return cache[key]
+
+    rows = []
+    for fold in folds:
+        chosen_quality, _, train_base, _, pairs = vol.choose_quality_intensity(family, candidates, fold, executed)
+        raw_train_trades = int(train_base.get("trades") or 0)
+        variants = {}
+        for name, profile in STATE_RISK_PROFILES.items():
+            adjusted = adjusted_rows_by_state_profile(pairs, profile)
+            train = mtm.mtm_portfolio(adjusted, fold["train_start"], fold["train_end"], family["capacity"])
+            variants[name] = {
+                "score": selection.train_pick_score(train, raw_train_trades),
+                "train": train,
+                "rows": adjusted,
+            }
+
+        selected_name = max(STATE_RISK_PROFILES, key=lambda name: variants[name]["score"])
+        selected_test = mtm.mtm_portfolio(
+            variants[selected_name]["rows"], fold["test_start"], fold["test_end"], family["capacity"]
+        )
+        baseline_test = mtm.mtm_portfolio(
+            variants["baseline"]["rows"], fold["test_start"], fold["test_end"], family["capacity"]
+        )
+        sm, bm = metric(selected_test), metric(baseline_test)
+        rows.append({
+            "fold": fold["id"],
+            "train_start": str(fold["train_start"]),
+            "train_end": str(fold["train_end"]),
+            "test_start": str(fold["test_start"]),
+            "test_end": str(fold["test_end"]),
+            "selected_quality_intensity": chosen_quality,
+            "selected_state_profile": selected_name,
+            "train_scores": {name: round(num(v["score"]), 4) for name, v in variants.items()},
+            "test_experiment": sm,
+            "test_baseline": bm,
+            "delta_return_pct": round(sm["return_pct"] - bm["return_pct"], 2),
+            "delta_mdd_pct": round(sm["mdd_pct"] - bm["mdd_pct"], 2),
+        })
+
+    exp_returns = [x["test_experiment"]["return_pct"] for x in rows]
+    base_returns = [x["test_baseline"]["return_pct"] for x in rows]
+    deltas = [x["delta_return_pct"] for x in rows]
+    exp_mdds = [x["test_experiment"]["mdd_pct"] for x in rows]
+    base_mdds = [x["test_baseline"]["mdd_pct"] for x in rows]
+    fold_count = len(rows)
+    beating = sum(1 for d in deltas if d > 0.01)
+    non_baseline = sum(1 for x in rows if x["selected_state_profile"] != "baseline")
+    exp_stitched = compound_return(exp_returns)
+    base_stitched = compound_return(base_returns)
+    profile_counts = Counter(x["selected_state_profile"] for x in rows)
+    summary = {
+        "fold_count": fold_count,
+        "folds_beating_baseline": beating,
+        "non_baseline_selected_folds": non_baseline,
+        "mean_delta_return_pct": round(mean(deltas), 2) if deltas else 0.0,
+        "median_delta_return_pct": round(median(deltas), 2) if deltas else 0.0,
+        "stitched_experiment_return_pct": exp_stitched,
+        "stitched_baseline_return_pct": base_stitched,
+        "stitched_delta_pct": round(exp_stitched - base_stitched, 2),
+        "worst_experiment_mdd_pct": round(min(exp_mdds), 2) if exp_mdds else 0.0,
+        "worst_baseline_mdd_pct": round(min(base_mdds), 2) if base_mdds else 0.0,
+        "selected_profile_counts": dict(profile_counts),
+        "latest_market_state": latest,
+    }
+    mdd_damage = summary["worst_experiment_mdd_pct"] - summary["worst_baseline_mdd_pct"]
+    strong = (
+        fold_count >= 4
+        and beating >= math.ceil(fold_count * 0.67)
+        and non_baseline >= 2
+        and summary["mean_delta_return_pct"] > 0.5
+        and summary["stitched_delta_pct"] > 5.0
+        and mdd_damage >= -2.0
+    )
+    watch = (
+        non_baseline >= 2
+        and beating >= math.ceil(fold_count * 0.5)
+        and summary["mean_delta_return_pct"] > 0
+        and mdd_damage >= -3.0
+    )
+    if strong:
+        status = "CHALLENGER_CANDIDATE"
+        decision = "저·중변동 노출을 줄이고 고변동은 유지하는 TRAIN-only profile이 여러 OOS 구간에서 반복 개선됐습니다."
+    elif watch:
+        status = "WATCH"
+        decision = "변동성 상태별 재배분이 일부 OOS에서 개선됐지만 승격 기준에는 아직 부족합니다."
+    else:
+        status = "DROP"
+        decision = "고변동 우위 진단을 이용한 상태별 재배분이 다음 구간에서 안정적으로 재현되지 않았습니다."
+
+    return {
+        "status": status,
+        "decision": decision,
+        "evidence": summary,
+        "folds": rows,
+        "method": {
+            "type": "rolling TRAIN-selected green-volatility state risk profile",
+            "profiles": STATE_RISK_PROFILES,
+            "quality_selection": "TRAIN only",
+            "profile_selection": "TRAIN only",
+            "max_risk_multiplier": 1.0,
+            "test": "next calendar year report only",
+            "production_mutation": False,
+        },
+    }
+
+
 def evidence_regime_gate(item: dict, data: dict) -> dict:
     family = family_by_id(data, item.get("family_id"))
     s = (family or {}).get("summary") or {}
@@ -238,12 +387,23 @@ def evidence_priority_ranker(item: dict, data: dict) -> dict:
     delta = num(alt.get("mean_delta_vs_current_pct"))
     mdd_delta = num(alt.get("worst_test_mdd_pct")) - num(cur.get("worst_test_mdd_pct"))
     total = int(num(alt.get("total_test_trades")))
-    if beats >= 4 and delta > 1.0 and mdd_delta >= -2.0 and total >= 50:
+    alt_stitched = num(alt.get("stitched_test_return_pct"))
+    alt_positive = int(num(alt.get("positive_test_folds")))
+    alt_median = num(alt.get("median_test_return_pct"))
+    if (
+        beats >= 4
+        and delta > 1.0
+        and mdd_delta >= -2.0
+        and total >= 50
+        and alt_stitched >= 5.0
+        and alt_positive >= 3
+        and alt_median >= 0.0
+    ):
         status = "CHALLENGER_CANDIDATE"
-        decision = "대안 priority가 여러 OOS fold에서 반복 개선됐고 MDD 훼손도 제한적입니다."
+        decision = "대안 priority가 상대개선뿐 아니라 절대 OOS 성과·양수 fold·중앙값 기준도 통과했습니다."
     elif beats >= 3 and delta > 0:
         status = "WATCH"
-        decision = "대안 priority가 일부 구간에서 낫지만 승격하기엔 반복성이 부족합니다."
+        decision = "현재 priority보다 상대적으로 낫지만 절대 OOS 성과까지 승격 기준을 충족하지는 못했습니다."
     else:
         status = "DROP"
         decision = "대안 priority가 현재 방식보다 안정적으로 우월하지 않아 폐기합니다."
@@ -253,8 +413,10 @@ def evidence_priority_ranker(item: dict, data: dict) -> dict:
         "mean_delta_vs_current_pct": delta,
         "worst_mdd_delta_pct": round(mdd_delta, 2),
         "total_test_trades": total,
+        "alternative_positive_test_folds": alt_positive,
+        "alternative_median_test_return_pct": alt_median,
         "current_stitched_return_pct": cur.get("stitched_test_return_pct"),
-        "alternative_stitched_return_pct": alt.get("stitched_test_return_pct"),
+        "alternative_stitched_return_pct": alt_stitched,
     }}
 
 
@@ -295,14 +457,67 @@ def evidence_smart_money_selection(item: dict, data: dict) -> dict:
         "stitched_delta_vs_baseline_pct":v.get("stitched_delta_vs_baseline_pct"),
         "worst_mdd_delta_vs_baseline_pct":v.get("worst_mdd_delta_vs_baseline_pct"),
         "total_test_trades":v.get("total_test_trades"),
+        "absolute_stitched_test_return_pct":v.get("stitched_test_return_pct"),
+        "absolute_positive_folds":v.get("positive_folds"),
+        "absolute_median_test_return_pct":v.get("median_test_return_pct"),
     }
+    fold_count=int(num(v.get("fold_count")))
+    beats=int(num(v.get("folds_beating_baseline")))
+    stitched_delta=num(v.get("stitched_delta_vs_baseline_pct"))
+    mdd_delta=num(v.get("worst_mdd_delta_vs_baseline_pct"))
+    total=int(num(v.get("total_test_trades")))
+    abs_stitched=num(v.get("stitched_test_return_pct"))
+    abs_positive=int(num(v.get("positive_folds")))
+
+    family_folds=list((family or {}).get("folds") or [])
+    loo_abs=[]
+    loo_delta=[]
+    if len(family_folds)>=4:
+        for drop_i in range(len(family_folds)):
+            variant_returns=[]
+            baseline_returns=[]
+            for i, fold in enumerate(family_folds):
+                if i==drop_i:
+                    continue
+                variants=fold.get("variants") or {}
+                variant_returns.append(num((variants.get(fixed) or {}).get("return_pct")))
+                baseline_returns.append(num((variants.get("baseline") or {}).get("return_pct")))
+            if variant_returns and baseline_returns:
+                va=compound_return(variant_returns)
+                ba=compound_return(baseline_returns)
+                loo_abs.append(va)
+                loo_delta.append(round(va-ba,2))
+    min_loo_abs=min(loo_abs) if loo_abs else None
+    min_loo_delta=min(loo_delta) if loo_delta else None
+    evidence["leave_one_fold_out_min_absolute_stitched_pct"]=min_loo_abs
+    evidence["leave_one_fold_out_min_delta_vs_baseline_pct"]=min_loo_delta
+
+    if (
+        pattern=="supported_development_only"
+        and fold_count>=4
+        and beats>=math.ceil(fold_count*0.67)
+        and stitched_delta>=10.0
+        and mdd_delta>=-3.0
+        and total>=100
+        and abs_stitched>=10.0
+        and abs_positive>=math.ceil(fold_count*0.60)
+        and min_loo_abs is not None
+        and min_loo_abs>=0.0
+        and min_loo_delta is not None
+        and min_loo_delta>0.0
+    ):
+        return {
+            "status":"CHALLENGER_CANDIDATE",
+            "decision":"Smart Money 고정필터가 여러 OOS에서 반복 개선됐고 절대 수익·표본·MDD 기준도 통과했습니다. 별도 Frozen Challenger 후보로 검토합니다.",
+            "evidence":evidence,
+        }
     if pattern=="not_supported":
         return {"status":"DROP","decision":"Smart Money 고정필터가 OOS 계좌 성과를 안정적으로 개선하지 못해 현재 가설을 폐기합니다.","evidence":evidence}
     if pattern=="insufficient":
         return {"status":"WATCH","decision":"Smart Money 표본이 아직 부족합니다. 생산 추천은 건드리지 않고 개발용 관찰만 유지합니다.","evidence":evidence}
     return {
         "status":"WATCH",
-        "decision":"Smart Money 방향성은 OOS 개발검증에서 관찰됐지만 survivorship bias와 개발 이력이 남아 있어 자동 Challenger 승격은 금지하고 WATCH로 유지합니다.",
+        "decision":"Smart Money 방향성은 보이지만 절대 성과·MDD·반복성 또는 leave-one-fold-out 안정성 중 하나 이상이 아직 Challenger 기준에 못 미칩니다.",
         "evidence":evidence,
     }
 
@@ -345,6 +560,8 @@ def main():
         try:
             if runner == "adaptive_volatility_sizing":
                 result = adaptive_volatility_sizing(item, pool)
+            elif runner == "adaptive_volatility_state_sizing":
+                result = adaptive_volatility_state_sizing(item, pool)
             elif runner == "evidence_regime_gate":
                 result = evidence_regime_gate(item, regime)
             elif runner == "evidence_priority_ranker":
