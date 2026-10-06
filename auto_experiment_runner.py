@@ -387,12 +387,23 @@ def evidence_priority_ranker(item: dict, data: dict) -> dict:
     delta = num(alt.get("mean_delta_vs_current_pct"))
     mdd_delta = num(alt.get("worst_test_mdd_pct")) - num(cur.get("worst_test_mdd_pct"))
     total = int(num(alt.get("total_test_trades")))
-    if beats >= 4 and delta > 1.0 and mdd_delta >= -2.0 and total >= 50:
+    alt_stitched = num(alt.get("stitched_test_return_pct"))
+    alt_positive = int(num(alt.get("positive_test_folds")))
+    alt_median = num(alt.get("median_test_return_pct"))
+    if (
+        beats >= 4
+        and delta > 1.0
+        and mdd_delta >= -2.0
+        and total >= 50
+        and alt_stitched >= 5.0
+        and alt_positive >= 3
+        and alt_median >= 0.0
+    ):
         status = "CHALLENGER_CANDIDATE"
-        decision = "대안 priority가 여러 OOS fold에서 반복 개선됐고 MDD 훼손도 제한적입니다."
+        decision = "대안 priority가 상대개선뿐 아니라 절대 OOS 성과·양수 fold·중앙값 기준도 통과했습니다."
     elif beats >= 3 and delta > 0:
         status = "WATCH"
-        decision = "대안 priority가 일부 구간에서 낫지만 승격하기엔 반복성이 부족합니다."
+        decision = "현재 priority보다 상대적으로 낫지만 절대 OOS 성과까지 승격 기준을 충족하지는 못했습니다."
     else:
         status = "DROP"
         decision = "대안 priority가 현재 방식보다 안정적으로 우월하지 않아 폐기합니다."
@@ -402,8 +413,10 @@ def evidence_priority_ranker(item: dict, data: dict) -> dict:
         "mean_delta_vs_current_pct": delta,
         "worst_mdd_delta_pct": round(mdd_delta, 2),
         "total_test_trades": total,
+        "alternative_positive_test_folds": alt_positive,
+        "alternative_median_test_return_pct": alt_median,
         "current_stitched_return_pct": cur.get("stitched_test_return_pct"),
-        "alternative_stitched_return_pct": alt.get("stitched_test_return_pct"),
+        "alternative_stitched_return_pct": alt_stitched,
     }}
 
 
@@ -444,14 +457,39 @@ def evidence_smart_money_selection(item: dict, data: dict) -> dict:
         "stitched_delta_vs_baseline_pct":v.get("stitched_delta_vs_baseline_pct"),
         "worst_mdd_delta_vs_baseline_pct":v.get("worst_mdd_delta_vs_baseline_pct"),
         "total_test_trades":v.get("total_test_trades"),
+        "absolute_stitched_test_return_pct":v.get("stitched_test_return_pct"),
+        "absolute_positive_folds":v.get("positive_folds"),
+        "absolute_median_test_return_pct":v.get("median_test_return_pct"),
     }
+    fold_count=int(num(v.get("fold_count")))
+    beats=int(num(v.get("folds_beating_baseline")))
+    stitched_delta=num(v.get("stitched_delta_vs_baseline_pct"))
+    mdd_delta=num(v.get("worst_mdd_delta_vs_baseline_pct"))
+    total=int(num(v.get("total_test_trades")))
+    abs_stitched=num(v.get("stitched_test_return_pct"))
+    abs_positive=int(num(v.get("positive_folds")))
+    if (
+        pattern=="supported_development_only"
+        and fold_count>=4
+        and beats>=math.ceil(fold_count*0.67)
+        and stitched_delta>=10.0
+        and mdd_delta>=-3.0
+        and total>=100
+        and abs_stitched>=10.0
+        and abs_positive>=math.ceil(fold_count*0.60)
+    ):
+        return {
+            "status":"CHALLENGER_CANDIDATE",
+            "decision":"Smart Money 고정필터가 여러 OOS에서 반복 개선됐고 절대 수익·표본·MDD 기준도 통과했습니다. 별도 Frozen Challenger 후보로 검토합니다.",
+            "evidence":evidence,
+        }
     if pattern=="not_supported":
         return {"status":"DROP","decision":"Smart Money 고정필터가 OOS 계좌 성과를 안정적으로 개선하지 못해 현재 가설을 폐기합니다.","evidence":evidence}
     if pattern=="insufficient":
         return {"status":"WATCH","decision":"Smart Money 표본이 아직 부족합니다. 생산 추천은 건드리지 않고 개발용 관찰만 유지합니다.","evidence":evidence}
     return {
         "status":"WATCH",
-        "decision":"Smart Money 방향성은 OOS 개발검증에서 관찰됐지만 survivorship bias와 개발 이력이 남아 있어 자동 Challenger 승격은 금지하고 WATCH로 유지합니다.",
+        "decision":"Smart Money 방향성은 보이지만 절대 성과·MDD·반복성 중 하나 이상이 아직 Challenger 기준에 못 미칩니다.",
         "evidence":evidence,
     }
 
