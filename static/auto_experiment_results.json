@@ -1,33 +1,33 @@
 {
   "version": 1,
   "ready": true,
-  "generated_at": "2026-10-06T02:36:20+00:00",
-  "executed": 8,
+  "generated_at": "2026-10-06T06:43:07+00:00",
+  "executed": 7,
   "results": [
     {
-      "id": "exp-514301485b8c",
-      "key": "adaptive_volatility_sizing:confirmed_sma_donchian",
-      "kind": "adaptive_volatility_sizing",
+      "id": "exp-3cf0ccd0e73f",
+      "key": "volatility_state_sizing_v2:confirmed_sma_donchian",
+      "kind": "volatility_state_sizing_v2",
       "family_id": "confirmed_sma_donchian",
       "family_name": "확인형 + SMA200·20 + Donchian",
       "status": "DROP",
-      "decision": "고변동 사이징 조절이 다음 구간에서 안정적으로 기준을 이기지 못했습니다. 현재 가설은 폐기합니다.",
-      "result_summary": "1/6 fold 개선 · stitched Δ -6.29%p",
+      "decision": "고변동 우위 진단을 이용한 상태별 재배분이 다음 구간에서 안정적으로 재현되지 않았습니다.",
+      "result_summary": "2/6 fold 개선 · stitched Δ +9.56%p",
       "evidence": {
         "fold_count": 6,
-        "folds_beating_baseline": 1,
-        "non_baseline_selected_folds": 3,
-        "mean_delta_return_pct": -0.88,
+        "folds_beating_baseline": 2,
+        "non_baseline_selected_folds": 2,
+        "mean_delta_return_pct": 1.54,
         "median_delta_return_pct": 0.0,
-        "stitched_experiment_return_pct": 15.29,
+        "stitched_experiment_return_pct": 31.14,
         "stitched_baseline_return_pct": 21.58,
-        "stitched_delta_pct": -6.29,
+        "stitched_delta_pct": 9.56,
         "worst_experiment_mdd_pct": -16.58,
         "worst_baseline_mdd_pct": -16.58,
-        "selected_multiplier_counts": {
-          "0.0": 2,
-          "1.0": 3,
-          "0.5": 1
+        "selected_profile_counts": {
+          "baseline": 4,
+          "trim_low_mid": 1,
+          "high_focus": 1
         },
         "latest_market_state": {
           "date": "2026-10-05",
@@ -42,15 +42,32 @@
         }
       },
       "method": {
-        "type": "rolling TRAIN-selected high-volatility risk sizing",
-        "risk_multipliers": [
-          1.0,
-          0.75,
-          0.5,
-          0.0
-        ],
+        "type": "rolling TRAIN-selected green-volatility state risk profile",
+        "profiles": {
+          "baseline": {
+            "green_low_vol": 1.0,
+            "green_mid_vol": 1.0,
+            "green_high_vol": 1.0
+          },
+          "trim_low": {
+            "green_low_vol": 0.5,
+            "green_mid_vol": 1.0,
+            "green_high_vol": 1.0
+          },
+          "trim_low_mid": {
+            "green_low_vol": 0.5,
+            "green_mid_vol": 0.75,
+            "green_high_vol": 1.0
+          },
+          "high_focus": {
+            "green_low_vol": 0.25,
+            "green_mid_vol": 0.5,
+            "green_high_vol": 1.0
+          }
+        },
         "quality_selection": "TRAIN only",
-        "risk_multiplier_selection": "TRAIN only",
+        "profile_selection": "TRAIN only",
+        "max_risk_multiplier": 1.0,
         "test": "next calendar year report only",
         "production_mutation": false
       },
@@ -62,24 +79,24 @@
           "test_start": "2021-01-01",
           "test_end": "2021-12-31",
           "selected_quality_intensity": "strong",
-          "selected_high_vol_risk_multiplier": 0.0,
+          "selected_state_profile": "baseline",
           "train_scores": {
-            "1.0": -4.4529,
-            "0.75": -6.5881,
-            "0.5": -8.2643,
-            "0.0": 7.2989
+            "baseline": -4.4529,
+            "trim_low": -5.2345,
+            "trim_low_mid": -5.2469,
+            "high_focus": -5.2773
           },
           "test_experiment": {
-            "ending": 3019032.5,
-            "return_pct": 0.63,
-            "cagr_pct": 0.64,
-            "mdd_pct": -11.53,
-            "trades": 51,
-            "win_rate_pct": 33.33,
-            "avg_trade_pct": -0.384,
-            "trades_per_year": 51.2,
+            "ending": 3117701.74,
+            "return_pct": 3.92,
+            "cagr_pct": 3.94,
+            "mdd_pct": -10.86,
+            "trades": 59,
+            "win_rate_pct": 35.59,
+            "avg_trade_pct": -0.168,
+            "trades_per_year": 59.2,
             "max_open": 8,
-            "underwater_days": 214
+            "underwater_days": 201
           },
           "test_baseline": {
             "ending": 3117701.74,
@@ -93,8 +110,8 @@
             "max_open": 8,
             "underwater_days": 201
           },
-          "delta_return_pct": -3.29,
-          "delta_mdd_pct": -0.67
+          "delta_return_pct": 0.0,
+          "delta_mdd_pct": 0.0
         },
         {
           "fold": "2022",
@@ -103,22 +120,22 @@
           "test_start": "2022-01-01",
           "test_end": "2022-12-31",
           "selected_quality_intensity": "strong",
-          "selected_high_vol_risk_multiplier": 0.0,
+          "selected_state_profile": "baseline",
           "train_scores": {
-            "1.0": 2.1184,
-            "0.75": 0.9926,
-            "0.5": -2.6659,
-            "0.0": 9.8284
+            "baseline": 2.1184,
+            "trim_low": 0.9398,
+            "trim_low_mid": 0.964,
+            "high_focus": -1.8987
           },
           "test_experiment": {
-            "ending": 2828973.42,
-            "return_pct": -5.7,
-            "cagr_pct": -5.72,
+            "ending": 2959416.5,
+            "return_pct": -1.35,
+            "cagr_pct": -1.36,
             "mdd_pct": -12.8,
-            "trades": 16,
-            "win_rate_pct": 12.5,
-            "avg_trade_pct": -2.321,
-            "trades_per_year": 16.1,
+            "trades": 18,
+            "win_rate_pct": 16.67,
+            "avg_trade_pct": -0.822,
+            "trades_per_year": 18.1,
             "max_open": 4,
             "underwater_days": 73
           },
@@ -134,7 +151,7 @@
             "max_open": 4,
             "underwater_days": 73
           },
-          "delta_return_pct": -4.35,
+          "delta_return_pct": 0.0,
           "delta_mdd_pct": 0.0
         },
         {
@@ -144,12 +161,12 @@
           "test_start": "2023-01-01",
           "test_end": "2023-12-31",
           "selected_quality_intensity": "normal",
-          "selected_high_vol_risk_multiplier": 1.0,
+          "selected_state_profile": "baseline",
           "train_scores": {
-            "1.0": 11.2798,
-            "0.75": 10.6166,
-            "0.5": 11.1163,
-            "0.0": 10.4865
+            "baseline": 11.2798,
+            "trim_low": 9.4181,
+            "trim_low_mid": 9.3808,
+            "high_focus": 7.0463
           },
           "test_experiment": {
             "ending": 2909785.89,
@@ -185,12 +202,12 @@
           "test_start": "2024-01-01",
           "test_end": "2024-12-31",
           "selected_quality_intensity": "normal",
-          "selected_high_vol_risk_multiplier": 1.0,
+          "selected_state_profile": "baseline",
           "train_scores": {
-            "1.0": 3.8318,
-            "0.75": 2.0824,
-            "0.5": 2.2608,
-            "0.0": 1.8137
+            "baseline": 3.8318,
+            "trim_low": -1.2873,
+            "trim_low_mid": 1.9294,
+            "high_focus": 0.7411
           },
           "test_experiment": {
             "ending": 3139296.08,
@@ -226,24 +243,24 @@
           "test_start": "2025-01-01",
           "test_end": "2025-12-31",
           "selected_quality_intensity": "loose",
-          "selected_high_vol_risk_multiplier": 0.5,
+          "selected_state_profile": "trim_low_mid",
           "train_scores": {
-            "1.0": 5.9682,
-            "0.75": 5.9916,
-            "0.5": 6.6889,
-            "0.0": 6.5616
+            "baseline": 5.9682,
+            "trim_low": 5.5173,
+            "trim_low_mid": 7.325,
+            "high_focus": 6.3395
           },
           "test_experiment": {
-            "ending": 2967269.89,
-            "return_pct": -1.09,
-            "cagr_pct": -1.09,
-            "mdd_pct": -12.48,
-            "trades": 62,
-            "win_rate_pct": 30.65,
-            "avg_trade_pct": 0.267,
-            "trades_per_year": 62.2,
-            "max_open": 9,
-            "underwater_days": 83
+            "ending": 2922372.93,
+            "return_pct": -2.59,
+            "cagr_pct": -2.6,
+            "mdd_pct": -14.84,
+            "trades": 52,
+            "win_rate_pct": 36.54,
+            "avg_trade_pct": 0.244,
+            "trades_per_year": 52.2,
+            "max_open": 7,
+            "underwater_days": 99
           },
           "test_baseline": {
             "ending": 2896563.29,
@@ -257,8 +274,8 @@
             "max_open": 9,
             "underwater_days": 111
           },
-          "delta_return_pct": 2.36,
-          "delta_mdd_pct": 1.49
+          "delta_return_pct": 0.86,
+          "delta_mdd_pct": -0.87
         },
         {
           "fold": "2026",
@@ -267,22 +284,22 @@
           "test_start": "2026-01-01",
           "test_end": "2026-10-05",
           "selected_quality_intensity": "loose",
-          "selected_high_vol_risk_multiplier": 1.0,
+          "selected_state_profile": "high_focus",
           "train_scores": {
-            "1.0": 1.3023,
-            "0.75": 0.259,
-            "0.5": 0.4894,
-            "0.0": -3.4453
+            "baseline": 1.3023,
+            "trim_low": 3.2904,
+            "trim_low_mid": 6.4677,
+            "high_focus": 7.9511
           },
           "test_experiment": {
-            "ending": 3630878.47,
-            "return_pct": 21.03,
-            "cagr_pct": 28.62,
-            "mdd_pct": -15.56,
-            "trades": 61,
-            "win_rate_pct": 40.98,
-            "avg_trade_pct": 4.592,
-            "trades_per_year": 80.4,
+            "ending": 3881619.76,
+            "return_pct": 29.39,
+            "cagr_pct": 40.46,
+            "mdd_pct": -14.52,
+            "trades": 46,
+            "win_rate_pct": 39.13,
+            "avg_trade_pct": 5.733,
+            "trades_per_year": 60.7,
             "max_open": 10,
             "underwater_days": 85
           },
@@ -298,35 +315,34 @@
             "max_open": 10,
             "underwater_days": 85
           },
-          "delta_return_pct": 0.0,
-          "delta_mdd_pct": 0.0
+          "delta_return_pct": 8.36,
+          "delta_mdd_pct": 1.04
         }
       ]
     },
     {
-      "id": "exp-8750d1ca6102",
-      "key": "adaptive_volatility_sizing:donchian_core",
-      "kind": "adaptive_volatility_sizing",
+      "id": "exp-b3b68f8e23dc",
+      "key": "volatility_state_sizing_v2:donchian_core",
+      "kind": "volatility_state_sizing_v2",
       "family_id": "donchian_core",
       "family_name": "Donchian 단독",
       "status": "DROP",
-      "decision": "고변동 사이징 조절이 다음 구간에서 안정적으로 기준을 이기지 못했습니다. 현재 가설은 폐기합니다.",
-      "result_summary": "0/6 fold 개선 · stitched Δ -19.64%p",
+      "decision": "고변동 우위 진단을 이용한 상태별 재배분이 다음 구간에서 안정적으로 재현되지 않았습니다.",
+      "result_summary": "2/6 fold 개선 · stitched Δ +1.54%p",
       "evidence": {
         "fold_count": 6,
-        "folds_beating_baseline": 0,
+        "folds_beating_baseline": 2,
         "non_baseline_selected_folds": 4,
-        "mean_delta_return_pct": -3.94,
-        "median_delta_return_pct": -2.04,
-        "stitched_experiment_return_pct": -32.4,
+        "mean_delta_return_pct": 0.35,
+        "median_delta_return_pct": 0.0,
+        "stitched_experiment_return_pct": -11.22,
         "stitched_baseline_return_pct": -12.76,
-        "stitched_delta_pct": -19.64,
+        "stitched_delta_pct": 1.54,
         "worst_experiment_mdd_pct": -29.68,
         "worst_baseline_mdd_pct": -29.68,
-        "selected_multiplier_counts": {
-          "0.0": 3,
-          "0.75": 1,
-          "1.0": 2
+        "selected_profile_counts": {
+          "trim_low_mid": 4,
+          "baseline": 2
         },
         "latest_market_state": {
           "date": "2026-10-05",
@@ -341,15 +357,32 @@
         }
       },
       "method": {
-        "type": "rolling TRAIN-selected high-volatility risk sizing",
-        "risk_multipliers": [
-          1.0,
-          0.75,
-          0.5,
-          0.0
-        ],
+        "type": "rolling TRAIN-selected green-volatility state risk profile",
+        "profiles": {
+          "baseline": {
+            "green_low_vol": 1.0,
+            "green_mid_vol": 1.0,
+            "green_high_vol": 1.0
+          },
+          "trim_low": {
+            "green_low_vol": 0.5,
+            "green_mid_vol": 1.0,
+            "green_high_vol": 1.0
+          },
+          "trim_low_mid": {
+            "green_low_vol": 0.5,
+            "green_mid_vol": 0.75,
+            "green_high_vol": 1.0
+          },
+          "high_focus": {
+            "green_low_vol": 0.25,
+            "green_mid_vol": 0.5,
+            "green_high_vol": 1.0
+          }
+        },
         "quality_selection": "TRAIN only",
-        "risk_multiplier_selection": "TRAIN only",
+        "profile_selection": "TRAIN only",
+        "max_risk_multiplier": 1.0,
         "test": "next calendar year report only",
         "production_mutation": false
       },
@@ -361,24 +394,24 @@
           "test_start": "2021-01-01",
           "test_end": "2021-12-31",
           "selected_quality_intensity": "strong",
-          "selected_high_vol_risk_multiplier": 0.0,
+          "selected_state_profile": "trim_low_mid",
           "train_scores": {
-            "1.0": -1.2957,
-            "0.75": -2.7799,
-            "0.5": -4.6285,
-            "0.0": 11.2143
+            "baseline": -1.2957,
+            "trim_low": -0.1848,
+            "trim_low_mid": 2.5476,
+            "high_focus": 2.293
           },
           "test_experiment": {
-            "ending": 2943818.29,
-            "return_pct": -1.87,
-            "cagr_pct": -1.88,
-            "mdd_pct": -13.73,
-            "trades": 50,
-            "win_rate_pct": 32.0,
-            "avg_trade_pct": -0.464,
-            "trades_per_year": 50.2,
-            "max_open": 7,
-            "underwater_days": 241
+            "ending": 3111538.42,
+            "return_pct": 3.72,
+            "cagr_pct": 3.73,
+            "mdd_pct": -15.69,
+            "trades": 38,
+            "win_rate_pct": 31.58,
+            "avg_trade_pct": -0.075,
+            "trades_per_year": 38.1,
+            "max_open": 6,
+            "underwater_days": 212
           },
           "test_baseline": {
             "ending": 3056377.6,
@@ -392,8 +425,8 @@
             "max_open": 7,
             "underwater_days": 203
           },
-          "delta_return_pct": -3.75,
-          "delta_mdd_pct": 0.38
+          "delta_return_pct": 1.84,
+          "delta_mdd_pct": -1.58
         },
         {
           "fold": "2022",
@@ -402,22 +435,22 @@
           "test_start": "2022-01-01",
           "test_end": "2022-12-31",
           "selected_quality_intensity": "strong",
-          "selected_high_vol_risk_multiplier": 0.0,
+          "selected_state_profile": "trim_low_mid",
           "train_scores": {
-            "1.0": 3.576,
-            "0.75": 1.4829,
-            "0.5": 0.2812,
-            "0.0": 8.6187
+            "baseline": 3.576,
+            "trim_low": 4.6257,
+            "trim_low_mid": 7.379,
+            "high_focus": 4.9429
           },
           "test_experiment": {
-            "ending": 2862336.47,
-            "return_pct": -4.59,
-            "cagr_pct": -4.6,
+            "ending": 2994317.91,
+            "return_pct": -0.19,
+            "cagr_pct": -0.19,
             "mdd_pct": -12.11,
-            "trades": 14,
-            "win_rate_pct": 14.29,
-            "avg_trade_pct": -2.306,
-            "trades_per_year": 14.0,
+            "trades": 16,
+            "win_rate_pct": 18.75,
+            "avg_trade_pct": -0.621,
+            "trades_per_year": 16.1,
             "max_open": 4,
             "underwater_days": 68
           },
@@ -433,7 +466,7 @@
             "max_open": 4,
             "underwater_days": 68
           },
-          "delta_return_pct": -4.4,
+          "delta_return_pct": 0.0,
           "delta_mdd_pct": 0.0
         },
         {
@@ -443,18 +476,18 @@
           "test_start": "2023-01-01",
           "test_end": "2023-12-31",
           "selected_quality_intensity": "normal",
-          "selected_high_vol_risk_multiplier": 0.75,
+          "selected_state_profile": "baseline",
           "train_scores": {
-            "1.0": 10.1854,
-            "0.75": 11.3109,
-            "0.5": 10.2077,
-            "0.0": 10.5218
+            "baseline": 10.1854,
+            "trim_low": 10.1805,
+            "trim_low_mid": 7.2641,
+            "high_focus": 7.3785
           },
           "test_experiment": {
-            "ending": 2787617.77,
-            "return_pct": -7.08,
-            "cagr_pct": -7.1,
-            "mdd_pct": -13.5,
+            "ending": 2797227.89,
+            "return_pct": -6.76,
+            "cagr_pct": -6.78,
+            "mdd_pct": -13.2,
             "trades": 52,
             "win_rate_pct": 26.92,
             "avg_trade_pct": -0.588,
@@ -474,8 +507,8 @@
             "max_open": 8,
             "underwater_days": 135
           },
-          "delta_return_pct": -0.32,
-          "delta_mdd_pct": -0.3
+          "delta_return_pct": 0.0,
+          "delta_mdd_pct": 0.0
         },
         {
           "fold": "2024",
@@ -484,12 +517,12 @@
           "test_start": "2024-01-01",
           "test_end": "2024-12-31",
           "selected_quality_intensity": "strong",
-          "selected_high_vol_risk_multiplier": 1.0,
+          "selected_state_profile": "baseline",
           "train_scores": {
-            "1.0": 0.1332,
-            "0.75": -2.4708,
-            "0.5": -6.7061,
-            "0.0": -0.5188
+            "baseline": 0.1332,
+            "trim_low": -3.9579,
+            "trim_low_mid": -0.8717,
+            "high_focus": -2.3366
           },
           "test_experiment": {
             "ending": 2317006.99,
@@ -525,24 +558,24 @@
           "test_start": "2025-01-01",
           "test_end": "2025-12-31",
           "selected_quality_intensity": "loose",
-          "selected_high_vol_risk_multiplier": 0.0,
+          "selected_state_profile": "trim_low_mid",
           "train_scores": {
-            "1.0": -1.5821,
-            "0.75": -4.4519,
-            "0.5": -6.4966,
-            "0.0": 0.9476
+            "baseline": -1.5821,
+            "trim_low": -0.7684,
+            "trim_low_mid": 1.0575,
+            "high_focus": -6.7536
           },
           "test_experiment": {
-            "ending": 2477734.3,
-            "return_pct": -17.41,
-            "cagr_pct": -17.46,
-            "mdd_pct": -20.55,
-            "trades": 57,
-            "win_rate_pct": 21.05,
-            "avg_trade_pct": -2.261,
-            "trades_per_year": 57.2,
-            "max_open": 8,
-            "underwater_days": 209
+            "ending": 2901838.81,
+            "return_pct": -3.27,
+            "cagr_pct": -3.28,
+            "mdd_pct": -17.44,
+            "trades": 48,
+            "win_rate_pct": 33.33,
+            "avg_trade_pct": 0.004,
+            "trades_per_year": 48.2,
+            "max_open": 7,
+            "underwater_days": 93
           },
           "test_baseline": {
             "ending": 2933610.47,
@@ -556,8 +589,8 @@
             "max_open": 9,
             "underwater_days": 90
           },
-          "delta_return_pct": -15.2,
-          "delta_mdd_pct": -8.44
+          "delta_return_pct": -1.06,
+          "delta_mdd_pct": -5.33
         },
         {
           "fold": "2026",
@@ -566,22 +599,22 @@
           "test_start": "2026-01-01",
           "test_end": "2026-10-05",
           "selected_quality_intensity": "loose",
-          "selected_high_vol_risk_multiplier": 1.0,
+          "selected_state_profile": "trim_low_mid",
           "train_scores": {
-            "1.0": -0.7559,
-            "0.75": -1.871,
-            "0.5": -3.3447,
-            "0.0": -7.5927
+            "baseline": -0.7559,
+            "trim_low": 1.3371,
+            "trim_low_mid": 1.8805,
+            "high_focus": 1.3446
           },
           "test_experiment": {
-            "ending": 3654921.68,
-            "return_pct": 21.83,
-            "cagr_pct": 29.74,
-            "mdd_pct": -16.33,
-            "trades": 57,
-            "win_rate_pct": 43.86,
-            "avg_trade_pct": 5.062,
-            "trades_per_year": 75.2,
+            "ending": 3693684.42,
+            "return_pct": 23.12,
+            "cagr_pct": 31.56,
+            "mdd_pct": -17.54,
+            "trades": 56,
+            "win_rate_pct": 37.5,
+            "avg_trade_pct": 4.0,
+            "trades_per_year": 73.8,
             "max_open": 10,
             "underwater_days": 85
           },
@@ -597,35 +630,36 @@
             "max_open": 10,
             "underwater_days": 85
           },
-          "delta_return_pct": 0.0,
-          "delta_mdd_pct": 0.0
+          "delta_return_pct": 1.29,
+          "delta_mdd_pct": -1.21
         }
       ]
     },
     {
-      "id": "exp-759e09ea5de1",
-      "key": "adaptive_volatility_sizing:donchian_momentum",
-      "kind": "adaptive_volatility_sizing",
+      "id": "exp-616b43c7943c",
+      "key": "volatility_state_sizing_v2:donchian_momentum",
+      "kind": "volatility_state_sizing_v2",
       "family_id": "donchian_momentum",
       "family_name": "Donchian + 모멘텀",
       "status": "DROP",
-      "decision": "고변동 사이징 조절이 다음 구간에서 안정적으로 기준을 이기지 못했습니다. 현재 가설은 폐기합니다.",
-      "result_summary": "1/6 fold 개선 · stitched Δ -9.51%p",
+      "decision": "고변동 우위 진단을 이용한 상태별 재배분이 다음 구간에서 안정적으로 재현되지 않았습니다.",
+      "result_summary": "2/6 fold 개선 · stitched Δ +2.81%p",
       "evidence": {
         "fold_count": 6,
-        "folds_beating_baseline": 1,
+        "folds_beating_baseline": 2,
         "non_baseline_selected_folds": 4,
-        "mean_delta_return_pct": -1.56,
-        "median_delta_return_pct": -0.17,
-        "stitched_experiment_return_pct": -17.71,
+        "mean_delta_return_pct": 0.8,
+        "median_delta_return_pct": 0.0,
+        "stitched_experiment_return_pct": -5.39,
         "stitched_baseline_return_pct": -8.2,
-        "stitched_delta_pct": -9.51,
+        "stitched_delta_pct": 2.81,
         "worst_experiment_mdd_pct": -27.33,
         "worst_baseline_mdd_pct": -27.33,
-        "selected_multiplier_counts": {
-          "0.0": 3,
-          "0.75": 1,
-          "1.0": 2
+        "selected_profile_counts": {
+          "baseline": 2,
+          "trim_low_mid": 2,
+          "trim_low": 1,
+          "high_focus": 1
         },
         "latest_market_state": {
           "date": "2026-10-05",
@@ -640,15 +674,32 @@
         }
       },
       "method": {
-        "type": "rolling TRAIN-selected high-volatility risk sizing",
-        "risk_multipliers": [
-          1.0,
-          0.75,
-          0.5,
-          0.0
-        ],
+        "type": "rolling TRAIN-selected green-volatility state risk profile",
+        "profiles": {
+          "baseline": {
+            "green_low_vol": 1.0,
+            "green_mid_vol": 1.0,
+            "green_high_vol": 1.0
+          },
+          "trim_low": {
+            "green_low_vol": 0.5,
+            "green_mid_vol": 1.0,
+            "green_high_vol": 1.0
+          },
+          "trim_low_mid": {
+            "green_low_vol": 0.5,
+            "green_mid_vol": 0.75,
+            "green_high_vol": 1.0
+          },
+          "high_focus": {
+            "green_low_vol": 0.25,
+            "green_mid_vol": 0.5,
+            "green_high_vol": 1.0
+          }
+        },
         "quality_selection": "TRAIN only",
-        "risk_multiplier_selection": "TRAIN only",
+        "profile_selection": "TRAIN only",
+        "max_risk_multiplier": 1.0,
         "test": "next calendar year report only",
         "production_mutation": false
       },
@@ -660,24 +711,24 @@
           "test_start": "2021-01-01",
           "test_end": "2021-12-31",
           "selected_quality_intensity": "normal",
-          "selected_high_vol_risk_multiplier": 0.0,
+          "selected_state_profile": "baseline",
           "train_scores": {
-            "1.0": 0.127,
-            "0.75": -2.2387,
-            "0.5": -5.2735,
-            "0.0": 8.9349
+            "baseline": 0.127,
+            "trim_low": -0.0639,
+            "trim_low_mid": -0.965,
+            "high_focus": -3.9287
           },
           "test_experiment": {
-            "ending": 3385486.58,
-            "return_pct": 12.85,
-            "cagr_pct": 12.9,
+            "ending": 3304033.46,
+            "return_pct": 10.13,
+            "cagr_pct": 10.17,
             "mdd_pct": -16.46,
-            "trades": 62,
-            "win_rate_pct": 37.1,
-            "avg_trade_pct": 1.437,
-            "trades_per_year": 62.2,
+            "trades": 68,
+            "win_rate_pct": 38.24,
+            "avg_trade_pct": 1.393,
+            "trades_per_year": 68.2,
             "max_open": 10,
-            "underwater_days": 212
+            "underwater_days": 172
           },
           "test_baseline": {
             "ending": 3304033.46,
@@ -691,7 +742,7 @@
             "max_open": 10,
             "underwater_days": 172
           },
-          "delta_return_pct": 2.72,
+          "delta_return_pct": 0.0,
           "delta_mdd_pct": 0.0
         },
         {
@@ -701,22 +752,22 @@
           "test_start": "2022-01-01",
           "test_end": "2022-12-31",
           "selected_quality_intensity": "strong",
-          "selected_high_vol_risk_multiplier": 0.0,
+          "selected_state_profile": "trim_low_mid",
           "train_scores": {
-            "1.0": 3.2134,
-            "0.75": 0.8471,
-            "0.5": 0.3954,
-            "0.0": 9.3803
+            "baseline": 3.2134,
+            "trim_low": 1.8345,
+            "trim_low_mid": 4.2221,
+            "high_focus": 1.8631
           },
           "test_experiment": {
-            "ending": 2862336.47,
-            "return_pct": -4.59,
-            "cagr_pct": -4.6,
+            "ending": 2994317.91,
+            "return_pct": -0.19,
+            "cagr_pct": -0.19,
             "mdd_pct": -12.11,
-            "trades": 14,
-            "win_rate_pct": 14.29,
-            "avg_trade_pct": -2.306,
-            "trades_per_year": 14.0,
+            "trades": 16,
+            "win_rate_pct": 18.75,
+            "avg_trade_pct": -0.621,
+            "trades_per_year": 16.1,
             "max_open": 4,
             "underwater_days": 68
           },
@@ -732,7 +783,7 @@
             "max_open": 4,
             "underwater_days": 68
           },
-          "delta_return_pct": -4.4,
+          "delta_return_pct": 0.0,
           "delta_mdd_pct": 0.0
         },
         {
@@ -742,24 +793,24 @@
           "test_start": "2023-01-01",
           "test_end": "2023-12-31",
           "selected_quality_intensity": "normal",
-          "selected_high_vol_risk_multiplier": 0.75,
+          "selected_state_profile": "trim_low",
           "train_scores": {
-            "1.0": 12.2363,
-            "0.75": 12.3762,
-            "0.5": 9.4964,
-            "0.0": 10.2337
+            "baseline": 12.2363,
+            "trim_low": 12.37,
+            "trim_low_mid": 9.0034,
+            "high_focus": 7.3624
           },
           "test_experiment": {
-            "ending": 2866154.75,
-            "return_pct": -4.46,
-            "cagr_pct": -4.48,
-            "mdd_pct": -11.02,
-            "trades": 54,
-            "win_rate_pct": 31.48,
-            "avg_trade_pct": 0.139,
-            "trades_per_year": 54.2,
-            "max_open": 7,
-            "underwater_days": 104
+            "ending": 2627791.14,
+            "return_pct": -12.41,
+            "cagr_pct": -12.45,
+            "mdd_pct": -15.38,
+            "trades": 43,
+            "win_rate_pct": 30.23,
+            "avg_trade_pct": -0.119,
+            "trades_per_year": 43.1,
+            "max_open": 6,
+            "underwater_days": 232
           },
           "test_baseline": {
             "ending": 2876037.77,
@@ -773,8 +824,8 @@
             "max_open": 7,
             "underwater_days": 104
           },
-          "delta_return_pct": -0.33,
-          "delta_mdd_pct": -0.3
+          "delta_return_pct": -8.28,
+          "delta_mdd_pct": -4.66
         },
         {
           "fold": "2024",
@@ -783,12 +834,12 @@
           "test_start": "2024-01-01",
           "test_end": "2024-12-31",
           "selected_quality_intensity": "strong",
-          "selected_high_vol_risk_multiplier": 1.0,
+          "selected_state_profile": "baseline",
           "train_scores": {
-            "1.0": 0.2357,
-            "0.75": -2.2118,
-            "0.5": -6.4086,
-            "0.0": -0.2075
+            "baseline": 0.2357,
+            "trim_low": -3.1812,
+            "trim_low_mid": -0.772,
+            "high_focus": -1.71
           },
           "test_experiment": {
             "ending": 2394429.97,
@@ -824,24 +875,24 @@
           "test_start": "2025-01-01",
           "test_end": "2025-12-31",
           "selected_quality_intensity": "loose",
-          "selected_high_vol_risk_multiplier": 0.0,
+          "selected_state_profile": "trim_low_mid",
           "train_scores": {
-            "1.0": -0.7837,
-            "0.75": -3.6628,
-            "0.5": -5.7196,
-            "0.0": 1.9727
+            "baseline": -0.7837,
+            "trim_low": -0.2242,
+            "trim_low_mid": 1.606,
+            "high_focus": -6.498
           },
           "test_experiment": {
-            "ending": 2477734.3,
-            "return_pct": -17.41,
-            "cagr_pct": -17.46,
-            "mdd_pct": -20.55,
-            "trades": 57,
-            "win_rate_pct": 21.05,
-            "avg_trade_pct": -2.261,
-            "trades_per_year": 57.2,
+            "ending": 2869496.3,
+            "return_pct": -4.35,
+            "cagr_pct": -4.36,
+            "mdd_pct": -15.24,
+            "trades": 55,
+            "win_rate_pct": 32.73,
+            "avg_trade_pct": 0.011,
+            "trades_per_year": 55.2,
             "max_open": 8,
-            "underwater_days": 209
+            "underwater_days": 109
           },
           "test_baseline": {
             "ending": 2698165.05,
@@ -855,8 +906,8 @@
             "max_open": 9,
             "underwater_days": 210
           },
-          "delta_return_pct": -7.35,
-          "delta_mdd_pct": -5.41
+          "delta_return_pct": 5.71,
+          "delta_mdd_pct": -0.1
         },
         {
           "fold": "2026",
@@ -865,22 +916,22 @@
           "test_start": "2026-01-01",
           "test_end": "2026-10-05",
           "selected_quality_intensity": "loose",
-          "selected_high_vol_risk_multiplier": 1.0,
+          "selected_state_profile": "high_focus",
           "train_scores": {
-            "1.0": -0.3905,
-            "0.75": -2.5129,
-            "0.5": -9.0723,
-            "0.0": -6.7077
+            "baseline": -0.3905,
+            "trim_low": -1.0145,
+            "trim_low_mid": -0.0721,
+            "high_focus": 0.216
           },
           "test_experiment": {
-            "ending": 3640793.75,
-            "return_pct": 21.36,
-            "cagr_pct": 29.08,
-            "mdd_pct": -16.33,
-            "trades": 60,
-            "win_rate_pct": 41.67,
-            "avg_trade_pct": 4.626,
-            "trades_per_year": 79.1,
+            "ending": 3861696.86,
+            "return_pct": 28.72,
+            "cagr_pct": 39.51,
+            "mdd_pct": -17.63,
+            "trades": 51,
+            "win_rate_pct": 37.25,
+            "avg_trade_pct": 4.761,
+            "trades_per_year": 67.2,
             "max_open": 10,
             "underwater_days": 85
           },
@@ -896,134 +947,109 @@
             "max_open": 10,
             "underwater_days": 85
           },
-          "delta_return_pct": 0.0,
-          "delta_mdd_pct": 0.0
+          "delta_return_pct": 7.36,
+          "delta_mdd_pct": -1.3
         }
       ]
     },
     {
-      "id": "exp-802e8dda236a",
-      "key": "regime_gate_review:donchian_core",
-      "kind": "regime_gate_review",
-      "family_id": "donchian_core",
-      "family_name": "Donchian 단독",
-      "status": "WATCH",
-      "decision": "장세 gate가 일부 OOS 구간에서 도움됐지만 반복성 또는 등급이 충분하지 않습니다.",
-      "result_summary": "gate 도움 2/6 · stitched Δ +23.59%p",
-      "evidence": {
-        "grade": "C",
-        "fold_count": 6,
-        "gate_helped_folds": 2,
-        "mean_delta_return_pct": 3.41,
-        "stitched_delta_pct": 23.59,
-        "worst_mdd_delta_pct": 0.0,
-        "selected_gate_counts": {
-          "avoid_risk_off": 2,
-          "risk_on_only": 4
-        }
-      },
-      "method": null,
-      "folds": null
-    },
-    {
-      "id": "exp-d34eebe26f6f",
-      "key": "regime_gate_review:confirmed_sma_donchian",
-      "kind": "regime_gate_review",
+      "id": "exp-175f2224236f",
+      "key": "priority_ranker_review:confirmed_sma_donchian",
+      "kind": "priority_ranker_review",
       "family_id": "confirmed_sma_donchian",
       "family_name": "확인형 + SMA200·20 + Donchian",
       "status": "DROP",
-      "decision": "장세 gate의 OOS 개선이 반복되지 않아 현재 가설은 폐기합니다.",
-      "result_summary": "gate 도움 1/6 · stitched Δ +0.32%p",
-      "evidence": {
-        "grade": "C",
-        "fold_count": 6,
-        "gate_helped_folds": 1,
-        "mean_delta_return_pct": 0.06,
-        "stitched_delta_pct": 0.32,
-        "worst_mdd_delta_pct": 0.0,
-        "selected_gate_counts": {
-          "avoid_risk_off": 3,
-          "all": 2,
-          "risk_on_only": 1
-        }
-      },
-      "method": null,
-      "folds": null
-    },
-    {
-      "id": "exp-f2b9c03164f4",
-      "key": "regime_gate_review:donchian_momentum",
-      "kind": "regime_gate_review",
-      "family_id": "donchian_momentum",
-      "family_name": "Donchian + 모멘텀",
-      "status": "DROP",
-      "decision": "장세 gate의 OOS 개선이 반복되지 않아 현재 가설은 폐기합니다.",
-      "result_summary": "gate 도움 1/6 · stitched Δ +0.32%p",
-      "evidence": {
-        "grade": "C",
-        "fold_count": 6,
-        "gate_helped_folds": 1,
-        "mean_delta_return_pct": 0.08,
-        "stitched_delta_pct": 0.32,
-        "worst_mdd_delta_pct": 0.0,
-        "selected_gate_counts": {
-          "risk_on_only": 3,
-          "avoid_risk_off": 1,
-          "all": 2
-        }
-      },
-      "method": null,
-      "folds": null
-    },
-    {
-      "id": "exp-ed84ff6004b2",
-      "key": "priority_ranker_review:donchian_momentum",
-      "kind": "priority_ranker_review",
-      "family_id": "donchian_momentum",
-      "family_name": "Donchian + 모멘텀",
-      "status": "CHALLENGER_CANDIDATE",
-      "decision": "대안 priority가 여러 OOS fold에서 반복 개선됐고 MDD 훼손도 제한적입니다.",
-      "result_summary": "현재 priority 우위 fold 4 · 평균 Δ +1.48%p",
+      "decision": "대안 priority가 현재 방식보다 안정적으로 우월하지 않아 폐기합니다.",
+      "result_summary": "현재 priority 우위 fold 3 · 평균 Δ -1.74%p",
       "evidence": {
         "ranker": "hybrid_50",
-        "folds_beating_current": 4,
-        "mean_delta_vs_current_pct": 1.48,
-        "worst_mdd_delta_pct": 0.45,
-        "total_test_trades": 338,
-        "current_stitched_return_pct": -8.2,
-        "alternative_stitched_return_pct": 3.41
+        "folds_beating_current": 3,
+        "mean_delta_vs_current_pct": -1.74,
+        "worst_mdd_delta_pct": -6.19,
+        "total_test_trades": 361,
+        "alternative_positive_test_folds": 4,
+        "alternative_median_test_return_pct": 3.69,
+        "current_stitched_return_pct": 21.58,
+        "alternative_stitched_return_pct": 10.84
       },
       "method": null,
       "folds": null
     },
     {
-      "id": "exp-d2900d349f22",
-      "key": "smart_money_selection_review:donchian_core",
-      "kind": "smart_money_selection_review",
+      "id": "exp-828321563850",
+      "key": "priority_ranker_review:donchian_core",
+      "kind": "priority_ranker_review",
       "family_id": "donchian_core",
       "family_name": "Donchian 단독",
-      "status": "WATCH",
-      "decision": "Smart Money 방향성은 OOS 개발검증에서 관찰됐지만 survivorship bias와 개발 이력이 남아 있어 자동 Challenger 승격은 금지하고 WATCH로 유지합니다.",
-      "result_summary": "Smart Money strong · fold 4/6 · stitched Δ +47.87%p",
+      "status": "DROP",
+      "decision": "대안 priority가 현재 방식보다 안정적으로 우월하지 않아 폐기합니다.",
+      "result_summary": "현재 priority 우위 fold 2 · 평균 Δ -1.19%p",
       "evidence": {
-        "pattern": "supported_development_only",
+        "ranker": "quality_pct",
+        "folds_beating_current": 2,
+        "mean_delta_vs_current_pct": -1.19,
+        "worst_mdd_delta_pct": 0.65,
+        "total_test_trades": 314,
+        "alternative_positive_test_folds": 3,
+        "alternative_median_test_return_pct": 0.47,
+        "current_stitched_return_pct": -12.76,
+        "alternative_stitched_return_pct": -15.68
+      },
+      "method": null,
+      "folds": null
+    },
+    {
+      "id": "exp-cb604919621d",
+      "key": "smart_money_selection_review:donchian_momentum",
+      "kind": "smart_money_selection_review",
+      "family_id": "donchian_momentum",
+      "family_name": "Donchian + 모멘텀",
+      "status": "WATCH",
+      "decision": "Smart Money 방향성은 보이지만 절대 성과·MDD·반복성 또는 leave-one-fold-out 안정성 중 하나 이상이 아직 Challenger 기준에 못 미칩니다.",
+      "result_summary": "Smart Money strong · fold 4/6 · stitched Δ +50.15%p",
+      "evidence": {
+        "pattern": "mixed_positive",
         "fixed_filter": "strong",
         "fold_count": 6,
         "folds_beating_baseline": 4,
-        "mean_delta_return_vs_baseline_pct": 7.67,
-        "stitched_delta_vs_baseline_pct": 47.87,
-        "worst_mdd_delta_vs_baseline_pct": -2.24,
-        "total_test_trades": 235
+        "mean_delta_return_vs_baseline_pct": 7.61,
+        "stitched_delta_vs_baseline_pct": 50.15,
+        "worst_mdd_delta_vs_baseline_pct": -4.72,
+        "total_test_trades": 241,
+        "absolute_stitched_test_return_pct": 41.95,
+        "absolute_positive_folds": 4,
+        "absolute_median_test_return_pct": 3.38,
+        "leave_one_fold_out_min_absolute_stitched_pct": 1.19,
+        "leave_one_fold_out_min_delta_vs_baseline_pct": 19.72
+      },
+      "method": null,
+      "folds": null
+    },
+    {
+      "id": "exp-1d045582f952",
+      "key": "flow_selection_review:confirmed_sma_donchian",
+      "kind": "flow_selection_review",
+      "family_id": "confirmed_sma_donchian",
+      "family_name": "확인형 + SMA200·20 + Donchian",
+      "status": "WATCH",
+      "decision": "Flow 방향성은 보이지만 현재 데이터는 개발증거라 Challenger 승격을 금지하고 WATCH로 유지합니다.",
+      "result_summary": "Flow mixed_positive · strong-weak +0.02%p",
+      "evidence": {
+        "pattern": "mixed_positive",
+        "strong_minus_weak_mean_return_pp": 0.019,
+        "strong_minus_weak_win_rate_pp": -3.87,
+        "comparable_folds": 6,
+        "strong_beats_weak_folds": 4,
+        "spearman_flow_vs_trade_return": -0.0829
       },
       "method": null,
       "folds": null
     }
   ],
   "queue_counts": {
-    "DROP": 5,
-    "WATCH": 2,
-    "CHALLENGER_CANDIDATE": 1,
-    "RETEST": 4
+    "DROP": 7,
+    "WATCH": 4,
+    "CHALLENGER_CANDIDATE": 1
   },
   "policy": {
     "train_only_selection": true,
