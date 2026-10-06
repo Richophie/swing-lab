@@ -106,7 +106,7 @@ def fake_sources():
                     "strong": {
                         "fold_count": 6, "folds_beating_baseline": 5,
                         "mean_delta_return_vs_baseline_pct": 1.6,
-                        "stitched_delta_vs_baseline_pct": 8.0,
+                        "stitched_delta_vs_baseline_pct": 12.0,
                         "worst_mdd_delta_vs_baseline_pct": 0.5,
                         "total_test_trades": 160, "stitched_test_return_pct": 18,
                         "positive_folds": 5, "median_test_return_pct": 1.2,
@@ -153,7 +153,7 @@ def test_evidence_decisions():
     assert evidence_flow_selection(base, flow)["status"] == "WATCH"
     sm=evidence_smart_money_selection({**base,"params":{"fixed_filter":"strong"}},smart)
     assert sm["status"] == "CHALLENGER_CANDIDATE"
-    assert sm["evidence"]["stitched_delta_vs_baseline_pct"] == 8.0
+    assert sm["evidence"]["stitched_delta_vs_baseline_pct"] == 12.0
 
     weak_priority = {
         "families": [{
