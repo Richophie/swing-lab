@@ -23,7 +23,7 @@ PRIORITY = STATIC / "portfolio_priority_audit.json"
 FLOW = STATIC / "portfolio_flow_selection_diagnostic.json"
 SMART_MONEY = STATIC / "smart_money_flow_research.json"
 
-MAX_RUNS = 8
+MAX_RUNS = 12
 RISK_MULTIPLIERS = (1.0, 0.75, 0.5, 0.0)
 STATE_RISK_PROFILES = {
     "baseline": {"green_low_vol": 1.0, "green_mid_vol": 1.0, "green_high_vol": 1.0},
