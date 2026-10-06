@@ -14,6 +14,7 @@ VOL = STATIC / "portfolio_volatility_diagnostic.json"
 PRIORITY = STATIC / "portfolio_priority_audit.json"
 FLOW = STATIC / "portfolio_flow_selection_diagnostic.json"
 SMART_MONEY = STATIC / "smart_money_flow_research.json"
+SMART_COMPONENT = STATIC / "smart_money_component_diagnostic.json"
 
 MAX_ACTIVE = 12
 MAX_HISTORY = 80
@@ -69,9 +70,10 @@ def proposal(kind: str, runner: str, family: dict | None, priority: int, hypothe
     }
 
 
-def generate(walkforward: dict, regime: dict, volatility: dict, priority: dict, flow: dict, smart_money: dict | None = None) -> list[dict]:
+def generate(walkforward: dict, regime: dict, volatility: dict, priority: dict, flow: dict, smart_money: dict | None = None, smart_component: dict | None = None) -> list[dict]:
     out = []
     smart_money = smart_money or {}
+    smart_component = smart_component or {}
     wf_map = family_map(walkforward)
     reg_map = family_map(regime)
     vol_map = family_map(volatility)
@@ -207,6 +209,56 @@ def generate(walkforward: dict, regime: dict, volatility: dict, priority: dict, 
                 {"fixed_filter":best},
             ))
 
+    if smart_component.get("ready"):
+        for family in smart_component.get("families") or []:
+            summary=family.get("summary") or {}
+            variants=summary.get("variants") or {}
+            eligible=[]
+            for variant in ("participation_absorption_joint","absorption_q75","participation_q75"):
+                v=variants.get(variant) or {}
+                fold_count=int(num(v.get("fold_count")))
+                beats=int(num(v.get("folds_beating_baseline")))
+                positive=int(num(v.get("positive_folds")))
+                stitched=num(v.get("stitched_delta_vs_baseline_pct"))
+                trades=int(num(v.get("total_test_trades")))
+                mdd_delta=num(v.get("worst_mdd_delta_vs_baseline_pct"))
+                concentration=num(v.get("max_top_symbol_share_pct"),100)
+                if (
+                    fold_count>=6
+                    and beats>=4
+                    and positive>=4
+                    and stitched>=10.0
+                    and trades>=100
+                    and mdd_delta>=-2.0
+                    and concentration<=35.0
+                ):
+                    eligible.append((variant,stitched,beats,trades,mdd_delta,concentration))
+            if not eligible:
+                continue
+            variant,stitched,beats,trades,mdd_delta,concentration=max(
+                eligible,key=lambda x:(x[1],x[2],x[3])
+            )
+            label={
+                "participation_absorption_joint":"참여강도+흡수·반전 동시 상위25%",
+                "absorption_q75":"흡수·반전 상위25%",
+                "participation_q75":"참여강도 상위25%",
+            }.get(variant,variant)
+            fp=stamp(
+                smart_component.get("generated_at"),family.get("id"),variant,
+                stitched,beats,trades,mdd_delta,concentration
+            )
+            out.append(proposal(
+                "smart_money_component_review",
+                "evidence_smart_money_component",
+                family,
+                74,
+                f"{family.get('name')}에서 {label}인 신호만 남기면 다음 구간 개선이 반복되는가?",
+                f"{label} · 기준보다 우수한 fold {beats}/6 · stitched Δ {stitched:+.2f}%p · TEST 거래 {trades}건 · 최대 종목집중 {concentration:.1f}%.",
+                "각 rolling fold TRAIN 분포에서 상위25% 기준을 정하고 다음 해 TEST에 고정 적용합니다. leave-one-fold-out, 표본수, 종목집중, MDD까지 통과해야 Frozen Challenger 후보로만 올립니다.",
+                fp,
+                {"variant":variant},
+            ))
+
     return sorted(out, key=lambda x: (-x["priority"], x["key"]))[:MAX_ACTIVE]
 
 
@@ -255,6 +307,7 @@ def main():
         "priority": load(PRIORITY),
         "flow": load(FLOW),
         "smart_money": load(SMART_MONEY),
+        "smart_component": load(SMART_COMPONENT),
     }
     if not sources["walkforward"].get("ready"):
         raise SystemExit("walk-forward result not ready")

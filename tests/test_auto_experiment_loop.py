@@ -5,6 +5,7 @@ from auto_experiment_runner import (
     evidence_priority_ranker,
     evidence_regime_gate,
     evidence_smart_money_selection,
+    evidence_smart_money_component,
 )
 
 
@@ -123,24 +124,86 @@ def fake_sources():
             ],
         }],
     }
-    return wf, regime, vol, priority, flow, smart
+    component = {
+        "ready": True,
+        "generated_at": "2026-08-15T00:06:00+00:00",
+        "families": [{
+            "id": "f1",
+            "name": "Family 1",
+            "strategies": ["s1"],
+            "summary": {
+                "variants": {
+                    "participation_absorption_joint": {
+                        "fold_count": 6,
+                        "folds_beating_baseline": 4,
+                        "positive_folds": 4,
+                        "stitched_test_return_pct": 40.0,
+                        "stitched_delta_vs_baseline_pct": 30.0,
+                        "total_test_trades": 150,
+                        "worst_mdd_delta_vs_baseline_pct": 0.5,
+                        "max_top_symbol_share_pct": 25.0,
+                    },
+                    "absorption_q75": {
+                        "fold_count": 6,
+                        "folds_beating_baseline": 4,
+                        "positive_folds": 4,
+                        "stitched_test_return_pct": 30.0,
+                        "stitched_delta_vs_baseline_pct": 20.0,
+                        "total_test_trades": 145,
+                        "worst_mdd_delta_vs_baseline_pct": -0.5,
+                        "max_top_symbol_share_pct": 25.0,
+                    },
+                    "participation_q75": {
+                        "fold_count": 6,
+                        "folds_beating_baseline": 3,
+                        "positive_folds": 3,
+                        "stitched_test_return_pct": 25.0,
+                        "stitched_delta_vs_baseline_pct": 15.0,
+                        "total_test_trades": 140,
+                        "worst_mdd_delta_vs_baseline_pct": -0.5,
+                        "max_top_symbol_share_pct": 25.0,
+                    },
+                    "dollar_volume_q75": {
+                        "fold_count": 6,
+                        "folds_beating_baseline": 5,
+                        "positive_folds": 5,
+                        "stitched_test_return_pct": 80.0,
+                        "stitched_delta_vs_baseline_pct": 70.0,
+                        "total_test_trades": 130,
+                        "worst_mdd_delta_vs_baseline_pct": -1.0,
+                        "max_top_symbol_share_pct": 100.0,
+                    },
+                }
+            },
+            "folds": [
+                {"variants": {"baseline": {"return_pct": 1.0}, "participation_absorption_joint": {"return_pct": 4.0, "trades": 25}}},
+                {"variants": {"baseline": {"return_pct": 0.5}, "participation_absorption_joint": {"return_pct": 2.5, "trades": 20}}},
+                {"variants": {"baseline": {"return_pct": 1.5}, "participation_absorption_joint": {"return_pct": 3.5, "trades": 25}}},
+                {"variants": {"baseline": {"return_pct": 0.0}, "participation_absorption_joint": {"return_pct": 2.0, "trades": 30}}},
+                {"variants": {"baseline": {"return_pct": 1.0}, "participation_absorption_joint": {"return_pct": 2.8, "trades": 25}}},
+                {"variants": {"baseline": {"return_pct": 0.5}, "participation_absorption_joint": {"return_pct": 2.2, "trades": 25}}},
+            ],
+        }],
+    }
+    return wf, regime, vol, priority, flow, smart, component
 
 
 def test_queue_generation_and_safety():
-    wf, regime, vol, priority, flow, smart = fake_sources()
-    items = generate(wf, regime, vol, priority, flow, smart)
+    wf, regime, vol, priority, flow, smart, component = fake_sources()
+    items = generate(wf, regime, vol, priority, flow, smart, component)
     kinds = {x["kind"] for x in items}
     assert "volatility_state_sizing_v2" in kinds
     assert "regime_gate_review" in kinds
     assert "priority_ranker_review" in kinds
     assert "flow_selection_review" in kinds
     assert "smart_money_selection_review" in kinds
+    assert "smart_money_component_review" in kinds
     assert all(x["status"] == "QUEUED" for x in items)
 
 
 def test_terminal_result_is_stable_until_source_changes():
-    wf, regime, vol, priority, flow, smart = fake_sources()
-    items = generate(wf, regime, vol, priority, flow, smart)
+    wf, regime, vol, priority, flow, smart, component = fake_sources()
+    items = generate(wf, regime, vol, priority, flow, smart, component)
     first = items[0]
     old = {"items": [{**first, "status": "DROP", "decision": "done", "attempts": 1}]}
     merged, _ = merge_previous(items, old, "2026-08-15T01:00:00+00:00")
@@ -154,7 +217,7 @@ def test_terminal_result_is_stable_until_source_changes():
 
 
 def test_evidence_decisions():
-    _, regime, _, priority, flow, smart = fake_sources()
+    _, regime, _, priority, flow, smart, component = fake_sources()
     base = {"family_id": "f1"}
     assert evidence_regime_gate(base, regime)["status"] == "CHALLENGER_CANDIDATE"
     assert evidence_priority_ranker({**base, "params": {"ranker": "quality_pct"}}, priority)["status"] == "CHALLENGER_CANDIDATE"
@@ -162,6 +225,14 @@ def test_evidence_decisions():
     sm=evidence_smart_money_selection({**base,"params":{"fixed_filter":"strong"}},smart)
     assert sm["status"] == "CHALLENGER_CANDIDATE"
     assert sm["evidence"]["stitched_delta_vs_baseline_pct"] == 12.0
+
+    comp=evidence_smart_money_component(
+        {**base,"params":{"variant":"participation_absorption_joint"}},
+        component,
+    )
+    assert comp["status"] == "CHALLENGER_CANDIDATE"
+    assert comp["evidence"]["leave_one_fold_out_min_absolute_stitched_pct"] > 0
+    assert comp["evidence"]["sufficient_trade_folds_gte15"] == 6
 
     weak_priority = {
         "families": [{
@@ -222,6 +293,28 @@ def test_evidence_decisions():
     assert concentration_guard["evidence"]["leave_one_fold_out_min_absolute_stitched_pct"] < 0
 
 
+def test_component_concentration_blocks_challenger():
+    _, _, _, _, _, _, component = fake_sources()
+    concentrated = {
+        "families": [{
+            **component["families"][0],
+            "summary": {
+                "variants": {
+                    "participation_absorption_joint": {
+                        **component["families"][0]["summary"]["variants"]["participation_absorption_joint"],
+                        "max_top_symbol_share_pct": 100.0,
+                    }
+                }
+            },
+        }]
+    }
+    result=evidence_smart_money_component(
+        {"family_id":"f1","params":{"variant":"participation_absorption_joint"}},
+        concentrated,
+    )
+    assert result["status"] == "WATCH"
+
+
 def test_state_profile_never_leverages_above_baseline():
     pairs = [
         ({"_vol_state": "green_low_vol"}, {"risk_fraction": .10}),
@@ -240,5 +333,6 @@ if __name__ == "__main__":
     test_queue_generation_and_safety()
     test_terminal_result_is_stable_until_source_changes()
     test_evidence_decisions()
+    test_component_concentration_blocks_challenger()
     test_state_profile_never_leverages_above_baseline()
     print("auto experiment loop PASS")
