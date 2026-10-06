@@ -12,12 +12,16 @@ def test_percentile_is_distribution_only():
 
 def test_component_filter_uses_train_threshold_not_return():
     rows = [
-        {"_smart_money_components": {"participation": 60, "absorption": 80, "liquidity": 90}},
-        {"_smart_money_components": {"participation": 85, "absorption": 40, "liquidity": 90}},
+        {"_smart_money_components": {"participation": 60, "absorption": 80, "liquidity": 100}, "_avg_dollar_volume_20d": 80_000_000},
+        {"_smart_money_components": {"participation": 85, "absorption": 40, "liquidity": 100}, "_avg_dollar_volume_20d": 400_000_000},
     ]
     kept = filter_rows(rows, "participation_q75", {"participation": 75})
     assert len(kept) == 1
     assert kept[0]["_smart_money_components"]["participation"] == 85
+    high_dollar = filter_rows(rows, "dollar_volume_q75", {"dollar_volume": 300_000_000})
+    assert len(high_dollar) == 1
+    floor = filter_rows(rows, "liquidity_floor_75m", {})
+    assert len(floor) == 2
 
 
 def fake_fold(base_ret, p_ret, a_ret, l_ret, joint_ret, strong_ret):
@@ -47,7 +51,8 @@ def fake_fold(base_ret, p_ret, a_ret, l_ret, joint_ret, strong_ret):
             "total_strong": v(strong_ret, strong_ret-base_ret),
             "participation_q75": v(p_ret, p_ret-base_ret),
             "absorption_q75": v(a_ret, a_ret-base_ret),
-            "liquidity_q75": v(l_ret, l_ret-base_ret),
+            "dollar_volume_q75": v(l_ret, l_ret-base_ret),
+            "liquidity_floor_75m": v(base_ret, 0),
             "participation_absorption_joint": v(joint_ret, joint_ret-base_ret),
         },
     }
