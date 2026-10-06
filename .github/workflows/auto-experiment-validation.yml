@@ -7,6 +7,7 @@ on:
       - 'auto_experiment_runner.py'
       - 'smart_money_flow.py'
       - 'smart_money_flow_research.py'
+      - 'smart_money_component_diagnostic.py'
       - 'replay_pool_v2.py'
       - 'static/auto_experiment_queue.js'
       - 'static/auto_experiment_queue.css'
@@ -14,6 +15,7 @@ on:
       - 'tests/test_auto_experiment_loop.py'
       - 'tests/test_smart_money_flow.py'
       - 'tests/test_smart_money_flow_research.py'
+      - 'tests/test_smart_money_component_diagnostic.py'
       - '.github/workflows/auto-experiment-loop.yml'
       - '.github/workflows/auto-experiment-validation.yml'
 
@@ -32,10 +34,10 @@ jobs:
           cache: 'pip'
       - run: pip install -r requirements.txt
       - name: Compile autonomous research modules
-        run: python -m py_compile auto_experiment_queue.py auto_experiment_runner.py smart_money_flow.py smart_money_flow_research.py replay_pool_v2.py tests/test_auto_experiment_loop.py tests/test_smart_money_flow.py tests/test_smart_money_flow_research.py
+        run: python -m py_compile auto_experiment_queue.py auto_experiment_runner.py smart_money_flow.py smart_money_flow_research.py smart_money_component_diagnostic.py replay_pool_v2.py tests/test_auto_experiment_loop.py tests/test_smart_money_flow.py tests/test_smart_money_flow_research.py tests/test_smart_money_component_diagnostic.py
       - name: Deterministic queue and decision tests
         run: PYTHONPATH=. python tests/test_auto_experiment_loop.py
       - name: Smart Money Flow deterministic tests
-        run: PYTHONPATH=. python tests/test_smart_money_flow.py && PYTHONPATH=. python tests/test_smart_money_flow_research.py
+        run: PYTHONPATH=. python tests/test_smart_money_flow.py && PYTHONPATH=. python tests/test_smart_money_flow_research.py && PYTHONPATH=. python tests/test_smart_money_component_diagnostic.py
       - name: UI syntax checks
         run: node --check static/auto_experiment_queue.js && node --check static/lab_dashboard.js

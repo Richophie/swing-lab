@@ -16,6 +16,7 @@ on:
       - 'portfolio_flow_selection_diagnostic.py'
       - 'smart_money_flow.py'
       - 'smart_money_flow_research.py'
+      - 'smart_money_component_diagnostic.py'
       - 'research_journal.py'
       - '.github/workflows/replay-lab-v2.yml'
   schedule:
@@ -227,7 +228,31 @@ jobs:
           print('smart money OOS PASS',[(f['id'],f['summary']['pattern'],f['summary']['best_fixed_filter']) for f in d['families']])
           PY
 
-      - name: 10. Build human-readable AI research journal snapshot
+      - name: 10. Diagnose Smart Money component attribution
+        run: python smart_money_component_diagnostic.py
+      - name: Validate Smart Money component diagnostic
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('static/smart_money_component_diagnostic.json').read_text(encoding='utf-8'))
+          assert d.get('ready') is True
+          assert d.get('promotion_status') == 'diagnostic_only_no_rank_mutation'
+          m=d.get('method') or {}
+          assert m.get('component_threshold_uses_returns') is False
+          assert m.get('production_main_picker_mutated') is False
+          assert m.get('automatic_promotion') is False
+          assert len(d.get('families') or []) == 3
+          allowed={'component_repeats_development_only','mixed_component_signal','no_repeating_component'}
+          for f in d['families']:
+              assert len(f.get('folds') or []) >= 3
+              assert f.get('summary',{}).get('pattern') in allowed
+              variants=f.get('summary',{}).get('variants') or {}
+              assert {'baseline','total_strong','participation_q75','absorption_q75','liquidity_q75','participation_absorption_joint'} <= set(variants)
+          print('smart money component PASS',[(f['id'],f['summary']['pattern'],f['summary']['dominant_component_variant']) for f in d['families']])
+          PY
+
+      - name: 11. Build human-readable AI research journal snapshot
         run: python research_journal.py
       - name: Validate research journal
         run: |
@@ -249,7 +274,7 @@ jobs:
         run: |
           git config user.name "swing-lab-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add static/replay_backtest_pool_v2.json static/strategy_optimizer_results.json static/strategy_selection_results.json static/portfolio_walkforward_results.json static/portfolio_regime_results.json static/portfolio_volatility_diagnostic.json static/portfolio_priority_audit.json static/portfolio_flow_selection_diagnostic.json static/smart_money_flow_research.json static/research_journal.json
+          git add static/replay_backtest_pool_v2.json static/strategy_optimizer_results.json static/strategy_selection_results.json static/portfolio_walkforward_results.json static/portfolio_regime_results.json static/portfolio_volatility_diagnostic.json static/portfolio_priority_audit.json static/portfolio_flow_selection_diagnostic.json static/smart_money_flow_research.json static/smart_money_component_diagnostic.json static/research_journal.json
           if git diff --cached --quiet; then
             echo "No research data changes"
             exit 0
