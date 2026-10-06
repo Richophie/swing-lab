@@ -81,22 +81,33 @@ def generate(walkforward: dict, regime: dict, volatility: dict, priority: dict, 
         grade = str(s.get("grade") or "C")
         vf = vol_map.get(family_id) or {}
         vs = vf.get("summary") or {}
-        pattern = str(vs.get("green_high_vol_drag_pattern") or "weak")
-        if grade != "C" and pattern == "weak":
+        states = vs.get("states") or {}
+        high = states.get("green_high_vol") or {}
+        low = states.get("green_low_vol") or {}
+        mid = states.get("green_mid_vol") or {}
+        high_stitched = num(high.get("stitched_state_sleeve_return_pct"))
+        low_stitched = num(low.get("stitched_state_sleeve_return_pct"))
+        mid_stitched = num(mid.get("stitched_state_sleeve_return_pct"))
+        high_positive = int(num(high.get("positive_avg_trade_folds")))
+        high_folds = int(num(high.get("folds_with_signals")))
+        high_advantage = high_stitched - max(low_stitched, mid_stitched)
+        if high_folds < 4 or high_positive < 4 or high_advantage <= 5.0:
             continue
-        bump = {"strong": 12, "mixed": 7, "weak": 0}.get(pattern, 0)
-        priority_score = 82 + bump + (5 if grade == "C" else 0)
-        fp = stamp(walkforward.get("generated_at"), volatility.get("generated_at"), family_id, grade, pattern)
+        priority_score = 78 + min(12, int(max(0.0, high_advantage) / 10.0))
+        fp = stamp(
+            walkforward.get("generated_at"), volatility.get("generated_at"),
+            family_id, grade, high_stitched, low_stitched, mid_stitched, high_positive,
+        )
         out.append(proposal(
-            "adaptive_volatility_sizing",
-            "adaptive_volatility_sizing",
+            "volatility_state_sizing_v2",
+            "adaptive_volatility_state_sizing",
             family,
             priority_score,
-            f"{family.get('name')}의 고변동 구간 노출을 TRAIN에서만 조절하면 다음 구간 재현성이 개선되는가?",
-            f"Walk-forward {grade}등급 · 플러스 구간 {int(num(s.get('positive_folds')))}/{int(num(s.get('fold_count')))} · 고변동 drag 패턴 {pattern}.",
-            "각 rolling fold의 TRAIN에서 고변동 risk 배수 1.0/0.75/0.5/0.0 중 하나를 선택하고, 고정한 배수를 다음 해 TEST에 그대로 적용해 기존 1.0과 비교합니다.",
+            f"{family.get('name')}에서 고변동을 줄이는 대신 저·중변동 노출만 줄이면 다음 구간 성과가 개선되는가?",
+            f"고변동 sleeve {high_stitched:+.2f}% · 저변동 {low_stitched:+.2f}% · 중변동 {mid_stitched:+.2f}% · 고변동 평균거래 플러스 fold {high_positive}/{high_folds}.",
+            "각 rolling fold TRAIN에서 baseline / 저변동 0.5배 / 저·중변동 0.5·0.75배 / 고변동 중심 0.25·0.5·1.0 중 하나를 선택하고 다음 해 TEST에 고정 적용합니다. 1배를 넘겨 위험을 키우지는 않습니다.",
             fp,
-            {"risk_multipliers": [1.0, 0.75, 0.5, 0.0], "trigger_grade": grade, "vol_pattern": pattern},
+            {"profile_family": "green_vol_state_reallocation_v2"},
         ))
 
     for family_id, family in reg_map.items():
