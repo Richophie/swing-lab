@@ -14,9 +14,11 @@ from smart_money_flow import score_live_flow
 
 POOL = Path("static/replay_backtest_pool_v2.json")
 OUT = Path("static/smart_money_component_diagnostic.json")
-COMPONENTS = ("participation", "absorption", "liquidity")
+SCORE_COMPONENTS = ("participation", "absorption", "liquidity")
+ATTRIBUTION_COMPONENTS = ("participation", "absorption", "dollar_volume")
 QUANTILE = 0.75
 STRONG_SCORE = 75.0
+LIQUIDITY_FLOOR_DOLLARS = 75_000_000.0
 
 
 def metric(x: dict) -> dict:
@@ -94,6 +96,7 @@ def rows_for_family(candidates: list[dict], family: dict, thresholds: dict, inte
         row = dict(raw)
         row["_smart_money_score"] = c["_smart_money_score"]
         row["_smart_money_components"] = dict(c["_smart_money_components"])
+        row["_avg_dollar_volume_20d"] = float(c.get("_avg_dollar_volume_20d") or 0.0)
         rows.append(row)
     return rows
 
@@ -122,9 +125,13 @@ def train_component_thresholds(rows: list[dict], fold: dict) -> dict:
         and opt.parse_day(r["end_date"]) <= fold["train_end"]
     ]
     out = {}
-    for component in COMPONENTS:
+    for component in ("participation", "absorption"):
         vals = [float((r.get("_smart_money_components") or {}).get(component) or 0.0) for r in train_rows]
         out[component] = percentile(vals, QUANTILE)
+    dollar_values = [float(r.get("_avg_dollar_volume_20d") or 0.0) for r in train_rows]
+    out["dollar_volume"] = percentile(dollar_values, QUANTILE)
+    liquidity_scores = [float((r.get("_smart_money_components") or {}).get("liquidity") or 0.0) for r in train_rows]
+    out["liquidity_score"] = percentile(liquidity_scores, QUANTILE)
     return out
 
 
@@ -133,7 +140,7 @@ def filter_rows(rows: list[dict], variant: str, thresholds: dict) -> list[dict]:
         return list(rows)
     if variant == "total_strong":
         return [r for r in rows if float(r.get("_smart_money_score") or 0.0) >= STRONG_SCORE]
-    if variant.endswith("_q75"):
+    if variant in {"participation_q75", "absorption_q75"}:
         component = variant[:-4]
         threshold = thresholds.get(component)
         if threshold is None:
@@ -142,6 +149,13 @@ def filter_rows(rows: list[dict], variant: str, thresholds: dict) -> list[dict]:
             r for r in rows
             if float((r.get("_smart_money_components") or {}).get(component) or 0.0) >= float(threshold)
         ]
+    if variant == "dollar_volume_q75":
+        threshold = thresholds.get("dollar_volume")
+        if threshold is None:
+            return []
+        return [r for r in rows if float(r.get("_avg_dollar_volume_20d") or 0.0) >= float(threshold)]
+    if variant == "liquidity_floor_75m":
+        return [r for r in rows if float(r.get("_avg_dollar_volume_20d") or 0.0) >= LIQUIDITY_FLOOR_DOLLARS]
     if variant == "participation_absorption_joint":
         p = thresholds.get("participation")
         a = thresholds.get("absorption")
@@ -160,7 +174,8 @@ VARIANTS = (
     "total_strong",
     "participation_q75",
     "absorption_q75",
-    "liquidity_q75",
+    "dollar_volume_q75",
+    "liquidity_floor_75m",
     "participation_absorption_joint",
 )
 
@@ -180,8 +195,12 @@ def family_fold(family: dict, candidates: list[dict], fold: dict, executed) -> d
             for sid in family["strategies"]
         },
         "component_q75_thresholds": {
-            k: None if v is None else round(float(v), 3) for k, v in component_thresholds.items()
+            "participation": None if component_thresholds.get("participation") is None else round(float(component_thresholds["participation"]), 3),
+            "absorption": None if component_thresholds.get("absorption") is None else round(float(component_thresholds["absorption"]), 3),
+            "dollar_volume": None if component_thresholds.get("dollar_volume") is None else round(float(component_thresholds["dollar_volume"]), 2),
         },
+        "liquidity_score_q75_diagnostic": None if component_thresholds.get("liquidity_score") is None else round(float(component_thresholds["liquidity_score"]), 3),
+        "liquidity_floor_dollars": LIQUIDITY_FLOOR_DOLLARS,
         "variants": {},
     }
     for variant in VARIANTS:
@@ -193,10 +212,14 @@ def family_fold(family: dict, candidates: list[dict], fold: dict, executed) -> d
         }
 
     base = out["variants"]["baseline"]
+    base_signals = int((base.get("concentration") or {}).get("eligible_signals") or 0)
+    base["retention_vs_baseline_pct"] = 100.0
     for variant in VARIANTS[1:]:
         v = out["variants"][variant]
         v["delta_return_vs_baseline_pct"] = round(v["return_pct"] - base["return_pct"], 2)
         v["delta_mdd_vs_baseline_pct"] = round(v["mdd_pct"] - base["mdd_pct"], 2)
+        signals = int((v.get("concentration") or {}).get("eligible_signals") or 0)
+        v["retention_vs_baseline_pct"] = round(signals / base_signals * 100.0, 2) if base_signals else 0.0
     return out
 
 
@@ -205,6 +228,7 @@ def summarize_variant(folds: list[dict], variant: str) -> dict:
     returns = [x["return_pct"] for x in rows]
     mdds = [x["mdd_pct"] for x in rows]
     concentrations = [x["concentration"]["top_symbol_share_pct"] for x in rows if x["concentration"]["eligible_signals"]]
+    retentions = [float(x.get("retention_vs_baseline_pct") or 0.0) for x in rows]
     out = {
         "fold_count": len(rows),
         "positive_folds": sum(x > 0 for x in returns),
@@ -214,6 +238,7 @@ def summarize_variant(folds: list[dict], variant: str) -> dict:
         "total_test_trades": sum(x["trades"] for x in rows),
         "median_top_symbol_share_pct": round(median(concentrations), 2) if concentrations else 0.0,
         "max_top_symbol_share_pct": round(max(concentrations), 2) if concentrations else 0.0,
+        "median_retention_vs_baseline_pct": round(median(retentions), 2) if retentions else 0.0,
     }
     if variant != "baseline":
         deltas = [f["variants"][variant]["delta_return_vs_baseline_pct"] for f in folds]
@@ -235,7 +260,7 @@ def summarize(folds: list[dict]) -> dict:
             variants[name]["stitched_test_return_pct"] - base_stitched, 2
         )
 
-    components = ["participation_q75", "absorption_q75", "liquidity_q75"]
+    components = ["participation_q75", "absorption_q75", "dollar_volume_q75"]
     dominant = max(
         components,
         key=lambda name: (
@@ -266,6 +291,7 @@ def summarize(folds: list[dict]) -> dict:
                     "delta_return_vs_baseline_pct": fold["variants"][name].get("delta_return_vs_baseline_pct"),
                     "trades": fold["variants"][name]["trades"],
                     "top_symbol_share_pct": fold["variants"][name]["concentration"]["top_symbol_share_pct"],
+                    "retention_vs_baseline_pct": fold["variants"][name].get("retention_vs_baseline_pct"),
                     "top_symbols": fold["variants"][name]["concentration"]["top_symbols"][:3],
                 }
                 for name in VARIANTS
@@ -293,8 +319,9 @@ def main() -> None:
         scored = score_live_flow(c.get("smart_money_flow") or {})
         c["_smart_money_score"] = float(scored.get("score") or 0.0)
         c["_smart_money_components"] = {
-            k: float((scored.get("components") or {}).get(k) or 0.0) for k in COMPONENTS
+            k: float((scored.get("components") or {}).get(k) or 0.0) for k in SCORE_COMPONENTS
         }
+        c["_avg_dollar_volume_20d"] = float((c.get("smart_money_flow") or {}).get("avg_dollar_volume_20d") or 0.0)
 
     start = opt.parse_day(pool["available_start"])
     end = opt.parse_day(pool["available_end"])
@@ -322,15 +349,17 @@ def main() -> None:
         })
 
     payload = {
-        "version": 1,
+        "version": 2,
         "ready": True,
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "pool_generated_at": pool.get("generated_at"),
         "promotion_status": "diagnostic_only_no_rank_mutation",
         "method": {
             "type": "rolling OOS Smart Money component attribution diagnostic",
-            "component_thresholds": "75th percentile of each component distribution on each fold TRAIN only",
+            "component_thresholds": "participation/absorption score q75 and raw 20d dollar-volume q75 from each fold TRAIN only",
             "component_threshold_uses_returns": False,
+            "liquidity_score_saturation": "live liquidity component reaches 100 at >= $75m 20d average dollar volume; raw dollar volume is used for true q75 attribution",
+            "liquidity_floor_variant": "$75m 20d average dollar volume minimum, matching the live-score saturation point",
             "total_strong_threshold": STRONG_SCORE,
             "quality_selection": "existing quality intensity selected on TRAIN only",
             "test": "next calendar year report only",
@@ -339,6 +368,7 @@ def main() -> None:
             "buy_target_stop_mutated": False,
             "automatic_promotion": False,
             "warning": "current-universe survivorship bias remains; this is development attribution evidence",
+            "interpretation_guard": "a variant retaining most baseline signals is a floor/removal effect, not evidence of a strong ranking factor",
         },
         "available_start": str(start),
         "available_end": str(end),
