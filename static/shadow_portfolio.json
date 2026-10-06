@@ -1,7 +1,7 @@
 {
   "version": 1,
   "starting_cash_krw": 3000000.0,
-  "cash_krw": 1695796.87,
+  "cash_krw": 1038896.51,
   "orders": [
     {
       "id": "PAPER-56B72AC20AF2",
@@ -1295,7 +1295,7 @@
       "atr": 9.745342,
       "gap_guard": 7.309006,
       "max_hold_bars": 8,
-      "held_bars": 1,
+      "held_bars": 2,
       "qty": 1,
       "planned_entry_usd": 363.14,
       "planned_notional_krw": 493917.61,
@@ -1303,7 +1303,7 @@
       "planned_risk_krw": 21340.44,
       "reserved_cash_krw": 0.0,
       "fx_at_submit": 1360.13,
-      "last_processed_date": "2026-10-05",
+      "last_processed_date": "2026-10-06",
       "commission_pct_per_side": 0.1,
       "slippage_bps": 5.0,
       "half_spread_bps": 2.5,
@@ -1342,9 +1342,9 @@
       "entry_commission_krw": 489.22,
       "entry_cost_krw": 489706.92,
       "fx_at_entry": 1346.66,
-      "last_fx": 1344.38,
+      "last_fx": 1338.27,
       "filled_at": "2026-10-02T18:11:41+00:00",
-      "last_close_usd": 363.380005
+      "last_close_usd": 359.984985
     },
     {
       "id": "PAPER-F6643E1C0E7E",
@@ -1440,7 +1440,7 @@
       "atr": 0.346667,
       "gap_guard": 0.26,
       "max_hold_bars": 5,
-      "held_bars": 1,
+      "held_bars": 2,
       "qty": 41,
       "planned_entry_usd": 13.28,
       "planned_notional_krw": 740563.58,
@@ -1448,7 +1448,7 @@
       "planned_risk_krw": 28997.97,
       "reserved_cash_krw": 0.0,
       "fx_at_submit": 1360.13,
-      "last_processed_date": "2026-10-05",
+      "last_processed_date": "2026-10-06",
       "commission_pct_per_side": 0.1,
       "slippage_bps": 5.0,
       "half_spread_bps": 2.5,
@@ -1487,16 +1487,16 @@
       "entry_commission_krw": 726.32,
       "entry_cost_krw": 727046.35,
       "fx_at_entry": 1346.66,
-      "last_fx": 1344.38,
+      "last_fx": 1338.27,
       "filled_at": "2026-10-02T18:11:42+00:00",
-      "last_close_usd": 13.9
+      "last_close_usd": 14.045
     },
     {
       "id": "PAPER-8A68F2EA3569",
       "symbol": "NTR",
       "strategy_id": "confirmed_pullback",
       "strategy_name": "확인형 눌림반등",
-      "status": "PENDING",
+      "status": "FILLED",
       "created_at": "2026-10-06T01:39:38+00:00",
       "submitted_market_date": "2026-10-05",
       "signal_date": "2026-10-05",
@@ -1513,9 +1513,9 @@
       "planned_notional_krw": 661569.4,
       "risk_budget_krw": 29504.8,
       "planned_risk_krw": 29455.37,
-      "reserved_cash_krw": 662230.97,
+      "reserved_cash_krw": 0.0,
       "fx_at_submit": 1344.38,
-      "last_processed_date": "2026-10-05",
+      "last_processed_date": "2026-10-06",
       "commission_pct_per_side": 0.1,
       "slippage_bps": 5.0,
       "half_spread_bps": 2.5,
@@ -1545,7 +1545,18 @@
         "checked_at": "2026-10-06T01:38:02+00:00"
       },
       "atr_source": "derived_from_stop_atr_multiple",
-      "risk_observability_only": true
+      "risk_observability_only": true,
+      "entry_date": "2026-10-06",
+      "entry_fill_usd": 70.0525,
+      "entry_raw_open_usd": 70.0,
+      "entry_timestamp": "2026-10-06T09:30:00-04:00",
+      "entry_resolution_quality": "next_open",
+      "entry_commission_krw": 656.24,
+      "entry_cost_krw": 656900.36,
+      "fx_at_entry": 1338.27,
+      "last_fx": 1338.27,
+      "filled_at": "2026-10-06T18:46:07+00:00",
+      "last_close_usd": 71.199997
     }
   ],
   "events": [
@@ -2004,6 +2015,14 @@
       "strategy_id": "confirmed_pullback",
       "event": "SUBMITTED",
       "detail": "다음 거래일 시가 대기 · 7주 · BUY 69.88~70.72"
+    },
+    {
+      "at": "2026-10-06T18:46:07+00:00",
+      "order_id": "PAPER-8A68F2EA3569",
+      "symbol": "NTR",
+      "strategy_id": "confirmed_pullback",
+      "event": "FILLED",
+      "detail": "7주 · $70.0525 · 656,900원 · next_open"
     }
   ],
   "shadow_decisions": [
@@ -6510,7 +6529,7 @@
     }
   ],
   "created_at": "2026-08-13T10:30:00+00:00",
-  "updated_at": "2026-10-06T01:39:38+00:00",
+  "updated_at": "2026-10-06T18:46:08+00:00",
   "live_trading_enabled": false,
   "lab_meta": {
     "version": 2,
@@ -6519,10 +6538,10 @@
     "allocator": "risk_reward_priority",
     "human_intervention": false,
     "live_trading_enabled": false,
-    "last_run_at": "2026-10-06T01:39:38+00:00",
+    "last_run_at": "2026-10-06T18:46:08+00:00",
     "last_ingest": {
-      "submitted": 1,
-      "skipped": 3
+      "submitted": 0,
+      "skipped": 0
     },
     "track_id": "A_NEXT_OPEN",
     "track_label": "A · 다음 시가형",
