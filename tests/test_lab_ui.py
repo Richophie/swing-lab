@@ -155,11 +155,6 @@ def test_paper_mark_ui_keeps_holding_visible():
     assert 'unrealized_pnl_krw' in js
 
 
-def main():
-    test_lab_loader_and_paper_marks();test_replay_lab_wiring();test_beginner_front_and_korean_market_palette();test_walkforward_ui_is_loaded();test_regime_walkforward_ui_is_loaded();test_volatility_diagnostic_ui_is_loaded();test_priority_audit_ui_is_loaded();test_frozen_priority_challenger_ui_is_loaded();test_candidate_capital_v2_ui_is_loaded();test_lab_sections_are_hoisted_out_of_detail_overlay();test_paper_mark_ui_keeps_holding_visible();print('lab ui PASS')
-
-
-if __name__=='__main__':main()
 def test_shadow_ledger_can_recover_from_stalled_api_and_show_both_tracks():
     ui=(ROOT/'static'/'ui_controls.js').read_text(encoding='utf-8')
     html=(ROOT/'static'/'dashboard.html').read_text(encoding='utf-8')
@@ -171,3 +166,10 @@ def test_shadow_ledger_can_recover_from_stalled_api_and_show_both_tracks():
     assert 'host.dataset.loaded' in ui
     assert '연구장부를 표시하지 못했어요' in ui
     assert '/static/ui_controls.js?v=20261015-shadow-1' in html
+
+
+def main():
+    test_lab_loader_and_paper_marks();test_replay_lab_wiring();test_beginner_front_and_korean_market_palette();test_walkforward_ui_is_loaded();test_regime_walkforward_ui_is_loaded();test_volatility_diagnostic_ui_is_loaded();test_priority_audit_ui_is_loaded();test_frozen_priority_challenger_ui_is_loaded();test_candidate_capital_v2_ui_is_loaded();test_lab_sections_are_hoisted_out_of_detail_overlay();test_paper_mark_ui_keeps_holding_visible();test_shadow_ledger_can_recover_from_stalled_api_and_show_both_tracks();print('lab ui PASS')
+
+
+if __name__=='__main__':main()
