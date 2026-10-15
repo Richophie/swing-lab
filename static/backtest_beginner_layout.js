@@ -166,7 +166,8 @@
   }
 
   function simplifyResult(root, explicitResult=null) {
-    const result=root.querySelector('#btLabResult');
+    // Accept either the page container (observer path) or the result node (Worker path).
+    const result=root.matches?.('#btLabResult')?root:root.querySelector('#btLabResult');
     if(!result||result.dataset.beginnerLayout==='1')return;
     const layout=result.querySelector('.bt-result-layout');
     if(!layout)return;
