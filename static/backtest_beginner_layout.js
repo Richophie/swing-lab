@@ -188,7 +188,7 @@
     warning.className='bt-beginner-paper-note';
     const firstFill=rows.reduce((x,row)=>!row.start_date?x:!x||row.start_date<x?row.start_date:x,'');
     const lastFill=rows.reduce((x,row)=>!row.end_date?x:!x||row.end_date>x?row.end_date:x,'');
-    warning.textContent='※ 과거 데이터를 이용한 가상 체결입니다. 실제 주문이 아니며 미래 수익을 보장하지 않습니다.'+(firstFill&&lastFill?' 실제 체결 발생 구간: '+firstFill+' ~ '+lastFill+'.':'');
+    warning.textContent='※ 과거 데이터를 이용한 가상 체결입니다. 실제 주문이 아니며 미래 수익을 보장하지 않습니다.'+(firstFill&&lastFill?' 가상 거래 기록이 있는 기간: '+firstFill+' ~ '+lastFill+'.':'');
     summary.prepend(warning);
     const analysis=document.createElement('section');
     analysis.className='bt-beginner-analysis';
