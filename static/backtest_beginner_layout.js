@@ -165,13 +165,12 @@
     });
   }
 
-  function simplifyResult(root) {
-    const result=root.querySelector('#btLabResult');
+  function simplifyResult(root, explicitResult=null) {
+    // Accept either the page container (observer path) or the result node (Worker path).
+    const result=root.matches?.('#btLabResult')?root:root.querySelector('#btLabResult');
     if(!result||result.dataset.beginnerLayout==='1')return;
     const layout=result.querySelector('.bt-result-layout');
     if(!layout)return;
-    result.dataset.beginnerLayout='1';
-    result.classList.add('bt-beginner-result');
     const intro=result.querySelector('.bt-result-head p');
     if(intro)intro.textContent='수익률 → 위험 → 손실 원인 순서로 읽으면 됩니다. 세부 자료는 필요할 때만 펼치세요.';
     result.querySelector('.bt-read-order')?.remove();
@@ -179,13 +178,17 @@
     if(!content)return;
     const summary=content.querySelector('[data-worker-pane="summary"],[data-bt-pane="summary"]');
     if(!summary)return;
-    const data=(window.__beginnerBacktestResult&&window.__beginnerBacktestResult.result)||
+    result.dataset.beginnerLayout='1';
+    result.classList.add('bt-beginner-result');
+    const data=explicitResult||(window.__beginnerBacktestResult&&window.__beginnerBacktestResult.result)||
       (window.__lastSwingReplay&&window.__lastSwingReplay.result)||null;
     const rows=data&&Array.isArray(data.accepted)?data.accepted:[];
     simplifyPrimary(summary,rows);
     const warning=document.createElement('div');
     warning.className='bt-beginner-paper-note';
-    warning.textContent='※ 과거 데이터를 이용한 가상 체결 결과입니다. 실제 주문·미래 수익 보장이 아닙니다.';
+    const firstFill=rows.reduce((x,row)=>!row.start_date?x:!x||row.start_date<x?row.start_date:x,'');
+    const lastFill=rows.reduce((x,row)=>!row.end_date?x:!x||row.end_date>x?row.end_date:x,'');
+    warning.textContent='※ 과거 데이터를 이용한 가상 체결입니다. 실제 주문이 아니며 미래 수익을 보장하지 않습니다.'+(firstFill&&lastFill?' 가상 거래 기록이 있는 기간: '+firstFill+' ~ '+lastFill+'.':'');
     summary.prepend(warning);
     const analysis=document.createElement('section');
     analysis.className='bt-beginner-analysis';
@@ -212,6 +215,10 @@
       if(key==='trades')prepareTrades(section);
     }
   }
+
+  // Worker renderer invokes this synchronously after writing its result. The observer
+  // remains a fallback for legacy and non-worker backtests.
+  window.SwingBacktestBeginner={apply:(root,data)=>simplifyResult(root,data)};
 
   function upgrade() {
     const root=document.getElementById(PAGE);

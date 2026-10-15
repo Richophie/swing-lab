@@ -31,7 +31,8 @@ def test_current_forward_gate_waits_for_real_forward_sample():
     assert report['status'] == 'FORWARD_PROMOTION_REVIEW'
     assert report['gate'] == 'WAIT_FORWARD_SAMPLE'
     assert report['minimum_closed_trades_required'] == 30
-    assert report['minimum_closed_trades_observed'] == 0
+    # Forward samples accumulate over time; zero is not a permanent invariant.
+    assert 0 <= report['minimum_closed_trades_observed'] < report['minimum_closed_trades_required']
     assert report['paper_infrastructure']['ready'] is True
     assert report['paper_infrastructure']['mode'] == 'LOCAL_SIMULATED_ONLY'
     assert report['paper_infrastructure']['real_broker_connected'] is False

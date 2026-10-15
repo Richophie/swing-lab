@@ -21,7 +21,11 @@ def main() -> None:
     assert "SwingReplayWorker.run" in ui
     assert "await window.SwingReplayWorker.run" in ui
     assert "worker_result_ui.js" in loader
-    assert "v=20260816-2" in html
+    assert "/static/lab_dashboard.js?v=" in html
+    assert "backtest_beginner_layout.js" in loader
+    assert "SwingBacktestBeginner?.apply(root,r)" in text("worker_result_ui.js")
+    assert "window.SwingBacktestBeginner={apply:" in text("backtest_beginner_layout.js")
+    assert "root.matches?.('#btLabResult')" in text("backtest_beginner_layout.js")
     assert "globalThis.SwingSequenceReplay" in math
     assert "replay_backtest_pool_v2.json" in worker
     assert "SwingSequenceReplay.run(rows" in worker
