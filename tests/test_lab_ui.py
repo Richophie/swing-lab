@@ -160,3 +160,14 @@ def main():
 
 
 if __name__=='__main__':main()
+def test_shadow_ledger_can_recover_from_stalled_api_and_show_both_tracks():
+    ui=(ROOT/'static'/'ui_controls.js').read_text(encoding='utf-8')
+    html=(ROOT/'static'/'dashboard.html').read_text(encoding='utf-8')
+    assert 'MutationObserver(()=>{if(section.style.display' in ui
+    assert "readShadowJSON('/api/shadow')" in ui
+    assert 'savedShadowFallback' in ui
+    assert 'shadow_portfolio.json' in ui and 'shadow_portfolio_touch.json' in ui
+    assert 'A_NEXT_OPEN' in ui and 'B_BUY_TOUCH' in ui
+    assert 'host.dataset.loaded' in ui
+    assert '연구장부를 표시하지 못했어요' in ui
+    assert '/static/ui_controls.js?v=20261015-shadow-1' in html
