@@ -28,7 +28,10 @@
   function ensureLab(){
     const shell=document.querySelector('.shell'),detail=document.getElementById('detail');if(!shell||!detail)return null;
     let section=document.getElementById('lab');if(section)return section;
-    section=document.createElement('section');section.id='lab';section.style.display='none';section.innerHTML=`<article class="panel"><div class="panel-head"><div><div class="eyebrow">SHADOW PORTFOLIO · 사람 개입 없음</div><h2>자동거래연구소</h2><p class="paper-head-note">미국장 마감 후 확정된 공식 추천만 300만원 연구계좌에 자동 입력합니다. 다음 거래일 시가·STOP·TARGET·기간종료를 동일 규칙으로 처리하고 사람이 중간에 손대지 않습니다.</p></div><button class="btn" id="labReload">연구장부 새로고침</button></div><div id="labBody"><div class="paper-empty">자동 연구계좌를 불러오는 중…</div></div></article>`;detail.parentNode.insertBefore(section,detail);section.querySelector('#labReload').onclick=()=>loadLab(true);return section;
+    section=document.createElement('section');section.id='lab';section.style.display='none';section.innerHTML=`<article class="panel"><div class="panel-head"><div><div class="eyebrow">SHADOW PORTFOLIO · 사람 개입 없음</div><h2>자동거래연구소</h2><p class="paper-head-note">미국장 마감 후 확정된 공식 추천만 300만원 연구계좌에 자동 입력합니다. 다음 거래일 시가·STOP·TARGET·기간종료를 동일 규칙으로 처리하고 사람이 중간에 손대지 않습니다.</p></div><button class="btn" id="labReload">연구장부 새로고침</button></div><div id="labBody"><div class="paper-empty">자동 연구계좌를 불러오는 중…</div></div></article>`;detail.parentNode.insertBefore(section,detail);section.querySelector('#labReload').onclick=()=>loadLab(true);
+    const showObserver=new MutationObserver(()=>{if(section.style.display!=='none'&&section.querySelector('#labBody')?.dataset.loaded!=='1')loadLab(false)});
+    showObserver.observe(section,{attributes:true,attributeFilter:['style']});
+    return section;
   }
 
   function relabel(){
@@ -53,10 +56,78 @@
 
   function shadowStatusLabel(s){return({PENDING:'다음 시가 대기',FILLED:'자동 보유',CLOSED:'자동 종료',CANCELLED:'자동 취소',REJECTED:'거절'})[s]||s||'—'}
   function shadowOrder(o){const pnl=num(o.pnl_krw),ret=num(o.return_pct),entry=o.entry_fill_usd??o.planned_entry_usd;return `<div class="lab-order"><div class="lab-order-top"><div><b>${esc(o.name_ko||o.symbol)} · ${esc(o.symbol)}</b><div class="ticker">${esc(o.strategy_name||o.strategy_id)} · ${esc(o.signal_date||'')}</div></div><span class="paper-status ${String(o.status||'').toLowerCase()}">${esc(shadowStatusLabel(o.status))}</span></div><div class="lab-order-grid"><div><span>수량</span><b>${Number(o.qty||0).toLocaleString()}주</b></div><div><span>진입</span><b>${usd(entry)}</b></div><div><span>TARGET</span><b>${usd(o.target)}</b></div><div><span>STOP</span><b>${usd(o.stop)}</b></div><div><span>손익</span><b>${pnl==null?'—':`${pnl>=0?'+':''}${krw(pnl)}${ret!=null?` · ${ret>=0?'+':''}${ret.toFixed(2)}%`:''}`}</b></div></div></div>`}
+  // The auto-research ledger is persisted in GitHub by Market Scan Cache.
+  // Prefer the live server snapshot; if Render is asleep/unreachable, render the
+  // latest committed ledger as a clearly labelled read-only fallback.
+  async function readShadowJSON(url,timeoutMs=14000){
+    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeoutMs);
+    try{
+      const response=await fetch(url,{cache:'no-store',signal:controller.signal});
+      if(!response.ok)throw new Error('HTTP '+response.status);
+      const data=await response.json();
+      if(data?.error)throw new Error(String(data.error));
+      return data;
+    }finally{clearTimeout(timer)}
+  }
+  function fromSavedShadow(raw){
+    const orders=Array.isArray(raw.orders)?raw.orders:[];
+    const closed=orders.filter(x=>x.status==='CLOSED');
+    return {...raw,summary:{
+      equity_krw:null,
+      realized_pnl_krw:closed.reduce((a,x)=>a+(Number(x.pnl_krw)||0),0),
+      pending_orders:orders.filter(x=>x.status==='PENDING').length,
+      open_positions:orders.filter(x=>x.status==='FILLED').length,
+      closed_trades:closed.length
+    },lab_summary:{closed_orders:closed.length,total_orders:orders.length},lab_meta:raw.lab_meta||{}};
+  }
+  async function savedShadowFallback(){
+    const base='https://raw.githubusercontent.com/Richophie/swing-lab/main/static/';
+    const [a,b]=await Promise.all([
+      readShadowJSON(base+'shadow_portfolio.json?refresh='+Date.now()),
+      readShadowJSON(base+'shadow_portfolio_touch.json?refresh='+Date.now())
+    ]);
+    return {tracks:{A_NEXT_OPEN:fromSavedShadow(a),B_BUY_TOUCH:fromSavedShadow(b)},__savedFallback:true};
+  }
+  function shadowTime(v){
+    if(!v)return '저장시간 확인 불가';
+    const d=new Date(v);
+    return Number.isNaN(d.valueOf())?esc(v):esc(d.toLocaleString('ko-KR',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}));
+  }
+  function renderShadowTrack(name,state,isFallback){
+    const s=state.summary||{},l=state.lab_summary||{},orders=[...(state.orders||[])].reverse();
+    const time=shadowTime(state.updated_at||state.lab_meta?.last_run_at);
+    const investmentLabel=isFallback?'총 자산은 서버에서 확인':'연구 총자산';
+    return '<section class="lab-track-card"><div class="lab-track-head"><div><h3>'+esc(name)+'</h3><span>마지막 저장 '+time+'</span></div><span>'+orders.length+'건 기록 · 가상 주문</span></div>'+
+    '<div class="lab-track-stats"><div class="lab-track-stat"><span>'+investmentLabel+'</span><b>'+krw(s.equity_krw)+'</b></div>'+
+    '<div class="lab-track-stat"><span>확정 실현손익</span><b class="'+(Number(s.realized_pnl_krw)>=0?'up':'down')+'">'+krw(s.realized_pnl_krw)+'</b></div>'+
+    '<div class="lab-track-stat"><span>종료 거래</span><b>'+Number(l.closed_orders||s.closed_trades||0)+'건</b></div>'+
+    '<div class="lab-track-stat"><span>보유·대기 중</span><b>'+((Number(s.open_positions)||0)+(Number(s.pending_orders)||0))+'건</b></div></div>'+
+    '<details class="lab-shadow-orders"><summary>가상 주문 '+orders.length+'건 자세히 보기</summary><div class="lab-orders">'+orders.map(shadowOrder).join('')+'</div></details></section>';
+  }
   async function loadLab(force=false){
-    const host=document.getElementById('labBody');if(!host||labLoading)return;labLoading=true;if(force)host.innerHTML='<div class="paper-empty">연구장부를 다시 읽는 중…</div>';
-    try{const d=await api('/api/shadow'),s=d.summary||{},l=d.lab_summary||{},m=d.lab_meta||{},orders=[...(d.orders||[])].reverse();host.innerHTML=`<div class="lab-summary"><div class="lab-stat"><span>연구 총자산</span><b>${krw(s.equity_krw)}</b></div><div class="lab-stat"><span>실현손익</span><b>${num(s.realized_pnl_krw)>=0?'+':''}${krw(s.realized_pnl_krw)}</b></div><div class="lab-stat"><span>진행 포지션</span><b>${(s.pending_orders||0)+(s.open_positions||0)}개</b></div><div class="lab-stat"><span>종료 거래</span><b>${l.closed_orders||0}건</b></div></div><div class="lab-note"><b>자동연구 규칙</b> · ${esc(m.lab_start_date||'')}부터 마감 확정 공식추천만 사용 · 같은 날 후보가 많으면 손익비 우선 · 300만원 · 최대 3포지션 · 거래당 1% risk · STOP/TARGET/기간종료 자동 · 실적위험 스냅샷 저장 · <b>실제 증권 주문은 절대 전송하지 않음</b>.</div><div class="lab-orders">${orders.length?orders.map(shadowOrder).join(''):'<div class="paper-empty">아직 자동 연구주문이 없어요. 다음 미국장 마감 확정 추천부터 자동으로 쌓입니다.</div>'}</div>`}
-    catch(e){host.innerHTML=`<div class="paper-empty">${esc(e.message)}</div>`}finally{labLoading=false}
+    const host=document.querySelector('#lab #labBody');
+    if(!host||labLoading||(!force&&host.dataset.loaded==='1'))return;
+    labLoading=true;
+    host.innerHTML='<div class="paper-empty">저장된 자동 연구장부를 확인하는 중…</div>';
+    let data,serverError=null;
+    try{
+      try{data=await readShadowJSON('/api/shadow');}
+      catch(e){serverError=e;data=await savedShadowFallback();}
+      const tracks=data.tracks||{A_NEXT_OPEN:data};
+      const a=tracks.A_NEXT_OPEN||data,b=tracks.B_BUY_TOUCH;
+      const mode=data.__savedFallback
+        ?'<div class="lab-note"><b>GitHub 저장기록으로 대신 표시 중</b> · 서버 응답이 없어 마지막 저장 장부를 읽었어요. 진행 중인 포지션의 현재 평가금액은 계산하지 않았습니다. 서버 오류: '+esc(serverError?.message||'연결 실패')+'</div>'
+        :'<div class="lab-note"><b>자동 가상거래 · 실제 증권 주문 없음</b> · 공식 마감 신호를 기준으로 두 진입 방식의 연구장부를 비교합니다.</div>';
+      host.innerHTML='<div class="lab-shadow-ledger">'+mode+
+        '<div class="lab-ab-grid">'+renderShadowTrack('A · 다음 거래일 시가 진입',a,!!data.__savedFallback)+
+        (b?renderShadowTrack('B · 다음 거래일 매수가 터치',b,!!data.__savedFallback):'')+'</div>'+
+        '<div class="lab-note">과거에 저장된 가상 매매 기록입니다. 결과가 개선된다고 실계좌 주문이나 전략이 자동 변경되지는 않습니다.</div></div>';
+      host.dataset.loaded='1';
+    }catch(e){
+      host.dataset.loaded='0';
+      host.innerHTML='<div class="paper-empty"><b>연구장부를 표시하지 못했어요.</b><p>서버와 GitHub 저장기록 연결을 모두 확인하지 못했습니다. 장부가 삭제됐다는 뜻은 아니에요.</p><small>'+esc(e?.message||e)+'</small> <button type="button" id="shadowLoadRetry" class="btn">다시 불러오기</button> <a href="https://github.com/Richophie/swing-lab/blob/main/static/shadow_portfolio.json" target="_blank" rel="noopener">GitHub 저장장부 보기</a></div>';
+      host.querySelector('#shadowLoadRetry')?.addEventListener('click',()=>loadLab(true));
+    }finally{labLoading=false}
   }
 
   function getDetail(){try{return typeof detailData!=='undefined'?detailData:null}catch{return null}}
