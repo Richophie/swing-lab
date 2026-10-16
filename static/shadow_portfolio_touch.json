@@ -2096,6 +2096,62 @@
       "cancel_date": "2026-10-16",
       "cancel_reason": "다음 거래일 장중 BUY 구간 미도달",
       "closed_at": "2026-10-16T17:10:20+00:00"
+    },
+    {
+      "id": "PAPER-C773436506A2",
+      "symbol": "ING",
+      "strategy_id": "confirmed_pullback",
+      "strategy_name": "확인형 눌림반등",
+      "status": "PENDING",
+      "created_at": "2026-10-16T22:45:58+00:00",
+      "submitted_market_date": "2026-10-16",
+      "signal_date": "2026-10-16",
+      "buy_low": 32.91,
+      "buy_high": 33.19,
+      "target": 37.04,
+      "stop": 31.99,
+      "atr": 0.706667,
+      "gap_guard": 0.53,
+      "max_hold_bars": 8,
+      "held_bars": 0,
+      "qty": 19,
+      "planned_entry_usd": 33.05,
+      "planned_notional_krw": 837810.89,
+      "risk_budget_krw": 28280.87,
+      "planned_risk_krw": 26870.79,
+      "reserved_cash_krw": 838648.7,
+      "fx_at_submit": 1334.2,
+      "last_processed_date": "2026-10-16",
+      "commission_pct_per_side": 0.1,
+      "slippage_bps": 5.0,
+      "half_spread_bps": 2.5,
+      "live_order_sent": false,
+      "order_origin": "AUTO_CONFIRMED_CLOSE",
+      "signal_origin": "official_close_confirmed",
+      "shadow_signal_key": "2026-10-16|ING|confirmed_pullback",
+      "track_id": "B_BUY_TOUCH",
+      "entry_mode": "NEXT_SESSION_BUY_TOUCH",
+      "baseline_version": "baseline-v1.0-2026-08-13",
+      "app_version_at_signal": "16.5",
+      "core_version_at_signal": "4.4",
+      "market_state": "중립",
+      "official_score": 90.85,
+      "raw_strategy_score": 95,
+      "official_risk_reward": 3.8,
+      "official_selection_reason": "현재 자리 95 · 수급 82 · 손익비 3.76:1 · 비용후 3.32:1",
+      "event_risk_snapshot": {
+        "risk_code": "WITHIN_HOLD",
+        "risk_label": "보유기간 중 실적 가능 · 13일",
+        "earnings_date": "2026-10-29",
+        "days_until": 13,
+        "confidence": "confirmed",
+        "stale": false,
+        "hold_calendar_days": 13,
+        "source_day_diff": 0,
+        "checked_at": "2026-10-16T22:44:25+00:00"
+      },
+      "atr_source": "derived_from_stop_atr_multiple",
+      "risk_observability_only": true
     }
   ],
   "events": [
@@ -2722,6 +2778,14 @@
       "strategy_id": "confirmed_pullback",
       "event": "CANCELLED",
       "detail": "다음 거래일 장중 BUY 구간 미도달"
+    },
+    {
+      "at": "2026-10-16T22:45:58+00:00",
+      "order_id": "PAPER-C773436506A2",
+      "symbol": "ING",
+      "strategy_id": "confirmed_pullback",
+      "event": "SUBMITTED",
+      "detail": "다음 거래일 BUY 구간 터치 대기 · 19주 · BUY 32.91~33.19"
     }
   ],
   "shadow_decisions": [
@@ -7599,10 +7663,83 @@
       "at": "2026-10-15T20:52:07+00:00",
       "decision": "SKIPPED",
       "reason": "가상계좌 최대 동시 포지션 수에 도달했습니다"
+    },
+    {
+      "signal_key": "2026-10-16|ING|confirmed_pullback",
+      "market_date": "2026-10-16",
+      "symbol": "ING",
+      "strategy_id": "confirmed_pullback",
+      "strategy_name": "확인형 눌림반등",
+      "score": 90.85,
+      "risk_reward": 3.8,
+      "baseline_version": "baseline-v1.0-2026-08-13",
+      "track_id": "B_BUY_TOUCH",
+      "at": "2026-10-16T22:45:58+00:00",
+      "decision": "SUBMITTED",
+      "order_id": "PAPER-C773436506A2",
+      "atr": 0.706667,
+      "atr_source": "derived_from_stop_atr_multiple",
+      "gap_guard": 0.53
+    },
+    {
+      "signal_key": "2026-10-16|ANET|rsi2_trend_reversion",
+      "market_date": "2026-10-16",
+      "symbol": "ANET",
+      "strategy_id": "rsi2_trend_reversion",
+      "strategy_name": "RSI2 추세내 과매도",
+      "score": 82.65,
+      "risk_reward": 2.26,
+      "baseline_version": "baseline-v1.0-2026-08-13",
+      "track_id": "B_BUY_TOUCH",
+      "at": "2026-10-16T22:45:58+00:00",
+      "decision": "SKIPPED",
+      "reason": "가상계좌 최대 동시 포지션 수에 도달했습니다"
+    },
+    {
+      "signal_key": "2026-10-16|KEYS|rsi2_trend_reversion",
+      "market_date": "2026-10-16",
+      "symbol": "KEYS",
+      "strategy_id": "rsi2_trend_reversion",
+      "strategy_name": "RSI2 추세내 과매도",
+      "score": 83.85,
+      "risk_reward": 1.8,
+      "baseline_version": "baseline-v1.0-2026-08-13",
+      "track_id": "B_BUY_TOUCH",
+      "at": "2026-10-16T22:45:58+00:00",
+      "decision": "SKIPPED",
+      "reason": "가상계좌 최대 동시 포지션 수에 도달했습니다"
+    },
+    {
+      "signal_key": "2026-10-16|MFG|rsi2_trend_reversion",
+      "market_date": "2026-10-16",
+      "symbol": "MFG",
+      "strategy_id": "rsi2_trend_reversion",
+      "strategy_name": "RSI2 추세내 과매도",
+      "score": 80.75,
+      "risk_reward": 1.38,
+      "baseline_version": "baseline-v1.0-2026-08-13",
+      "track_id": "B_BUY_TOUCH",
+      "at": "2026-10-16T22:45:58+00:00",
+      "decision": "SKIPPED",
+      "reason": "가상계좌 최대 동시 포지션 수에 도달했습니다"
+    },
+    {
+      "signal_key": "2026-10-16|APH|rsi2_trend_reversion",
+      "market_date": "2026-10-16",
+      "symbol": "APH",
+      "strategy_id": "rsi2_trend_reversion",
+      "strategy_name": "RSI2 추세내 과매도",
+      "score": 84.45,
+      "risk_reward": 1.32,
+      "baseline_version": "baseline-v1.0-2026-08-13",
+      "track_id": "B_BUY_TOUCH",
+      "at": "2026-10-16T22:45:58+00:00",
+      "decision": "SKIPPED",
+      "reason": "가상계좌 최대 동시 포지션 수에 도달했습니다"
     }
   ],
   "created_at": "2026-08-13T11:20:00+00:00",
-  "updated_at": "2026-10-16T20:01:42+00:00",
+  "updated_at": "2026-10-16T22:45:58+00:00",
   "live_trading_enabled": false,
   "lab_meta": {
     "version": 2,
@@ -7659,10 +7796,10 @@
         "formal_review_target_closed_trades": 50
       }
     },
-    "last_run_at": "2026-10-16T20:01:42+00:00",
+    "last_run_at": "2026-10-16T22:45:58+00:00",
     "last_ingest": {
-      "submitted": 0,
-      "skipped": 0
+      "submitted": 1,
+      "skipped": 4
     }
   }
 }
