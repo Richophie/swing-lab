@@ -1842,7 +1842,7 @@
       "atr": 0.32,
       "gap_guard": 0.24,
       "max_hold_bars": 8,
-      "held_bars": 1,
+      "held_bars": 2,
       "qty": 44,
       "planned_entry_usd": 13.53,
       "planned_notional_krw": 798984.93,
@@ -1850,7 +1850,7 @@
       "planned_risk_krw": 28345.36,
       "reserved_cash_krw": 0.0,
       "fx_at_submit": 1342.11,
-      "last_processed_date": "2026-10-15",
+      "last_processed_date": "2026-10-16",
       "commission_pct_per_side": 0.1,
       "slippage_bps": 5.0,
       "half_spread_bps": 2.5,
@@ -1889,9 +1889,9 @@
       "entry_commission_krw": 795.32,
       "entry_cost_krw": 796118.23,
       "fx_at_entry": 1341.9,
-      "last_fx": 1342.18,
+      "last_fx": 1334.48,
       "filled_at": "2026-10-14T17:46:15+00:00",
-      "last_close_usd": 13.4126
+      "last_close_usd": 13.265
     },
     {
       "id": "PAPER-22F4C385DC2A",
@@ -1987,7 +1987,7 @@
       "atr": 3.279874,
       "gap_guard": 2.459906,
       "max_hold_bars": 8,
-      "held_bars": 0,
+      "held_bars": 1,
       "qty": 4,
       "planned_entry_usd": 112.995,
       "planned_notional_krw": 606172.98,
@@ -1995,7 +1995,7 @@
       "planned_risk_krw": 27976.39,
       "reserved_cash_krw": 0.0,
       "fx_at_submit": 1341.15,
-      "last_processed_date": "2026-10-15",
+      "last_processed_date": "2026-10-16",
       "commission_pct_per_side": 0.1,
       "slippage_bps": 5.0,
       "half_spread_bps": 2.5,
@@ -2034,16 +2034,16 @@
       "entry_commission_krw": 605.56,
       "entry_cost_krw": 606167.82,
       "fx_at_entry": 1342.18,
-      "last_fx": 1342.18,
+      "last_fx": 1334.48,
       "filled_at": "2026-10-15T17:34:31+00:00",
-      "last_close_usd": 113.849998
+      "last_close_usd": 112.644997
     },
     {
       "id": "PAPER-4900C5F85EC9",
       "symbol": "ING",
       "strategy_id": "confirmed_pullback",
       "strategy_name": "확인형 눌림반등",
-      "status": "PENDING",
+      "status": "CANCELLED",
       "created_at": "2026-10-15T20:52:07+00:00",
       "submitted_market_date": "2026-10-15",
       "signal_date": "2026-10-15",
@@ -2060,9 +2060,9 @@
       "planned_notional_krw": 884842.2,
       "risk_budget_krw": 28512.37,
       "planned_risk_krw": 27349.67,
-      "reserved_cash_krw": 885727.04,
+      "reserved_cash_krw": 0.0,
       "fx_at_submit": 1340.67,
-      "last_processed_date": "2026-10-15",
+      "last_processed_date": "2026-10-16",
       "commission_pct_per_side": 0.1,
       "slippage_bps": 5.0,
       "half_spread_bps": 2.5,
@@ -2092,7 +2092,10 @@
         "checked_at": "2026-10-15T20:50:34+00:00"
       },
       "atr_source": "derived_from_stop_atr_multiple",
-      "risk_observability_only": true
+      "risk_observability_only": true,
+      "cancel_date": "2026-10-16",
+      "cancel_reason": "다음 거래일 장중 BUY 구간 미도달",
+      "closed_at": "2026-10-16T17:10:20+00:00"
     }
   ],
   "events": [
@@ -2711,6 +2714,14 @@
       "strategy_id": "confirmed_pullback",
       "event": "SUBMITTED",
       "detail": "다음 거래일 BUY 구간 터치 대기 · 20주 · BUY 32.86~33.14"
+    },
+    {
+      "at": "2026-10-16T17:10:20+00:00",
+      "order_id": "PAPER-4900C5F85EC9",
+      "symbol": "ING",
+      "strategy_id": "confirmed_pullback",
+      "event": "CANCELLED",
+      "detail": "다음 거래일 장중 BUY 구간 미도달"
     }
   ],
   "shadow_decisions": [
@@ -7591,7 +7602,7 @@
     }
   ],
   "created_at": "2026-08-13T11:20:00+00:00",
-  "updated_at": "2026-10-15T23:31:50+00:00",
+  "updated_at": "2026-10-16T17:10:21+00:00",
   "live_trading_enabled": false,
   "lab_meta": {
     "version": 2,
@@ -7648,7 +7659,7 @@
         "formal_review_target_closed_trades": 50
       }
     },
-    "last_run_at": "2026-10-15T23:31:50+00:00",
+    "last_run_at": "2026-10-16T17:10:21+00:00",
     "last_ingest": {
       "submitted": 0,
       "skipped": 0
