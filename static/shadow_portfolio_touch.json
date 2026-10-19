@@ -2174,6 +2174,62 @@
       "last_fx": 1332.15,
       "filled_at": "2026-10-19T18:59:15+00:00",
       "last_close_usd": 32.799999
+    },
+    {
+      "id": "PAPER-2C6102BC090D",
+      "symbol": "MFG",
+      "strategy_id": "rsi2_trend_reversion",
+      "strategy_name": "RSI2 추세내 과매도",
+      "status": "PENDING",
+      "created_at": "2026-10-19T22:49:57+00:00",
+      "submitted_market_date": "2026-10-19",
+      "signal_date": "2026-10-19",
+      "buy_low": 10.04,
+      "buy_high": 10.1,
+      "target": 10.71,
+      "stop": 9.65,
+      "atr": 0.28,
+      "gap_guard": 0.21,
+      "max_hold_bars": 5,
+      "held_bars": 0,
+      "qty": 50,
+      "planned_entry_usd": 10.07,
+      "planned_notional_krw": 669982.28,
+      "risk_budget_krw": 28098.47,
+      "planned_risk_krw": 27943.65,
+      "reserved_cash_krw": 670652.26,
+      "fx_at_submit": 1330.65,
+      "last_processed_date": "2026-10-19",
+      "commission_pct_per_side": 0.1,
+      "slippage_bps": 5.0,
+      "half_spread_bps": 2.5,
+      "live_order_sent": false,
+      "order_origin": "AUTO_CONFIRMED_CLOSE",
+      "signal_origin": "official_close_confirmed",
+      "shadow_signal_key": "2026-10-19|MFG|rsi2_trend_reversion",
+      "track_id": "B_BUY_TOUCH",
+      "entry_mode": "NEXT_SESSION_BUY_TOUCH",
+      "baseline_version": "baseline-v1.0-2026-08-13",
+      "app_version_at_signal": "16.5",
+      "core_version_at_signal": "4.4",
+      "market_state": "좋음",
+      "official_score": 83.65,
+      "raw_strategy_score": 95,
+      "official_risk_reward": 1.53,
+      "official_selection_reason": "현재 자리 95 · 수급 60 · 손익비 1.52:1 · 비용후 1.35:1",
+      "event_risk_snapshot": {
+        "risk_code": "CLEAR",
+        "risk_label": "실적까지 25일",
+        "earnings_date": "2026-11-13",
+        "days_until": 25,
+        "confidence": "confirmed",
+        "stale": false,
+        "hold_calendar_days": 8,
+        "source_day_diff": 0,
+        "checked_at": "2026-10-19T18:56:49+00:00"
+      },
+      "atr_source": "derived_from_stop_atr_multiple",
+      "risk_observability_only": true
     }
   ],
   "events": [
@@ -2824,6 +2880,14 @@
       "strategy_id": "confirmed_pullback",
       "event": "CLOSED",
       "detail": "손절 · -4.087% · -32,536원"
+    },
+    {
+      "at": "2026-10-19T22:49:57+00:00",
+      "order_id": "PAPER-2C6102BC090D",
+      "symbol": "MFG",
+      "strategy_id": "rsi2_trend_reversion",
+      "event": "SUBMITTED",
+      "detail": "다음 거래일 BUY 구간 터치 대기 · 50주 · BUY 10.04~10.10"
     }
   ],
   "shadow_decisions": [
@@ -7774,10 +7838,27 @@
       "at": "2026-10-16T22:45:58+00:00",
       "decision": "SKIPPED",
       "reason": "가상계좌 최대 동시 포지션 수에 도달했습니다"
+    },
+    {
+      "signal_key": "2026-10-19|MFG|rsi2_trend_reversion",
+      "market_date": "2026-10-19",
+      "symbol": "MFG",
+      "strategy_id": "rsi2_trend_reversion",
+      "strategy_name": "RSI2 추세내 과매도",
+      "score": 83.65,
+      "risk_reward": 1.53,
+      "baseline_version": "baseline-v1.0-2026-08-13",
+      "track_id": "B_BUY_TOUCH",
+      "at": "2026-10-19T22:49:57+00:00",
+      "decision": "SUBMITTED",
+      "order_id": "PAPER-2C6102BC090D",
+      "atr": 0.28,
+      "atr_source": "derived_from_stop_atr_multiple",
+      "gap_guard": 0.21
     }
   ],
   "created_at": "2026-08-13T11:20:00+00:00",
-  "updated_at": "2026-10-19T18:59:16+00:00",
+  "updated_at": "2026-10-19T22:49:57+00:00",
   "live_trading_enabled": false,
   "lab_meta": {
     "version": 2,
@@ -7834,9 +7915,9 @@
         "formal_review_target_closed_trades": 50
       }
     },
-    "last_run_at": "2026-10-19T18:59:16+00:00",
+    "last_run_at": "2026-10-19T22:49:57+00:00",
     "last_ingest": {
-      "submitted": 0,
+      "submitted": 1,
       "skipped": 0
     }
   }
