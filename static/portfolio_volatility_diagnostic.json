@@ -1,8 +1,8 @@
 {
   "version": 1,
   "ready": true,
-  "generated_at": "2026-10-20T01:20:22+00:00",
-  "pool_generated_at": "2026-10-20T01:18:44+00:00",
+  "generated_at": "2026-10-21T00:59:17+00:00",
+  "pool_generated_at": "2026-10-21T00:57:32+00:00",
   "promotion_status": "research_only_diagnostic",
   "method": {
     "type": "rolling OOS volatility regime diagnosis",
@@ -20,23 +20,23 @@
     "equity": "daily_close_mark_to_market",
     "state_only_sleeve": "counterfactual diagnostic portfolio that trades only signals from one state; not additive attribution of the full account"
   },
-  "available_start": "2017-09-06",
-  "available_end": "2026-10-16",
+  "available_start": "2017-09-07",
+  "available_end": "2026-10-19",
   "latest_market_state": {
-    "date": "2026-10-16",
+    "date": "2026-10-19",
     "state": "green_low_vol",
     "label": "초록 · 저변동",
-    "spy_close": 763.25,
-    "spy_sma200": 725.0146,
-    "qqq_close": 709.8,
-    "qqq_sma200": 674.9092,
-    "spy_rv20_pct": 10.47,
-    "spy_vol_percentile": 25.0
+    "spy_close": 766.48,
+    "spy_sma200": 725.4374,
+    "qqq_close": 718.36,
+    "qqq_sma200": 675.4295,
+    "spy_rv20_pct": 8.92,
+    "spy_vol_percentile": 9.5
   },
   "candidate_state_counts": {
-    "green_low_vol": 14286,
+    "green_low_vol": 14303,
     "green_mid_vol": 8203,
-    "green_high_vol": 6588,
+    "green_high_vol": 6582,
     "mixed": 857,
     "risk_off": 1780,
     "unknown": 0
@@ -51,18 +51,18 @@
       "capacity": 10,
       "summary": {
         "fold_count": 6,
-        "stitched_full_no_market_filter_return_pct": -13.01,
+        "stitched_full_no_market_filter_return_pct": -13.42,
         "median_full_test_return_pct": -1.87,
         "states": {
           "green_low_vol": {
             "label": "초록 · 저변동",
             "folds_with_signals": 5,
-            "total_signals": 936,
+            "total_signals": 939,
             "positive_avg_trade_folds": 3,
             "median_avg_trade_pct": 0.141,
-            "mean_avg_trade_pct": 0.561,
+            "mean_avg_trade_pct": 0.56,
             "median_state_sleeve_return_pct": -4.46,
-            "stitched_state_sleeve_return_pct": -26.82,
+            "stitched_state_sleeve_return_pct": -27.15,
             "worst_state_sleeve_mdd_pct": -23.09
           },
           "green_mid_vol": {
@@ -71,9 +71,9 @@
             "total_signals": 426,
             "positive_avg_trade_folds": 3,
             "median_avg_trade_pct": 0.424,
-            "mean_avg_trade_pct": 0.872,
+            "mean_avg_trade_pct": 0.878,
             "median_state_sleeve_return_pct": -0.08,
-            "stitched_state_sleeve_return_pct": -2.73,
+            "stitched_state_sleeve_return_pct": -1.99,
             "worst_state_sleeve_mdd_pct": -13.72
           },
           "green_high_vol": {
@@ -129,19 +129,19 @@
       "folds": [
         {
           "fold": "2021",
-          "train_start": "2017-09-06",
+          "train_start": "2017-09-07",
           "train_end": "2020-12-31",
           "test_start": "2021-01-01",
           "test_end": "2021-12-31",
           "selected_intensity": "strong",
           "selected_intensity_label": "강한 엄선 · 상위 15%",
           "thresholds": {
-            "donchian_55": 54.574518
+            "donchian_55": 54.575137
           },
           "train": {
             "ending": 4709444.68,
             "return_pct": 56.98,
-            "cagr_pct": 14.56,
+            "cagr_pct": 14.57,
             "mdd_pct": -19.32,
             "trades": 116,
             "win_rate_pct": 35.34,
@@ -952,7 +952,7 @@
           "train_start": "2022-01-01",
           "train_end": "2025-12-31",
           "test_start": "2026-01-01",
-          "test_end": "2026-10-16",
+          "test_end": "2026-10-19",
           "selected_intensity": "loose",
           "selected_intensity_label": "느슨한 엄선 · 상위 50%",
           "thresholds": {
@@ -971,35 +971,35 @@
             "underwater_days": 446
           },
           "test_full_no_market_filter": {
-            "ending": 3226216.91,
-            "return_pct": 7.54,
-            "cagr_pct": 9.66,
-            "mdd_pct": -20.14,
-            "trades": 68,
-            "win_rate_pct": 35.29,
-            "avg_trade_pct": 1.563,
-            "trades_per_year": 86.2,
+            "ending": 3210755.86,
+            "return_pct": 7.03,
+            "cagr_pct": 8.9,
+            "mdd_pct": -20.52,
+            "trades": 69,
+            "win_rate_pct": 31.88,
+            "avg_trade_pct": 1.489,
+            "trades_per_year": 86.6,
             "max_open": 10,
-            "underwater_days": 94
+            "underwater_days": 95
           },
           "states": {
             "green_low_vol": {
               "label": "초록 · 저변동",
               "trade_stats": {
-                "signals": 175,
-                "win_rate_pct": 26.86,
-                "avg_trade_pct": -1.194,
-                "median_trade_pct": -4.658
+                "signals": 178,
+                "win_rate_pct": 25.28,
+                "avg_trade_pct": -1.2,
+                "median_trade_pct": -4.585
               },
               "state_only_sleeve": {
-                "ending": 3057122.89,
-                "return_pct": 1.9,
-                "cagr_pct": 2.42,
-                "mdd_pct": -15.6,
-                "trades": 40,
-                "win_rate_pct": 32.5,
-                "avg_trade_pct": 1.295,
-                "trades_per_year": 50.7,
+                "ending": 3043619.91,
+                "return_pct": 1.45,
+                "cagr_pct": 1.83,
+                "mdd_pct": -15.98,
+                "trades": 41,
+                "win_rate_pct": 29.27,
+                "avg_trade_pct": 1.201,
+                "trades_per_year": 51.5,
                 "max_open": 8,
                 "underwater_days": 40
               }
@@ -1008,21 +1008,21 @@
               "label": "초록 · 보통변동",
               "trade_stats": {
                 "signals": 144,
-                "win_rate_pct": 35.42,
-                "avg_trade_pct": 2.772,
+                "win_rate_pct": 36.11,
+                "avg_trade_pct": 2.802,
                 "median_trade_pct": -3.523
               },
               "state_only_sleeve": {
-                "ending": 3113646.21,
-                "return_pct": 3.79,
-                "cagr_pct": 4.83,
+                "ending": 3137522.5,
+                "return_pct": 4.58,
+                "cagr_pct": 5.79,
                 "mdd_pct": -13.72,
                 "trades": 32,
-                "win_rate_pct": 31.25,
-                "avg_trade_pct": 1.97,
-                "trades_per_year": 40.6,
+                "win_rate_pct": 34.38,
+                "avg_trade_pct": 2.104,
+                "trades_per_year": 40.2,
                 "max_open": 6,
-                "underwater_days": 91
+                "underwater_days": 92
               }
             },
             "green_high_vol": {
@@ -1036,12 +1036,12 @@
               "state_only_sleeve": {
                 "ending": 3453889.7,
                 "return_pct": 15.13,
-                "cagr_pct": 19.56,
+                "cagr_pct": 19.34,
                 "mdd_pct": -12.18,
                 "trades": 33,
                 "win_rate_pct": 36.36,
                 "avg_trade_pct": 4.974,
-                "trades_per_year": 41.9,
+                "trades_per_year": 41.4,
                 "max_open": 9,
                 "underwater_days": 93
               }
@@ -1057,7 +1057,7 @@
               "state_only_sleeve": {
                 "ending": 2967915.91,
                 "return_pct": -1.07,
-                "cagr_pct": -1.35,
+                "cagr_pct": -1.34,
                 "mdd_pct": -2.17,
                 "trades": 1,
                 "win_rate_pct": 0.0,
@@ -1078,12 +1078,12 @@
               "state_only_sleeve": {
                 "ending": 3243322.26,
                 "return_pct": 8.11,
-                "cagr_pct": 10.4,
+                "cagr_pct": 10.28,
                 "mdd_pct": -5.42,
                 "trades": 6,
                 "win_rate_pct": 16.67,
                 "avg_trade_pct": 10.436,
-                "trades_per_year": 7.6,
+                "trades_per_year": 7.5,
                 "max_open": 5,
                 "underwater_days": 15
               }
@@ -1123,18 +1123,18 @@
       "capacity": 10,
       "summary": {
         "fold_count": 6,
-        "stitched_full_no_market_filter_return_pct": -24.42,
+        "stitched_full_no_market_filter_return_pct": -24.78,
         "median_full_test_return_pct": -1.39,
         "states": {
           "green_low_vol": {
             "label": "초록 · 저변동",
             "folds_with_signals": 5,
-            "total_signals": 860,
+            "total_signals": 863,
             "positive_avg_trade_folds": 3,
             "median_avg_trade_pct": 1.231,
-            "mean_avg_trade_pct": 0.794,
+            "mean_avg_trade_pct": 0.793,
             "median_state_sleeve_return_pct": -3.5,
-            "stitched_state_sleeve_return_pct": -34.09,
+            "stitched_state_sleeve_return_pct": -34.38,
             "worst_state_sleeve_mdd_pct": -26.79
           },
           "green_mid_vol": {
@@ -1143,9 +1143,9 @@
             "total_signals": 404,
             "positive_avg_trade_folds": 3,
             "median_avg_trade_pct": 1.048,
-            "mean_avg_trade_pct": 0.975,
+            "mean_avg_trade_pct": 0.981,
             "median_state_sleeve_return_pct": -0.99,
-            "stitched_state_sleeve_return_pct": -4.65,
+            "stitched_state_sleeve_return_pct": -3.91,
             "worst_state_sleeve_mdd_pct": -13.55
           },
           "green_high_vol": {
@@ -1201,7 +1201,7 @@
       "folds": [
         {
           "fold": "2021",
-          "train_start": "2017-09-06",
+          "train_start": "2017-09-07",
           "train_end": "2020-12-31",
           "test_start": "2021-01-01",
           "test_end": "2021-12-31",
@@ -1209,12 +1209,12 @@
           "selected_intensity_label": "강한 엄선 · 상위 15%",
           "thresholds": {
             "momentum_pullback": 53.568685,
-            "donchian_55": 54.574518
+            "donchian_55": 54.575137
           },
           "train": {
             "ending": 4742029.84,
             "return_pct": 58.07,
-            "cagr_pct": 14.8,
+            "cagr_pct": 14.81,
             "mdd_pct": -19.32,
             "trades": 120,
             "win_rate_pct": 36.67,
@@ -2029,7 +2029,7 @@
           "train_start": "2022-01-01",
           "train_end": "2025-12-31",
           "test_start": "2026-01-01",
-          "test_end": "2026-10-16",
+          "test_end": "2026-10-19",
           "selected_intensity": "loose",
           "selected_intensity_label": "느슨한 엄선 · 상위 50%",
           "thresholds": {
@@ -2049,35 +2049,35 @@
             "underwater_days": 434
           },
           "test_full_no_market_filter": {
-            "ending": 3219993.14,
-            "return_pct": 7.33,
-            "cagr_pct": 9.39,
-            "mdd_pct": -20.29,
-            "trades": 70,
-            "win_rate_pct": 34.29,
-            "avg_trade_pct": 1.414,
-            "trades_per_year": 88.8,
+            "ending": 3204575.01,
+            "return_pct": 6.82,
+            "cagr_pct": 8.63,
+            "mdd_pct": -20.67,
+            "trades": 71,
+            "win_rate_pct": 30.99,
+            "avg_trade_pct": 1.344,
+            "trades_per_year": 89.1,
             "max_open": 10,
-            "underwater_days": 94
+            "underwater_days": 95
           },
           "states": {
             "green_low_vol": {
               "label": "초록 · 저변동",
               "trade_stats": {
-                "signals": 176,
-                "win_rate_pct": 27.27,
-                "avg_trade_pct": -1.153,
-                "median_trade_pct": -4.641
+                "signals": 179,
+                "win_rate_pct": 25.7,
+                "avg_trade_pct": -1.159,
+                "median_trade_pct": -4.544
               },
               "state_only_sleeve": {
-                "ending": 3105077.26,
-                "return_pct": 3.5,
-                "cagr_pct": 4.46,
-                "mdd_pct": -14.34,
-                "trades": 40,
-                "win_rate_pct": 35.0,
-                "avg_trade_pct": 1.562,
-                "trades_per_year": 50.7,
+                "ending": 3091454.07,
+                "return_pct": 3.05,
+                "cagr_pct": 3.84,
+                "mdd_pct": -14.65,
+                "trades": 41,
+                "win_rate_pct": 31.71,
+                "avg_trade_pct": 1.462,
+                "trades_per_year": 51.5,
                 "max_open": 8,
                 "underwater_days": 40
               }
@@ -2086,21 +2086,21 @@
               "label": "초록 · 보통변동",
               "trade_stats": {
                 "signals": 150,
-                "win_rate_pct": 36.0,
-                "avg_trade_pct": 2.662,
+                "win_rate_pct": 36.67,
+                "avg_trade_pct": 2.69,
                 "median_trade_pct": -3.45
               },
               "state_only_sleeve": {
-                "ending": 3119938.9,
-                "return_pct": 4.0,
-                "cagr_pct": 5.1,
+                "ending": 3143863.44,
+                "return_pct": 4.8,
+                "cagr_pct": 6.06,
                 "mdd_pct": -13.55,
                 "trades": 33,
-                "win_rate_pct": 33.33,
-                "avg_trade_pct": 2.05,
-                "trades_per_year": 41.9,
+                "win_rate_pct": 36.36,
+                "avg_trade_pct": 2.18,
+                "trades_per_year": 41.4,
                 "max_open": 6,
-                "underwater_days": 91
+                "underwater_days": 92
               }
             },
             "green_high_vol": {
@@ -2114,12 +2114,12 @@
               "state_only_sleeve": {
                 "ending": 3453618.28,
                 "return_pct": 15.12,
-                "cagr_pct": 19.55,
+                "cagr_pct": 19.33,
                 "mdd_pct": -12.19,
                 "trades": 34,
                 "win_rate_pct": 35.29,
                 "avg_trade_pct": 4.727,
-                "trades_per_year": 43.1,
+                "trades_per_year": 42.7,
                 "max_open": 9,
                 "underwater_days": 93
               }
@@ -2135,7 +2135,7 @@
               "state_only_sleeve": {
                 "ending": 2967915.91,
                 "return_pct": -1.07,
-                "cagr_pct": -1.35,
+                "cagr_pct": -1.34,
                 "mdd_pct": -2.17,
                 "trades": 1,
                 "win_rate_pct": 0.0,
@@ -2156,12 +2156,12 @@
               "state_only_sleeve": {
                 "ending": 3243322.26,
                 "return_pct": 8.11,
-                "cagr_pct": 10.4,
+                "cagr_pct": 10.28,
                 "mdd_pct": -5.42,
                 "trades": 6,
                 "win_rate_pct": 16.67,
                 "avg_trade_pct": 10.436,
-                "trades_per_year": 7.6,
+                "trades_per_year": 7.5,
                 "max_open": 5,
                 "underwater_days": 15
               }
@@ -2202,18 +2202,18 @@
       "capacity": 10,
       "summary": {
         "fold_count": 6,
-        "stitched_full_no_market_filter_return_pct": -19.77,
+        "stitched_full_no_market_filter_return_pct": -20.02,
         "median_full_test_return_pct": -1.03,
         "states": {
           "green_low_vol": {
             "label": "초록 · 저변동",
             "folds_with_signals": 5,
-            "total_signals": 1029,
+            "total_signals": 1032,
             "positive_avg_trade_folds": 3,
             "median_avg_trade_pct": 1.211,
-            "mean_avg_trade_pct": 0.856,
+            "mean_avg_trade_pct": 0.85,
             "median_state_sleeve_return_pct": -2.41,
-            "stitched_state_sleeve_return_pct": -29.93,
+            "stitched_state_sleeve_return_pct": -30.45,
             "worst_state_sleeve_mdd_pct": -28.54
           },
           "green_mid_vol": {
@@ -2222,9 +2222,9 @@
             "total_signals": 424,
             "positive_avg_trade_folds": 3,
             "median_avg_trade_pct": 0.943,
-            "mean_avg_trade_pct": 0.814,
+            "mean_avg_trade_pct": 0.82,
             "median_state_sleeve_return_pct": -1.34,
-            "stitched_state_sleeve_return_pct": -4.63,
+            "stitched_state_sleeve_return_pct": -3.9,
             "worst_state_sleeve_mdd_pct": -13.64
           },
           "green_high_vol": {
@@ -2280,7 +2280,7 @@
       "folds": [
         {
           "fold": "2021",
-          "train_start": "2017-09-06",
+          "train_start": "2017-09-07",
           "train_end": "2020-12-31",
           "test_start": "2021-01-01",
           "test_end": "2021-12-31",
@@ -2289,12 +2289,12 @@
           "thresholds": {
             "confirmed_pullback": 85.125525,
             "sma200_20_squeeze": 45.85358,
-            "donchian_55": 54.574518
+            "donchian_55": 54.575137
           },
           "train": {
             "ending": 4533300.19,
             "return_pct": 51.11,
-            "cagr_pct": 13.25,
+            "cagr_pct": 13.26,
             "mdd_pct": -19.99,
             "trades": 126,
             "win_rate_pct": 37.3,
@@ -3113,7 +3113,7 @@
           "train_start": "2022-01-01",
           "train_end": "2025-12-31",
           "test_start": "2026-01-01",
-          "test_end": "2026-10-16",
+          "test_end": "2026-10-19",
           "selected_intensity": "loose",
           "selected_intensity_label": "느슨한 엄선 · 상위 50%",
           "thresholds": {
@@ -3134,35 +3134,35 @@
             "underwater_days": 397
           },
           "test_full_no_market_filter": {
-            "ending": 3227455.72,
-            "return_pct": 7.58,
-            "cagr_pct": 9.71,
-            "mdd_pct": -20.9,
-            "trades": 73,
-            "win_rate_pct": 34.25,
-            "avg_trade_pct": 1.206,
-            "trades_per_year": 92.6,
+            "ending": 3217492.25,
+            "return_pct": 7.25,
+            "cagr_pct": 9.18,
+            "mdd_pct": -21.07,
+            "trades": 74,
+            "win_rate_pct": 31.08,
+            "avg_trade_pct": 1.121,
+            "trades_per_year": 92.9,
             "max_open": 10,
-            "underwater_days": 94
+            "underwater_days": 95
           },
           "states": {
             "green_low_vol": {
               "label": "초록 · 저변동",
               "trade_stats": {
-                "signals": 188,
-                "win_rate_pct": 26.6,
-                "avg_trade_pct": -1.167,
-                "median_trade_pct": -4.334
+                "signals": 191,
+                "win_rate_pct": 25.13,
+                "avg_trade_pct": -1.193,
+                "median_trade_pct": -4.287
               },
               "state_only_sleeve": {
-                "ending": 3056079.22,
-                "return_pct": 1.87,
-                "cagr_pct": 2.38,
-                "mdd_pct": -15.63,
-                "trades": 41,
-                "win_rate_pct": 31.71,
-                "avg_trade_pct": 1.279,
-                "trades_per_year": 52.0,
+                "ending": 3033688.66,
+                "return_pct": 1.12,
+                "cagr_pct": 1.41,
+                "mdd_pct": -16.25,
+                "trades": 42,
+                "win_rate_pct": 28.57,
+                "avg_trade_pct": 1.142,
+                "trades_per_year": 52.7,
                 "max_open": 8,
                 "underwater_days": 40
               }
@@ -3171,21 +3171,21 @@
               "label": "초록 · 보통변동",
               "trade_stats": {
                 "signals": 146,
-                "win_rate_pct": 34.93,
-                "avg_trade_pct": 2.711,
+                "win_rate_pct": 35.62,
+                "avg_trade_pct": 2.741,
                 "median_trade_pct": -3.45
               },
               "state_only_sleeve": {
-                "ending": 3116705.1,
-                "return_pct": 3.89,
-                "cagr_pct": 4.96,
+                "ending": 3140581.39,
+                "return_pct": 4.69,
+                "cagr_pct": 5.92,
                 "mdd_pct": -13.64,
                 "trades": 32,
-                "win_rate_pct": 31.25,
-                "avg_trade_pct": 2.028,
-                "trades_per_year": 40.6,
+                "win_rate_pct": 34.38,
+                "avg_trade_pct": 2.162,
+                "trades_per_year": 40.2,
                 "max_open": 6,
-                "underwater_days": 91
+                "underwater_days": 92
               }
             },
             "green_high_vol": {
@@ -3199,12 +3199,12 @@
               "state_only_sleeve": {
                 "ending": 3453889.7,
                 "return_pct": 15.13,
-                "cagr_pct": 19.56,
+                "cagr_pct": 19.34,
                 "mdd_pct": -12.18,
                 "trades": 33,
                 "win_rate_pct": 36.36,
                 "avg_trade_pct": 4.974,
-                "trades_per_year": 41.9,
+                "trades_per_year": 41.4,
                 "max_open": 9,
                 "underwater_days": 93
               }
@@ -3220,7 +3220,7 @@
               "state_only_sleeve": {
                 "ending": 2967915.91,
                 "return_pct": -1.07,
-                "cagr_pct": -1.35,
+                "cagr_pct": -1.34,
                 "mdd_pct": -2.17,
                 "trades": 1,
                 "win_rate_pct": 0.0,
@@ -3241,12 +3241,12 @@
               "state_only_sleeve": {
                 "ending": 3243322.26,
                 "return_pct": 8.11,
-                "cagr_pct": 10.4,
+                "cagr_pct": 10.28,
                 "mdd_pct": -5.42,
                 "trades": 6,
                 "win_rate_pct": 16.67,
                 "avg_trade_pct": 10.436,
-                "trades_per_year": 7.6,
+                "trades_per_year": 7.5,
                 "max_open": 5,
                 "underwater_days": 15
               }
