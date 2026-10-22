@@ -1809,6 +1809,62 @@
       "last_fx": 1325.85,
       "filled_at": "2026-10-15T17:34:29+00:00",
       "last_close_usd": 116.029999
+    },
+    {
+      "id": "PAPER-985FC4A77FFC",
+      "symbol": "DXCM",
+      "strategy_id": "rsi2_trend_reversion",
+      "strategy_name": "RSI2 추세내 과매도",
+      "status": "PENDING",
+      "created_at": "2026-10-22T21:08:17+00:00",
+      "submitted_market_date": "2026-10-22",
+      "signal_date": "2026-10-22",
+      "buy_low": 77.98,
+      "buy_high": 78.66,
+      "target": 84.97,
+      "stop": 74.04,
+      "atr": 2.853333,
+      "gap_guard": 2.14,
+      "max_hold_bars": 5,
+      "held_bars": 0,
+      "qty": 5,
+      "planned_entry_usd": 78.32,
+      "planned_notional_krw": 518748.6,
+      "risk_budget_krw": 29497.62,
+      "planned_risk_krw": 28348.37,
+      "reserved_cash_krw": 519267.35,
+      "fx_at_submit": 1324.69,
+      "last_processed_date": "2026-10-22",
+      "commission_pct_per_side": 0.1,
+      "slippage_bps": 5.0,
+      "half_spread_bps": 2.5,
+      "live_order_sent": false,
+      "order_origin": "AUTO_CONFIRMED_CLOSE",
+      "signal_origin": "official_close_confirmed",
+      "shadow_signal_key": "2026-10-22|DXCM|rsi2_trend_reversion",
+      "track_id": "A_NEXT_OPEN",
+      "entry_mode": "NEXT_OPEN_GAP_GUARD",
+      "baseline_version": "baseline-v1.0-2026-08-13",
+      "app_version_at_signal": "16.5",
+      "core_version_at_signal": "4.4",
+      "market_state": "중립",
+      "official_score": 76.1,
+      "raw_strategy_score": 91.0,
+      "official_risk_reward": 1.55,
+      "official_selection_reason": "현재 자리 91 · 수급 50 · 손익비 1.55:1 · 비용후 1.41:1",
+      "event_risk_snapshot": {
+        "risk_code": "WITHIN_HOLD",
+        "risk_label": "보유기간 중 실적 가능 · 7일",
+        "earnings_date": "2026-10-29",
+        "days_until": 7,
+        "confidence": "confirmed",
+        "stale": false,
+        "hold_calendar_days": 8,
+        "source_day_diff": 0,
+        "checked_at": "2026-10-22T17:49:24+00:00"
+      },
+      "atr_source": "derived_from_stop_atr_multiple",
+      "risk_observability_only": true
     }
   ],
   "events": [
@@ -2363,6 +2419,14 @@
       "strategy_id": "confirmed_pullback",
       "event": "CLOSED",
       "detail": "기간종료 · +3.821% · +23,089원"
+    },
+    {
+      "at": "2026-10-22T21:08:17+00:00",
+      "order_id": "PAPER-985FC4A77FFC",
+      "symbol": "DXCM",
+      "strategy_id": "rsi2_trend_reversion",
+      "event": "SUBMITTED",
+      "detail": "다음 거래일 시가 대기 · 5주 · BUY 77.98~78.66"
     }
   ],
   "shadow_decisions": [
@@ -7393,10 +7457,27 @@
       "at": "2026-10-22T00:06:27+00:00",
       "decision": "SKIPPED",
       "reason": "가상계좌 최대 동시 포지션 수에 도달했습니다"
+    },
+    {
+      "signal_key": "2026-10-22|DXCM|rsi2_trend_reversion",
+      "market_date": "2026-10-22",
+      "symbol": "DXCM",
+      "strategy_id": "rsi2_trend_reversion",
+      "strategy_name": "RSI2 추세내 과매도",
+      "score": 76.1,
+      "risk_reward": 1.55,
+      "baseline_version": "baseline-v1.0-2026-08-13",
+      "track_id": "A_NEXT_OPEN",
+      "at": "2026-10-22T21:08:17+00:00",
+      "decision": "SUBMITTED",
+      "order_id": "PAPER-985FC4A77FFC",
+      "atr": 2.853333,
+      "atr_source": "derived_from_stop_atr_multiple",
+      "gap_guard": 2.14
     }
   ],
   "created_at": "2026-08-13T10:30:00+00:00",
-  "updated_at": "2026-10-22T17:50:52+00:00",
+  "updated_at": "2026-10-22T21:08:17+00:00",
   "live_trading_enabled": false,
   "lab_meta": {
     "version": 2,
@@ -7405,9 +7486,9 @@
     "allocator": "risk_reward_priority",
     "human_intervention": false,
     "live_trading_enabled": false,
-    "last_run_at": "2026-10-22T17:50:52+00:00",
+    "last_run_at": "2026-10-22T21:08:17+00:00",
     "last_ingest": {
-      "submitted": 0,
+      "submitted": 1,
       "skipped": 0
     },
     "track_id": "A_NEXT_OPEN",
