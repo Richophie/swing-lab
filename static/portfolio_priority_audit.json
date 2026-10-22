@@ -1,8 +1,8 @@
 {
   "version": 1,
   "ready": true,
-  "generated_at": "2026-10-21T00:59:27+00:00",
-  "pool_generated_at": "2026-10-21T00:57:32+00:00",
+  "generated_at": "2026-10-22T00:57:31+00:00",
+  "pool_generated_at": "2026-10-22T00:55:55+00:00",
   "promotion_status": "research_only_diagnostic",
   "method": {
     "type": "rolling OOS priority and capacity audit",
@@ -29,8 +29,8 @@
     "equity": "daily_close_mark_to_market",
     "rejected_outcome": "hypothetical standalone outcome of a capacity-rejected valid signal; not additive missed account P&L"
   },
-  "available_start": "2017-09-07",
-  "available_end": "2026-10-19",
+  "available_start": "2017-09-08",
+  "available_end": "2026-10-20",
   "donchian_current_priority_values": [
     2.0
   ],
@@ -45,29 +45,29 @@
       "summary": {
         "rules": {
           "current": {
-            "stitched_test_return_pct": -13.42,
-            "median_test_return_pct": -1.87,
-            "positive_test_folds": 3,
-            "worst_test_mdd_pct": -23.86,
-            "total_test_trades": 331
+            "stitched_test_return_pct": -12.76,
+            "median_test_return_pct": -3.6,
+            "positive_test_folds": 2,
+            "worst_test_mdd_pct": -23.93,
+            "total_test_trades": 329
           },
           "quality_pct": {
-            "stitched_test_return_pct": -16.24,
-            "median_test_return_pct": -2.68,
-            "positive_test_folds": 2,
+            "stitched_test_return_pct": 2.47,
+            "median_test_return_pct": 0.0,
+            "positive_test_folds": 3,
             "worst_test_mdd_pct": -21.82,
-            "total_test_trades": 325,
+            "total_test_trades": 326,
             "folds_beating_current": 3,
-            "mean_delta_vs_current_pct": -0.63
+            "mean_delta_vs_current_pct": 2.74
           },
           "hybrid_50": {
-            "stitched_test_return_pct": -16.24,
-            "median_test_return_pct": -2.68,
-            "positive_test_folds": 2,
+            "stitched_test_return_pct": 2.47,
+            "median_test_return_pct": 0.0,
+            "positive_test_folds": 3,
             "worst_test_mdd_pct": -21.82,
-            "total_test_trades": 325,
+            "total_test_trades": 326,
             "folds_beating_current": 3,
-            "mean_delta_vs_current_pct": -0.63
+            "mean_delta_vs_current_pct": 2.74
           }
         },
         "current_slot_audit": {
@@ -79,8 +79,8 @@
         },
         "test_2024": {
           "current": {
-            "return_pct": -8.72,
-            "mdd_pct": -23.86,
+            "return_pct": -5.37,
+            "mdd_pct": -21.07,
             "capacity_rejected": 0,
             "rejected_plus5": 0,
             "rejected_plus10": 0
@@ -104,50 +104,50 @@
       "folds": [
         {
           "fold": "2021",
-          "train_start": "2017-09-07",
+          "train_start": "2017-09-08",
           "train_end": "2020-12-31",
           "test_start": "2021-01-01",
           "test_end": "2021-12-31",
-          "selected_intensity": "strong",
-          "selected_intensity_label": "강한 엄선 · 상위 15%",
+          "selected_intensity": "raw",
+          "selected_intensity_label": "원신호",
           "thresholds": {
-            "donchian_55": 54.575137
+            "donchian_55": null
           },
           "rankers": {
             "current": {
               "label": "현재 priority",
               "description": "기존 net RR / elite score 우선순위",
               "train": {
-                "ending": 4709444.68,
-                "return_pct": 56.98,
-                "cagr_pct": 14.57,
-                "mdd_pct": -19.32,
-                "trades": 116,
-                "win_rate_pct": 35.34,
-                "avg_trade_pct": 1.929,
-                "trades_per_year": 35.0,
+                "ending": 4282689.17,
+                "return_pct": 42.76,
+                "cagr_pct": 11.34,
+                "mdd_pct": -15.86,
+                "trades": 168,
+                "win_rate_pct": 38.69,
+                "avg_trade_pct": 1.308,
+                "trades_per_year": 50.7,
                 "max_open": 9,
-                "underwater_days": 420
+                "underwater_days": 360
               },
               "test": {
-                "ending": 2746550.05,
-                "return_pct": -8.45,
-                "cagr_pct": -8.48,
-                "mdd_pct": -19.3,
-                "trades": 53,
-                "win_rate_pct": 28.3,
-                "avg_trade_pct": -1.064,
-                "trades_per_year": 53.2,
-                "max_open": 7,
-                "underwater_days": 242
+                "ending": 2755700.72,
+                "return_pct": -8.14,
+                "cagr_pct": -8.17,
+                "mdd_pct": -23.93,
+                "trades": 64,
+                "win_rate_pct": 34.38,
+                "avg_trade_pct": -0.111,
+                "trades_per_year": 64.2,
+                "max_open": 8,
+                "underwater_days": 112
               },
               "decision_audit": {
-                "accepted": 53,
+                "accepted": 64,
                 "capacity_rejected": 0,
-                "duplicate_rejected": 21,
-                "accepted_avg_trade_pct": -1.064,
+                "duplicate_rejected": 157,
+                "accepted_avg_trade_pct": -0.111,
                 "capacity_rejected_avg_trade_pct": 0.0,
-                "accepted_avg_quality": 66.55,
+                "accepted_avg_quality": 37.38,
                 "capacity_rejected_avg_quality": 0.0,
                 "capacity_rejected_winners": 0,
                 "capacity_rejected_plus5": 0,
@@ -159,36 +159,36 @@
               "label": "전략별 품질 백분위",
               "description": "TRAIN의 같은 전략 품질분포에서 계산한 백분위",
               "train": {
-                "ending": 4262595.0,
-                "return_pct": 42.09,
-                "cagr_pct": 11.18,
-                "mdd_pct": -18.02,
-                "trades": 113,
-                "win_rate_pct": 34.51,
-                "avg_trade_pct": 2.047,
-                "trades_per_year": 34.1,
+                "ending": 3726217.74,
+                "return_pct": 24.21,
+                "cagr_pct": 6.76,
+                "mdd_pct": -20.59,
+                "trades": 172,
+                "win_rate_pct": 36.63,
+                "avg_trade_pct": 1.336,
+                "trades_per_year": 51.9,
                 "max_open": 9,
-                "underwater_days": 398
+                "underwater_days": 489
               },
               "test": {
-                "ending": 2806107.36,
-                "return_pct": -6.46,
-                "cagr_pct": -6.48,
-                "mdd_pct": -17.45,
-                "trades": 51,
-                "win_rate_pct": 25.49,
-                "avg_trade_pct": -1.111,
-                "trades_per_year": 51.2,
-                "max_open": 6,
-                "underwater_days": 214
+                "ending": 3400766.74,
+                "return_pct": 13.36,
+                "cagr_pct": 13.41,
+                "mdd_pct": -13.12,
+                "trades": 65,
+                "win_rate_pct": 35.38,
+                "avg_trade_pct": 0.899,
+                "trades_per_year": 65.2,
+                "max_open": 8,
+                "underwater_days": 61
               },
               "decision_audit": {
-                "accepted": 51,
+                "accepted": 65,
                 "capacity_rejected": 0,
-                "duplicate_rejected": 20,
-                "accepted_avg_trade_pct": -1.111,
+                "duplicate_rejected": 185,
+                "accepted_avg_trade_pct": 0.899,
                 "capacity_rejected_avg_trade_pct": 0.0,
-                "accepted_avg_quality": 67.47,
+                "accepted_avg_quality": 45.59,
                 "capacity_rejected_avg_quality": 0.0,
                 "capacity_rejected_winners": 0,
                 "capacity_rejected_plus5": 0,
@@ -200,36 +200,36 @@
               "label": "현재+품질 50:50",
               "description": "TRAIN의 같은 전략 안에서 current priority와 품질 백분위를 50:50 혼합",
               "train": {
-                "ending": 4262595.0,
-                "return_pct": 42.09,
-                "cagr_pct": 11.18,
-                "mdd_pct": -18.02,
-                "trades": 113,
-                "win_rate_pct": 34.51,
-                "avg_trade_pct": 2.047,
-                "trades_per_year": 34.1,
+                "ending": 3726217.74,
+                "return_pct": 24.21,
+                "cagr_pct": 6.76,
+                "mdd_pct": -20.59,
+                "trades": 172,
+                "win_rate_pct": 36.63,
+                "avg_trade_pct": 1.336,
+                "trades_per_year": 51.9,
                 "max_open": 9,
-                "underwater_days": 398
+                "underwater_days": 489
               },
               "test": {
-                "ending": 2806107.36,
-                "return_pct": -6.46,
-                "cagr_pct": -6.48,
-                "mdd_pct": -17.45,
-                "trades": 51,
-                "win_rate_pct": 25.49,
-                "avg_trade_pct": -1.111,
-                "trades_per_year": 51.2,
-                "max_open": 6,
-                "underwater_days": 214
+                "ending": 3400766.74,
+                "return_pct": 13.36,
+                "cagr_pct": 13.41,
+                "mdd_pct": -13.12,
+                "trades": 65,
+                "win_rate_pct": 35.38,
+                "avg_trade_pct": 0.899,
+                "trades_per_year": 65.2,
+                "max_open": 8,
+                "underwater_days": 61
               },
               "decision_audit": {
-                "accepted": 51,
+                "accepted": 65,
                 "capacity_rejected": 0,
-                "duplicate_rejected": 20,
-                "accepted_avg_trade_pct": -1.111,
+                "duplicate_rejected": 185,
+                "accepted_avg_trade_pct": 0.899,
                 "capacity_rejected_avg_trade_pct": 0.0,
-                "accepted_avg_quality": 67.47,
+                "accepted_avg_quality": 45.59,
                 "capacity_rejected_avg_quality": 0.0,
                 "capacity_rejected_winners": 0,
                 "capacity_rejected_plus5": 0,
@@ -240,12 +240,12 @@
           },
           "strategy_discrimination": {
             "donchian_55": {
-              "signals": 171,
+              "signals": 1142,
               "unique_current_priorities": 1,
               "current_priority_min": 2.0,
               "current_priority_max": 2.0,
               "current_priority_return_corr": null,
-              "quality_return_corr": -0.1074
+              "quality_return_corr": -0.0294
             }
           }
         },
@@ -258,23 +258,23 @@
           "selected_intensity": "strong",
           "selected_intensity_label": "강한 엄선 · 상위 15%",
           "thresholds": {
-            "donchian_55": 54.438654
+            "donchian_55": 54.469814
           },
           "rankers": {
             "current": {
               "label": "현재 priority",
               "description": "기존 net RR / elite score 우선순위",
               "train": {
-                "ending": 4499115.04,
-                "return_pct": 49.97,
+                "ending": 4498859.55,
+                "return_pct": 49.96,
                 "cagr_pct": 10.67,
-                "mdd_pct": -18.76,
-                "trades": 153,
-                "win_rate_pct": 35.29,
-                "avg_trade_pct": 1.547,
-                "trades_per_year": 38.3,
+                "mdd_pct": -20.29,
+                "trades": 152,
+                "win_rate_pct": 36.18,
+                "avg_trade_pct": 1.658,
+                "trades_per_year": 38.0,
                 "max_open": 9,
-                "underwater_days": 417
+                "underwater_days": 418
               },
               "test": {
                 "ending": 3017525.09,
@@ -291,7 +291,7 @@
               "decision_audit": {
                 "accepted": 17,
                 "capacity_rejected": 0,
-                "duplicate_rejected": 12,
+                "duplicate_rejected": 11,
                 "accepted_avg_trade_pct": 0.23,
                 "capacity_rejected_avg_trade_pct": 0.0,
                 "accepted_avg_quality": 64.56,
@@ -306,16 +306,16 @@
               "label": "전략별 품질 백분위",
               "description": "TRAIN의 같은 전략 품질분포에서 계산한 백분위",
               "train": {
-                "ending": 3858509.55,
-                "return_pct": 28.62,
-                "cagr_pct": 6.5,
-                "mdd_pct": -19.46,
-                "trades": 155,
-                "win_rate_pct": 34.19,
-                "avg_trade_pct": 1.457,
-                "trades_per_year": 38.8,
+                "ending": 3765201.45,
+                "return_pct": 25.51,
+                "cagr_pct": 5.85,
+                "mdd_pct": -20.98,
+                "trades": 156,
+                "win_rate_pct": 34.62,
+                "avg_trade_pct": 1.451,
+                "trades_per_year": 39.0,
                 "max_open": 9,
-                "underwater_days": 431
+                "underwater_days": 526
               },
               "test": {
                 "ending": 3058996.52,
@@ -332,7 +332,7 @@
               "decision_audit": {
                 "accepted": 17,
                 "capacity_rejected": 0,
-                "duplicate_rejected": 12,
+                "duplicate_rejected": 11,
                 "accepted_avg_trade_pct": 0.23,
                 "capacity_rejected_avg_trade_pct": 0.0,
                 "accepted_avg_quality": 64.56,
@@ -347,16 +347,16 @@
               "label": "현재+품질 50:50",
               "description": "TRAIN의 같은 전략 안에서 current priority와 품질 백분위를 50:50 혼합",
               "train": {
-                "ending": 3858509.55,
-                "return_pct": 28.62,
-                "cagr_pct": 6.5,
-                "mdd_pct": -19.46,
-                "trades": 155,
-                "win_rate_pct": 34.19,
-                "avg_trade_pct": 1.457,
-                "trades_per_year": 38.8,
+                "ending": 3765201.45,
+                "return_pct": 25.51,
+                "cagr_pct": 5.85,
+                "mdd_pct": -20.98,
+                "trades": 156,
+                "win_rate_pct": 34.62,
+                "avg_trade_pct": 1.451,
+                "trades_per_year": 39.0,
                 "max_open": 9,
-                "underwater_days": 431
+                "underwater_days": 526
               },
               "test": {
                 "ending": 3058996.52,
@@ -373,7 +373,7 @@
               "decision_audit": {
                 "accepted": 17,
                 "capacity_rejected": 0,
-                "duplicate_rejected": 12,
+                "duplicate_rejected": 11,
                 "accepted_avg_trade_pct": 0.23,
                 "capacity_rejected_avg_trade_pct": 0.0,
                 "accepted_avg_quality": 64.56,
@@ -387,12 +387,12 @@
           },
           "strategy_discrimination": {
             "donchian_55": {
-              "signals": 31,
+              "signals": 30,
               "unique_current_priorities": 1,
               "current_priority_min": 2.0,
               "current_priority_max": 2.0,
               "current_priority_return_corr": null,
-              "quality_return_corr": -0.2056
+              "quality_return_corr": -0.1541
             }
           }
         },
@@ -402,46 +402,46 @@
           "train_end": "2022-12-31",
           "test_start": "2023-01-01",
           "test_end": "2023-12-31",
-          "selected_intensity": "normal",
-          "selected_intensity_label": "일반 엄선 · 상위 30%",
+          "selected_intensity": "strong",
+          "selected_intensity_label": "강한 엄선 · 상위 15%",
           "thresholds": {
-            "donchian_55": 43.283625
+            "donchian_55": 53.6195
           },
           "rankers": {
             "current": {
               "label": "현재 priority",
               "description": "기존 net RR / elite score 우선순위",
               "train": {
-                "ending": 4780157.84,
-                "return_pct": 59.34,
-                "cagr_pct": 12.36,
-                "mdd_pct": -17.6,
-                "trades": 189,
-                "win_rate_pct": 38.62,
-                "avg_trade_pct": 2.418,
-                "trades_per_year": 47.3,
+                "ending": 5005402.59,
+                "return_pct": 66.85,
+                "cagr_pct": 13.66,
+                "mdd_pct": -14.68,
+                "trades": 148,
+                "win_rate_pct": 38.51,
+                "avg_trade_pct": 2.31,
+                "trades_per_year": 37.0,
                 "max_open": 9,
-                "underwater_days": 135
+                "underwater_days": 214
               },
               "test": {
-                "ending": 2875687.58,
-                "return_pct": -4.14,
-                "cagr_pct": -4.16,
-                "mdd_pct": -10.79,
-                "trades": 52,
-                "win_rate_pct": 28.85,
-                "avg_trade_pct": 0.211,
-                "trades_per_year": 52.2,
-                "max_open": 8,
+                "ending": 2906677.43,
+                "return_pct": -3.11,
+                "cagr_pct": -3.12,
+                "mdd_pct": -9.07,
+                "trades": 41,
+                "win_rate_pct": 29.27,
+                "avg_trade_pct": 0.162,
+                "trades_per_year": 41.1,
+                "max_open": 7,
                 "underwater_days": 135
               },
               "decision_audit": {
-                "accepted": 52,
+                "accepted": 41,
                 "capacity_rejected": 0,
-                "duplicate_rejected": 42,
-                "accepted_avg_trade_pct": 0.211,
+                "duplicate_rejected": 19,
+                "accepted_avg_trade_pct": 0.162,
                 "capacity_rejected_avg_trade_pct": 0.0,
-                "accepted_avg_quality": 55.96,
+                "accepted_avg_quality": 64.92,
                 "capacity_rejected_avg_quality": 0.0,
                 "capacity_rejected_winners": 0,
                 "capacity_rejected_plus5": 0,
@@ -453,36 +453,36 @@
               "label": "전략별 품질 백분위",
               "description": "TRAIN의 같은 전략 품질분포에서 계산한 백분위",
               "train": {
-                "ending": 4667654.57,
-                "return_pct": 55.59,
-                "cagr_pct": 11.69,
-                "mdd_pct": -17.59,
-                "trades": 199,
-                "win_rate_pct": 39.7,
-                "avg_trade_pct": 2.475,
-                "trades_per_year": 49.8,
+                "ending": 4288832.47,
+                "return_pct": 42.96,
+                "cagr_pct": 9.35,
+                "mdd_pct": -14.96,
+                "trades": 151,
+                "win_rate_pct": 36.42,
+                "avg_trade_pct": 2.109,
+                "trades_per_year": 37.8,
                 "max_open": 9,
-                "underwater_days": 173
+                "underwater_days": 310
               },
               "test": {
-                "ending": 2860404.11,
-                "return_pct": -4.65,
-                "cagr_pct": -4.67,
-                "mdd_pct": -12.64,
-                "trades": 56,
+                "ending": 2877923.84,
+                "return_pct": -4.07,
+                "cagr_pct": -4.08,
+                "mdd_pct": -9.33,
+                "trades": 42,
                 "win_rate_pct": 28.57,
-                "avg_trade_pct": 0.192,
-                "trades_per_year": 56.2,
-                "max_open": 9,
-                "underwater_days": 124
+                "avg_trade_pct": 0.109,
+                "trades_per_year": 42.1,
+                "max_open": 7,
+                "underwater_days": 117
               },
               "decision_audit": {
-                "accepted": 56,
+                "accepted": 42,
                 "capacity_rejected": 0,
-                "duplicate_rejected": 49,
-                "accepted_avg_trade_pct": 0.192,
+                "duplicate_rejected": 20,
+                "accepted_avg_trade_pct": 0.109,
                 "capacity_rejected_avg_trade_pct": 0.0,
-                "accepted_avg_quality": 58.76,
+                "accepted_avg_quality": 66.37,
                 "capacity_rejected_avg_quality": 0.0,
                 "capacity_rejected_winners": 0,
                 "capacity_rejected_plus5": 0,
@@ -494,36 +494,36 @@
               "label": "현재+품질 50:50",
               "description": "TRAIN의 같은 전략 안에서 current priority와 품질 백분위를 50:50 혼합",
               "train": {
-                "ending": 4667654.57,
-                "return_pct": 55.59,
-                "cagr_pct": 11.69,
-                "mdd_pct": -17.59,
-                "trades": 199,
-                "win_rate_pct": 39.7,
-                "avg_trade_pct": 2.475,
-                "trades_per_year": 49.8,
+                "ending": 4288832.47,
+                "return_pct": 42.96,
+                "cagr_pct": 9.35,
+                "mdd_pct": -14.96,
+                "trades": 151,
+                "win_rate_pct": 36.42,
+                "avg_trade_pct": 2.109,
+                "trades_per_year": 37.8,
                 "max_open": 9,
-                "underwater_days": 173
+                "underwater_days": 310
               },
               "test": {
-                "ending": 2860404.11,
-                "return_pct": -4.65,
-                "cagr_pct": -4.67,
-                "mdd_pct": -12.64,
-                "trades": 56,
+                "ending": 2877923.84,
+                "return_pct": -4.07,
+                "cagr_pct": -4.08,
+                "mdd_pct": -9.33,
+                "trades": 42,
                 "win_rate_pct": 28.57,
-                "avg_trade_pct": 0.192,
-                "trades_per_year": 56.2,
-                "max_open": 9,
-                "underwater_days": 124
+                "avg_trade_pct": 0.109,
+                "trades_per_year": 42.1,
+                "max_open": 7,
+                "underwater_days": 117
               },
               "decision_audit": {
-                "accepted": 56,
+                "accepted": 42,
                 "capacity_rejected": 0,
-                "duplicate_rejected": 49,
-                "accepted_avg_trade_pct": 0.192,
+                "duplicate_rejected": 20,
+                "accepted_avg_trade_pct": 0.109,
                 "capacity_rejected_avg_trade_pct": 0.0,
-                "accepted_avg_quality": 58.76,
+                "accepted_avg_quality": 66.37,
                 "capacity_rejected_avg_quality": 0.0,
                 "capacity_rejected_winners": 0,
                 "capacity_rejected_plus5": 0,
@@ -534,12 +534,12 @@
           },
           "strategy_discrimination": {
             "donchian_55": {
-              "signals": 218,
+              "signals": 112,
               "unique_current_priorities": 1,
               "current_priority_min": 2.0,
               "current_priority_max": 2.0,
               "current_priority_return_corr": null,
-              "quality_return_corr": -0.0186
+              "quality_return_corr": 0.0243
             }
           }
         },
@@ -552,43 +552,43 @@
           "selected_intensity": "normal",
           "selected_intensity_label": "일반 엄선 · 상위 30%",
           "thresholds": {
-            "donchian_55": 44.331374
+            "donchian_55": 44.284965
           },
           "rankers": {
             "current": {
               "label": "현재 priority",
               "description": "기존 net RR / elite score 우선순위",
               "train": {
-                "ending": 4002760.75,
-                "return_pct": 33.43,
-                "cagr_pct": 7.48,
-                "mdd_pct": -24.94,
-                "trades": 197,
-                "win_rate_pct": 34.52,
-                "avg_trade_pct": 1.466,
-                "trades_per_year": 49.3,
+                "ending": 4024939.17,
+                "return_pct": 34.16,
+                "cagr_pct": 7.63,
+                "mdd_pct": -25.76,
+                "trades": 199,
+                "win_rate_pct": 35.18,
+                "avg_trade_pct": 1.497,
+                "trades_per_year": 49.8,
                 "max_open": 9,
-                "underwater_days": 360
+                "underwater_days": 364
               },
               "test": {
-                "ending": 2738260.76,
-                "return_pct": -8.72,
-                "cagr_pct": -8.73,
-                "mdd_pct": -23.86,
-                "trades": 71,
-                "win_rate_pct": 23.94,
-                "avg_trade_pct": -0.452,
-                "trades_per_year": 71.0,
+                "ending": 2838805.29,
+                "return_pct": -5.37,
+                "cagr_pct": -5.38,
+                "mdd_pct": -21.07,
+                "trades": 68,
+                "win_rate_pct": 26.47,
+                "avg_trade_pct": -0.103,
+                "trades_per_year": 68.0,
                 "max_open": 8,
                 "underwater_days": 205
               },
               "decision_audit": {
-                "accepted": 71,
+                "accepted": 68,
                 "capacity_rejected": 0,
                 "duplicate_rejected": 56,
-                "accepted_avg_trade_pct": -0.452,
+                "accepted_avg_trade_pct": -0.103,
                 "capacity_rejected_avg_trade_pct": 0.0,
-                "accepted_avg_quality": 58.28,
+                "accepted_avg_quality": 57.98,
                 "capacity_rejected_avg_quality": 0.0,
                 "capacity_rejected_winners": 0,
                 "capacity_rejected_plus5": 0,
@@ -600,16 +600,16 @@
               "label": "전략별 품질 백분위",
               "description": "TRAIN의 같은 전략 품질분포에서 계산한 백분위",
               "train": {
-                "ending": 3661912.98,
-                "return_pct": 22.06,
-                "cagr_pct": 5.11,
-                "mdd_pct": -23.4,
+                "ending": 3695160.95,
+                "return_pct": 23.17,
+                "cagr_pct": 5.35,
+                "mdd_pct": -24.05,
                 "trades": 204,
-                "win_rate_pct": 32.35,
-                "avg_trade_pct": 0.948,
+                "win_rate_pct": 32.84,
+                "avg_trade_pct": 1.072,
                 "trades_per_year": 51.0,
                 "max_open": 9,
-                "underwater_days": 360
+                "underwater_days": 364
               },
               "test": {
                 "ending": 2772220.43,
@@ -641,16 +641,16 @@
               "label": "현재+품질 50:50",
               "description": "TRAIN의 같은 전략 안에서 current priority와 품질 백분위를 50:50 혼합",
               "train": {
-                "ending": 3661912.98,
-                "return_pct": 22.06,
-                "cagr_pct": 5.11,
-                "mdd_pct": -23.4,
+                "ending": 3695160.95,
+                "return_pct": 23.17,
+                "cagr_pct": 5.35,
+                "mdd_pct": -24.05,
                 "trades": 204,
-                "win_rate_pct": 32.35,
-                "avg_trade_pct": 0.948,
+                "win_rate_pct": 32.84,
+                "avg_trade_pct": 1.072,
                 "trades_per_year": 51.0,
                 "max_open": 9,
-                "underwater_days": 360
+                "underwater_days": 364
               },
               "test": {
                 "ending": 2772220.43,
@@ -681,12 +681,12 @@
           },
           "strategy_discrimination": {
             "donchian_55": {
-              "signals": 372,
+              "signals": 374,
               "unique_current_priorities": 1,
               "current_priority_min": 2.0,
               "current_priority_max": 2.0,
               "current_priority_return_corr": null,
-              "quality_return_corr": 0.0871
+              "quality_return_corr": 0.067
             }
           }
         },
@@ -699,43 +699,43 @@
           "selected_intensity": "loose",
           "selected_intensity_label": "느슨한 엄선 · 상위 50%",
           "thresholds": {
-            "donchian_55": 34.882925
+            "donchian_55": 34.867718
           },
           "rankers": {
             "current": {
               "label": "현재 priority",
               "description": "기존 net RR / elite score 우선순위",
               "train": {
-                "ending": 3748042.14,
-                "return_pct": 24.93,
-                "cagr_pct": 5.73,
-                "mdd_pct": -22.26,
-                "trades": 234,
-                "win_rate_pct": 34.62,
-                "avg_trade_pct": 0.456,
-                "trades_per_year": 58.5,
+                "ending": 4087624.99,
+                "return_pct": 36.25,
+                "cagr_pct": 8.05,
+                "mdd_pct": -21.58,
+                "trades": 228,
+                "win_rate_pct": 35.53,
+                "avg_trade_pct": 0.777,
+                "trades_per_year": 57.0,
                 "max_open": 9,
-                "underwater_days": 439
+                "underwater_days": 432
               },
               "test": {
-                "ending": 3012093.85,
-                "return_pct": 0.4,
-                "cagr_pct": 0.4,
-                "mdd_pct": -13.21,
-                "trades": 69,
-                "win_rate_pct": 31.88,
-                "avg_trade_pct": 0.576,
-                "trades_per_year": 69.2,
+                "ending": 2877231.19,
+                "return_pct": -4.09,
+                "cagr_pct": -4.11,
+                "mdd_pct": -13.44,
+                "trades": 70,
+                "win_rate_pct": 30.0,
+                "avg_trade_pct": -0.042,
+                "trades_per_year": 70.2,
                 "max_open": 10,
-                "underwater_days": 102
+                "underwater_days": 163
               },
               "decision_audit": {
-                "accepted": 69,
+                "accepted": 70,
                 "capacity_rejected": 3,
-                "duplicate_rejected": 94,
-                "accepted_avg_trade_pct": 0.576,
+                "duplicate_rejected": 91,
+                "accepted_avg_trade_pct": -0.042,
                 "capacity_rejected_avg_trade_pct": -5.135,
-                "accepted_avg_quality": 50.08,
+                "accepted_avg_quality": 50.24,
                 "capacity_rejected_avg_quality": 50.01,
                 "capacity_rejected_winners": 0,
                 "capacity_rejected_plus5": 0,
@@ -775,36 +775,36 @@
               "label": "전략별 품질 백분위",
               "description": "TRAIN의 같은 전략 품질분포에서 계산한 백분위",
               "train": {
-                "ending": 3214007.17,
-                "return_pct": 7.13,
-                "cagr_pct": 1.74,
-                "mdd_pct": -25.78,
-                "trades": 242,
-                "win_rate_pct": 32.23,
-                "avg_trade_pct": 0.278,
-                "trades_per_year": 60.5,
+                "ending": 3409159.15,
+                "return_pct": 13.64,
+                "cagr_pct": 3.25,
+                "mdd_pct": -25.13,
+                "trades": 237,
+                "win_rate_pct": 32.49,
+                "avg_trade_pct": 0.297,
+                "trades_per_year": 59.3,
                 "max_open": 10,
                 "underwater_days": 431
               },
               "test": {
-                "ending": 3011246.9,
-                "return_pct": 0.37,
-                "cagr_pct": 0.38,
-                "mdd_pct": -15.07,
-                "trades": 68,
-                "win_rate_pct": 32.35,
-                "avg_trade_pct": 1.191,
-                "trades_per_year": 68.2,
+                "ending": 3012819.22,
+                "return_pct": 0.43,
+                "cagr_pct": 0.43,
+                "mdd_pct": -15.02,
+                "trades": 69,
+                "win_rate_pct": 31.88,
+                "avg_trade_pct": 1.107,
+                "trades_per_year": 69.2,
                 "max_open": 8,
                 "underwater_days": 109
               },
               "decision_audit": {
-                "accepted": 68,
+                "accepted": 69,
                 "capacity_rejected": 0,
                 "duplicate_rejected": 104,
-                "accepted_avg_trade_pct": 1.191,
+                "accepted_avg_trade_pct": 1.107,
                 "capacity_rejected_avg_trade_pct": 0.0,
-                "accepted_avg_quality": 50.21,
+                "accepted_avg_quality": 50.31,
                 "capacity_rejected_avg_quality": 0.0,
                 "capacity_rejected_winners": 0,
                 "capacity_rejected_plus5": 0,
@@ -816,36 +816,36 @@
               "label": "현재+품질 50:50",
               "description": "TRAIN의 같은 전략 안에서 current priority와 품질 백분위를 50:50 혼합",
               "train": {
-                "ending": 3214007.17,
-                "return_pct": 7.13,
-                "cagr_pct": 1.74,
-                "mdd_pct": -25.78,
-                "trades": 242,
-                "win_rate_pct": 32.23,
-                "avg_trade_pct": 0.278,
-                "trades_per_year": 60.5,
+                "ending": 3409159.15,
+                "return_pct": 13.64,
+                "cagr_pct": 3.25,
+                "mdd_pct": -25.13,
+                "trades": 237,
+                "win_rate_pct": 32.49,
+                "avg_trade_pct": 0.297,
+                "trades_per_year": 59.3,
                 "max_open": 10,
                 "underwater_days": 431
               },
               "test": {
-                "ending": 3011246.9,
-                "return_pct": 0.37,
-                "cagr_pct": 0.38,
-                "mdd_pct": -15.07,
-                "trades": 68,
-                "win_rate_pct": 32.35,
-                "avg_trade_pct": 1.191,
-                "trades_per_year": 68.2,
+                "ending": 3012819.22,
+                "return_pct": 0.43,
+                "cagr_pct": 0.43,
+                "mdd_pct": -15.02,
+                "trades": 69,
+                "win_rate_pct": 31.88,
+                "avg_trade_pct": 1.107,
+                "trades_per_year": 69.2,
                 "max_open": 8,
                 "underwater_days": 109
               },
               "decision_audit": {
-                "accepted": 68,
+                "accepted": 69,
                 "capacity_rejected": 0,
                 "duplicate_rejected": 104,
-                "accepted_avg_trade_pct": 1.191,
+                "accepted_avg_trade_pct": 1.107,
                 "capacity_rejected_avg_trade_pct": 0.0,
-                "accepted_avg_quality": 50.21,
+                "accepted_avg_quality": 50.31,
                 "capacity_rejected_avg_quality": 0.0,
                 "capacity_rejected_winners": 0,
                 "capacity_rejected_plus5": 0,
@@ -856,12 +856,12 @@
           },
           "strategy_discrimination": {
             "donchian_55": {
-              "signals": 528,
+              "signals": 523,
               "unique_current_priorities": 1,
               "current_priority_min": 2.0,
               "current_priority_max": 2.0,
               "current_priority_return_corr": null,
-              "quality_return_corr": -0.0083
+              "quality_return_corr": -0.0107
             }
           }
         },
@@ -870,45 +870,45 @@
           "train_start": "2022-01-01",
           "train_end": "2025-12-31",
           "test_start": "2026-01-01",
-          "test_end": "2026-10-19",
+          "test_end": "2026-10-20",
           "selected_intensity": "loose",
           "selected_intensity_label": "느슨한 엄선 · 상위 50%",
           "thresholds": {
-            "donchian_55": 34.468038
+            "donchian_55": 34.385268
           },
           "rankers": {
             "current": {
               "label": "현재 priority",
               "description": "기존 net RR / elite score 우선순위",
               "train": {
-                "ending": 3771343.75,
-                "return_pct": 25.71,
-                "cagr_pct": 5.89,
-                "mdd_pct": -24.92,
+                "ending": 3744262.8,
+                "return_pct": 24.81,
+                "cagr_pct": 5.7,
+                "mdd_pct": -24.87,
                 "trades": 224,
-                "win_rate_pct": 35.71,
-                "avg_trade_pct": 0.867,
+                "win_rate_pct": 34.38,
+                "avg_trade_pct": 0.683,
                 "trades_per_year": 56.0,
                 "max_open": 10,
                 "underwater_days": 446
               },
               "test": {
-                "ending": 3210755.86,
-                "return_pct": 7.03,
-                "cagr_pct": 8.9,
+                "ending": 3220975.71,
+                "return_pct": 7.37,
+                "cagr_pct": 9.3,
                 "mdd_pct": -20.52,
                 "trades": 69,
-                "win_rate_pct": 31.88,
-                "avg_trade_pct": 1.489,
-                "trades_per_year": 86.6,
+                "win_rate_pct": 34.78,
+                "avg_trade_pct": 1.537,
+                "trades_per_year": 86.3,
                 "max_open": 10,
-                "underwater_days": 95
+                "underwater_days": 96
               },
               "decision_audit": {
                 "accepted": 69,
                 "capacity_rejected": 20,
                 "duplicate_rejected": 130,
-                "accepted_avg_trade_pct": 1.489,
+                "accepted_avg_trade_pct": 1.537,
                 "capacity_rejected_avg_trade_pct": -5.5,
                 "accepted_avg_quality": 51.6,
                 "capacity_rejected_avg_quality": 47.58,
@@ -1031,34 +1031,34 @@
               "label": "전략별 품질 백분위",
               "description": "TRAIN의 같은 전략 품질분포에서 계산한 백분위",
               "train": {
-                "ending": 2999294.23,
-                "return_pct": -0.02,
-                "cagr_pct": -0.01,
-                "mdd_pct": -27.41,
-                "trades": 240,
-                "win_rate_pct": 31.67,
-                "avg_trade_pct": 0.327,
-                "trades_per_year": 60.0,
+                "ending": 3147523.05,
+                "return_pct": 4.92,
+                "cagr_pct": 1.21,
+                "mdd_pct": -26.78,
+                "trades": 235,
+                "win_rate_pct": 31.49,
+                "avg_trade_pct": 0.337,
+                "trades_per_year": 58.8,
                 "max_open": 10,
-                "underwater_days": 461
+                "underwater_days": 435
               },
               "test": {
-                "ending": 2978615.93,
-                "return_pct": -0.71,
-                "cagr_pct": -0.89,
+                "ending": 2986984.18,
+                "return_pct": -0.43,
+                "cagr_pct": -0.54,
                 "mdd_pct": -19.12,
                 "trades": 67,
-                "win_rate_pct": 31.34,
-                "avg_trade_pct": 0.623,
-                "trades_per_year": 84.1,
+                "win_rate_pct": 32.84,
+                "avg_trade_pct": 0.645,
+                "trades_per_year": 83.8,
                 "max_open": 10,
-                "underwater_days": 101
+                "underwater_days": 102
               },
               "decision_audit": {
                 "accepted": 67,
                 "capacity_rejected": 15,
                 "duplicate_rejected": 119,
-                "accepted_avg_trade_pct": 0.623,
+                "accepted_avg_trade_pct": 0.645,
                 "capacity_rejected_avg_trade_pct": -4.182,
                 "accepted_avg_quality": 54.48,
                 "capacity_rejected_avg_quality": 44.82,
@@ -1073,7 +1073,7 @@
                     "hypothetical_return_pct": 11.28,
                     "quality": 36.77,
                     "current_priority": 2.0,
-                    "rank_priority": 0.1177
+                    "rank_priority": 0.1211
                   },
                   {
                     "date": "2026-06-05",
@@ -1082,7 +1082,7 @@
                     "hypothetical_return_pct": 7.81,
                     "quality": 51.98,
                     "current_priority": 2.0,
-                    "rank_priority": 0.6619
+                    "rank_priority": 0.6617
                   },
                   {
                     "date": "2026-06-05",
@@ -1091,7 +1091,7 @@
                     "hypothetical_return_pct": 7.42,
                     "quality": 35.9,
                     "current_priority": 2.0,
-                    "rank_priority": 0.0777
+                    "rank_priority": 0.0811
                   },
                   {
                     "date": "2026-06-01",
@@ -1100,7 +1100,7 @@
                     "hypothetical_return_pct": 1.42,
                     "quality": 38.43,
                     "current_priority": 2.0,
-                    "rank_priority": 0.2049
+                    "rank_priority": 0.2082
                   },
                   {
                     "date": "2026-06-03",
@@ -1109,7 +1109,7 @@
                     "hypothetical_return_pct": -3.5,
                     "quality": 57.54,
                     "current_priority": 2.0,
-                    "rank_priority": 0.7682
+                    "rank_priority": 0.7673
                   },
                   {
                     "date": "2026-06-03",
@@ -1118,7 +1118,7 @@
                     "hypothetical_return_pct": -3.62,
                     "quality": 41.52,
                     "current_priority": 2.0,
-                    "rank_priority": 0.3387
+                    "rank_priority": 0.3425
                   },
                   {
                     "date": "2026-06-05",
@@ -1127,7 +1127,7 @@
                     "hypothetical_return_pct": -5.67,
                     "quality": 44.29,
                     "current_priority": 2.0,
-                    "rank_priority": 0.4421
+                    "rank_priority": 0.4433
                   },
                   {
                     "date": "2026-06-02",
@@ -1136,7 +1136,7 @@
                     "hypothetical_return_pct": -5.84,
                     "quality": 55.03,
                     "current_priority": 2.0,
-                    "rank_priority": 0.7288
+                    "rank_priority": 0.7279
                   },
                   {
                     "date": "2026-06-05",
@@ -1145,7 +1145,7 @@
                     "hypothetical_return_pct": -5.87,
                     "quality": 41.72,
                     "current_priority": 2.0,
-                    "rank_priority": 0.3423
+                    "rank_priority": 0.3461
                   },
                   {
                     "date": "2026-06-04",
@@ -1154,7 +1154,7 @@
                     "hypothetical_return_pct": -6.5,
                     "quality": 42.0,
                     "current_priority": 2.0,
-                    "rank_priority": 0.3536
+                    "rank_priority": 0.3574
                   },
                   {
                     "date": "2026-06-03",
@@ -1163,7 +1163,7 @@
                     "hypothetical_return_pct": -6.65,
                     "quality": 66.8,
                     "current_priority": 2.0,
-                    "rank_priority": 0.8781
+                    "rank_priority": 0.8789
                   },
                   {
                     "date": "2026-06-04",
@@ -1172,7 +1172,7 @@
                     "hypothetical_return_pct": -8.54,
                     "quality": 44.87,
                     "current_priority": 2.0,
-                    "rank_priority": 0.4594
+                    "rank_priority": 0.4606
                   }
                 ]
               }
@@ -1181,34 +1181,34 @@
               "label": "현재+품질 50:50",
               "description": "TRAIN의 같은 전략 안에서 current priority와 품질 백분위를 50:50 혼합",
               "train": {
-                "ending": 2999294.23,
-                "return_pct": -0.02,
-                "cagr_pct": -0.01,
-                "mdd_pct": -27.41,
-                "trades": 240,
-                "win_rate_pct": 31.67,
-                "avg_trade_pct": 0.327,
-                "trades_per_year": 60.0,
+                "ending": 3147523.05,
+                "return_pct": 4.92,
+                "cagr_pct": 1.21,
+                "mdd_pct": -26.78,
+                "trades": 235,
+                "win_rate_pct": 31.49,
+                "avg_trade_pct": 0.337,
+                "trades_per_year": 58.8,
                 "max_open": 10,
-                "underwater_days": 461
+                "underwater_days": 435
               },
               "test": {
-                "ending": 2978615.93,
-                "return_pct": -0.71,
-                "cagr_pct": -0.89,
+                "ending": 2986984.18,
+                "return_pct": -0.43,
+                "cagr_pct": -0.54,
                 "mdd_pct": -19.12,
                 "trades": 67,
-                "win_rate_pct": 31.34,
-                "avg_trade_pct": 0.623,
-                "trades_per_year": 84.1,
+                "win_rate_pct": 32.84,
+                "avg_trade_pct": 0.645,
+                "trades_per_year": 83.8,
                 "max_open": 10,
-                "underwater_days": 101
+                "underwater_days": 102
               },
               "decision_audit": {
                 "accepted": 67,
                 "capacity_rejected": 15,
                 "duplicate_rejected": 119,
-                "accepted_avg_trade_pct": 0.623,
+                "accepted_avg_trade_pct": 0.645,
                 "capacity_rejected_avg_trade_pct": -4.182,
                 "accepted_avg_quality": 54.48,
                 "capacity_rejected_avg_quality": 44.82,
@@ -1223,7 +1223,7 @@
                     "hypothetical_return_pct": 11.28,
                     "quality": 36.77,
                     "current_priority": 2.0,
-                    "rank_priority": 0.3088
+                    "rank_priority": 0.3106
                   },
                   {
                     "date": "2026-06-05",
@@ -1232,7 +1232,7 @@
                     "hypothetical_return_pct": 7.81,
                     "quality": 51.98,
                     "current_priority": 2.0,
-                    "rank_priority": 0.5809
+                    "rank_priority": 0.5808
                   },
                   {
                     "date": "2026-06-05",
@@ -1241,7 +1241,7 @@
                     "hypothetical_return_pct": 7.42,
                     "quality": 35.9,
                     "current_priority": 2.0,
-                    "rank_priority": 0.2888
+                    "rank_priority": 0.2906
                   },
                   {
                     "date": "2026-06-01",
@@ -1250,7 +1250,7 @@
                     "hypothetical_return_pct": 1.42,
                     "quality": 38.43,
                     "current_priority": 2.0,
-                    "rank_priority": 0.3524
+                    "rank_priority": 0.3541
                   },
                   {
                     "date": "2026-06-03",
@@ -1259,7 +1259,7 @@
                     "hypothetical_return_pct": -3.5,
                     "quality": 57.54,
                     "current_priority": 2.0,
-                    "rank_priority": 0.6341
+                    "rank_priority": 0.6337
                   },
                   {
                     "date": "2026-06-03",
@@ -1268,7 +1268,7 @@
                     "hypothetical_return_pct": -3.62,
                     "quality": 41.52,
                     "current_priority": 2.0,
-                    "rank_priority": 0.4194
+                    "rank_priority": 0.4212
                   },
                   {
                     "date": "2026-06-05",
@@ -1277,7 +1277,7 @@
                     "hypothetical_return_pct": -5.67,
                     "quality": 44.29,
                     "current_priority": 2.0,
-                    "rank_priority": 0.471
+                    "rank_priority": 0.4717
                   },
                   {
                     "date": "2026-06-02",
@@ -1286,7 +1286,7 @@
                     "hypothetical_return_pct": -5.84,
                     "quality": 55.03,
                     "current_priority": 2.0,
-                    "rank_priority": 0.6144
+                    "rank_priority": 0.614
                   },
                   {
                     "date": "2026-06-05",
@@ -1295,7 +1295,7 @@
                     "hypothetical_return_pct": -5.87,
                     "quality": 41.72,
                     "current_priority": 2.0,
-                    "rank_priority": 0.4211
+                    "rank_priority": 0.423
                   },
                   {
                     "date": "2026-06-04",
@@ -1304,7 +1304,7 @@
                     "hypothetical_return_pct": -6.5,
                     "quality": 42.0,
                     "current_priority": 2.0,
-                    "rank_priority": 0.4268
+                    "rank_priority": 0.4287
                   },
                   {
                     "date": "2026-06-03",
@@ -1313,7 +1313,7 @@
                     "hypothetical_return_pct": -6.65,
                     "quality": 66.8,
                     "current_priority": 2.0,
-                    "rank_priority": 0.6891
+                    "rank_priority": 0.6894
                   },
                   {
                     "date": "2026-06-04",
@@ -1322,7 +1322,7 @@
                     "hypothetical_return_pct": -8.54,
                     "quality": 44.87,
                     "current_priority": 2.0,
-                    "rank_priority": 0.4797
+                    "rank_priority": 0.4803
                   }
                 ]
               }
@@ -1330,12 +1330,12 @@
           },
           "strategy_discrimination": {
             "donchian_55": {
-              "signals": 467,
+              "signals": 470,
               "unique_current_priorities": 1,
               "current_priority_min": 2.0,
               "current_priority_max": 2.0,
               "current_priority_return_corr": null,
-              "quality_return_corr": 0.0696
+              "quality_return_corr": 0.0693
             }
           }
         }
@@ -1352,29 +1352,29 @@
       "summary": {
         "rules": {
           "current": {
-            "stitched_test_return_pct": -24.78,
-            "median_test_return_pct": -1.39,
+            "stitched_test_return_pct": -24.42,
+            "median_test_return_pct": -3.41,
             "positive_test_folds": 2,
-            "worst_test_mdd_pct": -27.01,
-            "total_test_trades": 328
+            "worst_test_mdd_pct": -24.82,
+            "total_test_trades": 338
           },
           "quality_pct": {
-            "stitched_test_return_pct": -15.78,
-            "median_test_return_pct": -0.21,
+            "stitched_test_return_pct": 5.45,
+            "median_test_return_pct": 0.88,
             "positive_test_folds": 3,
-            "worst_test_mdd_pct": -27.0,
-            "total_test_trades": 323,
+            "worst_test_mdd_pct": -25.13,
+            "total_test_trades": 335,
             "folds_beating_current": 4,
-            "mean_delta_vs_current_pct": 1.54
+            "mean_delta_vs_current_pct": 5.33
           },
           "hybrid_50": {
-            "stitched_test_return_pct": -14.17,
-            "median_test_return_pct": 0.34,
+            "stitched_test_return_pct": 6.62,
+            "median_test_return_pct": 1.29,
             "positive_test_folds": 4,
-            "worst_test_mdd_pct": -27.0,
-            "total_test_trades": 321,
+            "worst_test_mdd_pct": -25.13,
+            "total_test_trades": 334,
             "folds_beating_current": 5,
-            "mean_delta_vs_current_pct": 1.85
+            "mean_delta_vs_current_pct": 5.51
           }
         },
         "current_slot_audit": {
@@ -1386,22 +1386,22 @@
         },
         "test_2024": {
           "current": {
-            "return_pct": -21.36,
-            "mdd_pct": -27.01,
+            "return_pct": -19.0,
+            "mdd_pct": -24.82,
             "capacity_rejected": 0,
             "rejected_plus5": 0,
             "rejected_plus10": 0
           },
           "quality_pct": {
-            "return_pct": -12.85,
-            "mdd_pct": -27.0,
+            "return_pct": -10.61,
+            "mdd_pct": -25.13,
             "capacity_rejected": 0,
             "rejected_plus5": 0,
             "rejected_plus10": 0
           },
           "hybrid_50": {
-            "return_pct": -12.85,
-            "mdd_pct": -27.0,
+            "return_pct": -10.61,
+            "mdd_pct": -25.13,
             "capacity_rejected": 0,
             "rejected_plus5": 0,
             "rejected_plus10": 0
@@ -1411,51 +1411,51 @@
       "folds": [
         {
           "fold": "2021",
-          "train_start": "2017-09-07",
+          "train_start": "2017-09-08",
           "train_end": "2020-12-31",
           "test_start": "2021-01-01",
           "test_end": "2021-12-31",
-          "selected_intensity": "strong",
-          "selected_intensity_label": "강한 엄선 · 상위 15%",
+          "selected_intensity": "raw",
+          "selected_intensity_label": "원신호",
           "thresholds": {
-            "momentum_pullback": 53.568685,
-            "donchian_55": 54.575137
+            "momentum_pullback": null,
+            "donchian_55": null
           },
           "rankers": {
             "current": {
               "label": "현재 priority",
               "description": "기존 net RR / elite score 우선순위",
               "train": {
-                "ending": 4742029.84,
-                "return_pct": 58.07,
-                "cagr_pct": 14.81,
-                "mdd_pct": -19.32,
-                "trades": 120,
-                "win_rate_pct": 36.67,
-                "avg_trade_pct": 1.958,
-                "trades_per_year": 36.2,
-                "max_open": 9,
-                "underwater_days": 420
+                "ending": 4104927.41,
+                "return_pct": 36.83,
+                "cagr_pct": 9.93,
+                "mdd_pct": -13.64,
+                "trades": 185,
+                "win_rate_pct": 40.54,
+                "avg_trade_pct": 1.13,
+                "trades_per_year": 55.8,
+                "max_open": 10,
+                "underwater_days": 360
               },
               "test": {
-                "ending": 2746550.05,
-                "return_pct": -8.45,
-                "cagr_pct": -8.48,
-                "mdd_pct": -19.3,
-                "trades": 53,
-                "win_rate_pct": 28.3,
-                "avg_trade_pct": -1.064,
-                "trades_per_year": 53.2,
-                "max_open": 7,
-                "underwater_days": 242
+                "ending": 2798910.54,
+                "return_pct": -6.7,
+                "cagr_pct": -6.73,
+                "mdd_pct": -23.48,
+                "trades": 65,
+                "win_rate_pct": 35.38,
+                "avg_trade_pct": -0.012,
+                "trades_per_year": 65.2,
+                "max_open": 8,
+                "underwater_days": 112
               },
               "decision_audit": {
-                "accepted": 53,
+                "accepted": 65,
                 "capacity_rejected": 0,
-                "duplicate_rejected": 21,
-                "accepted_avg_trade_pct": -1.064,
+                "duplicate_rejected": 157,
+                "accepted_avg_trade_pct": -0.012,
                 "capacity_rejected_avg_trade_pct": 0.0,
-                "accepted_avg_quality": 66.55,
+                "accepted_avg_quality": 37.37,
                 "capacity_rejected_avg_quality": 0.0,
                 "capacity_rejected_winners": 0,
                 "capacity_rejected_plus5": 0,
@@ -1467,36 +1467,36 @@
               "label": "전략별 품질 백분위",
               "description": "TRAIN의 같은 전략 품질분포에서 계산한 백분위",
               "train": {
-                "ending": 4333276.97,
-                "return_pct": 44.44,
-                "cagr_pct": 11.73,
-                "mdd_pct": -18.02,
-                "trades": 118,
-                "win_rate_pct": 35.59,
-                "avg_trade_pct": 2.118,
-                "trades_per_year": 35.6,
-                "max_open": 9,
-                "underwater_days": 398
+                "ending": 3799789.94,
+                "return_pct": 26.66,
+                "cagr_pct": 7.39,
+                "mdd_pct": -20.13,
+                "trades": 182,
+                "win_rate_pct": 40.11,
+                "avg_trade_pct": 1.592,
+                "trades_per_year": 54.9,
+                "max_open": 10,
+                "underwater_days": 488
               },
               "test": {
-                "ending": 2784385.91,
-                "return_pct": -7.19,
-                "cagr_pct": -7.21,
-                "mdd_pct": -18.09,
-                "trades": 52,
-                "win_rate_pct": 21.15,
-                "avg_trade_pct": -1.315,
-                "trades_per_year": 52.2,
-                "max_open": 6,
-                "underwater_days": 242
+                "ending": 3400766.74,
+                "return_pct": 13.36,
+                "cagr_pct": 13.41,
+                "mdd_pct": -13.12,
+                "trades": 65,
+                "win_rate_pct": 35.38,
+                "avg_trade_pct": 0.899,
+                "trades_per_year": 65.2,
+                "max_open": 8,
+                "underwater_days": 61
               },
               "decision_audit": {
-                "accepted": 52,
+                "accepted": 65,
                 "capacity_rejected": 0,
-                "duplicate_rejected": 20,
-                "accepted_avg_trade_pct": -1.315,
+                "duplicate_rejected": 186,
+                "accepted_avg_trade_pct": 0.899,
                 "capacity_rejected_avg_trade_pct": 0.0,
-                "accepted_avg_quality": 67.28,
+                "accepted_avg_quality": 45.59,
                 "capacity_rejected_avg_quality": 0.0,
                 "capacity_rejected_winners": 0,
                 "capacity_rejected_plus5": 0,
@@ -1508,36 +1508,36 @@
               "label": "현재+품질 50:50",
               "description": "TRAIN의 같은 전략 안에서 current priority와 품질 백분위를 50:50 혼합",
               "train": {
-                "ending": 4333276.97,
-                "return_pct": 44.44,
-                "cagr_pct": 11.73,
-                "mdd_pct": -18.02,
-                "trades": 118,
-                "win_rate_pct": 35.59,
-                "avg_trade_pct": 2.118,
-                "trades_per_year": 35.6,
-                "max_open": 9,
-                "underwater_days": 398
+                "ending": 3799789.94,
+                "return_pct": 26.66,
+                "cagr_pct": 7.39,
+                "mdd_pct": -20.13,
+                "trades": 182,
+                "win_rate_pct": 40.11,
+                "avg_trade_pct": 1.592,
+                "trades_per_year": 54.9,
+                "max_open": 10,
+                "underwater_days": 488
               },
               "test": {
-                "ending": 2806107.36,
-                "return_pct": -6.46,
-                "cagr_pct": -6.48,
-                "mdd_pct": -17.45,
-                "trades": 51,
-                "win_rate_pct": 25.49,
-                "avg_trade_pct": -1.111,
-                "trades_per_year": 51.2,
-                "max_open": 6,
-                "underwater_days": 214
+                "ending": 3400766.74,
+                "return_pct": 13.36,
+                "cagr_pct": 13.41,
+                "mdd_pct": -13.12,
+                "trades": 65,
+                "win_rate_pct": 35.38,
+                "avg_trade_pct": 0.899,
+                "trades_per_year": 65.2,
+                "max_open": 8,
+                "underwater_days": 61
               },
               "decision_audit": {
-                "accepted": 51,
+                "accepted": 65,
                 "capacity_rejected": 0,
-                "duplicate_rejected": 20,
-                "accepted_avg_trade_pct": -1.111,
+                "duplicate_rejected": 186,
+                "accepted_avg_trade_pct": 0.899,
                 "capacity_rejected_avg_trade_pct": 0.0,
-                "accepted_avg_quality": 67.47,
+                "accepted_avg_quality": 45.59,
                 "capacity_rejected_avg_quality": 0.0,
                 "capacity_rejected_winners": 0,
                 "capacity_rejected_plus5": 0,
@@ -1548,20 +1548,20 @@
           },
           "strategy_discrimination": {
             "donchian_55": {
-              "signals": 171,
+              "signals": 1142,
               "unique_current_priorities": 1,
               "current_priority_min": 2.0,
               "current_priority_max": 2.0,
               "current_priority_return_corr": null,
-              "quality_return_corr": -0.1074
+              "quality_return_corr": -0.0294
             },
             "momentum_pullback": {
-              "signals": 3,
-              "unique_current_priorities": 3,
-              "current_priority_min": 1.2057,
-              "current_priority_max": 1.525,
-              "current_priority_return_corr": -0.6147,
-              "quality_return_corr": -0.9531
+              "signals": 17,
+              "unique_current_priorities": 17,
+              "current_priority_min": 1.0755,
+              "current_priority_max": 1.8055,
+              "current_priority_return_corr": 0.1036,
+              "quality_return_corr": 0.0412
             }
           }
         },
@@ -1575,23 +1575,23 @@
           "selected_intensity_label": "강한 엄선 · 상위 15%",
           "thresholds": {
             "momentum_pullback": 53.598155,
-            "donchian_55": 54.438654
+            "donchian_55": 54.469814
           },
           "rankers": {
             "current": {
               "label": "현재 priority",
               "description": "기존 net RR / elite score 우선순위",
               "train": {
-                "ending": 4505734.14,
-                "return_pct": 50.19,
-                "cagr_pct": 10.71,
-                "mdd_pct": -18.76,
+                "ending": 4461988.25,
+                "return_pct": 48.73,
+                "cagr_pct": 10.44,
+                "mdd_pct": -20.29,
                 "trades": 156,
                 "win_rate_pct": 35.9,
-                "avg_trade_pct": 1.558,
+                "avg_trade_pct": 1.579,
                 "trades_per_year": 39.0,
                 "max_open": 9,
-                "underwater_days": 415
+                "underwater_days": 419
               },
               "test": {
                 "ending": 3017525.09,
@@ -1608,7 +1608,7 @@
               "decision_audit": {
                 "accepted": 17,
                 "capacity_rejected": 0,
-                "duplicate_rejected": 12,
+                "duplicate_rejected": 11,
                 "accepted_avg_trade_pct": 0.23,
                 "capacity_rejected_avg_trade_pct": 0.0,
                 "accepted_avg_quality": 64.56,
@@ -1623,16 +1623,16 @@
               "label": "전략별 품질 백분위",
               "description": "TRAIN의 같은 전략 품질분포에서 계산한 백분위",
               "train": {
-                "ending": 3861912.54,
-                "return_pct": 28.73,
-                "cagr_pct": 6.52,
-                "mdd_pct": -19.46,
-                "trades": 159,
-                "win_rate_pct": 33.33,
-                "avg_trade_pct": 1.451,
-                "trades_per_year": 39.8,
+                "ending": 3749966.66,
+                "return_pct": 25.0,
+                "cagr_pct": 5.74,
+                "mdd_pct": -20.98,
+                "trades": 163,
+                "win_rate_pct": 34.36,
+                "avg_trade_pct": 1.433,
+                "trades_per_year": 40.8,
                 "max_open": 9,
-                "underwater_days": 431
+                "underwater_days": 527
               },
               "test": {
                 "ending": 3058996.52,
@@ -1649,7 +1649,7 @@
               "decision_audit": {
                 "accepted": 17,
                 "capacity_rejected": 0,
-                "duplicate_rejected": 12,
+                "duplicate_rejected": 11,
                 "accepted_avg_trade_pct": 0.23,
                 "capacity_rejected_avg_trade_pct": 0.0,
                 "accepted_avg_quality": 64.56,
@@ -1664,16 +1664,16 @@
               "label": "현재+품질 50:50",
               "description": "TRAIN의 같은 전략 안에서 current priority와 품질 백분위를 50:50 혼합",
               "train": {
-                "ending": 3902163.11,
-                "return_pct": 30.07,
-                "cagr_pct": 6.8,
-                "mdd_pct": -19.46,
-                "trades": 159,
-                "win_rate_pct": 34.59,
-                "avg_trade_pct": 1.508,
-                "trades_per_year": 39.8,
+                "ending": 3787759.84,
+                "return_pct": 26.26,
+                "cagr_pct": 6.01,
+                "mdd_pct": -20.98,
+                "trades": 161,
+                "win_rate_pct": 34.78,
+                "avg_trade_pct": 1.476,
+                "trades_per_year": 40.3,
                 "max_open": 9,
-                "underwater_days": 431
+                "underwater_days": 527
               },
               "test": {
                 "ending": 3058996.52,
@@ -1690,7 +1690,7 @@
               "decision_audit": {
                 "accepted": 17,
                 "capacity_rejected": 0,
-                "duplicate_rejected": 12,
+                "duplicate_rejected": 11,
                 "accepted_avg_trade_pct": 0.23,
                 "capacity_rejected_avg_trade_pct": 0.0,
                 "accepted_avg_quality": 64.56,
@@ -1704,12 +1704,12 @@
           },
           "strategy_discrimination": {
             "donchian_55": {
-              "signals": 31,
+              "signals": 30,
               "unique_current_priorities": 1,
               "current_priority_min": 2.0,
               "current_priority_max": 2.0,
               "current_priority_return_corr": null,
-              "quality_return_corr": -0.2056
+              "quality_return_corr": -0.1541
             }
           }
         },
@@ -1723,43 +1723,43 @@
           "selected_intensity_label": "일반 엄선 · 상위 30%",
           "thresholds": {
             "momentum_pullback": 49.975996,
-            "donchian_55": 43.283625
+            "donchian_55": 43.285313
           },
           "rankers": {
             "current": {
               "label": "현재 priority",
               "description": "기존 net RR / elite score 우선순위",
               "train": {
-                "ending": 5233925.67,
-                "return_pct": 74.46,
-                "cagr_pct": 14.94,
-                "mdd_pct": -17.6,
-                "trades": 200,
-                "win_rate_pct": 38.0,
-                "avg_trade_pct": 2.356,
-                "trades_per_year": 50.0,
+                "ending": 5339563.23,
+                "return_pct": 77.99,
+                "cagr_pct": 15.52,
+                "mdd_pct": -18.5,
+                "trades": 202,
+                "win_rate_pct": 38.12,
+                "avg_trade_pct": 2.45,
+                "trades_per_year": 50.5,
                 "max_open": 9,
                 "underwater_days": 135
               },
               "test": {
-                "ending": 2986138.05,
-                "return_pct": -0.46,
-                "cagr_pct": -0.46,
-                "mdd_pct": -9.46,
-                "trades": 51,
-                "win_rate_pct": 33.33,
-                "avg_trade_pct": 0.586,
-                "trades_per_year": 51.2,
+                "ending": 2996761.03,
+                "return_pct": -0.11,
+                "cagr_pct": -0.11,
+                "mdd_pct": -9.19,
+                "trades": 50,
+                "win_rate_pct": 34.0,
+                "avg_trade_pct": 0.737,
+                "trades_per_year": 50.2,
                 "max_open": 7,
                 "underwater_days": 83
               },
               "decision_audit": {
-                "accepted": 51,
+                "accepted": 50,
                 "capacity_rejected": 0,
                 "duplicate_rejected": 43,
-                "accepted_avg_trade_pct": 0.586,
+                "accepted_avg_trade_pct": 0.737,
                 "capacity_rejected_avg_trade_pct": 0.0,
-                "accepted_avg_quality": 55.96,
+                "accepted_avg_quality": 56.36,
                 "capacity_rejected_avg_quality": 0.0,
                 "capacity_rejected_winners": 0,
                 "capacity_rejected_plus5": 0,
@@ -1771,25 +1771,25 @@
               "label": "전략별 품질 백분위",
               "description": "TRAIN의 같은 전략 품질분포에서 계산한 백분위",
               "train": {
-                "ending": 5004762.65,
-                "return_pct": 66.83,
-                "cagr_pct": 13.66,
-                "mdd_pct": -17.59,
-                "trades": 205,
-                "win_rate_pct": 39.51,
-                "avg_trade_pct": 2.403,
-                "trades_per_year": 51.3,
+                "ending": 5086248.45,
+                "return_pct": 69.54,
+                "cagr_pct": 14.12,
+                "mdd_pct": -18.49,
+                "trades": 207,
+                "win_rate_pct": 39.61,
+                "avg_trade_pct": 2.436,
+                "trades_per_year": 51.8,
                 "max_open": 9,
                 "underwater_days": 173
               },
               "test": {
-                "ending": 2979621.94,
-                "return_pct": -0.68,
-                "cagr_pct": -0.68,
-                "mdd_pct": -9.42,
+                "ending": 2985112.21,
+                "return_pct": -0.5,
+                "cagr_pct": -0.5,
+                "mdd_pct": -9.26,
                 "trades": 56,
                 "win_rate_pct": 30.36,
-                "avg_trade_pct": 0.395,
+                "avg_trade_pct": 0.407,
                 "trades_per_year": 56.2,
                 "max_open": 8,
                 "underwater_days": 77
@@ -1798,9 +1798,9 @@
                 "accepted": 56,
                 "capacity_rejected": 0,
                 "duplicate_rejected": 47,
-                "accepted_avg_trade_pct": 0.395,
+                "accepted_avg_trade_pct": 0.407,
                 "capacity_rejected_avg_trade_pct": 0.0,
-                "accepted_avg_quality": 59.11,
+                "accepted_avg_quality": 59.31,
                 "capacity_rejected_avg_quality": 0.0,
                 "capacity_rejected_winners": 0,
                 "capacity_rejected_plus5": 0,
@@ -1812,25 +1812,25 @@
               "label": "현재+품질 50:50",
               "description": "TRAIN의 같은 전략 안에서 current priority와 품질 백분위를 50:50 혼합",
               "train": {
-                "ending": 5004762.65,
-                "return_pct": 66.83,
-                "cagr_pct": 13.66,
-                "mdd_pct": -17.59,
-                "trades": 205,
-                "win_rate_pct": 39.51,
-                "avg_trade_pct": 2.403,
-                "trades_per_year": 51.3,
+                "ending": 5086248.45,
+                "return_pct": 69.54,
+                "cagr_pct": 14.12,
+                "mdd_pct": -18.49,
+                "trades": 207,
+                "win_rate_pct": 39.61,
+                "avg_trade_pct": 2.436,
+                "trades_per_year": 51.8,
                 "max_open": 9,
                 "underwater_days": 173
               },
               "test": {
-                "ending": 3012840.2,
-                "return_pct": 0.43,
-                "cagr_pct": 0.43,
-                "mdd_pct": -9.42,
+                "ending": 3018391.68,
+                "return_pct": 0.61,
+                "cagr_pct": 0.62,
+                "mdd_pct": -9.25,
                 "trades": 55,
                 "win_rate_pct": 30.91,
-                "avg_trade_pct": 0.439,
+                "avg_trade_pct": 0.452,
                 "trades_per_year": 55.2,
                 "max_open": 9,
                 "underwater_days": 77
@@ -1839,9 +1839,9 @@
                 "accepted": 55,
                 "capacity_rejected": 0,
                 "duplicate_rejected": 48,
-                "accepted_avg_trade_pct": 0.439,
+                "accepted_avg_trade_pct": 0.452,
                 "capacity_rejected_avg_trade_pct": 0.0,
-                "accepted_avg_quality": 58.68,
+                "accepted_avg_quality": 58.88,
                 "capacity_rejected_avg_quality": 0.0,
                 "capacity_rejected_winners": 0,
                 "capacity_rejected_plus5": 0,
@@ -1852,12 +1852,12 @@
           },
           "strategy_discrimination": {
             "donchian_55": {
-              "signals": 218,
+              "signals": 220,
               "unique_current_priorities": 1,
               "current_priority_min": 2.0,
               "current_priority_max": 2.0,
               "current_priority_return_corr": null,
-              "quality_return_corr": -0.0186
+              "quality_return_corr": -0.0182
             },
             "momentum_pullback": {
               "signals": 4,
@@ -1879,43 +1879,43 @@
           "selected_intensity_label": "강한 엄선 · 상위 15%",
           "thresholds": {
             "momentum_pullback": 52.47142,
-            "donchian_55": 54.848832
+            "donchian_55": 54.755521
           },
           "rankers": {
             "current": {
               "label": "현재 priority",
               "description": "기존 net RR / elite score 우선순위",
               "train": {
-                "ending": 3572550.91,
-                "return_pct": 19.09,
-                "cagr_pct": 4.47,
-                "mdd_pct": -22.67,
+                "ending": 3611707.94,
+                "return_pct": 20.39,
+                "cagr_pct": 4.75,
+                "mdd_pct": -21.17,
                 "trades": 153,
                 "win_rate_pct": 32.68,
-                "avg_trade_pct": 1.275,
+                "avg_trade_pct": 1.302,
                 "trades_per_year": 38.3,
                 "max_open": 9,
                 "underwater_days": 622
               },
               "test": {
-                "ending": 2359251.77,
-                "return_pct": -21.36,
-                "cagr_pct": -21.37,
-                "mdd_pct": -27.01,
-                "trades": 60,
-                "win_rate_pct": 20.0,
-                "avg_trade_pct": -2.737,
-                "trades_per_year": 60.0,
+                "ending": 2429961.58,
+                "return_pct": -19.0,
+                "cagr_pct": -19.01,
+                "mdd_pct": -24.82,
+                "trades": 58,
+                "win_rate_pct": 22.41,
+                "avg_trade_pct": -2.301,
+                "trades_per_year": 58.0,
                 "max_open": 8,
                 "underwater_days": 200
               },
               "decision_audit": {
-                "accepted": 60,
+                "accepted": 58,
                 "capacity_rejected": 0,
                 "duplicate_rejected": 19,
-                "accepted_avg_trade_pct": -2.737,
+                "accepted_avg_trade_pct": -2.301,
                 "capacity_rejected_avg_trade_pct": 0.0,
-                "accepted_avg_quality": 66.42,
+                "accepted_avg_quality": 66.7,
                 "capacity_rejected_avg_quality": 0.0,
                 "capacity_rejected_winners": 0,
                 "capacity_rejected_plus5": 0,
@@ -1927,36 +1927,36 @@
               "label": "전략별 품질 백분위",
               "description": "TRAIN의 같은 전략 품질분포에서 계산한 백분위",
               "train": {
-                "ending": 3771581.63,
-                "return_pct": 25.72,
-                "cagr_pct": 5.89,
-                "mdd_pct": -19.0,
-                "trades": 158,
-                "win_rate_pct": 32.91,
-                "avg_trade_pct": 1.454,
-                "trades_per_year": 39.5,
+                "ending": 3752862.06,
+                "return_pct": 25.1,
+                "cagr_pct": 5.76,
+                "mdd_pct": -18.72,
+                "trades": 159,
+                "win_rate_pct": 33.33,
+                "avg_trade_pct": 1.484,
+                "trades_per_year": 39.8,
                 "max_open": 9,
                 "underwater_days": 311
               },
               "test": {
-                "ending": 2614554.58,
-                "return_pct": -12.85,
-                "cagr_pct": -12.86,
-                "mdd_pct": -27.0,
-                "trades": 64,
-                "win_rate_pct": 21.88,
-                "avg_trade_pct": -1.78,
-                "trades_per_year": 64.0,
+                "ending": 2681732.15,
+                "return_pct": -10.61,
+                "cagr_pct": -10.62,
+                "mdd_pct": -25.13,
+                "trades": 62,
+                "win_rate_pct": 24.19,
+                "avg_trade_pct": -1.326,
+                "trades_per_year": 62.0,
                 "max_open": 9,
                 "underwater_days": 200
               },
               "decision_audit": {
-                "accepted": 64,
+                "accepted": 62,
                 "capacity_rejected": 0,
                 "duplicate_rejected": 24,
-                "accepted_avg_trade_pct": -1.78,
+                "accepted_avg_trade_pct": -1.326,
                 "capacity_rejected_avg_trade_pct": 0.0,
-                "accepted_avg_quality": 68.4,
+                "accepted_avg_quality": 68.41,
                 "capacity_rejected_avg_quality": 0.0,
                 "capacity_rejected_winners": 0,
                 "capacity_rejected_plus5": 0,
@@ -1968,36 +1968,36 @@
               "label": "현재+품질 50:50",
               "description": "TRAIN의 같은 전략 안에서 current priority와 품질 백분위를 50:50 혼합",
               "train": {
-                "ending": 3771581.63,
-                "return_pct": 25.72,
-                "cagr_pct": 5.89,
-                "mdd_pct": -19.0,
-                "trades": 158,
-                "win_rate_pct": 32.91,
-                "avg_trade_pct": 1.454,
-                "trades_per_year": 39.5,
+                "ending": 3752862.06,
+                "return_pct": 25.1,
+                "cagr_pct": 5.76,
+                "mdd_pct": -18.72,
+                "trades": 159,
+                "win_rate_pct": 33.33,
+                "avg_trade_pct": 1.484,
+                "trades_per_year": 39.8,
                 "max_open": 9,
                 "underwater_days": 311
               },
               "test": {
-                "ending": 2614554.58,
-                "return_pct": -12.85,
-                "cagr_pct": -12.86,
-                "mdd_pct": -27.0,
-                "trades": 64,
-                "win_rate_pct": 21.88,
-                "avg_trade_pct": -1.78,
-                "trades_per_year": 64.0,
+                "ending": 2681732.15,
+                "return_pct": -10.61,
+                "cagr_pct": -10.62,
+                "mdd_pct": -25.13,
+                "trades": 62,
+                "win_rate_pct": 24.19,
+                "avg_trade_pct": -1.326,
+                "trades_per_year": 62.0,
                 "max_open": 9,
                 "underwater_days": 200
               },
               "decision_audit": {
-                "accepted": 64,
+                "accepted": 62,
                 "capacity_rejected": 0,
                 "duplicate_rejected": 24,
-                "accepted_avg_trade_pct": -1.78,
+                "accepted_avg_trade_pct": -1.326,
                 "capacity_rejected_avg_trade_pct": 0.0,
-                "accepted_avg_quality": 68.4,
+                "accepted_avg_quality": 68.41,
                 "capacity_rejected_avg_quality": 0.0,
                 "capacity_rejected_winners": 0,
                 "capacity_rejected_plus5": 0,
@@ -2008,12 +2008,12 @@
           },
           "strategy_discrimination": {
             "donchian_55": {
-              "signals": 203,
+              "signals": 205,
               "unique_current_priorities": 1,
               "current_priority_min": 2.0,
               "current_priority_max": 2.0,
               "current_priority_return_corr": null,
-              "quality_return_corr": 0.099
+              "quality_return_corr": 0.0973
             },
             "momentum_pullback": {
               "signals": 3,
@@ -2035,43 +2035,43 @@
           "selected_intensity_label": "느슨한 엄선 · 상위 50%",
           "thresholds": {
             "momentum_pullback": 42.964995,
-            "donchian_55": 34.882925
+            "donchian_55": 34.867718
           },
           "rankers": {
             "current": {
               "label": "현재 priority",
               "description": "기존 net RR / elite score 우선순위",
               "train": {
-                "ending": 3794537.71,
-                "return_pct": 26.48,
-                "cagr_pct": 6.05,
-                "mdd_pct": -21.02,
-                "trades": 238,
-                "win_rate_pct": 34.45,
-                "avg_trade_pct": 0.403,
-                "trades_per_year": 59.5,
+                "ending": 4115645.79,
+                "return_pct": 37.19,
+                "cagr_pct": 8.23,
+                "mdd_pct": -20.34,
+                "trades": 230,
+                "win_rate_pct": 35.22,
+                "avg_trade_pct": 0.714,
+                "trades_per_year": 57.5,
                 "max_open": 9,
-                "underwater_days": 433
+                "underwater_days": 432
               },
               "test": {
-                "ending": 2930817.63,
-                "return_pct": -2.31,
-                "cagr_pct": -2.31,
-                "mdd_pct": -14.11,
-                "trades": 76,
-                "win_rate_pct": 28.95,
-                "avg_trade_pct": -0.246,
-                "trades_per_year": 76.3,
+                "ending": 2786664.23,
+                "return_pct": -7.11,
+                "cagr_pct": -7.13,
+                "mdd_pct": -14.46,
+                "trades": 77,
+                "win_rate_pct": 27.27,
+                "avg_trade_pct": -0.78,
+                "trades_per_year": 77.3,
                 "max_open": 10,
-                "underwater_days": 140
+                "underwater_days": 166
               },
               "decision_audit": {
-                "accepted": 76,
+                "accepted": 77,
                 "capacity_rejected": 4,
-                "duplicate_rejected": 96,
-                "accepted_avg_trade_pct": -0.246,
+                "duplicate_rejected": 93,
+                "accepted_avg_trade_pct": -0.78,
                 "capacity_rejected_avg_trade_pct": -6.088,
-                "accepted_avg_quality": 49.87,
+                "accepted_avg_quality": 49.62,
                 "capacity_rejected_avg_quality": 57.24,
                 "capacity_rejected_winners": 0,
                 "capacity_rejected_plus5": 0,
@@ -2120,36 +2120,36 @@
               "label": "전략별 품질 백분위",
               "description": "TRAIN의 같은 전략 품질분포에서 계산한 백분위",
               "train": {
-                "ending": 3287096.62,
-                "return_pct": 9.57,
-                "cagr_pct": 2.31,
-                "mdd_pct": -25.54,
-                "trades": 250,
-                "win_rate_pct": 33.2,
-                "avg_trade_pct": 0.308,
-                "trades_per_year": 62.5,
+                "ending": 3486497.89,
+                "return_pct": 16.22,
+                "cagr_pct": 3.83,
+                "mdd_pct": -24.89,
+                "trades": 245,
+                "win_rate_pct": 33.47,
+                "avg_trade_pct": 0.326,
+                "trades_per_year": 61.3,
                 "max_open": 10,
-                "underwater_days": 439
+                "underwater_days": 434
               },
               "test": {
-                "ending": 3007819.82,
-                "return_pct": 0.26,
-                "cagr_pct": 0.26,
-                "mdd_pct": -17.14,
-                "trades": 68,
-                "win_rate_pct": 32.35,
-                "avg_trade_pct": 1.293,
-                "trades_per_year": 68.2,
+                "ending": 2993298.43,
+                "return_pct": -0.22,
+                "cagr_pct": -0.22,
+                "mdd_pct": -17.43,
+                "trades": 69,
+                "win_rate_pct": 31.88,
+                "avg_trade_pct": 1.208,
+                "trades_per_year": 69.2,
                 "max_open": 8,
                 "underwater_days": 134
               },
               "decision_audit": {
-                "accepted": 68,
+                "accepted": 69,
                 "capacity_rejected": 0,
                 "duplicate_rejected": 99,
-                "accepted_avg_trade_pct": 1.293,
+                "accepted_avg_trade_pct": 1.208,
                 "capacity_rejected_avg_trade_pct": 0.0,
-                "accepted_avg_quality": 50.4,
+                "accepted_avg_quality": 50.5,
                 "capacity_rejected_avg_quality": 0.0,
                 "capacity_rejected_winners": 0,
                 "capacity_rejected_plus5": 0,
@@ -2161,36 +2161,36 @@
               "label": "현재+품질 50:50",
               "description": "TRAIN의 같은 전략 안에서 current priority와 품질 백분위를 50:50 혼합",
               "train": {
-                "ending": 3361159.55,
-                "return_pct": 12.04,
-                "cagr_pct": 2.88,
-                "mdd_pct": -25.38,
-                "trades": 246,
-                "win_rate_pct": 33.33,
-                "avg_trade_pct": 0.377,
-                "trades_per_year": 61.5,
+                "ending": 3565053.62,
+                "return_pct": 18.84,
+                "cagr_pct": 4.41,
+                "mdd_pct": -24.73,
+                "trades": 241,
+                "win_rate_pct": 33.61,
+                "avg_trade_pct": 0.397,
+                "trades_per_year": 60.3,
                 "max_open": 10,
                 "underwater_days": 431
               },
               "test": {
-                "ending": 3007819.82,
-                "return_pct": 0.26,
-                "cagr_pct": 0.26,
-                "mdd_pct": -17.14,
-                "trades": 68,
-                "win_rate_pct": 32.35,
-                "avg_trade_pct": 1.293,
-                "trades_per_year": 68.2,
+                "ending": 2993298.43,
+                "return_pct": -0.22,
+                "cagr_pct": -0.22,
+                "mdd_pct": -17.43,
+                "trades": 69,
+                "win_rate_pct": 31.88,
+                "avg_trade_pct": 1.208,
+                "trades_per_year": 69.2,
                 "max_open": 8,
                 "underwater_days": 134
               },
               "decision_audit": {
-                "accepted": 68,
+                "accepted": 69,
                 "capacity_rejected": 0,
                 "duplicate_rejected": 99,
-                "accepted_avg_trade_pct": 1.293,
+                "accepted_avg_trade_pct": 1.208,
                 "capacity_rejected_avg_trade_pct": 0.0,
-                "accepted_avg_quality": 50.4,
+                "accepted_avg_quality": 50.5,
                 "capacity_rejected_avg_quality": 0.0,
                 "capacity_rejected_winners": 0,
                 "capacity_rejected_plus5": 0,
@@ -2201,12 +2201,12 @@
           },
           "strategy_discrimination": {
             "donchian_55": {
-              "signals": 528,
+              "signals": 523,
               "unique_current_priorities": 1,
               "current_priority_min": 2.0,
               "current_priority_max": 2.0,
               "current_priority_return_corr": null,
-              "quality_return_corr": -0.0083
+              "quality_return_corr": -0.0107
             },
             "momentum_pullback": {
               "signals": 6,
@@ -2223,46 +2223,46 @@
           "train_start": "2022-01-01",
           "train_end": "2025-12-31",
           "test_start": "2026-01-01",
-          "test_end": "2026-10-19",
+          "test_end": "2026-10-20",
           "selected_intensity": "loose",
           "selected_intensity_label": "느슨한 엄선 · 상위 50%",
           "thresholds": {
             "momentum_pullback": 42.94467,
-            "donchian_55": 34.468038
+            "donchian_55": 34.385268
           },
           "rankers": {
             "current": {
               "label": "현재 priority",
               "description": "기존 net RR / elite score 우선순위",
               "train": {
-                "ending": 3781124.55,
-                "return_pct": 26.04,
-                "cagr_pct": 5.96,
-                "mdd_pct": -23.85,
-                "trades": 227,
-                "win_rate_pct": 36.12,
-                "avg_trade_pct": 0.76,
-                "trades_per_year": 56.8,
+                "ending": 3715155.25,
+                "return_pct": 23.84,
+                "cagr_pct": 5.49,
+                "mdd_pct": -23.81,
+                "trades": 225,
+                "win_rate_pct": 34.67,
+                "avg_trade_pct": 0.564,
+                "trades_per_year": 56.3,
                 "max_open": 10,
                 "underwater_days": 434
               },
               "test": {
-                "ending": 3204575.01,
-                "return_pct": 6.82,
-                "cagr_pct": 8.63,
+                "ending": 3214714.32,
+                "return_pct": 7.16,
+                "cagr_pct": 9.03,
                 "mdd_pct": -20.67,
                 "trades": 71,
-                "win_rate_pct": 30.99,
-                "avg_trade_pct": 1.344,
-                "trades_per_year": 89.1,
+                "win_rate_pct": 33.8,
+                "avg_trade_pct": 1.391,
+                "trades_per_year": 88.8,
                 "max_open": 10,
-                "underwater_days": 95
+                "underwater_days": 96
               },
               "decision_audit": {
                 "accepted": 71,
                 "capacity_rejected": 20,
                 "duplicate_rejected": 132,
-                "accepted_avg_trade_pct": 1.344,
+                "accepted_avg_trade_pct": 1.391,
                 "capacity_rejected_avg_trade_pct": -5.5,
                 "accepted_avg_quality": 51.61,
                 "capacity_rejected_avg_quality": 47.58,
@@ -2385,34 +2385,34 @@
               "label": "전략별 품질 백분위",
               "description": "TRAIN의 같은 전략 품질분포에서 계산한 백분위",
               "train": {
-                "ending": 2968407.31,
-                "return_pct": -1.05,
-                "cagr_pct": -0.26,
-                "mdd_pct": -27.03,
-                "trades": 247,
-                "win_rate_pct": 31.58,
-                "avg_trade_pct": 0.42,
-                "trades_per_year": 61.8,
+                "ending": 3083028.3,
+                "return_pct": 2.77,
+                "cagr_pct": 0.69,
+                "mdd_pct": -26.4,
+                "trades": 242,
+                "win_rate_pct": 30.99,
+                "avg_trade_pct": 0.393,
+                "trades_per_year": 60.5,
                 "max_open": 9,
-                "underwater_days": 858
+                "underwater_days": 502
               },
               "test": {
-                "ending": 3076379.96,
-                "return_pct": 2.55,
-                "cagr_pct": 3.21,
+                "ending": 3083808.2,
+                "return_pct": 2.79,
+                "cagr_pct": 3.51,
                 "mdd_pct": -16.57,
                 "trades": 66,
-                "win_rate_pct": 31.82,
-                "avg_trade_pct": 0.824,
-                "trades_per_year": 82.8,
+                "win_rate_pct": 33.33,
+                "avg_trade_pct": 0.847,
+                "trades_per_year": 82.6,
                 "max_open": 10,
-                "underwater_days": 101
+                "underwater_days": 102
               },
               "decision_audit": {
                 "accepted": 66,
                 "capacity_rejected": 15,
                 "duplicate_rejected": 120,
-                "accepted_avg_trade_pct": 0.824,
+                "accepted_avg_trade_pct": 0.847,
                 "capacity_rejected_avg_trade_pct": -4.182,
                 "accepted_avg_quality": 54.97,
                 "capacity_rejected_avg_quality": 44.82,
@@ -2427,7 +2427,7 @@
                     "hypothetical_return_pct": 11.28,
                     "quality": 36.77,
                     "current_priority": 2.0,
-                    "rank_priority": 0.1177
+                    "rank_priority": 0.1211
                   },
                   {
                     "date": "2026-06-05",
@@ -2436,7 +2436,7 @@
                     "hypothetical_return_pct": 7.81,
                     "quality": 51.98,
                     "current_priority": 2.0,
-                    "rank_priority": 0.6619
+                    "rank_priority": 0.6617
                   },
                   {
                     "date": "2026-06-05",
@@ -2445,7 +2445,7 @@
                     "hypothetical_return_pct": 7.42,
                     "quality": 35.9,
                     "current_priority": 2.0,
-                    "rank_priority": 0.0777
+                    "rank_priority": 0.0811
                   },
                   {
                     "date": "2026-06-01",
@@ -2454,7 +2454,7 @@
                     "hypothetical_return_pct": 1.42,
                     "quality": 38.43,
                     "current_priority": 2.0,
-                    "rank_priority": 0.2049
+                    "rank_priority": 0.2082
                   },
                   {
                     "date": "2026-06-03",
@@ -2463,7 +2463,7 @@
                     "hypothetical_return_pct": -3.5,
                     "quality": 57.54,
                     "current_priority": 2.0,
-                    "rank_priority": 0.7682
+                    "rank_priority": 0.7673
                   },
                   {
                     "date": "2026-06-03",
@@ -2472,7 +2472,7 @@
                     "hypothetical_return_pct": -3.62,
                     "quality": 41.52,
                     "current_priority": 2.0,
-                    "rank_priority": 0.3387
+                    "rank_priority": 0.3425
                   },
                   {
                     "date": "2026-06-05",
@@ -2481,7 +2481,7 @@
                     "hypothetical_return_pct": -5.67,
                     "quality": 44.29,
                     "current_priority": 2.0,
-                    "rank_priority": 0.4421
+                    "rank_priority": 0.4433
                   },
                   {
                     "date": "2026-06-02",
@@ -2490,7 +2490,7 @@
                     "hypothetical_return_pct": -5.84,
                     "quality": 55.03,
                     "current_priority": 2.0,
-                    "rank_priority": 0.7288
+                    "rank_priority": 0.7279
                   },
                   {
                     "date": "2026-06-05",
@@ -2499,7 +2499,7 @@
                     "hypothetical_return_pct": -5.87,
                     "quality": 41.72,
                     "current_priority": 2.0,
-                    "rank_priority": 0.3423
+                    "rank_priority": 0.3461
                   },
                   {
                     "date": "2026-06-04",
@@ -2508,7 +2508,7 @@
                     "hypothetical_return_pct": -6.5,
                     "quality": 42.0,
                     "current_priority": 2.0,
-                    "rank_priority": 0.3536
+                    "rank_priority": 0.3574
                   },
                   {
                     "date": "2026-06-03",
@@ -2517,7 +2517,7 @@
                     "hypothetical_return_pct": -6.65,
                     "quality": 66.8,
                     "current_priority": 2.0,
-                    "rank_priority": 0.8781
+                    "rank_priority": 0.8789
                   },
                   {
                     "date": "2026-06-04",
@@ -2526,7 +2526,7 @@
                     "hypothetical_return_pct": -8.54,
                     "quality": 44.87,
                     "current_priority": 2.0,
-                    "rank_priority": 0.4594
+                    "rank_priority": 0.4606
                   }
                 ]
               }
@@ -2535,34 +2535,34 @@
               "label": "현재+품질 50:50",
               "description": "TRAIN의 같은 전략 안에서 current priority와 품질 백분위를 50:50 혼합",
               "train": {
-                "ending": 3035011.17,
-                "return_pct": 1.17,
-                "cagr_pct": 0.29,
-                "mdd_pct": -27.03,
-                "trades": 243,
-                "win_rate_pct": 31.69,
-                "avg_trade_pct": 0.492,
-                "trades_per_year": 60.8,
+                "ending": 3152203.97,
+                "return_pct": 5.07,
+                "cagr_pct": 1.25,
+                "mdd_pct": -26.4,
+                "trades": 238,
+                "win_rate_pct": 31.09,
+                "avg_trade_pct": 0.466,
+                "trades_per_year": 59.5,
                 "max_open": 9,
-                "underwater_days": 839
+                "underwater_days": 439
               },
               "test": {
-                "ending": 3076379.96,
-                "return_pct": 2.55,
-                "cagr_pct": 3.21,
+                "ending": 3083808.2,
+                "return_pct": 2.79,
+                "cagr_pct": 3.51,
                 "mdd_pct": -16.57,
                 "trades": 66,
-                "win_rate_pct": 31.82,
-                "avg_trade_pct": 0.824,
-                "trades_per_year": 82.8,
+                "win_rate_pct": 33.33,
+                "avg_trade_pct": 0.847,
+                "trades_per_year": 82.6,
                 "max_open": 10,
-                "underwater_days": 101
+                "underwater_days": 102
               },
               "decision_audit": {
                 "accepted": 66,
                 "capacity_rejected": 15,
                 "duplicate_rejected": 120,
-                "accepted_avg_trade_pct": 0.824,
+                "accepted_avg_trade_pct": 0.847,
                 "capacity_rejected_avg_trade_pct": -4.182,
                 "accepted_avg_quality": 54.97,
                 "capacity_rejected_avg_quality": 44.82,
@@ -2577,7 +2577,7 @@
                     "hypothetical_return_pct": 11.28,
                     "quality": 36.77,
                     "current_priority": 2.0,
-                    "rank_priority": 0.3088
+                    "rank_priority": 0.3106
                   },
                   {
                     "date": "2026-06-05",
@@ -2586,7 +2586,7 @@
                     "hypothetical_return_pct": 7.81,
                     "quality": 51.98,
                     "current_priority": 2.0,
-                    "rank_priority": 0.5809
+                    "rank_priority": 0.5808
                   },
                   {
                     "date": "2026-06-05",
@@ -2595,7 +2595,7 @@
                     "hypothetical_return_pct": 7.42,
                     "quality": 35.9,
                     "current_priority": 2.0,
-                    "rank_priority": 0.2888
+                    "rank_priority": 0.2906
                   },
                   {
                     "date": "2026-06-01",
@@ -2604,7 +2604,7 @@
                     "hypothetical_return_pct": 1.42,
                     "quality": 38.43,
                     "current_priority": 2.0,
-                    "rank_priority": 0.3524
+                    "rank_priority": 0.3541
                   },
                   {
                     "date": "2026-06-03",
@@ -2613,7 +2613,7 @@
                     "hypothetical_return_pct": -3.5,
                     "quality": 57.54,
                     "current_priority": 2.0,
-                    "rank_priority": 0.6341
+                    "rank_priority": 0.6337
                   },
                   {
                     "date": "2026-06-03",
@@ -2622,7 +2622,7 @@
                     "hypothetical_return_pct": -3.62,
                     "quality": 41.52,
                     "current_priority": 2.0,
-                    "rank_priority": 0.4194
+                    "rank_priority": 0.4212
                   },
                   {
                     "date": "2026-06-05",
@@ -2631,7 +2631,7 @@
                     "hypothetical_return_pct": -5.67,
                     "quality": 44.29,
                     "current_priority": 2.0,
-                    "rank_priority": 0.471
+                    "rank_priority": 0.4717
                   },
                   {
                     "date": "2026-06-02",
@@ -2640,7 +2640,7 @@
                     "hypothetical_return_pct": -5.84,
                     "quality": 55.03,
                     "current_priority": 2.0,
-                    "rank_priority": 0.6144
+                    "rank_priority": 0.614
                   },
                   {
                     "date": "2026-06-05",
@@ -2649,7 +2649,7 @@
                     "hypothetical_return_pct": -5.87,
                     "quality": 41.72,
                     "current_priority": 2.0,
-                    "rank_priority": 0.4211
+                    "rank_priority": 0.423
                   },
                   {
                     "date": "2026-06-04",
@@ -2658,7 +2658,7 @@
                     "hypothetical_return_pct": -6.5,
                     "quality": 42.0,
                     "current_priority": 2.0,
-                    "rank_priority": 0.4268
+                    "rank_priority": 0.4287
                   },
                   {
                     "date": "2026-06-03",
@@ -2667,7 +2667,7 @@
                     "hypothetical_return_pct": -6.65,
                     "quality": 66.8,
                     "current_priority": 2.0,
-                    "rank_priority": 0.6891
+                    "rank_priority": 0.6894
                   },
                   {
                     "date": "2026-06-04",
@@ -2676,7 +2676,7 @@
                     "hypothetical_return_pct": -8.54,
                     "quality": 44.87,
                     "current_priority": 2.0,
-                    "rank_priority": 0.4797
+                    "rank_priority": 0.4803
                   }
                 ]
               }
@@ -2684,12 +2684,12 @@
           },
           "strategy_discrimination": {
             "donchian_55": {
-              "signals": 467,
+              "signals": 470,
               "unique_current_priorities": 1,
               "current_priority_min": 2.0,
               "current_priority_max": 2.0,
               "current_priority_return_corr": null,
-              "quality_return_corr": 0.0696
+              "quality_return_corr": 0.0693
             },
             "momentum_pullback": {
               "signals": 8,
@@ -2715,29 +2715,29 @@
       "summary": {
         "rules": {
           "current": {
-            "stitched_test_return_pct": -20.02,
-            "median_test_return_pct": -1.03,
+            "stitched_test_return_pct": -17.05,
+            "median_test_return_pct": -0.62,
             "positive_test_folds": 2,
-            "worst_test_mdd_pct": -29.79,
+            "worst_test_mdd_pct": -28.03,
             "total_test_trades": 356
           },
           "quality_pct": {
-            "stitched_test_return_pct": -16.28,
-            "median_test_return_pct": -0.64,
-            "positive_test_folds": 3,
-            "worst_test_mdd_pct": -29.55,
-            "total_test_trades": 366,
-            "folds_beating_current": 4,
-            "mean_delta_vs_current_pct": 0.5
+            "stitched_test_return_pct": -26.6,
+            "median_test_return_pct": -4.63,
+            "positive_test_folds": 1,
+            "worst_test_mdd_pct": -27.91,
+            "total_test_trades": 369,
+            "folds_beating_current": 2,
+            "mean_delta_vs_current_pct": -2.27
           },
           "hybrid_50": {
-            "stitched_test_return_pct": -14.94,
-            "median_test_return_pct": -0.64,
-            "positive_test_folds": 3,
-            "worst_test_mdd_pct": -29.55,
-            "total_test_trades": 363,
-            "folds_beating_current": 4,
-            "mean_delta_vs_current_pct": 0.75
+            "stitched_test_return_pct": -26.79,
+            "median_test_return_pct": -4.06,
+            "positive_test_folds": 1,
+            "worst_test_mdd_pct": -29.28,
+            "total_test_trades": 367,
+            "folds_beating_current": 2,
+            "mean_delta_vs_current_pct": -2.28
           }
         },
         "current_slot_audit": {
@@ -2749,22 +2749,22 @@
         },
         "test_2024": {
           "current": {
-            "return_pct": -22.58,
-            "mdd_pct": -29.79,
+            "return_pct": -20.63,
+            "mdd_pct": -28.03,
             "capacity_rejected": 0,
             "rejected_plus5": 0,
             "rejected_plus10": 0
           },
           "quality_pct": {
-            "return_pct": -15.89,
-            "mdd_pct": -29.55,
+            "return_pct": -13.94,
+            "mdd_pct": -27.91,
             "capacity_rejected": 0,
             "rejected_plus5": 0,
             "rejected_plus10": 0
           },
           "hybrid_50": {
-            "return_pct": -15.89,
-            "mdd_pct": -29.55,
+            "return_pct": -15.56,
+            "mdd_pct": -29.28,
             "capacity_rejected": 0,
             "rejected_plus5": 0,
             "rejected_plus10": 0
@@ -2774,7 +2774,7 @@
       "folds": [
         {
           "fold": "2021",
-          "train_start": "2017-09-07",
+          "train_start": "2017-09-08",
           "train_end": "2020-12-31",
           "test_start": "2021-01-01",
           "test_end": "2021-12-31",
@@ -2782,33 +2782,33 @@
           "selected_intensity_label": "강한 엄선 · 상위 15%",
           "thresholds": {
             "confirmed_pullback": 85.125525,
-            "sma200_20_squeeze": 45.85358,
-            "donchian_55": 54.575137
+            "sma200_20_squeeze": 45.849064,
+            "donchian_55": 54.610754
           },
           "rankers": {
             "current": {
               "label": "현재 priority",
               "description": "기존 net RR / elite score 우선순위",
               "train": {
-                "ending": 4533300.19,
-                "return_pct": 51.11,
-                "cagr_pct": 13.26,
-                "mdd_pct": -19.99,
-                "trades": 126,
-                "win_rate_pct": 37.3,
-                "avg_trade_pct": 1.875,
-                "trades_per_year": 38.0,
+                "ending": 4420975.93,
+                "return_pct": 47.37,
+                "cagr_pct": 12.42,
+                "mdd_pct": -21.34,
+                "trades": 128,
+                "win_rate_pct": 37.5,
+                "avg_trade_pct": 1.806,
+                "trades_per_year": 38.6,
                 "max_open": 9,
-                "underwater_days": 446
+                "underwater_days": 439
               },
               "test": {
-                "ending": 2931877.04,
-                "return_pct": -2.27,
-                "cagr_pct": -2.28,
-                "mdd_pct": -14.77,
+                "ending": 2991169.24,
+                "return_pct": -0.29,
+                "cagr_pct": -0.3,
+                "mdd_pct": -13.05,
                 "trades": 56,
                 "win_rate_pct": 33.93,
-                "avg_trade_pct": -0.47,
+                "avg_trade_pct": -0.425,
                 "trades_per_year": 56.2,
                 "max_open": 8,
                 "underwater_days": 242
@@ -2816,10 +2816,10 @@
               "decision_audit": {
                 "accepted": 56,
                 "capacity_rejected": 0,
-                "duplicate_rejected": 22,
-                "accepted_avg_trade_pct": -0.47,
+                "duplicate_rejected": 23,
+                "accepted_avg_trade_pct": -0.425,
                 "capacity_rejected_avg_trade_pct": 0.0,
-                "accepted_avg_quality": 66.83,
+                "accepted_avg_quality": 66.68,
                 "capacity_rejected_avg_quality": 0.0,
                 "capacity_rejected_winners": 0,
                 "capacity_rejected_plus5": 0,
@@ -2831,36 +2831,36 @@
               "label": "전략별 품질 백분위",
               "description": "TRAIN의 같은 전략 품질분포에서 계산한 백분위",
               "train": {
-                "ending": 5001629.85,
-                "return_pct": 66.72,
-                "cagr_pct": 16.67,
-                "mdd_pct": -19.38,
-                "trades": 128,
-                "win_rate_pct": 35.94,
-                "avg_trade_pct": 2.604,
-                "trades_per_year": 38.6,
+                "ending": 4758946.58,
+                "return_pct": 58.63,
+                "cagr_pct": 14.94,
+                "mdd_pct": -21.1,
+                "trades": 127,
+                "win_rate_pct": 35.43,
+                "avg_trade_pct": 2.317,
+                "trades_per_year": 38.3,
                 "max_open": 9,
-                "underwater_days": 444
+                "underwater_days": 440
               },
               "test": {
-                "ending": 2945122.27,
-                "return_pct": -1.83,
-                "cagr_pct": -1.84,
-                "mdd_pct": -13.18,
-                "trades": 55,
-                "win_rate_pct": 29.09,
-                "avg_trade_pct": -0.739,
-                "trades_per_year": 55.2,
+                "ending": 2958399.51,
+                "return_pct": -1.39,
+                "cagr_pct": -1.39,
+                "mdd_pct": -12.79,
+                "trades": 57,
+                "win_rate_pct": 33.33,
+                "avg_trade_pct": -0.439,
+                "trades_per_year": 57.2,
                 "max_open": 7,
                 "underwater_days": 203
               },
               "decision_audit": {
-                "accepted": 55,
+                "accepted": 57,
                 "capacity_rejected": 0,
-                "duplicate_rejected": 21,
-                "accepted_avg_trade_pct": -0.739,
+                "duplicate_rejected": 23,
+                "accepted_avg_trade_pct": -0.439,
                 "capacity_rejected_avg_trade_pct": 0.0,
-                "accepted_avg_quality": 67.76,
+                "accepted_avg_quality": 68.32,
                 "capacity_rejected_avg_quality": 0.0,
                 "capacity_rejected_winners": 0,
                 "capacity_rejected_plus5": 0,
@@ -2872,36 +2872,36 @@
               "label": "현재+품질 50:50",
               "description": "TRAIN의 같은 전략 안에서 current priority와 품질 백분위를 50:50 혼합",
               "train": {
-                "ending": 5003305.06,
-                "return_pct": 66.78,
-                "cagr_pct": 16.68,
-                "mdd_pct": -19.36,
-                "trades": 128,
-                "win_rate_pct": 35.94,
-                "avg_trade_pct": 2.606,
-                "trades_per_year": 38.6,
+                "ending": 4760564.17,
+                "return_pct": 58.69,
+                "cagr_pct": 14.96,
+                "mdd_pct": -21.07,
+                "trades": 126,
+                "win_rate_pct": 35.71,
+                "avg_trade_pct": 2.363,
+                "trades_per_year": 38.0,
                 "max_open": 9,
-                "underwater_days": 444
+                "underwater_days": 440
               },
               "test": {
-                "ending": 2945122.27,
-                "return_pct": -1.83,
-                "cagr_pct": -1.84,
-                "mdd_pct": -13.18,
-                "trades": 55,
-                "win_rate_pct": 29.09,
-                "avg_trade_pct": -0.739,
-                "trades_per_year": 55.2,
+                "ending": 2958399.51,
+                "return_pct": -1.39,
+                "cagr_pct": -1.39,
+                "mdd_pct": -12.79,
+                "trades": 57,
+                "win_rate_pct": 33.33,
+                "avg_trade_pct": -0.439,
+                "trades_per_year": 57.2,
                 "max_open": 7,
                 "underwater_days": 203
               },
               "decision_audit": {
-                "accepted": 55,
+                "accepted": 57,
                 "capacity_rejected": 0,
-                "duplicate_rejected": 21,
-                "accepted_avg_trade_pct": -0.739,
+                "duplicate_rejected": 23,
+                "accepted_avg_trade_pct": -0.439,
                 "capacity_rejected_avg_trade_pct": 0.0,
-                "accepted_avg_quality": 67.76,
+                "accepted_avg_quality": 68.32,
                 "capacity_rejected_avg_quality": 0.0,
                 "capacity_rejected_winners": 0,
                 "capacity_rejected_plus5": 0,
@@ -2912,20 +2912,20 @@
           },
           "strategy_discrimination": {
             "donchian_55": {
-              "signals": 171,
+              "signals": 172,
               "unique_current_priorities": 1,
               "current_priority_min": 2.0,
               "current_priority_max": 2.0,
               "current_priority_return_corr": null,
-              "quality_return_corr": -0.1074
+              "quality_return_corr": -0.1109
             },
             "sma200_20_squeeze": {
-              "signals": 6,
-              "unique_current_priorities": 6,
+              "signals": 7,
+              "unique_current_priorities": 7,
               "current_priority_min": 1.4543,
               "current_priority_max": 1.8434,
-              "current_priority_return_corr": 0.7987,
-              "quality_return_corr": -0.3117
+              "current_priority_return_corr": 0.8107,
+              "quality_return_corr": -0.177
             },
             "confirmed_pullback": {
               "signals": 6,
@@ -2943,48 +2943,48 @@
           "train_end": "2021-12-31",
           "test_start": "2022-01-01",
           "test_end": "2022-12-31",
-          "selected_intensity": "strong",
-          "selected_intensity_label": "강한 엄선 · 상위 15%",
+          "selected_intensity": "loose",
+          "selected_intensity_label": "느슨한 엄선 · 상위 50%",
           "thresholds": {
-            "confirmed_pullback": 85.527,
-            "sma200_20_squeeze": 45.657869,
-            "donchian_55": 54.438654
+            "confirmed_pullback": 70.24798,
+            "sma200_20_squeeze": 34.92994,
+            "donchian_55": 34.692386
           },
           "rankers": {
             "current": {
               "label": "현재 priority",
               "description": "기존 net RR / elite score 우선순위",
               "train": {
-                "ending": 4557724.96,
-                "return_pct": 51.92,
-                "cagr_pct": 11.03,
-                "mdd_pct": -18.6,
-                "trades": 168,
-                "win_rate_pct": 38.69,
-                "avg_trade_pct": 1.762,
-                "trades_per_year": 42.0,
-                "max_open": 9,
-                "underwater_days": 445
+                "ending": 4457288.19,
+                "return_pct": 48.58,
+                "cagr_pct": 10.41,
+                "mdd_pct": -19.55,
+                "trades": 232,
+                "win_rate_pct": 37.93,
+                "avg_trade_pct": 1.333,
+                "trades_per_year": 58.0,
+                "max_open": 10,
+                "underwater_days": 477
               },
               "test": {
-                "ending": 2982353.21,
-                "return_pct": -0.59,
-                "cagr_pct": -0.59,
-                "mdd_pct": -13.93,
-                "trades": 19,
-                "win_rate_pct": 21.05,
-                "avg_trade_pct": -0.05,
-                "trades_per_year": 19.1,
-                "max_open": 5,
-                "underwater_days": 73
+                "ending": 3044213.83,
+                "return_pct": 1.47,
+                "cagr_pct": 1.48,
+                "mdd_pct": -19.23,
+                "trades": 44,
+                "win_rate_pct": 31.82,
+                "avg_trade_pct": 0.356,
+                "trades_per_year": 44.2,
+                "max_open": 7,
+                "underwater_days": 152
               },
               "decision_audit": {
-                "accepted": 19,
+                "accepted": 44,
                 "capacity_rejected": 0,
-                "duplicate_rejected": 12,
-                "accepted_avg_trade_pct": -0.05,
+                "duplicate_rejected": 52,
+                "accepted_avg_trade_pct": 0.356,
                 "capacity_rejected_avg_trade_pct": 0.0,
-                "accepted_avg_quality": 63.27,
+                "accepted_avg_quality": 44.33,
                 "capacity_rejected_avg_quality": 0.0,
                 "capacity_rejected_winners": 0,
                 "capacity_rejected_plus5": 0,
@@ -2996,36 +2996,36 @@
               "label": "전략별 품질 백분위",
               "description": "TRAIN의 같은 전략 품질분포에서 계산한 백분위",
               "train": {
-                "ending": 5023924.58,
-                "return_pct": 67.46,
-                "cagr_pct": 13.77,
-                "mdd_pct": -19.32,
-                "trades": 171,
-                "win_rate_pct": 37.43,
-                "avg_trade_pct": 2.235,
-                "trades_per_year": 42.8,
+                "ending": 4542114.9,
+                "return_pct": 51.4,
+                "cagr_pct": 10.93,
+                "mdd_pct": -23.8,
+                "trades": 258,
+                "win_rate_pct": 36.43,
+                "avg_trade_pct": 1.766,
+                "trades_per_year": 64.5,
                 "max_open": 9,
-                "underwater_days": 447
+                "underwater_days": 481
               },
               "test": {
-                "ending": 3021693.16,
-                "return_pct": 0.72,
-                "cagr_pct": 0.73,
-                "mdd_pct": -14.0,
-                "trades": 19,
-                "win_rate_pct": 21.05,
-                "avg_trade_pct": -0.196,
-                "trades_per_year": 19.1,
-                "max_open": 5,
-                "underwater_days": 73
+                "ending": 2837630.46,
+                "return_pct": -5.41,
+                "cagr_pct": -5.43,
+                "mdd_pct": -18.72,
+                "trades": 46,
+                "win_rate_pct": 28.26,
+                "avg_trade_pct": 0.122,
+                "trades_per_year": 46.2,
+                "max_open": 6,
+                "underwater_days": 152
               },
               "decision_audit": {
-                "accepted": 19,
+                "accepted": 46,
                 "capacity_rejected": 0,
-                "duplicate_rejected": 12,
-                "accepted_avg_trade_pct": -0.196,
+                "duplicate_rejected": 48,
+                "accepted_avg_trade_pct": 0.122,
                 "capacity_rejected_avg_trade_pct": 0.0,
-                "accepted_avg_quality": 62.41,
+                "accepted_avg_quality": 45.97,
                 "capacity_rejected_avg_quality": 0.0,
                 "capacity_rejected_winners": 0,
                 "capacity_rejected_plus5": 0,
@@ -3037,36 +3037,36 @@
               "label": "현재+품질 50:50",
               "description": "TRAIN의 같은 전략 안에서 current priority와 품질 백분위를 50:50 혼합",
               "train": {
-                "ending": 5025607.26,
-                "return_pct": 67.52,
-                "cagr_pct": 13.78,
-                "mdd_pct": -19.29,
-                "trades": 171,
-                "win_rate_pct": 37.43,
-                "avg_trade_pct": 2.237,
-                "trades_per_year": 42.8,
+                "ending": 4505075.64,
+                "return_pct": 50.17,
+                "cagr_pct": 10.71,
+                "mdd_pct": -24.03,
+                "trades": 258,
+                "win_rate_pct": 36.43,
+                "avg_trade_pct": 1.746,
+                "trades_per_year": 64.5,
                 "max_open": 9,
-                "underwater_days": 447
+                "underwater_days": 484
               },
               "test": {
-                "ending": 3021693.16,
-                "return_pct": 0.72,
-                "cagr_pct": 0.73,
-                "mdd_pct": -14.0,
-                "trades": 19,
-                "win_rate_pct": 21.05,
-                "avg_trade_pct": -0.196,
-                "trades_per_year": 19.1,
-                "max_open": 5,
-                "underwater_days": 73
+                "ending": 2837630.46,
+                "return_pct": -5.41,
+                "cagr_pct": -5.43,
+                "mdd_pct": -18.72,
+                "trades": 46,
+                "win_rate_pct": 28.26,
+                "avg_trade_pct": 0.122,
+                "trades_per_year": 46.2,
+                "max_open": 6,
+                "underwater_days": 152
               },
               "decision_audit": {
-                "accepted": 19,
+                "accepted": 46,
                 "capacity_rejected": 0,
-                "duplicate_rejected": 12,
-                "accepted_avg_trade_pct": -0.196,
+                "duplicate_rejected": 48,
+                "accepted_avg_trade_pct": 0.122,
                 "capacity_rejected_avg_trade_pct": 0.0,
-                "accepted_avg_quality": 62.41,
+                "accepted_avg_quality": 45.97,
                 "capacity_rejected_avg_quality": 0.0,
                 "capacity_rejected_winners": 0,
                 "capacity_rejected_plus5": 0,
@@ -3077,20 +3077,28 @@
           },
           "strategy_discrimination": {
             "donchian_55": {
-              "signals": 31,
+              "signals": 149,
               "unique_current_priorities": 1,
               "current_priority_min": 2.0,
               "current_priority_max": 2.0,
               "current_priority_return_corr": null,
-              "quality_return_corr": -0.2056
+              "quality_return_corr": -0.0204
             },
             "sma200_20_squeeze": {
-              "signals": 3,
-              "unique_current_priorities": 3,
+              "signals": 13,
+              "unique_current_priorities": 13,
               "current_priority_min": 1.3737,
               "current_priority_max": 2.0,
-              "current_priority_return_corr": -0.4929,
-              "quality_return_corr": -0.4246
+              "current_priority_return_corr": -0.3425,
+              "quality_return_corr": -0.428
+            },
+            "confirmed_pullback": {
+              "signals": 1,
+              "unique_current_priorities": 1,
+              "current_priority_min": 2.9428,
+              "current_priority_max": 2.9428,
+              "current_priority_return_corr": null,
+              "quality_return_corr": null
             }
           }
         },
@@ -3100,48 +3108,48 @@
           "train_end": "2022-12-31",
           "test_start": "2023-01-01",
           "test_end": "2023-12-31",
-          "selected_intensity": "loose",
-          "selected_intensity_label": "느슨한 엄선 · 상위 50%",
+          "selected_intensity": "strong",
+          "selected_intensity_label": "강한 엄선 · 상위 15%",
           "thresholds": {
-            "confirmed_pullback": 71.98073,
-            "sma200_20_squeeze": 35.296519,
-            "donchian_55": 34.035063
+            "confirmed_pullback": 85.890735,
+            "sma200_20_squeeze": 44.429872,
+            "donchian_55": 53.6195
           },
           "rankers": {
             "current": {
               "label": "현재 priority",
               "description": "기존 net RR / elite score 우선순위",
               "train": {
-                "ending": 5026539.94,
-                "return_pct": 67.55,
-                "cagr_pct": 13.78,
-                "mdd_pct": -18.55,
-                "trades": 246,
-                "win_rate_pct": 37.8,
-                "avg_trade_pct": 1.834,
-                "trades_per_year": 61.5,
+                "ending": 4802293.39,
+                "return_pct": 60.08,
+                "cagr_pct": 12.49,
+                "mdd_pct": -14.27,
+                "trades": 171,
+                "win_rate_pct": 38.6,
+                "avg_trade_pct": 2.026,
+                "trades_per_year": 42.8,
                 "max_open": 9,
-                "underwater_days": 152
+                "underwater_days": 202
               },
               "test": {
-                "ending": 2955867.87,
-                "return_pct": -1.47,
-                "cagr_pct": -1.48,
-                "mdd_pct": -12.33,
-                "trades": 70,
-                "win_rate_pct": 31.43,
-                "avg_trade_pct": 0.648,
-                "trades_per_year": 70.2,
-                "max_open": 9,
-                "underwater_days": 116
+                "ending": 2971578.12,
+                "return_pct": -0.95,
+                "cagr_pct": -0.95,
+                "mdd_pct": -8.01,
+                "trades": 45,
+                "win_rate_pct": 33.33,
+                "avg_trade_pct": 0.674,
+                "trades_per_year": 45.2,
+                "max_open": 7,
+                "underwater_days": 115
               },
               "decision_audit": {
-                "accepted": 70,
+                "accepted": 45,
                 "capacity_rejected": 0,
-                "duplicate_rejected": 79,
-                "accepted_avg_trade_pct": 0.648,
+                "duplicate_rejected": 21,
+                "accepted_avg_trade_pct": 0.674,
                 "capacity_rejected_avg_trade_pct": 0.0,
-                "accepted_avg_quality": 51.65,
+                "accepted_avg_quality": 67.41,
                 "capacity_rejected_avg_quality": 0.0,
                 "capacity_rejected_winners": 0,
                 "capacity_rejected_plus5": 0,
@@ -3153,36 +3161,36 @@
               "label": "전략별 품질 백분위",
               "description": "TRAIN의 같은 전략 품질분포에서 계산한 백분위",
               "train": {
-                "ending": 5765723.52,
-                "return_pct": 92.19,
-                "cagr_pct": 17.76,
-                "mdd_pct": -18.67,
-                "trades": 247,
-                "win_rate_pct": 36.84,
-                "avg_trade_pct": 2.35,
-                "trades_per_year": 61.8,
+                "ending": 5594487.58,
+                "return_pct": 86.48,
+                "cagr_pct": 16.87,
+                "mdd_pct": -13.99,
+                "trades": 173,
+                "win_rate_pct": 38.15,
+                "avg_trade_pct": 2.53,
+                "trades_per_year": 43.3,
                 "max_open": 9,
-                "underwater_days": 201
+                "underwater_days": 202
               },
               "test": {
-                "ending": 3177901.02,
-                "return_pct": 5.93,
-                "cagr_pct": 5.95,
-                "mdd_pct": -10.24,
-                "trades": 74,
-                "win_rate_pct": 35.14,
-                "avg_trade_pct": 0.811,
-                "trades_per_year": 74.3,
-                "max_open": 9,
-                "underwater_days": 105
+                "ending": 2868512.48,
+                "return_pct": -4.38,
+                "cagr_pct": -4.4,
+                "mdd_pct": -8.77,
+                "trades": 47,
+                "win_rate_pct": 31.91,
+                "avg_trade_pct": 0.535,
+                "trades_per_year": 47.2,
+                "max_open": 7,
+                "underwater_days": 118
               },
               "decision_audit": {
-                "accepted": 74,
+                "accepted": 47,
                 "capacity_rejected": 0,
-                "duplicate_rejected": 93,
-                "accepted_avg_trade_pct": 0.811,
+                "duplicate_rejected": 22,
+                "accepted_avg_trade_pct": 0.535,
                 "capacity_rejected_avg_trade_pct": 0.0,
-                "accepted_avg_quality": 54.38,
+                "accepted_avg_quality": 68.39,
                 "capacity_rejected_avg_quality": 0.0,
                 "capacity_rejected_winners": 0,
                 "capacity_rejected_plus5": 0,
@@ -3194,36 +3202,36 @@
               "label": "현재+품질 50:50",
               "description": "TRAIN의 같은 전략 안에서 current priority와 품질 백분위를 50:50 혼합",
               "train": {
-                "ending": 5614427.21,
-                "return_pct": 87.15,
-                "cagr_pct": 16.97,
-                "mdd_pct": -16.53,
-                "trades": 253,
-                "win_rate_pct": 37.15,
-                "avg_trade_pct": 2.307,
-                "trades_per_year": 63.3,
-                "max_open": 10,
-                "underwater_days": 199
+                "ending": 5635623.76,
+                "return_pct": 87.85,
+                "cagr_pct": 17.09,
+                "mdd_pct": -13.99,
+                "trades": 173,
+                "win_rate_pct": 38.15,
+                "avg_trade_pct": 2.538,
+                "trades_per_year": 43.3,
+                "max_open": 9,
+                "underwater_days": 202
               },
               "test": {
-                "ending": 3177901.02,
-                "return_pct": 5.93,
-                "cagr_pct": 5.95,
-                "mdd_pct": -10.24,
-                "trades": 74,
-                "win_rate_pct": 35.14,
-                "avg_trade_pct": 0.811,
-                "trades_per_year": 74.3,
-                "max_open": 9,
-                "underwater_days": 105
+                "ending": 2868512.48,
+                "return_pct": -4.38,
+                "cagr_pct": -4.4,
+                "mdd_pct": -8.77,
+                "trades": 47,
+                "win_rate_pct": 31.91,
+                "avg_trade_pct": 0.535,
+                "trades_per_year": 47.2,
+                "max_open": 7,
+                "underwater_days": 118
               },
               "decision_audit": {
-                "accepted": 74,
+                "accepted": 47,
                 "capacity_rejected": 0,
-                "duplicate_rejected": 93,
-                "accepted_avg_trade_pct": 0.811,
+                "duplicate_rejected": 22,
+                "accepted_avg_trade_pct": 0.535,
                 "capacity_rejected_avg_trade_pct": 0.0,
-                "accepted_avg_quality": 54.38,
+                "accepted_avg_quality": 68.39,
                 "capacity_rejected_avg_quality": 0.0,
                 "capacity_rejected_winners": 0,
                 "capacity_rejected_plus5": 0,
@@ -3234,28 +3242,28 @@
           },
           "strategy_discrimination": {
             "donchian_55": {
-              "signals": 368,
+              "signals": 112,
               "unique_current_priorities": 1,
               "current_priority_min": 2.0,
               "current_priority_max": 2.0,
               "current_priority_return_corr": null,
-              "quality_return_corr": -0.0194
+              "quality_return_corr": 0.0243
             },
             "confirmed_pullback": {
-              "signals": 18,
-              "unique_current_priorities": 18,
-              "current_priority_min": 1.5425,
-              "current_priority_max": 3.8056,
-              "current_priority_return_corr": 0.3351,
-              "quality_return_corr": -0.2923
+              "signals": 5,
+              "unique_current_priorities": 5,
+              "current_priority_min": 2.247,
+              "current_priority_max": 3.8002,
+              "current_priority_return_corr": -0.585,
+              "quality_return_corr": -0.9989
             },
             "sma200_20_squeeze": {
-              "signals": 7,
-              "unique_current_priorities": 7,
-              "current_priority_min": 1.3685,
-              "current_priority_max": 2.0,
-              "current_priority_return_corr": -0.4999,
-              "quality_return_corr": -0.292
+              "signals": 3,
+              "unique_current_priorities": 3,
+              "current_priority_min": 1.6411,
+              "current_priority_max": 1.7394,
+              "current_priority_return_corr": 0.6517,
+              "quality_return_corr": -0.8603
             }
           }
         },
@@ -3268,45 +3276,45 @@
           "selected_intensity": "strong",
           "selected_intensity_label": "강한 엄선 · 상위 15%",
           "thresholds": {
-            "confirmed_pullback": 84.972975,
-            "sma200_20_squeeze": 43.074073,
-            "donchian_55": 54.848832
+            "confirmed_pullback": 85.013637,
+            "sma200_20_squeeze": 43.900686,
+            "donchian_55": 54.755521
           },
           "rankers": {
             "current": {
               "label": "현재 priority",
               "description": "기존 net RR / elite score 우선순위",
               "train": {
-                "ending": 3802077.97,
-                "return_pct": 26.74,
-                "cagr_pct": 6.11,
-                "mdd_pct": -19.92,
-                "trades": 158,
-                "win_rate_pct": 34.81,
-                "avg_trade_pct": 1.485,
-                "trades_per_year": 39.5,
+                "ending": 3785962.02,
+                "return_pct": 26.2,
+                "cagr_pct": 5.99,
+                "mdd_pct": -21.18,
+                "trades": 159,
+                "win_rate_pct": 33.96,
+                "avg_trade_pct": 1.449,
+                "trades_per_year": 39.8,
                 "max_open": 9,
-                "underwater_days": 320
+                "underwater_days": 318
               },
               "test": {
-                "ending": 2322683.12,
-                "return_pct": -22.58,
-                "cagr_pct": -22.59,
-                "mdd_pct": -29.79,
-                "trades": 63,
-                "win_rate_pct": 22.22,
-                "avg_trade_pct": -2.411,
-                "trades_per_year": 63.0,
+                "ending": 2381065.74,
+                "return_pct": -20.63,
+                "cagr_pct": -20.64,
+                "mdd_pct": -28.03,
+                "trades": 62,
+                "win_rate_pct": 24.19,
+                "avg_trade_pct": -2.181,
+                "trades_per_year": 62.0,
                 "max_open": 7,
                 "underwater_days": 200
               },
               "decision_audit": {
-                "accepted": 63,
+                "accepted": 62,
                 "capacity_rejected": 0,
                 "duplicate_rejected": 22,
-                "accepted_avg_trade_pct": -2.411,
+                "accepted_avg_trade_pct": -2.181,
                 "capacity_rejected_avg_trade_pct": 0.0,
-                "accepted_avg_quality": 68.02,
+                "accepted_avg_quality": 68.11,
                 "capacity_rejected_avg_quality": 0.0,
                 "capacity_rejected_winners": 0,
                 "capacity_rejected_plus5": 0,
@@ -3318,25 +3326,25 @@
               "label": "전략별 품질 백분위",
               "description": "TRAIN의 같은 전략 품질분포에서 계산한 백분위",
               "train": {
-                "ending": 3796312.05,
-                "return_pct": 26.54,
-                "cagr_pct": 6.07,
-                "mdd_pct": -18.76,
-                "trades": 164,
-                "win_rate_pct": 34.76,
-                "avg_trade_pct": 1.472,
-                "trades_per_year": 41.0,
+                "ending": 3691839.99,
+                "return_pct": 23.06,
+                "cagr_pct": 5.33,
+                "mdd_pct": -20.03,
+                "trades": 167,
+                "win_rate_pct": 34.13,
+                "avg_trade_pct": 1.402,
+                "trades_per_year": 41.8,
                 "max_open": 9,
-                "underwater_days": 320
+                "underwater_days": 318
               },
               "test": {
-                "ending": 2523199.23,
-                "return_pct": -15.89,
-                "cagr_pct": -15.9,
-                "mdd_pct": -29.55,
+                "ending": 2581924.83,
+                "return_pct": -13.94,
+                "cagr_pct": -13.94,
+                "mdd_pct": -27.91,
                 "trades": 70,
                 "win_rate_pct": 22.86,
-                "avg_trade_pct": -1.69,
+                "avg_trade_pct": -1.66,
                 "trades_per_year": 70.0,
                 "max_open": 9,
                 "underwater_days": 200
@@ -3344,10 +3352,10 @@
               "decision_audit": {
                 "accepted": 70,
                 "capacity_rejected": 0,
-                "duplicate_rejected": 25,
-                "accepted_avg_trade_pct": -1.69,
+                "duplicate_rejected": 24,
+                "accepted_avg_trade_pct": -1.66,
                 "capacity_rejected_avg_trade_pct": 0.0,
-                "accepted_avg_quality": 69.32,
+                "accepted_avg_quality": 69.35,
                 "capacity_rejected_avg_quality": 0.0,
                 "capacity_rejected_winners": 0,
                 "capacity_rejected_plus5": 0,
@@ -3359,36 +3367,36 @@
               "label": "현재+품질 50:50",
               "description": "TRAIN의 같은 전략 안에서 current priority와 품질 백분위를 50:50 혼합",
               "train": {
-                "ending": 3796312.05,
-                "return_pct": 26.54,
-                "cagr_pct": 6.07,
-                "mdd_pct": -18.76,
-                "trades": 164,
-                "win_rate_pct": 34.76,
-                "avg_trade_pct": 1.472,
-                "trades_per_year": 41.0,
+                "ending": 3691839.99,
+                "return_pct": 23.06,
+                "cagr_pct": 5.33,
+                "mdd_pct": -20.03,
+                "trades": 167,
+                "win_rate_pct": 34.13,
+                "avg_trade_pct": 1.402,
+                "trades_per_year": 41.8,
                 "max_open": 9,
-                "underwater_days": 320
+                "underwater_days": 318
               },
               "test": {
-                "ending": 2523199.23,
-                "return_pct": -15.89,
-                "cagr_pct": -15.9,
-                "mdd_pct": -29.55,
-                "trades": 70,
-                "win_rate_pct": 22.86,
-                "avg_trade_pct": -1.69,
-                "trades_per_year": 70.0,
+                "ending": 2533054.66,
+                "return_pct": -15.56,
+                "cagr_pct": -15.57,
+                "mdd_pct": -29.28,
+                "trades": 71,
+                "win_rate_pct": 23.94,
+                "avg_trade_pct": -1.636,
+                "trades_per_year": 71.0,
                 "max_open": 9,
                 "underwater_days": 200
               },
               "decision_audit": {
-                "accepted": 70,
+                "accepted": 71,
                 "capacity_rejected": 0,
-                "duplicate_rejected": 25,
-                "accepted_avg_trade_pct": -1.69,
+                "duplicate_rejected": 24,
+                "accepted_avg_trade_pct": -1.636,
                 "capacity_rejected_avg_trade_pct": 0.0,
-                "accepted_avg_quality": 69.32,
+                "accepted_avg_quality": 69.11,
                 "capacity_rejected_avg_quality": 0.0,
                 "capacity_rejected_winners": 0,
                 "capacity_rejected_plus5": 0,
@@ -3399,20 +3407,20 @@
           },
           "strategy_discrimination": {
             "donchian_55": {
-              "signals": 203,
+              "signals": 205,
               "unique_current_priorities": 1,
               "current_priority_min": 2.0,
               "current_priority_max": 2.0,
               "current_priority_return_corr": null,
-              "quality_return_corr": 0.099
+              "quality_return_corr": 0.0973
             },
             "confirmed_pullback": {
-              "signals": 8,
-              "unique_current_priorities": 8,
+              "signals": 7,
+              "unique_current_priorities": 7,
               "current_priority_min": 2.4626,
               "current_priority_max": 4.9279,
-              "current_priority_return_corr": -0.3791,
-              "quality_return_corr": -0.2976
+              "current_priority_return_corr": -0.3574,
+              "quality_return_corr": -0.3538
             },
             "sma200_20_squeeze": {
               "signals": 8,
@@ -3433,45 +3441,45 @@
           "selected_intensity": "loose",
           "selected_intensity_label": "느슨한 엄선 · 상위 50%",
           "thresholds": {
-            "confirmed_pullback": 72.63627,
-            "sma200_20_squeeze": 34.232572,
-            "donchian_55": 34.882925
+            "confirmed_pullback": 72.504135,
+            "sma200_20_squeeze": 34.20088,
+            "donchian_55": 34.867718
           },
           "rankers": {
             "current": {
               "label": "현재 priority",
               "description": "기존 net RR / elite score 우선순위",
               "train": {
-                "ending": 5301159.15,
-                "return_pct": 76.71,
-                "cagr_pct": 15.31,
-                "mdd_pct": -20.07,
-                "trades": 253,
-                "win_rate_pct": 37.15,
-                "avg_trade_pct": 1.023,
-                "trades_per_year": 63.3,
-                "max_open": 9,
+                "ending": 5316573.09,
+                "return_pct": 77.22,
+                "cagr_pct": 15.39,
+                "mdd_pct": -19.87,
+                "trades": 255,
+                "win_rate_pct": 37.65,
+                "avg_trade_pct": 1.079,
+                "trades_per_year": 63.8,
+                "max_open": 10,
                 "underwater_days": 272
               },
               "test": {
-                "ending": 3018773.95,
-                "return_pct": 0.63,
-                "cagr_pct": 0.63,
-                "mdd_pct": -13.97,
-                "trades": 74,
-                "win_rate_pct": 35.14,
-                "avg_trade_pct": 0.549,
-                "trades_per_year": 74.3,
+                "ending": 2895704.68,
+                "return_pct": -3.48,
+                "cagr_pct": -3.49,
+                "mdd_pct": -13.63,
+                "trades": 75,
+                "win_rate_pct": 33.33,
+                "avg_trade_pct": 0.013,
+                "trades_per_year": 75.3,
                 "max_open": 9,
-                "underwater_days": 148
+                "underwater_days": 166
               },
               "decision_audit": {
-                "accepted": 74,
+                "accepted": 75,
                 "capacity_rejected": 0,
-                "duplicate_rejected": 101,
-                "accepted_avg_trade_pct": 0.549,
+                "duplicate_rejected": 99,
+                "accepted_avg_trade_pct": 0.013,
                 "capacity_rejected_avg_trade_pct": 0.0,
-                "accepted_avg_quality": 52.35,
+                "accepted_avg_quality": 52.06,
                 "capacity_rejected_avg_quality": 0.0,
                 "capacity_rejected_winners": 0,
                 "capacity_rejected_plus5": 0,
@@ -3483,36 +3491,36 @@
               "label": "전략별 품질 백분위",
               "description": "TRAIN의 같은 전략 품질분포에서 계산한 백분위",
               "train": {
-                "ending": 3780145.54,
-                "return_pct": 26.0,
-                "cagr_pct": 5.95,
-                "mdd_pct": -20.67,
-                "trades": 261,
-                "win_rate_pct": 41.38,
-                "avg_trade_pct": 1.406,
-                "trades_per_year": 65.3,
+                "ending": 4625094.57,
+                "return_pct": 54.17,
+                "cagr_pct": 11.44,
+                "mdd_pct": -20.45,
+                "trades": 265,
+                "win_rate_pct": 40.0,
+                "avg_trade_pct": 1.617,
+                "trades_per_year": 66.3,
                 "max_open": 10,
                 "underwater_days": 273
               },
               "test": {
-                "ending": 3016786.34,
-                "return_pct": 0.56,
-                "cagr_pct": 0.56,
-                "mdd_pct": -15.43,
-                "trades": 72,
-                "win_rate_pct": 34.72,
-                "avg_trade_pct": 1.087,
-                "trades_per_year": 72.2,
+                "ending": 3016559.47,
+                "return_pct": 0.55,
+                "cagr_pct": 0.55,
+                "mdd_pct": -15.62,
+                "trades": 73,
+                "win_rate_pct": 34.25,
+                "avg_trade_pct": 1.046,
+                "trades_per_year": 73.3,
                 "max_open": 8,
-                "underwater_days": 139
+                "underwater_days": 140
               },
               "decision_audit": {
-                "accepted": 72,
+                "accepted": 73,
                 "capacity_rejected": 0,
-                "duplicate_rejected": 102,
-                "accepted_avg_trade_pct": 1.087,
+                "duplicate_rejected": 103,
+                "accepted_avg_trade_pct": 1.046,
                 "capacity_rejected_avg_trade_pct": 0.0,
-                "accepted_avg_quality": 53.71,
+                "accepted_avg_quality": 53.68,
                 "capacity_rejected_avg_quality": 0.0,
                 "capacity_rejected_winners": 0,
                 "capacity_rejected_plus5": 0,
@@ -3524,36 +3532,36 @@
               "label": "현재+품질 50:50",
               "description": "TRAIN의 같은 전략 안에서 current priority와 품질 백분위를 50:50 혼합",
               "train": {
-                "ending": 3940304.47,
-                "return_pct": 31.34,
-                "cagr_pct": 7.06,
-                "mdd_pct": -20.34,
-                "trades": 258,
-                "win_rate_pct": 39.15,
-                "avg_trade_pct": 1.317,
-                "trades_per_year": 64.5,
+                "ending": 4667743.15,
+                "return_pct": 55.59,
+                "cagr_pct": 11.69,
+                "mdd_pct": -19.61,
+                "trades": 259,
+                "win_rate_pct": 39.77,
+                "avg_trade_pct": 1.583,
+                "trades_per_year": 64.8,
                 "max_open": 10,
                 "underwater_days": 272
               },
               "test": {
-                "ending": 3016786.34,
-                "return_pct": 0.56,
-                "cagr_pct": 0.56,
-                "mdd_pct": -15.43,
-                "trades": 72,
-                "win_rate_pct": 34.72,
-                "avg_trade_pct": 1.087,
-                "trades_per_year": 72.2,
+                "ending": 3029728.31,
+                "return_pct": 0.99,
+                "cagr_pct": 0.99,
+                "mdd_pct": -15.62,
+                "trades": 73,
+                "win_rate_pct": 34.25,
+                "avg_trade_pct": 1.067,
+                "trades_per_year": 73.3,
                 "max_open": 8,
-                "underwater_days": 139
+                "underwater_days": 140
               },
               "decision_audit": {
-                "accepted": 72,
+                "accepted": 73,
                 "capacity_rejected": 0,
-                "duplicate_rejected": 102,
-                "accepted_avg_trade_pct": 1.087,
+                "duplicate_rejected": 103,
+                "accepted_avg_trade_pct": 1.067,
                 "capacity_rejected_avg_trade_pct": 0.0,
-                "accepted_avg_quality": 53.71,
+                "accepted_avg_quality": 53.64,
                 "capacity_rejected_avg_quality": 0.0,
                 "capacity_rejected_winners": 0,
                 "capacity_rejected_plus5": 0,
@@ -3572,20 +3580,20 @@
               "quality_return_corr": 0.1581
             },
             "donchian_55": {
-              "signals": 528,
+              "signals": 523,
               "unique_current_priorities": 1,
               "current_priority_min": 2.0,
               "current_priority_max": 2.0,
               "current_priority_return_corr": null,
-              "quality_return_corr": -0.0083
+              "quality_return_corr": -0.0107
             },
             "sma200_20_squeeze": {
-              "signals": 9,
-              "unique_current_priorities": 9,
+              "signals": 10,
+              "unique_current_priorities": 10,
               "current_priority_min": 1.3748,
               "current_priority_max": 2.0,
-              "current_priority_return_corr": 0.2652,
-              "quality_return_corr": 0.2942
+              "current_priority_return_corr": 0.2709,
+              "quality_return_corr": 0.3093
             }
           }
         },
@@ -3594,47 +3602,47 @@
           "train_start": "2022-01-01",
           "train_end": "2025-12-31",
           "test_start": "2026-01-01",
-          "test_end": "2026-10-19",
+          "test_end": "2026-10-20",
           "selected_intensity": "loose",
           "selected_intensity_label": "느슨한 엄선 · 상위 50%",
           "thresholds": {
             "confirmed_pullback": 77.52,
-            "sma200_20_squeeze": 32.885511,
-            "donchian_55": 34.468038
+            "sma200_20_squeeze": 32.747463,
+            "donchian_55": 34.385268
           },
           "rankers": {
             "current": {
               "label": "현재 priority",
               "description": "기존 net RR / elite score 우선순위",
               "train": {
-                "ending": 4680956.18,
-                "return_pct": 56.03,
-                "cagr_pct": 11.77,
-                "mdd_pct": -22.22,
-                "trades": 255,
-                "win_rate_pct": 38.82,
-                "avg_trade_pct": 1.153,
-                "trades_per_year": 63.8,
+                "ending": 4379825.7,
+                "return_pct": 45.99,
+                "cagr_pct": 9.93,
+                "mdd_pct": -21.67,
+                "trades": 263,
+                "win_rate_pct": 36.5,
+                "avg_trade_pct": 0.764,
+                "trades_per_year": 65.8,
                 "max_open": 10,
-                "underwater_days": 397
+                "underwater_days": 302
               },
               "test": {
-                "ending": 3217492.25,
-                "return_pct": 7.25,
-                "cagr_pct": 9.18,
+                "ending": 3241587.35,
+                "return_pct": 8.05,
+                "cagr_pct": 10.17,
                 "mdd_pct": -21.07,
                 "trades": 74,
-                "win_rate_pct": 31.08,
-                "avg_trade_pct": 1.121,
-                "trades_per_year": 92.9,
+                "win_rate_pct": 33.78,
+                "avg_trade_pct": 1.201,
+                "trades_per_year": 92.6,
                 "max_open": 10,
-                "underwater_days": 95
+                "underwater_days": 96
               },
               "decision_audit": {
                 "accepted": 74,
                 "capacity_rejected": 21,
                 "duplicate_rejected": 134,
-                "accepted_avg_trade_pct": 1.121,
+                "accepted_avg_trade_pct": 1.201,
                 "capacity_rejected_avg_trade_pct": -4.753,
                 "accepted_avg_quality": 53.06,
                 "capacity_rejected_avg_quality": 47.1,
@@ -3757,38 +3765,38 @@
               "label": "전략별 품질 백분위",
               "description": "TRAIN의 같은 전략 품질분포에서 계산한 백분위",
               "train": {
-                "ending": 3347999.35,
-                "return_pct": 11.6,
-                "cagr_pct": 2.78,
-                "mdd_pct": -22.54,
-                "trades": 258,
-                "win_rate_pct": 37.6,
-                "avg_trade_pct": 1.365,
-                "trades_per_year": 64.5,
+                "ending": 3588342.13,
+                "return_pct": 19.61,
+                "cagr_pct": 4.58,
+                "mdd_pct": -21.62,
+                "trades": 265,
+                "win_rate_pct": 36.23,
+                "avg_trade_pct": 1.32,
+                "trades_per_year": 66.3,
                 "max_open": 9,
-                "underwater_days": 401
+                "underwater_days": 400
               },
               "test": {
-                "ending": 2835014.09,
-                "return_pct": -5.5,
-                "cagr_pct": -6.85,
+                "ending": 2853160.73,
+                "return_pct": -4.89,
+                "cagr_pct": -6.08,
                 "mdd_pct": -23.73,
                 "trades": 76,
-                "win_rate_pct": 28.95,
-                "avg_trade_pct": -0.136,
-                "trades_per_year": 95.4,
+                "win_rate_pct": 30.26,
+                "avg_trade_pct": -0.106,
+                "trades_per_year": 95.1,
                 "max_open": 10,
-                "underwater_days": 101
+                "underwater_days": 102
               },
               "decision_audit": {
                 "accepted": 76,
                 "capacity_rejected": 18,
                 "duplicate_rejected": 122,
-                "accepted_avg_trade_pct": -0.136,
-                "capacity_rejected_avg_trade_pct": -2.991,
+                "accepted_avg_trade_pct": -0.106,
+                "capacity_rejected_avg_trade_pct": -2.947,
                 "accepted_avg_quality": 56.2,
                 "capacity_rejected_avg_quality": 44.33,
-                "capacity_rejected_winners": 5,
+                "capacity_rejected_winners": 6,
                 "capacity_rejected_plus5": 4,
                 "capacity_rejected_plus10": 2,
                 "top_rejected_examples": [
@@ -3799,7 +3807,7 @@
                     "hypothetical_return_pct": 11.28,
                     "quality": 36.77,
                     "current_priority": 2.0,
-                    "rank_priority": 0.1177
+                    "rank_priority": 0.1211
                   },
                   {
                     "date": "2026-06-05",
@@ -3808,7 +3816,7 @@
                     "hypothetical_return_pct": 10.19,
                     "quality": 37.33,
                     "current_priority": 1.4712,
-                    "rank_priority": 0.3214
+                    "rank_priority": 0.3448
                   },
                   {
                     "date": "2026-06-05",
@@ -3817,7 +3825,7 @@
                     "hypothetical_return_pct": 7.81,
                     "quality": 51.98,
                     "current_priority": 2.0,
-                    "rank_priority": 0.6619
+                    "rank_priority": 0.6617
                   },
                   {
                     "date": "2026-06-05",
@@ -3826,7 +3834,7 @@
                     "hypothetical_return_pct": 7.42,
                     "quality": 35.9,
                     "current_priority": 2.0,
-                    "rank_priority": 0.0777
+                    "rank_priority": 0.0811
                   },
                   {
                     "date": "2026-06-01",
@@ -3835,25 +3843,25 @@
                     "hypothetical_return_pct": 1.42,
                     "quality": 38.43,
                     "current_priority": 2.0,
-                    "rank_priority": 0.2049
-                  },
-                  {
-                    "date": "2026-10-15",
-                    "symbol": "XOM",
-                    "strategy_id": "donchian_55",
-                    "hypothetical_return_pct": -0.54,
-                    "quality": 42.52,
-                    "current_priority": 2.0,
-                    "rank_priority": 0.3775
+                    "rank_priority": 0.2082
                   },
                   {
                     "date": "2026-10-15",
                     "symbol": "PG",
                     "strategy_id": "donchian_55",
-                    "hypothetical_return_pct": -0.75,
+                    "hypothetical_return_pct": 0.27,
                     "quality": 45.79,
                     "current_priority": 2.0,
-                    "rank_priority": 0.4988
+                    "rank_priority": 0.5
+                  },
+                  {
+                    "date": "2026-10-15",
+                    "symbol": "XOM",
+                    "strategy_id": "donchian_55",
+                    "hypothetical_return_pct": -0.78,
+                    "quality": 42.52,
+                    "current_priority": 2.0,
+                    "rank_priority": 0.3807
                   },
                   {
                     "date": "2026-06-03",
@@ -3862,7 +3870,7 @@
                     "hypothetical_return_pct": -3.5,
                     "quality": 57.54,
                     "current_priority": 2.0,
-                    "rank_priority": 0.7682
+                    "rank_priority": 0.7673
                   },
                   {
                     "date": "2026-06-03",
@@ -3871,7 +3879,7 @@
                     "hypothetical_return_pct": -3.62,
                     "quality": 41.52,
                     "current_priority": 2.0,
-                    "rank_priority": 0.3387
+                    "rank_priority": 0.3425
                   },
                   {
                     "date": "2026-06-05",
@@ -3880,7 +3888,7 @@
                     "hypothetical_return_pct": -5.67,
                     "quality": 44.29,
                     "current_priority": 2.0,
-                    "rank_priority": 0.4421
+                    "rank_priority": 0.4433
                   },
                   {
                     "date": "2026-06-02",
@@ -3889,7 +3897,7 @@
                     "hypothetical_return_pct": -5.84,
                     "quality": 55.03,
                     "current_priority": 2.0,
-                    "rank_priority": 0.7288
+                    "rank_priority": 0.7279
                   },
                   {
                     "date": "2026-06-05",
@@ -3898,7 +3906,7 @@
                     "hypothetical_return_pct": -5.87,
                     "quality": 41.72,
                     "current_priority": 2.0,
-                    "rank_priority": 0.3423
+                    "rank_priority": 0.3461
                   }
                 ]
               }
@@ -3907,34 +3915,34 @@
               "label": "현재+품질 50:50",
               "description": "TRAIN의 같은 전략 안에서 current priority와 품질 백분위를 50:50 혼합",
               "train": {
-                "ending": 3179374.61,
-                "return_pct": 5.98,
-                "cagr_pct": 1.46,
-                "mdd_pct": -22.1,
+                "ending": 3603372.62,
+                "return_pct": 20.11,
+                "cagr_pct": 4.69,
+                "mdd_pct": -20.85,
                 "trades": 260,
                 "win_rate_pct": 36.92,
-                "avg_trade_pct": 1.061,
+                "avg_trade_pct": 1.293,
                 "trades_per_year": 65.0,
-                "max_open": 9,
-                "underwater_days": 465
+                "max_open": 10,
+                "underwater_days": 294
               },
               "test": {
-                "ending": 2880283.69,
-                "return_pct": -3.99,
-                "cagr_pct": -4.98,
+                "ending": 2887757.87,
+                "return_pct": -3.74,
+                "cagr_pct": -4.66,
                 "mdd_pct": -22.95,
                 "trades": 73,
-                "win_rate_pct": 28.77,
-                "avg_trade_pct": -0.176,
-                "trades_per_year": 91.6,
+                "win_rate_pct": 30.14,
+                "avg_trade_pct": -0.168,
+                "trades_per_year": 91.3,
                 "max_open": 10,
-                "underwater_days": 101
+                "underwater_days": 102
               },
               "decision_audit": {
                 "accepted": 73,
                 "capacity_rejected": 17,
                 "duplicate_rejected": 119,
-                "accepted_avg_trade_pct": -0.176,
+                "accepted_avg_trade_pct": -0.168,
                 "capacity_rejected_avg_trade_pct": -3.32,
                 "accepted_avg_quality": 55.45,
                 "capacity_rejected_avg_quality": 47.03,
@@ -3949,7 +3957,7 @@
                     "hypothetical_return_pct": 11.28,
                     "quality": 36.77,
                     "current_priority": 2.0,
-                    "rank_priority": 0.3088
+                    "rank_priority": 0.3106
                   },
                   {
                     "date": "2026-06-05",
@@ -3958,7 +3966,7 @@
                     "hypothetical_return_pct": 10.19,
                     "quality": 37.33,
                     "current_priority": 1.4712,
-                    "rank_priority": 0.2946
+                    "rank_priority": 0.3103
                   },
                   {
                     "date": "2026-06-05",
@@ -3967,7 +3975,7 @@
                     "hypothetical_return_pct": 7.81,
                     "quality": 51.98,
                     "current_priority": 2.0,
-                    "rank_priority": 0.5809
+                    "rank_priority": 0.5808
                   },
                   {
                     "date": "2026-06-05",
@@ -3976,7 +3984,7 @@
                     "hypothetical_return_pct": 7.42,
                     "quality": 35.9,
                     "current_priority": 2.0,
-                    "rank_priority": 0.2888
+                    "rank_priority": 0.2906
                   },
                   {
                     "date": "2026-06-01",
@@ -3985,7 +3993,7 @@
                     "hypothetical_return_pct": 1.42,
                     "quality": 38.43,
                     "current_priority": 2.0,
-                    "rank_priority": 0.3524
+                    "rank_priority": 0.3541
                   },
                   {
                     "date": "2026-06-03",
@@ -3994,7 +4002,7 @@
                     "hypothetical_return_pct": -3.5,
                     "quality": 57.54,
                     "current_priority": 2.0,
-                    "rank_priority": 0.6341
+                    "rank_priority": 0.6337
                   },
                   {
                     "date": "2026-06-03",
@@ -4003,7 +4011,7 @@
                     "hypothetical_return_pct": -3.62,
                     "quality": 41.52,
                     "current_priority": 2.0,
-                    "rank_priority": 0.4194
+                    "rank_priority": 0.4212
                   },
                   {
                     "date": "2026-10-08",
@@ -4012,7 +4020,7 @@
                     "hypothetical_return_pct": -3.89,
                     "quality": 89.78,
                     "current_priority": 2.4722,
-                    "rank_priority": 0.4744
+                    "rank_priority": 0.5
                   },
                   {
                     "date": "2026-06-05",
@@ -4021,7 +4029,7 @@
                     "hypothetical_return_pct": -5.67,
                     "quality": 44.29,
                     "current_priority": 2.0,
-                    "rank_priority": 0.471
+                    "rank_priority": 0.4717
                   },
                   {
                     "date": "2026-06-02",
@@ -4030,7 +4038,7 @@
                     "hypothetical_return_pct": -5.84,
                     "quality": 55.03,
                     "current_priority": 2.0,
-                    "rank_priority": 0.6144
+                    "rank_priority": 0.614
                   },
                   {
                     "date": "2026-06-05",
@@ -4039,7 +4047,7 @@
                     "hypothetical_return_pct": -5.87,
                     "quality": 41.72,
                     "current_priority": 2.0,
-                    "rank_priority": 0.4211
+                    "rank_priority": 0.423
                   },
                   {
                     "date": "2026-06-04",
@@ -4048,7 +4056,7 @@
                     "hypothetical_return_pct": -6.5,
                     "quality": 42.0,
                     "current_priority": 2.0,
-                    "rank_priority": 0.4268
+                    "rank_priority": 0.4287
                   }
                 ]
               }
@@ -4056,12 +4064,12 @@
           },
           "strategy_discrimination": {
             "donchian_55": {
-              "signals": 467,
+              "signals": 470,
               "unique_current_priorities": 1,
               "current_priority_min": 2.0,
               "current_priority_max": 2.0,
               "current_priority_return_corr": null,
-              "quality_return_corr": 0.0696
+              "quality_return_corr": 0.0693
             },
             "sma200_20_squeeze": {
               "signals": 13,
