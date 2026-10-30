@@ -1,13 +1,13 @@
 {
   "version": 4,
   "ready": true,
-  "generated_at": "2026-10-29T02:00:39+00:00",
-  "pool_generated_at": "2026-10-29T01:59:31+00:00",
+  "generated_at": "2026-10-30T02:11:01+00:00",
+  "pool_generated_at": "2026-10-30T02:10:01+00:00",
   "promotion_status": "research_only",
   "tested_configurations": 595,
   "train_eligible_configurations": 343,
-  "shortlisted_configurations": 275,
-  "validated_configurations": 107,
+  "shortlisted_configurations": 273,
+  "validated_configurations": 138,
   "strategy_count": 7,
   "strategy_names": {
     "confirmed_pullback": "확인형 눌림반등",
@@ -47,10 +47,10 @@
   },
   "validation": {
     "available_start": "2017-09-15",
-    "train_end": "2024-07-01",
-    "oos_start": "2024-07-02",
-    "available_end": "2026-10-28",
-    "recent_start": "2024-10-28",
+    "train_end": "2024-07-02",
+    "oos_start": "2024-07-03",
+    "available_end": "2026-10-29",
+    "recent_start": "2024-10-29",
     "method": "chronological 70/30: rank on train only; OOS is pass/fail validation; recent window is a second stability gate",
     "shortlist_per_category": 150,
     "min_train_trades": 18,
@@ -394,7 +394,7 @@
         "ablation": []
       },
       {
-        "score": 53.84,
+        "score": 53.52,
         "grade": "B",
         "validation_pass": true,
         "strategies": [
@@ -409,14 +409,14 @@
         "hold_cap_days": null,
         "capacity": 1,
         "train": {
-          "ending": 4231175.85,
-          "return_pct": 41.04,
+          "ending": 4230532.99,
+          "return_pct": 41.02,
           "cagr_pct": 5.19,
           "mdd_pct": -3.53,
-          "trades": 88,
-          "win_rate_pct": 51.14,
-          "avg_trade_pct": 1.387,
-          "trades_per_year": 13.0,
+          "trades": 89,
+          "win_rate_pct": 50.56,
+          "avg_trade_pct": 1.371,
+          "trades_per_year": 13.1,
           "max_open": 1,
           "reject_capacity": 182,
           "reject_duplicate": 12
@@ -502,7 +502,7 @@
           "trades": 359,
           "win_rate_pct": 53.48,
           "avg_trade_pct": 0.292,
-          "trades_per_year": 52.9,
+          "trades_per_year": 52.8,
           "max_open": 3,
           "reject_capacity": 111,
           "reject_duplicate": 28
@@ -592,7 +592,7 @@
           "avg_trade_pct": 0.403,
           "trades_per_year": 22.4,
           "max_open": 1,
-          "reject_capacity": 525,
+          "reject_capacity": 526,
           "reject_duplicate": 31
         },
         "oos": {
@@ -662,7 +662,103 @@
         ]
       },
       {
-        "score": 46.74,
+        "score": 46.72,
+        "grade": "B",
+        "validation_pass": true,
+        "strategies": [
+          "confirmed_pullback",
+          "momentum_pullback",
+          "sma200_20_squeeze"
+        ],
+        "strategy_names": [
+          "확인형 눌림반등",
+          "모멘텀 눌림 지속",
+          "SMA200·20 스퀴즈"
+        ],
+        "forced_profit_pct": null,
+        "hold_cap_days": null,
+        "capacity": 5,
+        "train": {
+          "ending": 4067403.44,
+          "return_pct": 35.58,
+          "cagr_pct": 4.58,
+          "mdd_pct": -10.35,
+          "trades": 335,
+          "win_rate_pct": 44.78,
+          "avg_trade_pct": 0.331,
+          "trades_per_year": 49.3,
+          "max_open": 5,
+          "reject_capacity": 23,
+          "reject_duplicate": 49
+        },
+        "oos": {
+          "ending": 3208483.55,
+          "return_pct": 6.95,
+          "cagr_pct": 2.94,
+          "mdd_pct": -8.22,
+          "trades": 121,
+          "win_rate_pct": 51.24,
+          "avg_trade_pct": 0.531,
+          "trades_per_year": 52.1,
+          "max_open": 5,
+          "reject_capacity": 6,
+          "reject_duplicate": 10
+        },
+        "recent": {
+          "ending": 3295329.76,
+          "return_pct": 9.84,
+          "cagr_pct": 4.81,
+          "mdd_pct": -8.22,
+          "trades": 98,
+          "win_rate_pct": 51.02,
+          "avg_trade_pct": 0.817,
+          "trades_per_year": 49.0,
+          "max_open": 5,
+          "reject_capacity": 5,
+          "reject_duplicate": 9
+        },
+        "full": {
+          "ending": 4350065.68,
+          "return_pct": 45.0,
+          "cagr_pct": 4.16,
+          "mdd_pct": -10.35,
+          "trades": 456,
+          "win_rate_pct": 46.49,
+          "avg_trade_pct": 0.384,
+          "trades_per_year": 50.0,
+          "max_open": 5,
+          "reject_capacity": 29,
+          "reject_duplicate": 59
+        },
+        "ablation": [
+          {
+            "removed_strategy": "confirmed_pullback",
+            "removed_strategy_name": "확인형 눌림반등",
+            "return_pct": 36.53,
+            "mdd_pct": -13.05,
+            "trades": 328,
+            "delta_return_pct_points": -8.47
+          },
+          {
+            "removed_strategy": "momentum_pullback",
+            "removed_strategy_name": "모멘텀 눌림 지속",
+            "return_pct": 29.34,
+            "mdd_pct": -10.27,
+            "trades": 374,
+            "delta_return_pct_points": -15.66
+          },
+          {
+            "removed_strategy": "sma200_20_squeeze",
+            "removed_strategy_name": "SMA200·20 스퀴즈",
+            "return_pct": 27.27,
+            "mdd_pct": -18.23,
+            "trades": 261,
+            "delta_return_pct_points": -17.73
+          }
+        ]
+      },
+      {
+        "score": 46.42,
         "grade": "B",
         "validation_pass": true,
         "strategies": [
@@ -675,14 +771,14 @@
         "hold_cap_days": null,
         "capacity": 1,
         "train": {
-          "ending": 3674422.41,
-          "return_pct": 22.48,
+          "ending": 3673864.14,
+          "return_pct": 22.46,
           "cagr_pct": 3.03,
           "mdd_pct": -3.74,
-          "trades": 72,
-          "win_rate_pct": 41.67,
-          "avg_trade_pct": 0.852,
-          "trades_per_year": 10.6,
+          "trades": 73,
+          "win_rate_pct": 41.1,
+          "avg_trade_pct": 0.84,
+          "trades_per_year": 10.7,
           "max_open": 1,
           "reject_capacity": 125,
           "reject_duplicate": 13
@@ -727,107 +823,11 @@
           "reject_duplicate": 16
         },
         "ablation": []
-      },
-      {
-        "score": 46.67,
-        "grade": "B",
-        "validation_pass": true,
-        "strategies": [
-          "confirmed_pullback",
-          "momentum_pullback",
-          "sma200_20_squeeze"
-        ],
-        "strategy_names": [
-          "확인형 눌림반등",
-          "모멘텀 눌림 지속",
-          "SMA200·20 스퀴즈"
-        ],
-        "forced_profit_pct": null,
-        "hold_cap_days": null,
-        "capacity": 5,
-        "train": {
-          "ending": 4042698.98,
-          "return_pct": 34.76,
-          "cagr_pct": 4.49,
-          "mdd_pct": -10.35,
-          "trades": 335,
-          "win_rate_pct": 44.78,
-          "avg_trade_pct": 0.323,
-          "trades_per_year": 49.3,
-          "max_open": 5,
-          "reject_capacity": 23,
-          "reject_duplicate": 50
-        },
-        "oos": {
-          "ending": 3217700.1,
-          "return_pct": 7.26,
-          "cagr_pct": 3.06,
-          "mdd_pct": -8.22,
-          "trades": 121,
-          "win_rate_pct": 52.07,
-          "avg_trade_pct": 0.546,
-          "trades_per_year": 52.1,
-          "max_open": 5,
-          "reject_capacity": 6,
-          "reject_duplicate": 10
-        },
-        "recent": {
-          "ending": 3304795.78,
-          "return_pct": 10.16,
-          "cagr_pct": 4.96,
-          "mdd_pct": -8.22,
-          "trades": 98,
-          "win_rate_pct": 52.04,
-          "avg_trade_pct": 0.835,
-          "trades_per_year": 49.0,
-          "max_open": 5,
-          "reject_capacity": 5,
-          "reject_duplicate": 9
-        },
-        "full": {
-          "ending": 4362561.48,
-          "return_pct": 45.42,
-          "cagr_pct": 4.19,
-          "mdd_pct": -10.35,
-          "trades": 456,
-          "win_rate_pct": 46.71,
-          "avg_trade_pct": 0.388,
-          "trades_per_year": 50.0,
-          "max_open": 5,
-          "reject_capacity": 29,
-          "reject_duplicate": 59
-        },
-        "ablation": [
-          {
-            "removed_strategy": "confirmed_pullback",
-            "removed_strategy_name": "확인형 눌림반등",
-            "return_pct": 36.53,
-            "mdd_pct": -13.05,
-            "trades": 328,
-            "delta_return_pct_points": -8.88
-          },
-          {
-            "removed_strategy": "momentum_pullback",
-            "removed_strategy_name": "모멘텀 눌림 지속",
-            "return_pct": 29.71,
-            "mdd_pct": -10.27,
-            "trades": 374,
-            "delta_return_pct_points": -15.7
-          },
-          {
-            "removed_strategy": "sma200_20_squeeze",
-            "removed_strategy_name": "SMA200·20 스퀴즈",
-            "return_pct": 27.64,
-            "mdd_pct": -18.23,
-            "trades": 261,
-            "delta_return_pct_points": -17.78
-          }
-        ]
       }
     ],
     "return": [
       {
-        "score": 53.84,
+        "score": 53.52,
         "grade": "B",
         "validation_pass": true,
         "strategies": [
@@ -842,14 +842,14 @@
         "hold_cap_days": null,
         "capacity": 1,
         "train": {
-          "ending": 4231175.85,
-          "return_pct": 41.04,
+          "ending": 4230532.99,
+          "return_pct": 41.02,
           "cagr_pct": 5.19,
           "mdd_pct": -3.53,
-          "trades": 88,
-          "win_rate_pct": 51.14,
-          "avg_trade_pct": 1.387,
-          "trades_per_year": 13.0,
+          "trades": 89,
+          "win_rate_pct": 50.56,
+          "avg_trade_pct": 1.371,
+          "trades_per_year": 13.1,
           "max_open": 1,
           "reject_capacity": 182,
           "reject_duplicate": 12
@@ -913,7 +913,7 @@
         ]
       },
       {
-        "score": 39.87,
+        "score": 39.86,
         "grade": "B",
         "validation_pass": true,
         "strategies": [
@@ -943,39 +943,39 @@
           "reject_duplicate": 1312
         },
         "oos": {
-          "ending": 3954085.92,
-          "return_pct": 31.8,
-          "cagr_pct": 12.63,
-          "mdd_pct": -14.77,
-          "trades": 146,
-          "win_rate_pct": 36.99,
-          "avg_trade_pct": 1.536,
-          "trades_per_year": 62.9,
+          "ending": 3699524.89,
+          "return_pct": 23.32,
+          "cagr_pct": 9.45,
+          "mdd_pct": -14.65,
+          "trades": 147,
+          "win_rate_pct": 37.41,
+          "avg_trade_pct": 1.566,
+          "trades_per_year": 63.3,
           "max_open": 7,
-          "reject_capacity": 960,
-          "reject_duplicate": 581
+          "reject_capacity": 965,
+          "reject_duplicate": 561
         },
         "recent": {
-          "ending": 3734471.06,
-          "return_pct": 24.48,
-          "cagr_pct": 11.58,
-          "mdd_pct": -14.05,
-          "trades": 125,
-          "win_rate_pct": 37.6,
-          "avg_trade_pct": 1.726,
-          "trades_per_year": 62.5,
+          "ending": 3637799.55,
+          "return_pct": 21.26,
+          "cagr_pct": 10.13,
+          "mdd_pct": -16.09,
+          "trades": 128,
+          "win_rate_pct": 38.28,
+          "avg_trade_pct": 1.661,
+          "trades_per_year": 64.0,
           "max_open": 7,
           "reject_capacity": 735,
-          "reject_duplicate": 464
+          "reject_duplicate": 479
         },
         "full": {
-          "ending": 6949516.65,
-          "return_pct": 131.65,
-          "cagr_pct": 9.65,
+          "ending": 7096474.6,
+          "return_pct": 136.55,
+          "cagr_pct": 9.9,
           "mdd_pct": -21.45,
           "trades": 528,
-          "win_rate_pct": 38.26,
-          "avg_trade_pct": 1.381,
+          "win_rate_pct": 38.64,
+          "avg_trade_pct": 1.402,
           "trades_per_year": 57.9,
           "max_open": 7,
           "reject_capacity": 2284,
@@ -985,18 +985,18 @@
           {
             "removed_strategy": "momentum_pullback",
             "removed_strategy_name": "모멘텀 눌림 지속",
-            "return_pct": 104.7,
+            "return_pct": 109.02,
             "mdd_pct": -21.55,
             "trades": 523,
-            "delta_return_pct_points": -26.95
+            "delta_return_pct_points": -27.53
           },
           {
             "removed_strategy": "volume_breakout",
             "removed_strategy_name": "거래량 동반 돌파",
-            "return_pct": 100.39,
+            "return_pct": 103.82,
             "mdd_pct": -22.16,
             "trades": 520,
-            "delta_return_pct_points": -31.26
+            "delta_return_pct_points": -32.72
           },
           {
             "removed_strategy": "donchian_55",
@@ -1004,12 +1004,12 @@
             "return_pct": 8.5,
             "mdd_pct": -19.94,
             "trades": 583,
-            "delta_return_pct_points": -123.15
+            "delta_return_pct_points": -128.05
           }
         ]
       },
       {
-        "score": 46.74,
+        "score": 46.42,
         "grade": "B",
         "validation_pass": true,
         "strategies": [
@@ -1022,14 +1022,14 @@
         "hold_cap_days": null,
         "capacity": 1,
         "train": {
-          "ending": 3674422.41,
-          "return_pct": 22.48,
+          "ending": 3673864.14,
+          "return_pct": 22.46,
           "cagr_pct": 3.03,
           "mdd_pct": -3.74,
-          "trades": 72,
-          "win_rate_pct": 41.67,
-          "avg_trade_pct": 0.852,
-          "trades_per_year": 10.6,
+          "trades": 73,
+          "win_rate_pct": 41.1,
+          "avg_trade_pct": 0.84,
+          "trades_per_year": 10.7,
           "max_open": 1,
           "reject_capacity": 125,
           "reject_duplicate": 13
@@ -1076,7 +1076,7 @@
         "ablation": []
       },
       {
-        "score": 46.67,
+        "score": 46.72,
         "grade": "B",
         "validation_pass": true,
         "strategies": [
@@ -1093,52 +1093,52 @@
         "hold_cap_days": null,
         "capacity": 5,
         "train": {
-          "ending": 4042698.98,
-          "return_pct": 34.76,
-          "cagr_pct": 4.49,
+          "ending": 4067403.44,
+          "return_pct": 35.58,
+          "cagr_pct": 4.58,
           "mdd_pct": -10.35,
           "trades": 335,
           "win_rate_pct": 44.78,
-          "avg_trade_pct": 0.323,
+          "avg_trade_pct": 0.331,
           "trades_per_year": 49.3,
           "max_open": 5,
           "reject_capacity": 23,
-          "reject_duplicate": 50
+          "reject_duplicate": 49
         },
         "oos": {
-          "ending": 3217700.1,
-          "return_pct": 7.26,
-          "cagr_pct": 3.06,
+          "ending": 3208483.55,
+          "return_pct": 6.95,
+          "cagr_pct": 2.94,
           "mdd_pct": -8.22,
           "trades": 121,
-          "win_rate_pct": 52.07,
-          "avg_trade_pct": 0.546,
+          "win_rate_pct": 51.24,
+          "avg_trade_pct": 0.531,
           "trades_per_year": 52.1,
           "max_open": 5,
           "reject_capacity": 6,
           "reject_duplicate": 10
         },
         "recent": {
-          "ending": 3304795.78,
-          "return_pct": 10.16,
-          "cagr_pct": 4.96,
+          "ending": 3295329.76,
+          "return_pct": 9.84,
+          "cagr_pct": 4.81,
           "mdd_pct": -8.22,
           "trades": 98,
-          "win_rate_pct": 52.04,
-          "avg_trade_pct": 0.835,
+          "win_rate_pct": 51.02,
+          "avg_trade_pct": 0.817,
           "trades_per_year": 49.0,
           "max_open": 5,
           "reject_capacity": 5,
           "reject_duplicate": 9
         },
         "full": {
-          "ending": 4362561.48,
-          "return_pct": 45.42,
-          "cagr_pct": 4.19,
+          "ending": 4350065.68,
+          "return_pct": 45.0,
+          "cagr_pct": 4.16,
           "mdd_pct": -10.35,
           "trades": 456,
-          "win_rate_pct": 46.71,
-          "avg_trade_pct": 0.388,
+          "win_rate_pct": 46.49,
+          "avg_trade_pct": 0.384,
           "trades_per_year": 50.0,
           "max_open": 5,
           "reject_capacity": 29,
@@ -1151,220 +1151,28 @@
             "return_pct": 36.53,
             "mdd_pct": -13.05,
             "trades": 328,
-            "delta_return_pct_points": -8.88
+            "delta_return_pct_points": -8.47
           },
           {
             "removed_strategy": "momentum_pullback",
             "removed_strategy_name": "모멘텀 눌림 지속",
-            "return_pct": 29.71,
+            "return_pct": 29.34,
             "mdd_pct": -10.27,
             "trades": 374,
-            "delta_return_pct_points": -15.7
+            "delta_return_pct_points": -15.66
           },
           {
             "removed_strategy": "sma200_20_squeeze",
             "removed_strategy_name": "SMA200·20 스퀴즈",
-            "return_pct": 27.64,
+            "return_pct": 27.27,
             "mdd_pct": -18.23,
             "trades": 261,
-            "delta_return_pct_points": -17.78
+            "delta_return_pct_points": -17.73
           }
         ]
       },
       {
-        "score": 46.09,
-        "grade": "B",
-        "validation_pass": true,
-        "strategies": [
-          "confirmed_pullback",
-          "momentum_pullback",
-          "sma200_20_squeeze"
-        ],
-        "strategy_names": [
-          "확인형 눌림반등",
-          "모멘텀 눌림 지속",
-          "SMA200·20 스퀴즈"
-        ],
-        "forced_profit_pct": null,
-        "hold_cap_days": null,
-        "capacity": 7,
-        "train": {
-          "ending": 4030603.75,
-          "return_pct": 34.35,
-          "cagr_pct": 4.44,
-          "mdd_pct": -10.84,
-          "trades": 344,
-          "win_rate_pct": 44.19,
-          "avg_trade_pct": 0.319,
-          "trades_per_year": 50.6,
-          "max_open": 7,
-          "reject_capacity": 3,
-          "reject_duplicate": 50
-        },
-        "oos": {
-          "ending": 3230115.86,
-          "return_pct": 7.67,
-          "cagr_pct": 3.23,
-          "mdd_pct": -8.22,
-          "trades": 123,
-          "win_rate_pct": 52.03,
-          "avg_trade_pct": 0.545,
-          "trades_per_year": 53.0,
-          "max_open": 6,
-          "reject_capacity": 0,
-          "reject_duplicate": 10
-        },
-        "recent": {
-          "ending": 3317547.6,
-          "return_pct": 10.58,
-          "cagr_pct": 5.16,
-          "mdd_pct": -8.22,
-          "trades": 100,
-          "win_rate_pct": 52.0,
-          "avg_trade_pct": 0.828,
-          "trades_per_year": 50.0,
-          "max_open": 6,
-          "reject_capacity": 0,
-          "reject_duplicate": 9
-        },
-        "full": {
-          "ending": 4366292.19,
-          "return_pct": 45.54,
-          "cagr_pct": 4.2,
-          "mdd_pct": -10.84,
-          "trades": 467,
-          "win_rate_pct": 46.25,
-          "avg_trade_pct": 0.385,
-          "trades_per_year": 51.2,
-          "max_open": 7,
-          "reject_capacity": 3,
-          "reject_duplicate": 59
-        },
-        "ablation": [
-          {
-            "removed_strategy": "confirmed_pullback",
-            "removed_strategy_name": "확인형 눌림반등",
-            "return_pct": 36.57,
-            "mdd_pct": -13.05,
-            "trades": 334,
-            "delta_return_pct_points": -8.98
-          },
-          {
-            "removed_strategy": "momentum_pullback",
-            "removed_strategy_name": "모멘텀 눌림 지속",
-            "return_pct": 29.4,
-            "mdd_pct": -10.27,
-            "trades": 382,
-            "delta_return_pct_points": -16.14
-          },
-          {
-            "removed_strategy": "sma200_20_squeeze",
-            "removed_strategy_name": "SMA200·20 스퀴즈",
-            "return_pct": 27.64,
-            "mdd_pct": -18.23,
-            "trades": 261,
-            "delta_return_pct_points": -17.91
-          }
-        ]
-      },
-      {
-        "score": 46.09,
-        "grade": "B",
-        "validation_pass": true,
-        "strategies": [
-          "confirmed_pullback",
-          "momentum_pullback",
-          "sma200_20_squeeze"
-        ],
-        "strategy_names": [
-          "확인형 눌림반등",
-          "모멘텀 눌림 지속",
-          "SMA200·20 스퀴즈"
-        ],
-        "forced_profit_pct": null,
-        "hold_cap_days": null,
-        "capacity": 10,
-        "train": {
-          "ending": 4030603.75,
-          "return_pct": 34.35,
-          "cagr_pct": 4.44,
-          "mdd_pct": -10.84,
-          "trades": 344,
-          "win_rate_pct": 44.19,
-          "avg_trade_pct": 0.319,
-          "trades_per_year": 50.6,
-          "max_open": 7,
-          "reject_capacity": 0,
-          "reject_duplicate": 50
-        },
-        "oos": {
-          "ending": 3230115.86,
-          "return_pct": 7.67,
-          "cagr_pct": 3.23,
-          "mdd_pct": -8.22,
-          "trades": 123,
-          "win_rate_pct": 52.03,
-          "avg_trade_pct": 0.545,
-          "trades_per_year": 53.0,
-          "max_open": 6,
-          "reject_capacity": 0,
-          "reject_duplicate": 10
-        },
-        "recent": {
-          "ending": 3317547.6,
-          "return_pct": 10.58,
-          "cagr_pct": 5.16,
-          "mdd_pct": -8.22,
-          "trades": 100,
-          "win_rate_pct": 52.0,
-          "avg_trade_pct": 0.828,
-          "trades_per_year": 50.0,
-          "max_open": 6,
-          "reject_capacity": 0,
-          "reject_duplicate": 9
-        },
-        "full": {
-          "ending": 4366292.19,
-          "return_pct": 45.54,
-          "cagr_pct": 4.2,
-          "mdd_pct": -10.84,
-          "trades": 467,
-          "win_rate_pct": 46.25,
-          "avg_trade_pct": 0.385,
-          "trades_per_year": 51.2,
-          "max_open": 7,
-          "reject_capacity": 0,
-          "reject_duplicate": 59
-        },
-        "ablation": [
-          {
-            "removed_strategy": "confirmed_pullback",
-            "removed_strategy_name": "확인형 눌림반등",
-            "return_pct": 36.57,
-            "mdd_pct": -13.05,
-            "trades": 334,
-            "delta_return_pct_points": -8.98
-          },
-          {
-            "removed_strategy": "momentum_pullback",
-            "removed_strategy_name": "모멘텀 눌림 지속",
-            "return_pct": 29.4,
-            "mdd_pct": -10.27,
-            "trades": 382,
-            "delta_return_pct_points": -16.14
-          },
-          {
-            "removed_strategy": "sma200_20_squeeze",
-            "removed_strategy_name": "SMA200·20 스퀴즈",
-            "return_pct": 27.64,
-            "mdd_pct": -18.23,
-            "trades": 261,
-            "delta_return_pct_points": -17.91
-          }
-        ]
-      },
-      {
-        "score": 38.89,
+        "score": 39.17,
         "grade": "B",
         "validation_pass": true,
         "strategies": [
@@ -1381,81 +1189,273 @@
         "hold_cap_days": null,
         "capacity": 5,
         "train": {
-          "ending": 4968259.25,
-          "return_pct": 65.61,
-          "cagr_pct": 7.71,
+          "ending": 5045826.7,
+          "return_pct": 68.19,
+          "cagr_pct": 7.95,
           "mdd_pct": -24.18,
-          "trades": 407,
-          "win_rate_pct": 40.79,
-          "avg_trade_pct": 0.848,
-          "trades_per_year": 59.9,
+          "trades": 403,
+          "win_rate_pct": 40.94,
+          "avg_trade_pct": 0.904,
+          "trades_per_year": 59.3,
           "max_open": 5,
-          "reject_capacity": 4366,
-          "reject_duplicate": 1023
+          "reject_capacity": 4375,
+          "reject_duplicate": 1022
         },
         "oos": {
-          "ending": 3424007.71,
-          "return_pct": 14.13,
-          "cagr_pct": 5.86,
-          "mdd_pct": -17.2,
+          "ending": 3370926.78,
+          "return_pct": 12.36,
+          "cagr_pct": 5.15,
+          "mdd_pct": -17.33,
           "trades": 145,
-          "win_rate_pct": 36.55,
-          "avg_trade_pct": 1.424,
+          "win_rate_pct": 37.24,
+          "avg_trade_pct": 1.523,
           "trades_per_year": 62.5,
           "max_open": 5,
-          "reject_capacity": 1892,
-          "reject_duplicate": 414
+          "reject_capacity": 1948,
+          "reject_duplicate": 403
         },
         "recent": {
-          "ending": 3036237.04,
-          "return_pct": 1.21,
-          "cagr_pct": 0.6,
-          "mdd_pct": -19.81,
-          "trades": 131,
-          "win_rate_pct": 34.35,
-          "avg_trade_pct": 1.355,
-          "trades_per_year": 65.5,
+          "ending": 3345786.27,
+          "return_pct": 11.53,
+          "cagr_pct": 5.61,
+          "mdd_pct": -16.02,
+          "trades": 130,
+          "win_rate_pct": 36.15,
+          "avg_trade_pct": 1.519,
+          "trades_per_year": 65.0,
           "max_open": 5,
-          "reject_capacity": 1618,
-          "reject_duplicate": 346
+          "reject_capacity": 1630,
+          "reject_duplicate": 339
         },
         "full": {
-          "ending": 5660951.43,
-          "return_pct": 88.7,
-          "cagr_pct": 7.21,
+          "ending": 5753023.79,
+          "return_pct": 91.77,
+          "cagr_pct": 7.4,
           "mdd_pct": -24.18,
           "trades": 545,
           "win_rate_pct": 39.63,
-          "avg_trade_pct": 1.057,
+          "avg_trade_pct": 1.072,
           "trades_per_year": 59.8,
           "max_open": 5,
-          "reject_capacity": 6428,
+          "reject_capacity": 6431,
           "reject_duplicate": 1437
         },
         "ablation": [
           {
             "removed_strategy": "confirmed_pullback",
             "removed_strategy_name": "확인형 눌림반등",
-            "return_pct": 101.36,
+            "return_pct": 104.64,
             "mdd_pct": -24.84,
             "trades": 513,
-            "delta_return_pct_points": 12.66
+            "delta_return_pct_points": 12.87
           },
           {
             "removed_strategy": "rsi2_trend_reversion",
             "removed_strategy_name": "RSI2 추세내 과매도",
-            "return_pct": 79.54,
+            "return_pct": 82.21,
             "mdd_pct": -24.09,
             "trades": 470,
-            "delta_return_pct_points": -9.16
+            "delta_return_pct_points": -9.56
           },
           {
             "removed_strategy": "donchian_55",
             "removed_strategy_name": "Donchian 55일 돌파",
-            "return_pct": -22.7,
+            "return_pct": -22.43,
             "mdd_pct": -42.04,
             "trades": 546,
-            "delta_return_pct_points": -111.4
+            "delta_return_pct_points": -114.19
+          }
+        ]
+      },
+      {
+        "score": 46.14,
+        "grade": "B",
+        "validation_pass": true,
+        "strategies": [
+          "confirmed_pullback",
+          "momentum_pullback",
+          "sma200_20_squeeze"
+        ],
+        "strategy_names": [
+          "확인형 눌림반등",
+          "모멘텀 눌림 지속",
+          "SMA200·20 스퀴즈"
+        ],
+        "forced_profit_pct": null,
+        "hold_cap_days": null,
+        "capacity": 7,
+        "train": {
+          "ending": 4055234.29,
+          "return_pct": 35.17,
+          "cagr_pct": 4.54,
+          "mdd_pct": -10.84,
+          "trades": 344,
+          "win_rate_pct": 44.19,
+          "avg_trade_pct": 0.327,
+          "trades_per_year": 50.6,
+          "max_open": 7,
+          "reject_capacity": 3,
+          "reject_duplicate": 49
+        },
+        "oos": {
+          "ending": 3220863.75,
+          "return_pct": 7.36,
+          "cagr_pct": 3.11,
+          "mdd_pct": -8.22,
+          "trades": 123,
+          "win_rate_pct": 51.22,
+          "avg_trade_pct": 0.531,
+          "trades_per_year": 53.0,
+          "max_open": 6,
+          "reject_capacity": 0,
+          "reject_duplicate": 10
+        },
+        "recent": {
+          "ending": 3308045.06,
+          "return_pct": 10.27,
+          "cagr_pct": 5.01,
+          "mdd_pct": -8.22,
+          "trades": 100,
+          "win_rate_pct": 51.0,
+          "avg_trade_pct": 0.81,
+          "trades_per_year": 50.0,
+          "max_open": 6,
+          "reject_capacity": 0,
+          "reject_duplicate": 9
+        },
+        "full": {
+          "ending": 4353785.7,
+          "return_pct": 45.13,
+          "cagr_pct": 4.17,
+          "mdd_pct": -10.84,
+          "trades": 467,
+          "win_rate_pct": 46.04,
+          "avg_trade_pct": 0.381,
+          "trades_per_year": 51.2,
+          "max_open": 7,
+          "reject_capacity": 3,
+          "reject_duplicate": 59
+        },
+        "ablation": [
+          {
+            "removed_strategy": "confirmed_pullback",
+            "removed_strategy_name": "확인형 눌림반등",
+            "return_pct": 36.57,
+            "mdd_pct": -13.05,
+            "trades": 334,
+            "delta_return_pct_points": -8.56
+          },
+          {
+            "removed_strategy": "momentum_pullback",
+            "removed_strategy_name": "모멘텀 눌림 지속",
+            "return_pct": 29.03,
+            "mdd_pct": -10.27,
+            "trades": 382,
+            "delta_return_pct_points": -16.09
+          },
+          {
+            "removed_strategy": "sma200_20_squeeze",
+            "removed_strategy_name": "SMA200·20 스퀴즈",
+            "return_pct": 27.27,
+            "mdd_pct": -18.23,
+            "trades": 261,
+            "delta_return_pct_points": -17.86
+          }
+        ]
+      },
+      {
+        "score": 46.14,
+        "grade": "B",
+        "validation_pass": true,
+        "strategies": [
+          "confirmed_pullback",
+          "momentum_pullback",
+          "sma200_20_squeeze"
+        ],
+        "strategy_names": [
+          "확인형 눌림반등",
+          "모멘텀 눌림 지속",
+          "SMA200·20 스퀴즈"
+        ],
+        "forced_profit_pct": null,
+        "hold_cap_days": null,
+        "capacity": 10,
+        "train": {
+          "ending": 4055234.29,
+          "return_pct": 35.17,
+          "cagr_pct": 4.54,
+          "mdd_pct": -10.84,
+          "trades": 344,
+          "win_rate_pct": 44.19,
+          "avg_trade_pct": 0.327,
+          "trades_per_year": 50.6,
+          "max_open": 7,
+          "reject_capacity": 0,
+          "reject_duplicate": 49
+        },
+        "oos": {
+          "ending": 3220863.75,
+          "return_pct": 7.36,
+          "cagr_pct": 3.11,
+          "mdd_pct": -8.22,
+          "trades": 123,
+          "win_rate_pct": 51.22,
+          "avg_trade_pct": 0.531,
+          "trades_per_year": 53.0,
+          "max_open": 6,
+          "reject_capacity": 0,
+          "reject_duplicate": 10
+        },
+        "recent": {
+          "ending": 3308045.06,
+          "return_pct": 10.27,
+          "cagr_pct": 5.01,
+          "mdd_pct": -8.22,
+          "trades": 100,
+          "win_rate_pct": 51.0,
+          "avg_trade_pct": 0.81,
+          "trades_per_year": 50.0,
+          "max_open": 6,
+          "reject_capacity": 0,
+          "reject_duplicate": 9
+        },
+        "full": {
+          "ending": 4353785.7,
+          "return_pct": 45.13,
+          "cagr_pct": 4.17,
+          "mdd_pct": -10.84,
+          "trades": 467,
+          "win_rate_pct": 46.04,
+          "avg_trade_pct": 0.381,
+          "trades_per_year": 51.2,
+          "max_open": 7,
+          "reject_capacity": 0,
+          "reject_duplicate": 59
+        },
+        "ablation": [
+          {
+            "removed_strategy": "confirmed_pullback",
+            "removed_strategy_name": "확인형 눌림반등",
+            "return_pct": 36.57,
+            "mdd_pct": -13.05,
+            "trades": 334,
+            "delta_return_pct_points": -8.56
+          },
+          {
+            "removed_strategy": "momentum_pullback",
+            "removed_strategy_name": "모멘텀 눌림 지속",
+            "return_pct": 29.03,
+            "mdd_pct": -10.27,
+            "trades": 382,
+            "delta_return_pct_points": -16.09
+          },
+          {
+            "removed_strategy": "sma200_20_squeeze",
+            "removed_strategy_name": "SMA200·20 스퀴즈",
+            "return_pct": 27.27,
+            "mdd_pct": -18.23,
+            "trades": 261,
+            "delta_return_pct_points": -17.86
           }
         ]
       },
@@ -1479,79 +1479,79 @@
         "train": {
           "ending": 4452635.2,
           "return_pct": 48.42,
-          "cagr_pct": 5.99,
+          "cagr_pct": 5.98,
           "mdd_pct": -17.87,
           "trades": 221,
           "win_rate_pct": 38.91,
           "avg_trade_pct": 1.05,
           "trades_per_year": 32.5,
           "max_open": 3,
-          "reject_capacity": 5229,
+          "reject_capacity": 5234,
           "reject_duplicate": 611
         },
         "oos": {
-          "ending": 3676445.74,
-          "return_pct": 22.55,
-          "cagr_pct": 9.15,
-          "mdd_pct": -19.21,
-          "trades": 84,
-          "win_rate_pct": 36.9,
-          "avg_trade_pct": 2.248,
-          "trades_per_year": 36.2,
+          "ending": 3810250.65,
+          "return_pct": 27.01,
+          "cagr_pct": 10.85,
+          "mdd_pct": -12.74,
+          "trades": 81,
+          "win_rate_pct": 37.04,
+          "avg_trade_pct": 2.524,
+          "trades_per_year": 34.9,
           "max_open": 3,
-          "reject_capacity": 2173,
-          "reject_duplicate": 253
+          "reject_capacity": 2187,
+          "reject_duplicate": 242
         },
         "recent": {
-          "ending": 3998712.0,
-          "return_pct": 33.29,
-          "cagr_pct": 15.46,
+          "ending": 3881674.42,
+          "return_pct": 29.39,
+          "cagr_pct": 13.76,
           "mdd_pct": -13.83,
           "trades": 75,
-          "win_rate_pct": 37.33,
-          "avg_trade_pct": 2.558,
+          "win_rate_pct": 36.0,
+          "avg_trade_pct": 2.531,
           "trades_per_year": 37.5,
           "max_open": 3,
-          "reject_capacity": 1808,
-          "reject_duplicate": 216
+          "reject_capacity": 1817,
+          "reject_duplicate": 209
         },
         "full": {
-          "ending": 5863912.56,
-          "return_pct": 95.46,
-          "cagr_pct": 7.63,
+          "ending": 5899346.15,
+          "return_pct": 96.64,
+          "cagr_pct": 7.7,
           "mdd_pct": -19.81,
           "trades": 300,
           "win_rate_pct": 39.33,
-          "avg_trade_pct": 1.522,
+          "avg_trade_pct": 1.532,
           "trades_per_year": 32.9,
           "max_open": 3,
-          "reject_capacity": 7494,
+          "reject_capacity": 7497,
           "reject_duplicate": 866
         },
         "ablation": [
           {
             "removed_strategy": "confirmed_pullback",
             "removed_strategy_name": "확인형 눌림반등",
-            "return_pct": 44.84,
+            "return_pct": 45.77,
             "mdd_pct": -21.44,
             "trades": 284,
-            "delta_return_pct_points": -50.62
+            "delta_return_pct_points": -50.87
           },
           {
             "removed_strategy": "sma200_20_squeeze",
             "removed_strategy_name": "SMA200·20 스퀴즈",
-            "return_pct": 78.69,
+            "return_pct": 79.99,
             "mdd_pct": -20.81,
             "trades": 297,
-            "delta_return_pct_points": -16.77
+            "delta_return_pct_points": -16.66
           },
           {
             "removed_strategy": "donchian_55",
             "removed_strategy_name": "Donchian 55일 돌파",
-            "return_pct": 22.1,
+            "return_pct": 21.75,
             "mdd_pct": -9.49,
             "trades": 312,
-            "delta_return_pct_points": -73.37
+            "delta_return_pct_points": -74.9
           }
         ]
       },
@@ -1577,92 +1577,92 @@
         "train": {
           "ending": 4782713.83,
           "return_pct": 59.42,
-          "cagr_pct": 7.11,
+          "cagr_pct": 7.1,
           "mdd_pct": -22.64,
           "trades": 371,
           "win_rate_pct": 36.39,
           "avg_trade_pct": 0.66,
           "trades_per_year": 54.6,
           "max_open": 5,
-          "reject_capacity": 4323,
+          "reject_capacity": 4328,
           "reject_duplicate": 1067
         },
         "oos": {
-          "ending": 3519720.01,
-          "return_pct": 17.32,
-          "cagr_pct": 7.12,
-          "mdd_pct": -17.31,
-          "trades": 136,
-          "win_rate_pct": 36.76,
-          "avg_trade_pct": 1.248,
-          "trades_per_year": 58.6,
+          "ending": 3771163.2,
+          "return_pct": 25.71,
+          "cagr_pct": 10.36,
+          "mdd_pct": -15.31,
+          "trades": 135,
+          "win_rate_pct": 37.04,
+          "avg_trade_pct": 1.333,
+          "trades_per_year": 58.1,
           "max_open": 5,
-          "reject_capacity": 2012,
-          "reject_duplicate": 447
+          "reject_capacity": 2042,
+          "reject_duplicate": 440
         },
         "recent": {
-          "ending": 3594225.85,
-          "return_pct": 19.81,
-          "cagr_pct": 9.46,
-          "mdd_pct": -15.47,
+          "ending": 3607742.84,
+          "return_pct": 20.26,
+          "cagr_pct": 9.67,
+          "mdd_pct": -15.16,
           "trades": 118,
-          "win_rate_pct": 36.44,
-          "avg_trade_pct": 1.257,
+          "win_rate_pct": 37.29,
+          "avg_trade_pct": 1.416,
           "trades_per_year": 59.0,
           "max_open": 5,
-          "reject_capacity": 1562,
-          "reject_duplicate": 363
+          "reject_capacity": 1682,
+          "reject_duplicate": 371
         },
         "full": {
-          "ending": 5746607.48,
-          "return_pct": 91.55,
-          "cagr_pct": 7.39,
+          "ending": 5831227.52,
+          "return_pct": 94.37,
+          "cagr_pct": 7.56,
           "mdd_pct": -22.64,
           "trades": 503,
           "win_rate_pct": 36.58,
-          "avg_trade_pct": 0.839,
+          "avg_trade_pct": 0.855,
           "trades_per_year": 55.2,
           "max_open": 5,
-          "reject_capacity": 6445,
+          "reject_capacity": 6448,
           "reject_duplicate": 1521
         },
         "ablation": [
           {
             "removed_strategy": "confirmed_pullback",
             "removed_strategy_name": "확인형 눌림반등",
-            "return_pct": 51.95,
+            "return_pct": 55.44,
             "mdd_pct": -24.72,
             "trades": 458,
-            "delta_return_pct_points": -39.6
+            "delta_return_pct_points": -38.94
           },
           {
             "removed_strategy": "sma200_20_squeeze",
             "removed_strategy_name": "SMA200·20 스퀴즈",
-            "return_pct": 77.32,
+            "return_pct": 80.85,
             "mdd_pct": -24.83,
             "trades": 484,
-            "delta_return_pct_points": -14.24
+            "delta_return_pct_points": -13.53
           },
           {
             "removed_strategy": "volume_breakout",
             "removed_strategy_name": "거래량 동반 돌파",
-            "return_pct": 78.91,
+            "return_pct": 81.55,
             "mdd_pct": -21.56,
             "trades": 492,
-            "delta_return_pct_points": -12.64
+            "delta_return_pct_points": -12.83
           },
           {
             "removed_strategy": "donchian_55",
             "removed_strategy_name": "Donchian 55일 돌파",
-            "return_pct": 15.37,
+            "return_pct": 15.03,
             "mdd_pct": -20.26,
             "trades": 731,
-            "delta_return_pct_points": -76.19
+            "delta_return_pct_points": -79.34
           }
         ]
       },
       {
-        "score": 38.62,
+        "score": 38.61,
         "grade": "B",
         "validation_pass": true,
         "strategies": [
@@ -1679,7 +1679,7 @@
         "train": {
           "ending": 4674421.48,
           "return_pct": 55.81,
-          "cagr_pct": 6.75,
+          "cagr_pct": 6.74,
           "mdd_pct": -21.43,
           "trades": 390,
           "win_rate_pct": 37.18,
@@ -1690,39 +1690,39 @@
           "reject_duplicate": 1322
         },
         "oos": {
-          "ending": 4560234.46,
-          "return_pct": 52.01,
-          "cagr_pct": 19.77,
+          "ending": 4316360.0,
+          "return_pct": 43.88,
+          "cagr_pct": 16.96,
           "mdd_pct": -16.82,
-          "trades": 172,
-          "win_rate_pct": 38.37,
-          "avg_trade_pct": 1.924,
-          "trades_per_year": 74.1,
+          "trades": 173,
+          "win_rate_pct": 38.15,
+          "avg_trade_pct": 1.982,
+          "trades_per_year": 74.5,
           "max_open": 10,
           "reject_capacity": 29,
-          "reject_duplicate": 670
+          "reject_duplicate": 654
         },
         "recent": {
-          "ending": 4360240.99,
-          "return_pct": 45.34,
-          "cagr_pct": 20.57,
+          "ending": 4228424.66,
+          "return_pct": 40.95,
+          "cagr_pct": 18.74,
           "mdd_pct": -16.82,
-          "trades": 148,
-          "win_rate_pct": 39.19,
-          "avg_trade_pct": 2.287,
-          "trades_per_year": 74.1,
+          "trades": 153,
+          "win_rate_pct": 39.22,
+          "avg_trade_pct": 2.144,
+          "trades_per_year": 76.6,
           "max_open": 10,
           "reject_capacity": 29,
-          "reject_duplicate": 553
+          "reject_duplicate": 575
         },
         "full": {
-          "ending": 7124748.1,
-          "return_pct": 137.49,
-          "cagr_pct": 9.95,
+          "ending": 7283631.59,
+          "return_pct": 142.79,
+          "cagr_pct": 10.22,
           "mdd_pct": -21.43,
           "trades": 567,
-          "win_rate_pct": 37.74,
-          "avg_trade_pct": 1.463,
+          "win_rate_pct": 38.1,
+          "avg_trade_pct": 1.487,
           "trades_per_year": 62.2,
           "max_open": 10,
           "reject_capacity": 61,
@@ -1732,10 +1732,10 @@
           {
             "removed_strategy": "volume_breakout",
             "removed_strategy_name": "거래량 동반 돌파",
-            "return_pct": 123.58,
+            "return_pct": 127.62,
             "mdd_pct": -21.4,
             "trades": 554,
-            "delta_return_pct_points": -13.91
+            "delta_return_pct_points": -15.17
           },
           {
             "removed_strategy": "donchian_55",
@@ -1743,14 +1743,14 @@
             "return_pct": -4.0,
             "mdd_pct": -26.26,
             "trades": 498,
-            "delta_return_pct_points": -141.49
+            "delta_return_pct_points": -146.79
           }
         ]
       }
     ],
     "defensive": [
       {
-        "score": 53.84,
+        "score": 53.52,
         "grade": "B",
         "validation_pass": true,
         "strategies": [
@@ -1765,14 +1765,14 @@
         "hold_cap_days": null,
         "capacity": 1,
         "train": {
-          "ending": 4231175.85,
-          "return_pct": 41.04,
+          "ending": 4230532.99,
+          "return_pct": 41.02,
           "cagr_pct": 5.19,
           "mdd_pct": -3.53,
-          "trades": 88,
-          "win_rate_pct": 51.14,
-          "avg_trade_pct": 1.387,
-          "trades_per_year": 13.0,
+          "trades": 89,
+          "win_rate_pct": 50.56,
+          "avg_trade_pct": 1.371,
+          "trades_per_year": 13.1,
           "max_open": 1,
           "reject_capacity": 182,
           "reject_duplicate": 12
@@ -1836,7 +1836,7 @@
         ]
       },
       {
-        "score": 46.74,
+        "score": 46.42,
         "grade": "B",
         "validation_pass": true,
         "strategies": [
@@ -1849,14 +1849,14 @@
         "hold_cap_days": null,
         "capacity": 1,
         "train": {
-          "ending": 3674422.41,
-          "return_pct": 22.48,
+          "ending": 3673864.14,
+          "return_pct": 22.46,
           "cagr_pct": 3.03,
           "mdd_pct": -3.74,
-          "trades": 72,
-          "win_rate_pct": 41.67,
-          "avg_trade_pct": 0.852,
-          "trades_per_year": 10.6,
+          "trades": 73,
+          "win_rate_pct": 41.1,
+          "avg_trade_pct": 0.84,
+          "trades_per_year": 10.7,
           "max_open": 1,
           "reject_capacity": 125,
           "reject_duplicate": 13
@@ -2197,7 +2197,7 @@
           "avg_trade_pct": 0.403,
           "trades_per_year": 22.4,
           "max_open": 1,
-          "reject_capacity": 525,
+          "reject_capacity": 526,
           "reject_duplicate": 31
         },
         "oos": {
@@ -2293,43 +2293,43 @@
           "avg_trade_pct": 0.465,
           "trades_per_year": 17.5,
           "max_open": 1,
-          "reject_capacity": 297,
+          "reject_capacity": 299,
           "reject_duplicate": 21
         },
         "oos": {
-          "ending": 3083052.35,
-          "return_pct": 2.77,
-          "cagr_pct": 1.18,
+          "ending": 3074221.48,
+          "return_pct": 2.47,
+          "cagr_pct": 1.06,
           "mdd_pct": -4.1,
           "trades": 40,
-          "win_rate_pct": 50.0,
-          "avg_trade_pct": 0.354,
+          "win_rate_pct": 47.5,
+          "avg_trade_pct": 0.309,
           "trades_per_year": 17.2,
           "max_open": 1,
           "reject_capacity": 101,
           "reject_duplicate": 5
         },
         "recent": {
-          "ending": 3102075.5,
-          "return_pct": 3.4,
-          "cagr_pct": 1.69,
+          "ending": 3093190.14,
+          "return_pct": 3.11,
+          "cagr_pct": 1.54,
           "mdd_pct": -4.1,
           "trades": 35,
-          "win_rate_pct": 48.57,
-          "avg_trade_pct": 0.453,
+          "win_rate_pct": 45.71,
+          "avg_trade_pct": 0.402,
           "trades_per_year": 17.5,
           "max_open": 1,
           "reject_capacity": 81,
           "reject_duplicate": 5
         },
         "full": {
-          "ending": 3670800.86,
-          "return_pct": 22.36,
-          "cagr_pct": 2.24,
+          "ending": 3660286.48,
+          "return_pct": 22.01,
+          "cagr_pct": 2.21,
           "mdd_pct": -7.66,
           "trades": 159,
-          "win_rate_pct": 46.54,
-          "avg_trade_pct": 0.437,
+          "win_rate_pct": 45.91,
+          "avg_trade_pct": 0.426,
           "trades_per_year": 17.4,
           "max_open": 1,
           "reject_capacity": 401,
@@ -2342,12 +2342,12 @@
             "return_pct": 54.4,
             "mdd_pct": -3.53,
             "trades": 120,
-            "delta_return_pct_points": 32.04
+            "delta_return_pct_points": 32.39
           },
           {
             "removed_strategy": "momentum_pullback",
             "removed_strategy_name": "모멘텀 눌림 지속",
-            "return_pct": 20.39,
+            "return_pct": 20.04,
             "mdd_pct": -7.71,
             "trades": 145,
             "delta_return_pct_points": -1.97
@@ -2355,10 +2355,10 @@
           {
             "removed_strategy": "sma200_20_squeeze",
             "removed_strategy_name": "SMA200·20 스퀴즈",
-            "return_pct": 7.57,
+            "return_pct": 7.27,
             "mdd_pct": -13.3,
             "trades": 136,
-            "delta_return_pct_points": -14.79
+            "delta_return_pct_points": -14.74
           }
         ]
       },
@@ -2454,43 +2454,43 @@
           "avg_trade_pct": 0.299,
           "trades_per_year": 16.3,
           "max_open": 1,
-          "reject_capacity": 234,
+          "reject_capacity": 236,
           "reject_duplicate": 20
         },
         "oos": {
-          "ending": 3189153.16,
-          "return_pct": 6.31,
-          "cagr_pct": 2.67,
+          "ending": 3180018.38,
+          "return_pct": 6.0,
+          "cagr_pct": 2.54,
           "mdd_pct": -4.38,
           "trades": 34,
-          "win_rate_pct": 55.88,
-          "avg_trade_pct": 0.82,
+          "win_rate_pct": 52.94,
+          "avg_trade_pct": 0.768,
           "trades_per_year": 14.6,
           "max_open": 1,
           "reject_capacity": 76,
           "reject_duplicate": 5
         },
         "recent": {
-          "ending": 3131451.91,
-          "return_pct": 4.38,
-          "cagr_pct": 2.17,
+          "ending": 3122482.4,
+          "return_pct": 4.08,
+          "cagr_pct": 2.02,
           "mdd_pct": -4.38,
           "trades": 28,
-          "win_rate_pct": 53.57,
-          "avg_trade_pct": 0.836,
+          "win_rate_pct": 50.0,
+          "avg_trade_pct": 0.773,
           "trades_per_year": 14.0,
           "max_open": 1,
           "reject_capacity": 60,
           "reject_duplicate": 5
         },
         "full": {
-          "ending": 3611646.29,
-          "return_pct": 20.39,
-          "cagr_pct": 2.06,
+          "ending": 3601301.35,
+          "return_pct": 20.04,
+          "cagr_pct": 2.02,
           "mdd_pct": -7.71,
           "trades": 145,
-          "win_rate_pct": 46.21,
-          "avg_trade_pct": 0.421,
+          "win_rate_pct": 45.52,
+          "avg_trade_pct": 0.409,
           "trades_per_year": 15.9,
           "max_open": 1,
           "reject_capacity": 312,
@@ -2503,20 +2503,338 @@
             "return_pct": 27.06,
             "mdd_pct": -3.74,
             "trades": 96,
-            "delta_return_pct_points": 6.67
+            "delta_return_pct_points": 7.01
           },
           {
             "removed_strategy": "sma200_20_squeeze",
             "removed_strategy_name": "SMA200·20 스퀴즈",
-            "return_pct": 7.74,
+            "return_pct": 7.43,
             "mdd_pct": -10.13,
             "trades": 97,
-            "delta_return_pct_points": -12.65
+            "delta_return_pct_points": -12.62
           }
         ]
       }
     ],
     "turnover": [
+      {
+        "score": 37.6,
+        "grade": "B",
+        "validation_pass": true,
+        "strategies": [
+          "confirmed_pullback",
+          "rsi2_trend_reversion",
+          "momentum_pullback",
+          "volume_breakout",
+          "donchian_55"
+        ],
+        "strategy_names": [
+          "확인형 눌림반등",
+          "RSI2 추세내 과매도",
+          "모멘텀 눌림 지속",
+          "거래량 동반 돌파",
+          "Donchian 55일 돌파"
+        ],
+        "forced_profit_pct": null,
+        "hold_cap_days": null,
+        "capacity": 10,
+        "train": {
+          "ending": 4618164.1,
+          "return_pct": 53.94,
+          "cagr_pct": 6.55,
+          "mdd_pct": -25.7,
+          "trades": 541,
+          "win_rate_pct": 40.67,
+          "avg_trade_pct": 0.919,
+          "trades_per_year": 79.6,
+          "max_open": 10,
+          "reject_capacity": 160,
+          "reject_duplicate": 1425
+        },
+        "oos": {
+          "ending": 3430289.78,
+          "return_pct": 14.34,
+          "cagr_pct": 5.94,
+          "mdd_pct": -17.36,
+          "trades": 212,
+          "win_rate_pct": 35.38,
+          "avg_trade_pct": 0.282,
+          "trades_per_year": 91.3,
+          "max_open": 10,
+          "reject_capacity": 36,
+          "reject_duplicate": 594
+        },
+        "recent": {
+          "ending": 3226299.12,
+          "return_pct": 7.54,
+          "cagr_pct": 3.71,
+          "mdd_pct": -18.81,
+          "trades": 193,
+          "win_rate_pct": 35.75,
+          "avg_trade_pct": 0.164,
+          "trades_per_year": 96.6,
+          "max_open": 10,
+          "reject_capacity": 36,
+          "reject_duplicate": 509
+        },
+        "full": {
+          "ending": 5575074.89,
+          "return_pct": 85.84,
+          "cagr_pct": 7.03,
+          "mdd_pct": -25.7,
+          "trades": 752,
+          "win_rate_pct": 39.1,
+          "avg_trade_pct": 0.765,
+          "trades_per_year": 82.5,
+          "max_open": 10,
+          "reject_capacity": 196,
+          "reject_duplicate": 2039
+        },
+        "ablation": [
+          {
+            "removed_strategy": "confirmed_pullback",
+            "removed_strategy_name": "확인형 눌림반등",
+            "return_pct": 80.19,
+            "mdd_pct": -25.5,
+            "trades": 716,
+            "delta_return_pct_points": -5.64
+          },
+          {
+            "removed_strategy": "rsi2_trend_reversion",
+            "removed_strategy_name": "RSI2 추세내 과매도",
+            "return_pct": 94.26,
+            "mdd_pct": -25.77,
+            "trades": 663,
+            "delta_return_pct_points": 8.43
+          },
+          {
+            "removed_strategy": "momentum_pullback",
+            "removed_strategy_name": "모멘텀 눌림 지속",
+            "return_pct": 123.55,
+            "mdd_pct": -26.36,
+            "trades": 740,
+            "delta_return_pct_points": 37.71
+          },
+          {
+            "removed_strategy": "volume_breakout",
+            "removed_strategy_name": "거래량 동반 돌파",
+            "return_pct": 81.51,
+            "mdd_pct": -25.13,
+            "trades": 744,
+            "delta_return_pct_points": -4.32
+          },
+          {
+            "removed_strategy": "donchian_55",
+            "removed_strategy_name": "Donchian 55일 돌파",
+            "return_pct": -33.65,
+            "mdd_pct": -50.23,
+            "trades": 1021,
+            "delta_return_pct_points": -119.49
+          }
+        ]
+      },
+      {
+        "score": 38.36,
+        "grade": "B",
+        "validation_pass": true,
+        "strategies": [
+          "confirmed_pullback",
+          "rsi2_trend_reversion",
+          "donchian_55"
+        ],
+        "strategy_names": [
+          "확인형 눌림반등",
+          "RSI2 추세내 과매도",
+          "Donchian 55일 돌파"
+        ],
+        "forced_profit_pct": null,
+        "hold_cap_days": null,
+        "capacity": 10,
+        "train": {
+          "ending": 4700716.87,
+          "return_pct": 56.69,
+          "cagr_pct": 6.83,
+          "mdd_pct": -25.13,
+          "trades": 526,
+          "win_rate_pct": 41.25,
+          "avg_trade_pct": 0.922,
+          "trades_per_year": 77.4,
+          "max_open": 10,
+          "reject_capacity": 204,
+          "reject_duplicate": 1338
+        },
+        "oos": {
+          "ending": 3824868.97,
+          "return_pct": 27.5,
+          "cagr_pct": 11.03,
+          "mdd_pct": -13.91,
+          "trades": 207,
+          "win_rate_pct": 36.71,
+          "avg_trade_pct": 0.914,
+          "trades_per_year": 89.2,
+          "max_open": 10,
+          "reject_capacity": 39,
+          "reject_duplicate": 559
+        },
+        "recent": {
+          "ending": 3596395.51,
+          "return_pct": 19.88,
+          "cagr_pct": 9.5,
+          "mdd_pct": -18.83,
+          "trades": 187,
+          "win_rate_pct": 36.9,
+          "avg_trade_pct": 0.846,
+          "trades_per_year": 93.6,
+          "max_open": 10,
+          "reject_capacity": 39,
+          "reject_duplicate": 479
+        },
+        "full": {
+          "ending": 5904289.06,
+          "return_pct": 96.81,
+          "cagr_pct": 7.71,
+          "mdd_pct": -25.13,
+          "trades": 739,
+          "win_rate_pct": 39.92,
+          "avg_trade_pct": 0.934,
+          "trades_per_year": 81.0,
+          "max_open": 10,
+          "reject_capacity": 318,
+          "reject_duplicate": 1950
+        },
+        "ablation": [
+          {
+            "removed_strategy": "confirmed_pullback",
+            "removed_strategy_name": "확인형 눌림반등",
+            "return_pct": 93.76,
+            "mdd_pct": -25.47,
+            "trades": 687,
+            "delta_return_pct_points": -3.05
+          },
+          {
+            "removed_strategy": "rsi2_trend_reversion",
+            "removed_strategy_name": "RSI2 추세내 과매도",
+            "return_pct": 106.22,
+            "mdd_pct": -25.44,
+            "trades": 627,
+            "delta_return_pct_points": 9.41
+          },
+          {
+            "removed_strategy": "donchian_55",
+            "removed_strategy_name": "Donchian 55일 돌파",
+            "return_pct": -22.15,
+            "mdd_pct": -41.96,
+            "trades": 549,
+            "delta_return_pct_points": -118.96
+          }
+        ]
+      },
+      {
+        "score": 37.47,
+        "grade": "B",
+        "validation_pass": true,
+        "strategies": [
+          "confirmed_pullback",
+          "rsi2_trend_reversion",
+          "volume_breakout",
+          "donchian_55"
+        ],
+        "strategy_names": [
+          "확인형 눌림반등",
+          "RSI2 추세내 과매도",
+          "거래량 동반 돌파",
+          "Donchian 55일 돌파"
+        ],
+        "forced_profit_pct": null,
+        "hold_cap_days": null,
+        "capacity": 10,
+        "train": {
+          "ending": 4982184.01,
+          "return_pct": 66.07,
+          "cagr_pct": 7.75,
+          "mdd_pct": -26.36,
+          "trades": 534,
+          "win_rate_pct": 40.26,
+          "avg_trade_pct": 0.9,
+          "trades_per_year": 78.6,
+          "max_open": 10,
+          "reject_capacity": 110,
+          "reject_duplicate": 1395
+        },
+        "oos": {
+          "ending": 3824868.97,
+          "return_pct": 27.5,
+          "cagr_pct": 11.03,
+          "mdd_pct": -13.91,
+          "trades": 207,
+          "win_rate_pct": 36.71,
+          "avg_trade_pct": 0.914,
+          "trades_per_year": 89.2,
+          "max_open": 10,
+          "reject_capacity": 40,
+          "reject_duplicate": 600
+        },
+        "recent": {
+          "ending": 3596395.51,
+          "return_pct": 19.88,
+          "cagr_pct": 9.5,
+          "mdd_pct": -18.83,
+          "trades": 187,
+          "win_rate_pct": 36.9,
+          "avg_trade_pct": 0.846,
+          "trades_per_year": 93.6,
+          "max_open": 10,
+          "reject_capacity": 40,
+          "reject_duplicate": 515
+        },
+        "full": {
+          "ending": 6706360.0,
+          "return_pct": 123.55,
+          "cagr_pct": 9.22,
+          "mdd_pct": -26.36,
+          "trades": 740,
+          "win_rate_pct": 39.19,
+          "avg_trade_pct": 0.93,
+          "trades_per_year": 81.1,
+          "max_open": 10,
+          "reject_capacity": 150,
+          "reject_duplicate": 2015
+        },
+        "ablation": [
+          {
+            "removed_strategy": "confirmed_pullback",
+            "removed_strategy_name": "확인형 눌림반등",
+            "return_pct": 92.67,
+            "mdd_pct": -25.5,
+            "trades": 705,
+            "delta_return_pct_points": -30.87
+          },
+          {
+            "removed_strategy": "rsi2_trend_reversion",
+            "removed_strategy_name": "RSI2 추세내 과매도",
+            "return_pct": 116.33,
+            "mdd_pct": -25.77,
+            "trades": 633,
+            "delta_return_pct_points": -7.21
+          },
+          {
+            "removed_strategy": "volume_breakout",
+            "removed_strategy_name": "거래량 동반 돌파",
+            "return_pct": 96.81,
+            "mdd_pct": -25.13,
+            "trades": 739,
+            "delta_return_pct_points": -26.74
+          },
+          {
+            "removed_strategy": "donchian_55",
+            "removed_strategy_name": "Donchian 55일 돌파",
+            "return_pct": -31.49,
+            "mdd_pct": -49.6,
+            "trades": 964,
+            "delta_return_pct_points": -155.04
+          }
+        ]
+      },
       {
         "score": 39.13,
         "grade": "B",
@@ -2537,7 +2855,7 @@
         "train": {
           "ending": 4582794.75,
           "return_pct": 52.76,
-          "cagr_pct": 6.44,
+          "cagr_pct": 6.43,
           "mdd_pct": -21.45,
           "trades": 417,
           "win_rate_pct": 38.37,
@@ -2548,40 +2866,40 @@
           "reject_duplicate": 1400
         },
         "oos": {
-          "ending": 4476825.65,
-          "return_pct": 49.23,
-          "cagr_pct": 18.82,
-          "mdd_pct": -15.62,
-          "trades": 173,
-          "win_rate_pct": 38.15,
-          "avg_trade_pct": 1.449,
-          "trades_per_year": 74.5,
+          "ending": 4216657.93,
+          "return_pct": 40.56,
+          "cagr_pct": 15.79,
+          "mdd_pct": -14.8,
+          "trades": 177,
+          "win_rate_pct": 38.42,
+          "avg_trade_pct": 1.464,
+          "trades_per_year": 76.2,
           "max_open": 10,
           "reject_capacity": 153,
-          "reject_duplicate": 658
+          "reject_duplicate": 647
         },
         "recent": {
-          "ending": 4254019.42,
-          "return_pct": 41.8,
-          "cagr_pct": 19.09,
-          "mdd_pct": -13.13,
-          "trades": 152,
-          "win_rate_pct": 38.82,
-          "avg_trade_pct": 1.665,
-          "trades_per_year": 76.1,
+          "ending": 4153951.87,
+          "return_pct": 38.47,
+          "cagr_pct": 17.68,
+          "mdd_pct": -16.09,
+          "trades": 155,
+          "win_rate_pct": 40.0,
+          "avg_trade_pct": 1.638,
+          "trades_per_year": 77.6,
           "max_open": 10,
           "reject_capacity": 153,
-          "reject_duplicate": 546
+          "reject_duplicate": 561
         },
         "full": {
-          "ending": 6857330.19,
-          "return_pct": 128.58,
-          "cagr_pct": 9.49,
+          "ending": 7019326.45,
+          "return_pct": 133.98,
+          "cagr_pct": 9.77,
           "mdd_pct": -21.45,
           "trades": 595,
-          "win_rate_pct": 38.49,
-          "avg_trade_pct": 1.316,
-          "trades_per_year": 65.3,
+          "win_rate_pct": 38.99,
+          "avg_trade_pct": 1.342,
+          "trades_per_year": 65.2,
           "max_open": 10,
           "reject_capacity": 412,
           "reject_duplicate": 2113
@@ -2590,18 +2908,18 @@
           {
             "removed_strategy": "momentum_pullback",
             "removed_strategy_name": "모멘텀 눌림 지속",
-            "return_pct": 137.49,
+            "return_pct": 142.79,
             "mdd_pct": -21.43,
             "trades": 567,
-            "delta_return_pct_points": 8.91
+            "delta_return_pct_points": 8.81
           },
           {
             "removed_strategy": "volume_breakout",
             "removed_strategy_name": "거래량 동반 돌파",
-            "return_pct": 124.15,
+            "return_pct": 128.77,
             "mdd_pct": -21.63,
             "trades": 574,
-            "delta_return_pct_points": -4.43
+            "delta_return_pct_points": -5.21
           },
           {
             "removed_strategy": "donchian_55",
@@ -2609,12 +2927,12 @@
             "return_pct": 8.5,
             "mdd_pct": -19.94,
             "trades": 583,
-            "delta_return_pct_points": -120.08
+            "delta_return_pct_points": -125.48
           }
         ]
       },
       {
-        "score": 39.87,
+        "score": 39.86,
         "grade": "B",
         "validation_pass": true,
         "strategies": [
@@ -2644,39 +2962,39 @@
           "reject_duplicate": 1312
         },
         "oos": {
-          "ending": 3954085.92,
-          "return_pct": 31.8,
-          "cagr_pct": 12.63,
-          "mdd_pct": -14.77,
-          "trades": 146,
-          "win_rate_pct": 36.99,
-          "avg_trade_pct": 1.536,
-          "trades_per_year": 62.9,
+          "ending": 3699524.89,
+          "return_pct": 23.32,
+          "cagr_pct": 9.45,
+          "mdd_pct": -14.65,
+          "trades": 147,
+          "win_rate_pct": 37.41,
+          "avg_trade_pct": 1.566,
+          "trades_per_year": 63.3,
           "max_open": 7,
-          "reject_capacity": 960,
-          "reject_duplicate": 581
+          "reject_capacity": 965,
+          "reject_duplicate": 561
         },
         "recent": {
-          "ending": 3734471.06,
-          "return_pct": 24.48,
-          "cagr_pct": 11.58,
-          "mdd_pct": -14.05,
-          "trades": 125,
-          "win_rate_pct": 37.6,
-          "avg_trade_pct": 1.726,
-          "trades_per_year": 62.5,
+          "ending": 3637799.55,
+          "return_pct": 21.26,
+          "cagr_pct": 10.13,
+          "mdd_pct": -16.09,
+          "trades": 128,
+          "win_rate_pct": 38.28,
+          "avg_trade_pct": 1.661,
+          "trades_per_year": 64.0,
           "max_open": 7,
           "reject_capacity": 735,
-          "reject_duplicate": 464
+          "reject_duplicate": 479
         },
         "full": {
-          "ending": 6949516.65,
-          "return_pct": 131.65,
-          "cagr_pct": 9.65,
+          "ending": 7096474.6,
+          "return_pct": 136.55,
+          "cagr_pct": 9.9,
           "mdd_pct": -21.45,
           "trades": 528,
-          "win_rate_pct": 38.26,
-          "avg_trade_pct": 1.381,
+          "win_rate_pct": 38.64,
+          "avg_trade_pct": 1.402,
           "trades_per_year": 57.9,
           "max_open": 7,
           "reject_capacity": 2284,
@@ -2686,18 +3004,18 @@
           {
             "removed_strategy": "momentum_pullback",
             "removed_strategy_name": "모멘텀 눌림 지속",
-            "return_pct": 104.7,
+            "return_pct": 109.02,
             "mdd_pct": -21.55,
             "trades": 523,
-            "delta_return_pct_points": -26.95
+            "delta_return_pct_points": -27.53
           },
           {
             "removed_strategy": "volume_breakout",
             "removed_strategy_name": "거래량 동반 돌파",
-            "return_pct": 100.39,
+            "return_pct": 103.82,
             "mdd_pct": -22.16,
             "trades": 520,
-            "delta_return_pct_points": -31.26
+            "delta_return_pct_points": -32.72
           },
           {
             "removed_strategy": "donchian_55",
@@ -2705,7 +3023,7 @@
             "return_pct": 8.5,
             "mdd_pct": -19.94,
             "trades": 583,
-            "delta_return_pct_points": -123.15
+            "delta_return_pct_points": -128.05
           }
         ]
       },
@@ -2729,7 +3047,7 @@
         "train": {
           "ending": 4384394.94,
           "return_pct": 46.15,
-          "cagr_pct": 5.75,
+          "cagr_pct": 5.74,
           "mdd_pct": -22.38,
           "trades": 416,
           "win_rate_pct": 37.02,
@@ -2740,40 +3058,40 @@
           "reject_duplicate": 1398
         },
         "oos": {
-          "ending": 4117343.67,
-          "return_pct": 37.24,
-          "cagr_pct": 14.61,
+          "ending": 3898569.95,
+          "return_pct": 29.95,
+          "cagr_pct": 11.95,
           "mdd_pct": -17.22,
-          "trades": 184,
-          "win_rate_pct": 35.87,
-          "avg_trade_pct": 1.518,
-          "trades_per_year": 79.3,
+          "trades": 183,
+          "win_rate_pct": 36.07,
+          "avg_trade_pct": 1.539,
+          "trades_per_year": 78.8,
           "max_open": 10,
           "reject_capacity": 105,
-          "reject_duplicate": 672
+          "reject_duplicate": 658
         },
         "recent": {
-          "ending": 3940807.3,
-          "return_pct": 31.36,
-          "cagr_pct": 14.62,
+          "ending": 3892097.59,
+          "return_pct": 29.74,
+          "cagr_pct": 13.91,
           "mdd_pct": -17.22,
-          "trades": 158,
-          "win_rate_pct": 36.71,
-          "avg_trade_pct": 1.754,
-          "trades_per_year": 79.1,
+          "trades": 159,
+          "win_rate_pct": 37.74,
+          "avg_trade_pct": 1.84,
+          "trades_per_year": 79.6,
           "max_open": 10,
           "reject_capacity": 105,
-          "reject_duplicate": 556
+          "reject_duplicate": 573
         },
         "full": {
-          "ending": 6631396.46,
-          "return_pct": 121.05,
-          "cagr_pct": 9.09,
+          "ending": 6774941.48,
+          "return_pct": 125.83,
+          "cagr_pct": 9.34,
           "mdd_pct": -22.38,
           "trades": 594,
-          "win_rate_pct": 37.04,
-          "avg_trade_pct": 1.35,
-          "trades_per_year": 65.2,
+          "win_rate_pct": 37.37,
+          "avg_trade_pct": 1.374,
+          "trades_per_year": 65.1,
           "max_open": 10,
           "reject_capacity": 105,
           "reject_duplicate": 2080
@@ -2782,18 +3100,18 @@
           {
             "removed_strategy": "sma200_20_squeeze",
             "removed_strategy_name": "SMA200·20 스퀴즈",
-            "return_pct": 137.49,
+            "return_pct": 142.79,
             "mdd_pct": -21.43,
             "trades": 567,
-            "delta_return_pct_points": 16.45
+            "delta_return_pct_points": 16.96
           },
           {
             "removed_strategy": "volume_breakout",
             "removed_strategy_name": "거래량 동반 돌파",
-            "return_pct": 88.19,
+            "return_pct": 91.56,
             "mdd_pct": -23.93,
             "trades": 579,
-            "delta_return_pct_points": -32.86
+            "delta_return_pct_points": -34.27
           },
           {
             "removed_strategy": "donchian_55",
@@ -2801,12 +3119,12 @@
             "return_pct": 0.05,
             "mdd_pct": -29.19,
             "trades": 643,
-            "delta_return_pct_points": -121.0
+            "delta_return_pct_points": -125.78
           }
         ]
       },
       {
-        "score": 38.62,
+        "score": 38.61,
         "grade": "B",
         "validation_pass": true,
         "strategies": [
@@ -2823,7 +3141,7 @@
         "train": {
           "ending": 4674421.48,
           "return_pct": 55.81,
-          "cagr_pct": 6.75,
+          "cagr_pct": 6.74,
           "mdd_pct": -21.43,
           "trades": 390,
           "win_rate_pct": 37.18,
@@ -2834,39 +3152,39 @@
           "reject_duplicate": 1322
         },
         "oos": {
-          "ending": 4560234.46,
-          "return_pct": 52.01,
-          "cagr_pct": 19.77,
+          "ending": 4316360.0,
+          "return_pct": 43.88,
+          "cagr_pct": 16.96,
           "mdd_pct": -16.82,
-          "trades": 172,
-          "win_rate_pct": 38.37,
-          "avg_trade_pct": 1.924,
-          "trades_per_year": 74.1,
+          "trades": 173,
+          "win_rate_pct": 38.15,
+          "avg_trade_pct": 1.982,
+          "trades_per_year": 74.5,
           "max_open": 10,
           "reject_capacity": 29,
-          "reject_duplicate": 670
+          "reject_duplicate": 654
         },
         "recent": {
-          "ending": 4360240.99,
-          "return_pct": 45.34,
-          "cagr_pct": 20.57,
+          "ending": 4228424.66,
+          "return_pct": 40.95,
+          "cagr_pct": 18.74,
           "mdd_pct": -16.82,
-          "trades": 148,
-          "win_rate_pct": 39.19,
-          "avg_trade_pct": 2.287,
-          "trades_per_year": 74.1,
+          "trades": 153,
+          "win_rate_pct": 39.22,
+          "avg_trade_pct": 2.144,
+          "trades_per_year": 76.6,
           "max_open": 10,
           "reject_capacity": 29,
-          "reject_duplicate": 553
+          "reject_duplicate": 575
         },
         "full": {
-          "ending": 7124748.1,
-          "return_pct": 137.49,
-          "cagr_pct": 9.95,
+          "ending": 7283631.59,
+          "return_pct": 142.79,
+          "cagr_pct": 10.22,
           "mdd_pct": -21.43,
           "trades": 567,
-          "win_rate_pct": 37.74,
-          "avg_trade_pct": 1.463,
+          "win_rate_pct": 38.1,
+          "avg_trade_pct": 1.487,
           "trades_per_year": 62.2,
           "max_open": 10,
           "reject_capacity": 61,
@@ -2876,10 +3194,10 @@
           {
             "removed_strategy": "volume_breakout",
             "removed_strategy_name": "거래량 동반 돌파",
-            "return_pct": 123.58,
+            "return_pct": 127.62,
             "mdd_pct": -21.4,
             "trades": 554,
-            "delta_return_pct_points": -13.91
+            "delta_return_pct_points": -15.17
           },
           {
             "removed_strategy": "donchian_55",
@@ -2887,7 +3205,7 @@
             "return_pct": -4.0,
             "mdd_pct": -26.26,
             "trades": 498,
-            "delta_return_pct_points": -141.49
+            "delta_return_pct_points": -146.79
           }
         ]
       },
@@ -2918,45 +3236,45 @@
           "trades": 442,
           "win_rate_pct": 37.33,
           "avg_trade_pct": 0.981,
-          "trades_per_year": 65.1,
+          "trades_per_year": 65.0,
           "max_open": 10,
           "reject_capacity": 162,
           "reject_duplicate": 1462
         },
         "oos": {
-          "ending": 4309331.07,
-          "return_pct": 43.64,
-          "cagr_pct": 16.88,
-          "mdd_pct": -17.09,
-          "trades": 184,
-          "win_rate_pct": 36.41,
-          "avg_trade_pct": 1.346,
-          "trades_per_year": 79.3,
+          "ending": 4112509.69,
+          "return_pct": 37.08,
+          "cagr_pct": 14.55,
+          "mdd_pct": -15.45,
+          "trades": 185,
+          "win_rate_pct": 37.3,
+          "avg_trade_pct": 1.355,
+          "trades_per_year": 79.7,
           "max_open": 10,
           "reject_capacity": 156,
-          "reject_duplicate": 663
+          "reject_duplicate": 653
         },
         "recent": {
-          "ending": 4144713.71,
-          "return_pct": 38.16,
-          "cagr_pct": 17.55,
-          "mdd_pct": -14.72,
-          "trades": 160,
-          "win_rate_pct": 37.5,
-          "avg_trade_pct": 1.529,
-          "trades_per_year": 80.1,
+          "ending": 4059895.41,
+          "return_pct": 35.33,
+          "cagr_pct": 16.34,
+          "mdd_pct": -16.63,
+          "trades": 162,
+          "win_rate_pct": 38.89,
+          "avg_trade_pct": 1.588,
+          "trades_per_year": 81.1,
           "max_open": 10,
           "reject_capacity": 156,
-          "reject_duplicate": 551
+          "reject_duplicate": 569
         },
         "full": {
-          "ending": 6231419.49,
-          "return_pct": 107.71,
-          "cagr_pct": 8.35,
+          "ending": 6385274.73,
+          "return_pct": 112.84,
+          "cagr_pct": 8.64,
           "mdd_pct": -22.38,
           "trades": 620,
-          "win_rate_pct": 37.42,
-          "avg_trade_pct": 1.198,
+          "win_rate_pct": 37.9,
+          "avg_trade_pct": 1.222,
           "trades_per_year": 68.0,
           "max_open": 10,
           "reject_capacity": 318,
@@ -2966,26 +3284,26 @@
           {
             "removed_strategy": "momentum_pullback",
             "removed_strategy_name": "모멘텀 눌림 지속",
-            "return_pct": 121.05,
+            "return_pct": 125.83,
             "mdd_pct": -22.38,
             "trades": 594,
-            "delta_return_pct_points": 13.33
+            "delta_return_pct_points": 12.99
           },
           {
             "removed_strategy": "sma200_20_squeeze",
             "removed_strategy_name": "SMA200·20 스퀴즈",
-            "return_pct": 128.58,
+            "return_pct": 133.98,
             "mdd_pct": -21.45,
             "trades": 595,
-            "delta_return_pct_points": 20.86
+            "delta_return_pct_points": 21.14
           },
           {
             "removed_strategy": "volume_breakout",
             "removed_strategy_name": "거래량 동반 돌파",
-            "return_pct": 120.42,
+            "return_pct": 125.0,
             "mdd_pct": -19.79,
             "trades": 606,
-            "delta_return_pct_points": 12.7
+            "delta_return_pct_points": 12.16
           },
           {
             "removed_strategy": "donchian_55",
@@ -2993,12 +3311,118 @@
             "return_pct": 14.17,
             "mdd_pct": -22.07,
             "trades": 714,
-            "delta_return_pct_points": -93.54
+            "delta_return_pct_points": -98.67
           }
         ]
       },
       {
-        "score": 35.2,
+        "score": 35.05,
+        "grade": "B",
+        "validation_pass": true,
+        "strategies": [
+          "rsi2_trend_reversion",
+          "sma200_20_squeeze",
+          "volume_breakout",
+          "donchian_55"
+        ],
+        "strategy_names": [
+          "RSI2 추세내 과매도",
+          "SMA200·20 스퀴즈",
+          "거래량 동반 돌파",
+          "Donchian 55일 돌파"
+        ],
+        "forced_profit_pct": null,
+        "hold_cap_days": null,
+        "capacity": 10,
+        "train": {
+          "ending": 4136624.27,
+          "return_pct": 37.89,
+          "cagr_pct": 4.84,
+          "mdd_pct": -26.13,
+          "trades": 531,
+          "win_rate_pct": 38.04,
+          "avg_trade_pct": 0.803,
+          "trades_per_year": 78.1,
+          "max_open": 10,
+          "reject_capacity": 154,
+          "reject_duplicate": 1430
+        },
+        "oos": {
+          "ending": 4024416.12,
+          "return_pct": 34.15,
+          "cagr_pct": 13.49,
+          "mdd_pct": -14.24,
+          "trades": 203,
+          "win_rate_pct": 35.96,
+          "avg_trade_pct": 0.836,
+          "trades_per_year": 87.4,
+          "max_open": 10,
+          "reject_capacity": 59,
+          "reject_duplicate": 614
+        },
+        "recent": {
+          "ending": 3820016.82,
+          "return_pct": 27.33,
+          "cagr_pct": 12.85,
+          "mdd_pct": -19.57,
+          "trades": 185,
+          "win_rate_pct": 36.22,
+          "avg_trade_pct": 0.808,
+          "trades_per_year": 92.6,
+          "max_open": 10,
+          "reject_capacity": 59,
+          "reject_duplicate": 525
+        },
+        "full": {
+          "ending": 5755492.84,
+          "return_pct": 91.85,
+          "cagr_pct": 7.41,
+          "mdd_pct": -26.13,
+          "trades": 736,
+          "win_rate_pct": 37.5,
+          "avg_trade_pct": 0.836,
+          "trades_per_year": 80.7,
+          "max_open": 10,
+          "reject_capacity": 213,
+          "reject_duplicate": 2071
+        },
+        "ablation": [
+          {
+            "removed_strategy": "rsi2_trend_reversion",
+            "removed_strategy_name": "RSI2 추세내 과매도",
+            "return_pct": 125.83,
+            "mdd_pct": -22.38,
+            "trades": 594,
+            "delta_return_pct_points": 33.98
+          },
+          {
+            "removed_strategy": "sma200_20_squeeze",
+            "removed_strategy_name": "SMA200·20 스퀴즈",
+            "return_pct": 92.67,
+            "mdd_pct": -25.5,
+            "trades": 705,
+            "delta_return_pct_points": 0.82
+          },
+          {
+            "removed_strategy": "volume_breakout",
+            "removed_strategy_name": "거래량 동반 돌파",
+            "return_pct": 100.2,
+            "mdd_pct": -23.97,
+            "trades": 715,
+            "delta_return_pct_points": 8.35
+          },
+          {
+            "removed_strategy": "donchian_55",
+            "removed_strategy_name": "Donchian 55일 돌파",
+            "return_pct": -37.13,
+            "mdd_pct": -44.75,
+            "trades": 973,
+            "delta_return_pct_points": -128.98
+          }
+        ]
+      },
+      {
+        "score": 35.19,
         "grade": "B",
         "validation_pass": true,
         "strategies": [
@@ -3015,53 +3439,53 @@
         "hold_cap_days": null,
         "capacity": 10,
         "train": {
-          "ending": 3782355.66,
-          "return_pct": 26.08,
-          "cagr_pct": 3.47,
+          "ending": 3812586.87,
+          "return_pct": 27.09,
+          "cagr_pct": 3.59,
           "mdd_pct": -24.06,
-          "trades": 463,
-          "win_rate_pct": 36.93,
-          "avg_trade_pct": 0.882,
-          "trades_per_year": 68.2,
+          "trades": 462,
+          "win_rate_pct": 36.8,
+          "avg_trade_pct": 0.894,
+          "trades_per_year": 68.0,
           "max_open": 10,
           "reject_capacity": 97,
-          "reject_duplicate": 1299
+          "reject_duplicate": 1296
         },
         "oos": {
-          "ending": 4078868.24,
-          "return_pct": 35.96,
-          "cagr_pct": 14.15,
-          "mdd_pct": -15.91,
-          "trades": 189,
-          "win_rate_pct": 39.15,
-          "avg_trade_pct": 1.547,
-          "trades_per_year": 81.4,
+          "ending": 3874194.58,
+          "return_pct": 29.14,
+          "cagr_pct": 11.64,
+          "mdd_pct": -17.68,
+          "trades": 187,
+          "win_rate_pct": 39.57,
+          "avg_trade_pct": 1.595,
+          "trades_per_year": 80.5,
           "max_open": 10,
           "reject_capacity": 60,
-          "reject_duplicate": 636
+          "reject_duplicate": 622
         },
         "recent": {
-          "ending": 4011621.15,
-          "return_pct": 33.72,
-          "cagr_pct": 15.65,
-          "mdd_pct": -15.82,
-          "trades": 163,
-          "win_rate_pct": 39.26,
-          "avg_trade_pct": 1.622,
-          "trades_per_year": 81.6,
+          "ending": 4049534.19,
+          "return_pct": 34.98,
+          "cagr_pct": 16.19,
+          "mdd_pct": -15.32,
+          "trades": 166,
+          "win_rate_pct": 39.76,
+          "avg_trade_pct": 1.664,
+          "trades_per_year": 83.1,
           "max_open": 10,
           "reject_capacity": 60,
-          "reject_duplicate": 513
+          "reject_duplicate": 528
         },
         "full": {
-          "ending": 5312914.02,
-          "return_pct": 77.1,
-          "cagr_pct": 6.47,
+          "ending": 5416103.17,
+          "return_pct": 80.54,
+          "cagr_pct": 6.69,
           "mdd_pct": -24.06,
           "trades": 646,
-          "win_rate_pct": 37.62,
-          "avg_trade_pct": 1.076,
-          "trades_per_year": 70.9,
+          "win_rate_pct": 37.77,
+          "avg_trade_pct": 1.097,
+          "trades_per_year": 70.8,
           "max_open": 10,
           "reject_capacity": 157,
           "reject_duplicate": 1916
@@ -3070,390 +3494,26 @@
           {
             "removed_strategy": "confirmed_pullback",
             "removed_strategy_name": "확인형 눌림반등",
-            "return_pct": 88.19,
+            "return_pct": 91.56,
             "mdd_pct": -23.93,
             "trades": 579,
-            "delta_return_pct_points": 11.09
+            "delta_return_pct_points": 11.02
           },
           {
             "removed_strategy": "sma200_20_squeeze",
             "removed_strategy_name": "SMA200·20 스퀴즈",
-            "return_pct": 102.13,
+            "return_pct": 106.22,
             "mdd_pct": -25.44,
             "trades": 627,
-            "delta_return_pct_points": 25.04
+            "delta_return_pct_points": 25.69
           },
           {
             "removed_strategy": "donchian_55",
             "removed_strategy_name": "Donchian 55일 돌파",
-            "return_pct": 29.4,
+            "return_pct": 29.03,
             "mdd_pct": -10.27,
             "trades": 382,
-            "delta_return_pct_points": -47.69
-          }
-        ]
-      },
-      {
-        "score": 36.97,
-        "grade": "B",
-        "validation_pass": true,
-        "strategies": [
-          "confirmed_pullback",
-          "momentum_pullback",
-          "sma200_20_squeeze",
-          "donchian_55"
-        ],
-        "strategy_names": [
-          "확인형 눌림반등",
-          "모멘텀 눌림 지속",
-          "SMA200·20 스퀴즈",
-          "Donchian 55일 돌파"
-        ],
-        "forced_profit_pct": null,
-        "hold_cap_days": null,
-        "capacity": 10,
-        "train": {
-          "ending": 4046561.78,
-          "return_pct": 34.89,
-          "cagr_pct": 4.5,
-          "mdd_pct": -22.17,
-          "trades": 477,
-          "win_rate_pct": 37.53,
-          "avg_trade_pct": 0.85,
-          "trades_per_year": 70.2,
-          "max_open": 10,
-          "reject_capacity": 120,
-          "reject_duplicate": 1353
-        },
-        "oos": {
-          "ending": 4198653.73,
-          "return_pct": 39.96,
-          "cagr_pct": 15.58,
-          "mdd_pct": -15.91,
-          "trades": 190,
-          "win_rate_pct": 38.42,
-          "avg_trade_pct": 1.245,
-          "trades_per_year": 81.8,
-          "max_open": 10,
-          "reject_capacity": 40,
-          "reject_duplicate": 616
-        },
-        "recent": {
-          "ending": 4158070.2,
-          "return_pct": 38.6,
-          "cagr_pct": 17.74,
-          "mdd_pct": -16.31,
-          "trades": 163,
-          "win_rate_pct": 38.65,
-          "avg_trade_pct": 1.354,
-          "trades_per_year": 81.6,
-          "max_open": 10,
-          "reject_capacity": 40,
-          "reject_duplicate": 485
-        },
-        "full": {
-          "ending": 5965267.97,
-          "return_pct": 98.84,
-          "cagr_pct": 7.83,
-          "mdd_pct": -22.17,
-          "trades": 661,
-          "win_rate_pct": 37.97,
-          "avg_trade_pct": 0.967,
-          "trades_per_year": 72.5,
-          "max_open": 10,
-          "reject_capacity": 160,
-          "reject_duplicate": 1952
-        },
-        "ablation": [
-          {
-            "removed_strategy": "confirmed_pullback",
-            "removed_strategy_name": "확인형 눌림반등",
-            "return_pct": 120.42,
-            "mdd_pct": -19.79,
-            "trades": 606,
-            "delta_return_pct_points": 21.57
-          },
-          {
-            "removed_strategy": "momentum_pullback",
-            "removed_strategy_name": "모멘텀 눌림 지속",
-            "return_pct": 77.1,
-            "mdd_pct": -24.06,
-            "trades": 646,
-            "delta_return_pct_points": -21.75
-          },
-          {
-            "removed_strategy": "sma200_20_squeeze",
-            "removed_strategy_name": "SMA200·20 스퀴즈",
-            "return_pct": 97.57,
-            "mdd_pct": -25.44,
-            "trades": 648,
-            "delta_return_pct_points": -1.27
-          },
-          {
-            "removed_strategy": "donchian_55",
-            "removed_strategy_name": "Donchian 55일 돌파",
-            "return_pct": 45.54,
-            "mdd_pct": -10.84,
-            "trades": 467,
-            "delta_return_pct_points": -53.3
-          }
-        ]
-      },
-      {
-        "score": 38.68,
-        "grade": "B",
-        "validation_pass": true,
-        "strategies": [
-          "momentum_pullback",
-          "donchian_55"
-        ],
-        "strategy_names": [
-          "모멘텀 눌림 지속",
-          "Donchian 55일 돌파"
-        ],
-        "forced_profit_pct": null,
-        "hold_cap_days": null,
-        "capacity": 10,
-        "train": {
-          "ending": 4454694.48,
-          "return_pct": 48.49,
-          "cagr_pct": 5.99,
-          "mdd_pct": -21.63,
-          "trades": 395,
-          "win_rate_pct": 38.48,
-          "avg_trade_pct": 1.009,
-          "trades_per_year": 58.2,
-          "max_open": 10,
-          "reject_capacity": 78,
-          "reject_duplicate": 1246
-        },
-        "oos": {
-          "ending": 4551494.73,
-          "return_pct": 51.72,
-          "cagr_pct": 19.67,
-          "mdd_pct": -15.62,
-          "trades": 173,
-          "win_rate_pct": 39.31,
-          "avg_trade_pct": 1.63,
-          "trades_per_year": 74.5,
-          "max_open": 10,
-          "reject_capacity": 168,
-          "reject_duplicate": 625
-        },
-        "recent": {
-          "ending": 4324972.31,
-          "return_pct": 44.17,
-          "cagr_pct": 20.08,
-          "mdd_pct": -13.13,
-          "trades": 152,
-          "win_rate_pct": 40.13,
-          "avg_trade_pct": 1.872,
-          "trades_per_year": 76.1,
-          "max_open": 10,
-          "reject_capacity": 168,
-          "reject_duplicate": 521
-        },
-        "full": {
-          "ending": 6724350.46,
-          "return_pct": 124.15,
-          "cagr_pct": 9.26,
-          "mdd_pct": -21.63,
-          "trades": 574,
-          "win_rate_pct": 38.68,
-          "avg_trade_pct": 1.248,
-          "trades_per_year": 63.0,
-          "max_open": 10,
-          "reject_capacity": 246,
-          "reject_duplicate": 1912
-        },
-        "ablation": [
-          {
-            "removed_strategy": "momentum_pullback",
-            "removed_strategy_name": "모멘텀 눌림 지속",
-            "return_pct": 123.58,
-            "mdd_pct": -21.4,
-            "trades": 554,
-            "delta_return_pct_points": -0.57
-          },
-          {
-            "removed_strategy": "donchian_55",
-            "removed_strategy_name": "Donchian 55일 돌파",
-            "return_pct": 16.96,
-            "mdd_pct": -6.75,
-            "trades": 101,
-            "delta_return_pct_points": -107.18
-          }
-        ]
-      },
-      {
-        "score": 38.48,
-        "grade": "B",
-        "validation_pass": true,
-        "strategies": [
-          "momentum_pullback",
-          "donchian_55"
-        ],
-        "strategy_names": [
-          "모멘텀 눌림 지속",
-          "Donchian 55일 돌파"
-        ],
-        "forced_profit_pct": null,
-        "hold_cap_days": null,
-        "capacity": 7,
-        "train": {
-          "ending": 4403296.65,
-          "return_pct": 46.78,
-          "cagr_pct": 5.81,
-          "mdd_pct": -21.37,
-          "trades": 375,
-          "win_rate_pct": 37.87,
-          "avg_trade_pct": 1.044,
-          "trades_per_year": 55.2,
-          "max_open": 7,
-          "reject_capacity": 1553,
-          "reject_duplicate": 1212
-        },
-        "oos": {
-          "ending": 4233176.77,
-          "return_pct": 41.11,
-          "cagr_pct": 15.99,
-          "mdd_pct": -14.77,
-          "trades": 143,
-          "win_rate_pct": 39.16,
-          "avg_trade_pct": 1.79,
-          "trades_per_year": 61.6,
-          "max_open": 7,
-          "reject_capacity": 912,
-          "reject_duplicate": 549
-        },
-        "recent": {
-          "ending": 3998060.85,
-          "return_pct": 33.27,
-          "cagr_pct": 15.45,
-          "mdd_pct": -13.13,
-          "trades": 122,
-          "win_rate_pct": 40.16,
-          "avg_trade_pct": 2.029,
-          "trades_per_year": 61.0,
-          "max_open": 7,
-          "reject_capacity": 701,
-          "reject_duplicate": 438
-        },
-        "full": {
-          "ending": 6011734.52,
-          "return_pct": 100.39,
-          "cagr_pct": 7.92,
-          "mdd_pct": -22.16,
-          "trades": 520,
-          "win_rate_pct": 38.46,
-          "avg_trade_pct": 1.328,
-          "trades_per_year": 57.0,
-          "max_open": 7,
-          "reject_capacity": 2703,
-          "reject_duplicate": 1779
-        },
-        "ablation": [
-          {
-            "removed_strategy": "momentum_pullback",
-            "removed_strategy_name": "모멘텀 눌림 지속",
-            "return_pct": 83.99,
-            "mdd_pct": -24.72,
-            "trades": 505,
-            "delta_return_pct_points": -16.4
-          },
-          {
-            "removed_strategy": "donchian_55",
-            "removed_strategy_name": "Donchian 55일 돌파",
-            "return_pct": 16.96,
-            "mdd_pct": -6.75,
-            "trades": 101,
-            "delta_return_pct_points": -83.43
-          }
-        ]
-      },
-      {
-        "score": 38.19,
-        "grade": "B",
-        "validation_pass": true,
-        "strategies": [
-          "volume_breakout",
-          "donchian_55"
-        ],
-        "strategy_names": [
-          "거래량 동반 돌파",
-          "Donchian 55일 돌파"
-        ],
-        "forced_profit_pct": null,
-        "hold_cap_days": null,
-        "capacity": 7,
-        "train": {
-          "ending": 4558852.32,
-          "return_pct": 51.96,
-          "cagr_pct": 6.35,
-          "mdd_pct": -21.55,
-          "trades": 382,
-          "win_rate_pct": 37.17,
-          "avg_trade_pct": 1.015,
-          "trades_per_year": 56.2,
-          "max_open": 7,
-          "reject_capacity": 1894,
-          "reject_duplicate": 1302
-        },
-        "oos": {
-          "ending": 3941041.19,
-          "return_pct": 31.37,
-          "cagr_pct": 12.47,
-          "mdd_pct": -14.77,
-          "trades": 145,
-          "win_rate_pct": 36.55,
-          "avg_trade_pct": 1.553,
-          "trades_per_year": 62.5,
-          "max_open": 7,
-          "reject_capacity": 948,
-          "reject_duplicate": 575
-        },
-        "recent": {
-          "ending": 3745312.02,
-          "return_pct": 24.84,
-          "cagr_pct": 11.74,
-          "mdd_pct": -14.66,
-          "trades": 121,
-          "win_rate_pct": 37.19,
-          "avg_trade_pct": 1.832,
-          "trades_per_year": 60.5,
-          "max_open": 7,
-          "reject_capacity": 725,
-          "reject_duplicate": 453
-        },
-        "full": {
-          "ending": 6140911.32,
-          "return_pct": 104.7,
-          "cagr_pct": 8.17,
-          "mdd_pct": -21.55,
-          "trades": 523,
-          "win_rate_pct": 37.28,
-          "avg_trade_pct": 1.235,
-          "trades_per_year": 57.4,
-          "max_open": 7,
-          "reject_capacity": 2711,
-          "reject_duplicate": 1861
-        },
-        "ablation": [
-          {
-            "removed_strategy": "volume_breakout",
-            "removed_strategy_name": "거래량 동반 돌파",
-            "return_pct": 83.99,
-            "mdd_pct": -24.72,
-            "trades": 505,
-            "delta_return_pct_points": -20.71
-          },
-          {
-            "removed_strategy": "donchian_55",
-            "removed_strategy_name": "Donchian 55일 돌파",
-            "return_pct": -4.0,
-            "mdd_pct": -26.26,
-            "trades": 498,
-            "delta_return_pct_points": -108.7
+            "delta_return_pct_points": -51.5
           }
         ]
       }
