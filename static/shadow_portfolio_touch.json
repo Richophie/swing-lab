@@ -1,7 +1,7 @@
 {
   "version": 1,
   "starting_cash_krw": 3000000.0,
-  "cash_krw": 2844848.73,
+  "cash_krw": 2285105.43,
   "orders": [
     {
       "id": "PAPER-F55B0833D38A",
@@ -2513,7 +2513,7 @@
       "symbol": "CTSH",
       "strategy_id": "momentum_pullback",
       "strategy_name": "모멘텀 눌림 지속",
-      "status": "PENDING",
+      "status": "CANCELLED",
       "created_at": "2026-11-05T00:59:12+00:00",
       "submitted_market_date": "2026-11-04",
       "signal_date": "2026-11-04",
@@ -2530,9 +2530,9 @@
       "planned_notional_krw": 349669.55,
       "risk_budget_krw": 28448.49,
       "planned_risk_krw": 24078.24,
-      "reserved_cash_krw": 350019.22,
+      "reserved_cash_krw": 0.0,
       "fx_at_submit": 1337.68,
-      "last_processed_date": "2026-11-04",
+      "last_processed_date": "2026-11-05",
       "commission_pct_per_side": 0.1,
       "slippage_bps": 5.0,
       "half_spread_bps": 2.5,
@@ -2562,14 +2562,17 @@
         "checked_at": "2026-11-04T20:13:09+00:00"
       },
       "atr_source": "derived_from_stop_atr_multiple",
-      "risk_observability_only": true
+      "risk_observability_only": true,
+      "cancel_date": "2026-11-05",
+      "cancel_reason": "다음 거래일 장중 BUY 구간 미도달",
+      "closed_at": "2026-11-05T20:27:58+00:00"
     },
     {
       "id": "PAPER-16F78AB1E812",
       "symbol": "BP",
       "strategy_id": "rsi2_trend_reversion",
       "strategy_name": "RSI2 추세내 과매도",
-      "status": "PENDING",
+      "status": "FILLED",
       "created_at": "2026-11-05T00:59:12+00:00",
       "submitted_market_date": "2026-11-04",
       "signal_date": "2026-11-04",
@@ -2581,14 +2584,14 @@
       "gap_guard": 1.035,
       "max_hold_bars": 5,
       "held_bars": 0,
-      "qty": 10,
+      "qty": 9,
       "planned_entry_usd": 45.61,
       "planned_notional_krw": 610115.85,
       "risk_budget_krw": 28448.49,
       "planned_risk_krw": 27689.98,
-      "reserved_cash_krw": 610725.96,
+      "reserved_cash_krw": 0.0,
       "fx_at_submit": 1337.68,
-      "last_processed_date": "2026-11-04",
+      "last_processed_date": "2026-11-05",
       "commission_pct_per_side": 0.1,
       "slippage_bps": 5.0,
       "half_spread_bps": 2.5,
@@ -2618,7 +2621,18 @@
         "checked_at": "2026-11-04T20:13:09+00:00"
       },
       "atr_source": "derived_from_stop_atr_multiple",
-      "risk_observability_only": true
+      "risk_observability_only": true,
+      "entry_date": "2026-11-05",
+      "entry_fill_usd": 45.814335,
+      "entry_raw_open_usd": 45.78,
+      "entry_timestamp": "2026-11-05T11:35:00-05:00",
+      "entry_resolution_quality": "1m_first_buy_ceiling_touch",
+      "entry_commission_krw": 559.18,
+      "entry_cost_krw": 559743.3,
+      "fx_at_entry": 1356.16,
+      "last_fx": 1356.16,
+      "filled_at": "2026-11-05T20:27:57+00:00",
+      "last_close_usd": 45.16
     }
   ],
   "events": [
@@ -3397,6 +3411,22 @@
       "strategy_id": "rsi2_trend_reversion",
       "event": "SUBMITTED",
       "detail": "다음 거래일 BUY 구간 터치 대기 · 10주 · BUY 45.44~45.78"
+    },
+    {
+      "at": "2026-11-05T20:27:57+00:00",
+      "order_id": "PAPER-16F78AB1E812",
+      "symbol": "BP",
+      "strategy_id": "rsi2_trend_reversion",
+      "event": "FILLED",
+      "detail": "9주 · $45.8143 · 559,743원 · 1m_first_buy_ceiling_touch"
+    },
+    {
+      "at": "2026-11-05T20:27:58+00:00",
+      "order_id": "PAPER-D8C239F371CF",
+      "symbol": "CTSH",
+      "strategy_id": "momentum_pullback",
+      "event": "CANCELLED",
+      "detail": "다음 거래일 장중 BUY 구간 미도달"
     }
   ],
   "shadow_decisions": [
@@ -8676,7 +8706,7 @@
     }
   ],
   "created_at": "2026-08-13T11:20:00+00:00",
-  "updated_at": "2026-11-05T00:59:12+00:00",
+  "updated_at": "2026-11-05T20:27:58+00:00",
   "live_trading_enabled": false,
   "lab_meta": {
     "version": 2,
@@ -8733,10 +8763,10 @@
         "formal_review_target_closed_trades": 50
       }
     },
-    "last_run_at": "2026-11-05T00:59:12+00:00",
+    "last_run_at": "2026-11-05T20:27:58+00:00",
     "last_ingest": {
-      "submitted": 2,
-      "skipped": 1
+      "submitted": 0,
+      "skipped": 0
     }
   }
 }
