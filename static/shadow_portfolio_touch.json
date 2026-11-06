@@ -1,7 +1,7 @@
 {
   "version": 1,
   "starting_cash_krw": 3000000.0,
-  "cash_krw": 2285105.43,
+  "cash_krw": 1929706.31,
   "orders": [
     {
       "id": "PAPER-F55B0833D38A",
@@ -2583,7 +2583,7 @@
       "atr": 1.38,
       "gap_guard": 1.035,
       "max_hold_bars": 5,
-      "held_bars": 0,
+      "held_bars": 1,
       "qty": 9,
       "planned_entry_usd": 45.61,
       "planned_notional_krw": 610115.85,
@@ -2591,7 +2591,7 @@
       "planned_risk_krw": 27689.98,
       "reserved_cash_krw": 0.0,
       "fx_at_submit": 1337.68,
-      "last_processed_date": "2026-11-05",
+      "last_processed_date": "2026-11-06",
       "commission_pct_per_side": 0.1,
       "slippage_bps": 5.0,
       "half_spread_bps": 2.5,
@@ -2630,16 +2630,16 @@
       "entry_commission_krw": 559.18,
       "entry_cost_krw": 559743.3,
       "fx_at_entry": 1356.16,
-      "last_fx": 1356.16,
+      "last_fx": 1362.33,
       "filled_at": "2026-11-05T20:27:57+00:00",
-      "last_close_usd": 45.16
+      "last_close_usd": 44.584999
     },
     {
       "id": "PAPER-E507A94715CD",
       "symbol": "CTSH",
       "strategy_id": "momentum_pullback",
       "strategy_name": "모멘텀 눌림 지속",
-      "status": "PENDING",
+      "status": "FILLED",
       "created_at": "2026-11-06T01:03:14+00:00",
       "submitted_market_date": "2026-11-05",
       "signal_date": "2026-11-05",
@@ -2656,9 +2656,9 @@
       "planned_notional_krw": 354709.34,
       "risk_budget_krw": 28363.03,
       "planned_risk_krw": 24425.28,
-      "reserved_cash_krw": 355064.05,
+      "reserved_cash_krw": 0.0,
       "fx_at_submit": 1356.96,
-      "last_processed_date": "2026-11-05",
+      "last_processed_date": "2026-11-06",
       "commission_pct_per_side": 0.1,
       "slippage_bps": 5.0,
       "half_spread_bps": 2.5,
@@ -2688,7 +2688,18 @@
         "checked_at": "2026-11-06T01:02:04+00:00"
       },
       "atr_source": "derived_from_stop_atr_multiple",
-      "risk_observability_only": true
+      "risk_observability_only": true,
+      "entry_date": "2026-11-06",
+      "entry_fill_usd": 65.153832,
+      "entry_raw_open_usd": 65.105003,
+      "entry_timestamp": "2026-11-06T09:30:00-05:00",
+      "entry_resolution_quality": "1m_open_at_or_better_than_buy",
+      "entry_commission_krw": 355.04,
+      "entry_cost_krw": 355399.12,
+      "fx_at_entry": 1362.33,
+      "last_fx": 1362.33,
+      "filled_at": "2026-11-06T19:49:41+00:00",
+      "last_close_usd": 64.760002
     }
   ],
   "events": [
@@ -3491,6 +3502,14 @@
       "strategy_id": "momentum_pullback",
       "event": "SUBMITTED",
       "detail": "다음 거래일 BUY 구간 터치 대기 · 4주 · BUY 64.78~65.92"
+    },
+    {
+      "at": "2026-11-06T19:49:41+00:00",
+      "order_id": "PAPER-E507A94715CD",
+      "symbol": "CTSH",
+      "strategy_id": "momentum_pullback",
+      "event": "FILLED",
+      "detail": "4주 · $65.1538 · 355,399원 · 1m_open_at_or_better_than_buy"
     }
   ],
   "shadow_decisions": [
@@ -8815,7 +8834,7 @@
     }
   ],
   "created_at": "2026-08-13T11:20:00+00:00",
-  "updated_at": "2026-11-06T01:03:14+00:00",
+  "updated_at": "2026-11-06T19:49:41+00:00",
   "live_trading_enabled": false,
   "lab_meta": {
     "version": 2,
@@ -8872,10 +8891,10 @@
         "formal_review_target_closed_trades": 50
       }
     },
-    "last_run_at": "2026-11-06T01:03:14+00:00",
+    "last_run_at": "2026-11-06T19:49:41+00:00",
     "last_ingest": {
-      "submitted": 1,
-      "skipped": 2
+      "submitted": 0,
+      "skipped": 0
     }
   }
 }
