@@ -2633,6 +2633,62 @@
       "last_fx": 1356.16,
       "filled_at": "2026-11-05T20:27:57+00:00",
       "last_close_usd": 45.16
+    },
+    {
+      "id": "PAPER-E507A94715CD",
+      "symbol": "CTSH",
+      "strategy_id": "momentum_pullback",
+      "strategy_name": "모멘텀 눌림 지속",
+      "status": "PENDING",
+      "created_at": "2026-11-06T01:03:14+00:00",
+      "submitted_market_date": "2026-11-05",
+      "signal_date": "2026-11-05",
+      "buy_low": 64.78,
+      "buy_high": 65.92,
+      "target": 73.92,
+      "stop": 60.85,
+      "atr": 3.0,
+      "gap_guard": 2.25,
+      "max_hold_bars": 10,
+      "held_bars": 0,
+      "qty": 4,
+      "planned_entry_usd": 65.35,
+      "planned_notional_krw": 354709.34,
+      "risk_budget_krw": 28363.03,
+      "planned_risk_krw": 24425.28,
+      "reserved_cash_krw": 355064.05,
+      "fx_at_submit": 1356.96,
+      "last_processed_date": "2026-11-05",
+      "commission_pct_per_side": 0.1,
+      "slippage_bps": 5.0,
+      "half_spread_bps": 2.5,
+      "live_order_sent": false,
+      "order_origin": "AUTO_CONFIRMED_CLOSE",
+      "signal_origin": "official_close_confirmed",
+      "shadow_signal_key": "2026-11-05|CTSH|momentum_pullback",
+      "track_id": "B_BUY_TOUCH",
+      "entry_mode": "NEXT_SESSION_BUY_TOUCH",
+      "baseline_version": "baseline-v1.0-2026-08-13",
+      "app_version_at_signal": "16.5",
+      "core_version_at_signal": "4.4",
+      "market_state": "중립",
+      "official_score": 86.25,
+      "raw_strategy_score": 87.0,
+      "official_risk_reward": 1.91,
+      "official_selection_reason": "현재 자리 87 · 수급 100 · 손익비 1.90:1 · 비용후 1.78:1",
+      "event_risk_snapshot": {
+        "risk_code": "CLEAR",
+        "risk_label": "실적까지 90일",
+        "earnings_date": "2027-02-03",
+        "days_until": 90,
+        "confidence": "single_source",
+        "stale": false,
+        "hold_calendar_days": 15,
+        "source_day_diff": null,
+        "checked_at": "2026-11-06T01:02:04+00:00"
+      },
+      "atr_source": "derived_from_stop_atr_multiple",
+      "risk_observability_only": true
     }
   ],
   "events": [
@@ -3427,6 +3483,14 @@
       "strategy_id": "momentum_pullback",
       "event": "CANCELLED",
       "detail": "다음 거래일 장중 BUY 구간 미도달"
+    },
+    {
+      "at": "2026-11-06T01:03:14+00:00",
+      "order_id": "PAPER-E507A94715CD",
+      "symbol": "CTSH",
+      "strategy_id": "momentum_pullback",
+      "event": "SUBMITTED",
+      "detail": "다음 거래일 BUY 구간 터치 대기 · 4주 · BUY 64.78~65.92"
     }
   ],
   "shadow_decisions": [
@@ -8703,10 +8767,55 @@
       "atr": 1.38,
       "atr_source": "derived_from_stop_atr_multiple",
       "gap_guard": 1.035
+    },
+    {
+      "signal_key": "2026-11-05|META|confirmed_pullback",
+      "market_date": "2026-11-05",
+      "symbol": "META",
+      "strategy_id": "confirmed_pullback",
+      "strategy_name": "확인형 눌림반등",
+      "score": 89.95,
+      "risk_reward": 4.25,
+      "baseline_version": "baseline-v1.0-2026-08-13",
+      "track_id": "B_BUY_TOUCH",
+      "at": "2026-11-06T01:03:14+00:00",
+      "decision": "SKIPPED",
+      "reason": "현재 가상계좌 자금/리스크 한도에서 1주도 진입할 수 없습니다"
+    },
+    {
+      "signal_key": "2026-11-05|CTSH|momentum_pullback",
+      "market_date": "2026-11-05",
+      "symbol": "CTSH",
+      "strategy_id": "momentum_pullback",
+      "strategy_name": "모멘텀 눌림 지속",
+      "score": 86.25,
+      "risk_reward": 1.91,
+      "baseline_version": "baseline-v1.0-2026-08-13",
+      "track_id": "B_BUY_TOUCH",
+      "at": "2026-11-06T01:03:14+00:00",
+      "decision": "SUBMITTED",
+      "order_id": "PAPER-E507A94715CD",
+      "atr": 3.0,
+      "atr_source": "derived_from_stop_atr_multiple",
+      "gap_guard": 2.25
+    },
+    {
+      "signal_key": "2026-11-05|BP|rsi2_trend_reversion",
+      "market_date": "2026-11-05",
+      "symbol": "BP",
+      "strategy_id": "rsi2_trend_reversion",
+      "strategy_name": "RSI2 추세내 과매도",
+      "score": 82.2,
+      "risk_reward": 1.55,
+      "baseline_version": "baseline-v1.0-2026-08-13",
+      "track_id": "B_BUY_TOUCH",
+      "at": "2026-11-06T01:03:14+00:00",
+      "decision": "SKIPPED",
+      "reason": "같은 종목·전략의 가상 주문이 이미 진행 중입니다"
     }
   ],
   "created_at": "2026-08-13T11:20:00+00:00",
-  "updated_at": "2026-11-05T20:27:58+00:00",
+  "updated_at": "2026-11-06T01:03:14+00:00",
   "live_trading_enabled": false,
   "lab_meta": {
     "version": 2,
@@ -8763,10 +8872,10 @@
         "formal_review_target_closed_trades": 50
       }
     },
-    "last_run_at": "2026-11-05T20:27:58+00:00",
+    "last_run_at": "2026-11-06T01:03:14+00:00",
     "last_ingest": {
-      "submitted": 0,
-      "skipped": 0
+      "submitted": 1,
+      "skipped": 2
     }
   }
 }
