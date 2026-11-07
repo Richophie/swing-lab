@@ -1,8 +1,118 @@
 {
   "version": 1,
   "ready": true,
-  "generated_at": "2026-11-06T02:54:15+00:00",
+  "generated_at": "2026-11-07T02:27:52+00:00",
   "items": [
+    {
+      "key": "volatility_state_sizing_v2:confirmed_sma_donchian",
+      "id": "exp-3cf0ccd0e73f",
+      "kind": "volatility_state_sizing_v2",
+      "runner": "adaptive_volatility_state_sizing",
+      "family_id": "confirmed_sma_donchian",
+      "family_name": "확인형 + SMA200·20 + Donchian",
+      "strategies": [
+        "confirmed_pullback",
+        "sma200_20_squeeze",
+        "donchian_55"
+      ],
+      "priority": 82,
+      "hypothesis": "확인형 + SMA200·20 + Donchian에서 고변동을 줄이는 대신 저·중변동 노출만 줄이면 다음 구간 성과가 개선되는가?",
+      "why_now": "고변동 sleeve +59.50% · 저변동 -5.39% · 중변동 +9.56% · 고변동 평균거래 플러스 fold 6/6.",
+      "test_plan": "각 rolling fold TRAIN에서 baseline / 저변동 0.5배 / 저·중변동 0.5·0.75배 / 고변동 중심 0.25·0.5·1.0 중 하나를 선택하고 다음 해 TEST에 고정 적용합니다. 1배를 넘겨 위험을 키우지는 않습니다.",
+      "params": {
+        "profile_family": "green_vol_state_reallocation_v2"
+      },
+      "source_fingerprint": "857127fa1900",
+      "status": "DROP",
+      "decision": "고변동 우위 진단을 이용한 상태별 재배분이 다음 구간에서 안정적으로 재현되지 않았습니다.",
+      "result_summary": "1/6 fold 개선 · stitched Δ -5.59%p",
+      "created_at": "2026-11-07T02:27:52+00:00",
+      "updated_at": "2026-11-07T02:27:52+00:00",
+      "attempts": 1,
+      "evidence": {
+        "fold_count": 6,
+        "folds_beating_baseline": 1,
+        "non_baseline_selected_folds": 4,
+        "mean_delta_return_pct": -0.88,
+        "median_delta_return_pct": 0.0,
+        "stitched_experiment_return_pct": 16.13,
+        "stitched_baseline_return_pct": 21.72,
+        "stitched_delta_pct": -5.59,
+        "worst_experiment_mdd_pct": -18.91,
+        "worst_baseline_mdd_pct": -17.52,
+        "selected_profile_counts": {
+          "high_focus": 2,
+          "trim_low_mid": 2,
+          "baseline": 2
+        },
+        "latest_market_state": {
+          "date": "2026-11-06",
+          "state": "mixed",
+          "label": "혼조 · SPY/QQQ 장기추세 불일치",
+          "spy_close": 735.29,
+          "spy_sma200": 730.3825,
+          "qqq_close": 656.1,
+          "qqq_sma200": 680.886,
+          "spy_rv20_pct": 19.94,
+          "spy_vol_percentile": 97.6
+        }
+      },
+      "last_run_at": "2026-11-07T02:27:55+00:00"
+    },
+    {
+      "key": "volatility_state_sizing_v2:donchian_core",
+      "id": "exp-b3b68f8e23dc",
+      "kind": "volatility_state_sizing_v2",
+      "runner": "adaptive_volatility_state_sizing",
+      "family_id": "donchian_core",
+      "family_name": "Donchian 단독",
+      "strategies": [
+        "donchian_55"
+      ],
+      "priority": 82,
+      "hypothesis": "Donchian 단독에서 고변동을 줄이는 대신 저·중변동 노출만 줄이면 다음 구간 성과가 개선되는가?",
+      "why_now": "고변동 sleeve +60.78% · 저변동 -19.66% · 중변동 +15.46% · 고변동 평균거래 플러스 fold 6/6.",
+      "test_plan": "각 rolling fold TRAIN에서 baseline / 저변동 0.5배 / 저·중변동 0.5·0.75배 / 고변동 중심 0.25·0.5·1.0 중 하나를 선택하고 다음 해 TEST에 고정 적용합니다. 1배를 넘겨 위험을 키우지는 않습니다.",
+      "params": {
+        "profile_family": "green_vol_state_reallocation_v2"
+      },
+      "source_fingerprint": "6e85250dc8eb",
+      "status": "DROP",
+      "decision": "고변동 우위 진단을 이용한 상태별 재배분이 다음 구간에서 안정적으로 재현되지 않았습니다.",
+      "result_summary": "1/6 fold 개선 · stitched Δ -4.95%p",
+      "created_at": "2026-10-06T06:43:04+00:00",
+      "updated_at": "2026-11-07T02:27:52+00:00",
+      "attempts": 28,
+      "evidence": {
+        "fold_count": 6,
+        "folds_beating_baseline": 1,
+        "non_baseline_selected_folds": 4,
+        "mean_delta_return_pct": -0.78,
+        "median_delta_return_pct": 0.0,
+        "stitched_experiment_return_pct": 26.65,
+        "stitched_baseline_return_pct": 31.6,
+        "stitched_delta_pct": -4.95,
+        "worst_experiment_mdd_pct": -24.97,
+        "worst_baseline_mdd_pct": -20.1,
+        "selected_profile_counts": {
+          "high_focus": 3,
+          "trim_low": 1,
+          "baseline": 2
+        },
+        "latest_market_state": {
+          "date": "2026-11-06",
+          "state": "mixed",
+          "label": "혼조 · SPY/QQQ 장기추세 불일치",
+          "spy_close": 735.29,
+          "spy_sma200": 730.3825,
+          "qqq_close": 656.1,
+          "qqq_sma200": 680.886,
+          "spy_rv20_pct": 19.94,
+          "spy_vol_percentile": 97.6
+        }
+      },
+      "last_run_at": "2026-11-07T02:27:55+00:00"
+    },
     {
       "key": "volatility_state_sizing_v2:donchian_momentum",
       "id": "exp-616b43c7943c",
@@ -16,100 +126,84 @@
       ],
       "priority": 81,
       "hypothesis": "Donchian + 모멘텀에서 고변동을 줄이는 대신 저·중변동 노출만 줄이면 다음 구간 성과가 개선되는가?",
-      "why_now": "고변동 sleeve +36.37% · 저변동 -8.36% · 중변동 +5.34% · 고변동 평균거래 플러스 fold 5/6.",
+      "why_now": "고변동 sleeve +44.59% · 저변동 -27.39% · 중변동 +5.65% · 고변동 평균거래 플러스 fold 5/6.",
       "test_plan": "각 rolling fold TRAIN에서 baseline / 저변동 0.5배 / 저·중변동 0.5·0.75배 / 고변동 중심 0.25·0.5·1.0 중 하나를 선택하고 다음 해 TEST에 고정 적용합니다. 1배를 넘겨 위험을 키우지는 않습니다.",
       "params": {
         "profile_family": "green_vol_state_reallocation_v2"
       },
-      "source_fingerprint": "4472e75a612a",
+      "source_fingerprint": "641f20f2e223",
       "status": "DROP",
       "decision": "고변동 우위 진단을 이용한 상태별 재배분이 다음 구간에서 안정적으로 재현되지 않았습니다.",
-      "result_summary": "0/6 fold 개선 · stitched Δ +0.00%p",
+      "result_summary": "3/6 fold 개선 · stitched Δ +3.25%p",
       "created_at": "2026-11-06T02:54:15+00:00",
-      "updated_at": "2026-11-06T02:54:15+00:00",
-      "attempts": 1,
+      "updated_at": "2026-11-07T02:27:52+00:00",
+      "attempts": 2,
       "evidence": {
         "fold_count": 6,
-        "folds_beating_baseline": 0,
-        "non_baseline_selected_folds": 1,
-        "mean_delta_return_pct": 0.0,
-        "median_delta_return_pct": 0.0,
-        "stitched_experiment_return_pct": 41.37,
-        "stitched_baseline_return_pct": 41.37,
-        "stitched_delta_pct": 0.0,
-        "worst_experiment_mdd_pct": -19.9,
-        "worst_baseline_mdd_pct": -19.9,
+        "folds_beating_baseline": 3,
+        "non_baseline_selected_folds": 5,
+        "mean_delta_return_pct": 0.88,
+        "median_delta_return_pct": 0.65,
+        "stitched_experiment_return_pct": 2.83,
+        "stitched_baseline_return_pct": -0.42,
+        "stitched_delta_pct": 3.25,
+        "worst_experiment_mdd_pct": -31.81,
+        "worst_baseline_mdd_pct": -24.58,
         "selected_profile_counts": {
-          "baseline": 5,
-          "high_focus": 1
+          "high_focus": 3,
+          "trim_low_mid": 2,
+          "baseline": 1
         },
         "latest_market_state": {
-          "date": "2026-11-05",
+          "date": "2026-11-06",
           "state": "mixed",
           "label": "혼조 · SPY/QQQ 장기추세 불일치",
-          "spy_close": 733.0,
-          "spy_sma200": 730.151,
-          "qqq_close": 647.05,
-          "qqq_sma200": 680.7093,
-          "spy_rv20_pct": 20.08,
-          "spy_vol_percentile": 98.4
+          "spy_close": 735.29,
+          "spy_sma200": 730.3825,
+          "qqq_close": 656.1,
+          "qqq_sma200": 680.886,
+          "spy_rv20_pct": 19.94,
+          "spy_vol_percentile": 97.6
         }
       },
-      "last_run_at": "2026-11-06T02:54:18+00:00"
+      "last_run_at": "2026-11-07T02:27:55+00:00"
     },
     {
-      "key": "volatility_state_sizing_v2:donchian_core",
-      "id": "exp-b3b68f8e23dc",
-      "kind": "volatility_state_sizing_v2",
-      "runner": "adaptive_volatility_state_sizing",
-      "family_id": "donchian_core",
-      "family_name": "Donchian 단독",
+      "key": "regime_gate_review:donchian_momentum",
+      "id": "exp-f2b9c03164f4",
+      "kind": "regime_gate_review",
+      "runner": "evidence_regime_gate",
+      "family_id": "donchian_momentum",
+      "family_name": "Donchian + 모멘텀",
       "strategies": [
+        "momentum_pullback",
         "donchian_55"
       ],
-      "priority": 79,
-      "hypothesis": "Donchian 단독에서 고변동을 줄이는 대신 저·중변동 노출만 줄이면 다음 구간 성과가 개선되는가?",
-      "why_now": "고변동 sleeve +10.44% · 저변동 -21.97% · 중변동 -3.15% · 고변동 평균거래 플러스 fold 4/6.",
-      "test_plan": "각 rolling fold TRAIN에서 baseline / 저변동 0.5배 / 저·중변동 0.5·0.75배 / 고변동 중심 0.25·0.5·1.0 중 하나를 선택하고 다음 해 TEST에 고정 적용합니다. 1배를 넘겨 위험을 키우지는 않습니다.",
-      "params": {
-        "profile_family": "green_vol_state_reallocation_v2"
-      },
-      "source_fingerprint": "f4a71999898f",
-      "status": "DROP",
-      "decision": "고변동 우위 진단을 이용한 상태별 재배분이 다음 구간에서 안정적으로 재현되지 않았습니다.",
-      "result_summary": "0/6 fold 개선 · stitched Δ -6.35%p",
-      "created_at": "2026-10-06T06:43:04+00:00",
-      "updated_at": "2026-11-06T02:54:15+00:00",
-      "attempts": 27,
+      "priority": 76,
+      "hypothesis": "Donchian + 모멘텀에서 시장 장세 gate를 켜는 것이 항상 켜기보다 OOS 성과를 반복 개선하는가?",
+      "why_now": "TRAIN-only gate가 TEST 2/6구간에서 기준보다 나았고 평균 수익 차이는 +0.22%p입니다.",
+      "test_plan": "이미 계산된 rolling OOS regime 연구를 자동 판독합니다. TEST를 보고 같은 fold의 gate를 다시 조정하지 않습니다.",
+      "params": {},
+      "source_fingerprint": "b6c2c91055c9",
+      "status": "WATCH",
+      "decision": "장세 gate가 일부 OOS 구간에서 도움됐지만 반복성 또는 등급이 충분하지 않습니다.",
+      "result_summary": "gate 도움 2/6 · stitched Δ +1.13%p",
+      "created_at": "2026-10-10T01:59:35+00:00",
+      "updated_at": "2026-11-07T02:27:52+00:00",
+      "attempts": 21,
       "evidence": {
+        "grade": "C",
         "fold_count": 6,
-        "folds_beating_baseline": 0,
-        "non_baseline_selected_folds": 3,
-        "mean_delta_return_pct": -0.97,
-        "median_delta_return_pct": 0.0,
-        "stitched_experiment_return_pct": -7.04,
-        "stitched_baseline_return_pct": -0.69,
-        "stitched_delta_pct": -6.35,
-        "worst_experiment_mdd_pct": -32.88,
-        "worst_baseline_mdd_pct": -25.95,
-        "selected_profile_counts": {
-          "baseline": 3,
-          "high_focus": 2,
-          "trim_low": 1
-        },
-        "latest_market_state": {
-          "date": "2026-11-05",
-          "state": "mixed",
-          "label": "혼조 · SPY/QQQ 장기추세 불일치",
-          "spy_close": 733.0,
-          "spy_sma200": 730.151,
-          "qqq_close": 647.05,
-          "qqq_sma200": 680.7093,
-          "spy_rv20_pct": 20.08,
-          "spy_vol_percentile": 98.4
+        "gate_helped_folds": 2,
+        "mean_delta_return_pct": 0.22,
+        "stitched_delta_pct": 1.13,
+        "worst_mdd_delta_pct": 0.0,
+        "selected_gate_counts": {
+          "avoid_risk_off": 2,
+          "risk_on_only": 4
         }
       },
-      "last_run_at": "2026-11-06T02:54:18+00:00"
+      "last_run_at": "2026-11-07T02:27:55+00:00"
     },
     {
       "key": "regime_gate_review:confirmed_sma_donchian",
@@ -125,68 +219,30 @@
       ],
       "priority": 73,
       "hypothesis": "확인형 + SMA200·20 + Donchian에서 시장 장세 gate를 켜는 것이 항상 켜기보다 OOS 성과를 반복 개선하는가?",
-      "why_now": "TRAIN-only gate가 TEST 1/6구간에서 기준보다 나았고 평균 수익 차이는 +0.16%p입니다.",
+      "why_now": "TRAIN-only gate가 TEST 1/6구간에서 기준보다 나았고 평균 수익 차이는 +0.14%p입니다.",
       "test_plan": "이미 계산된 rolling OOS regime 연구를 자동 판독합니다. TEST를 보고 같은 fold의 gate를 다시 조정하지 않습니다.",
       "params": {},
-      "source_fingerprint": "b5ef60bd2458",
+      "source_fingerprint": "739ab01905e4",
       "status": "DROP",
       "decision": "장세 gate의 OOS 개선이 반복되지 않아 현재 가설은 폐기합니다.",
-      "result_summary": "gate 도움 1/6 · stitched Δ +0.67%p",
+      "result_summary": "gate 도움 1/6 · stitched Δ +0.56%p",
       "created_at": "2026-08-15T06:47:32+00:00",
-      "updated_at": "2026-11-06T02:54:15+00:00",
-      "attempts": 51,
+      "updated_at": "2026-11-07T02:27:52+00:00",
+      "attempts": 52,
       "evidence": {
         "grade": "C",
         "fold_count": 6,
         "gate_helped_folds": 1,
-        "mean_delta_return_pct": 0.16,
-        "stitched_delta_pct": 0.67,
+        "mean_delta_return_pct": 0.14,
+        "stitched_delta_pct": 0.56,
         "worst_mdd_delta_pct": 0.0,
         "selected_gate_counts": {
-          "risk_on_only": 3,
           "avoid_risk_off": 2,
-          "all": 1
+          "risk_on_only": 2,
+          "all": 2
         }
       },
-      "last_run_at": "2026-11-06T02:54:18+00:00"
-    },
-    {
-      "key": "regime_gate_review:donchian_momentum",
-      "id": "exp-f2b9c03164f4",
-      "kind": "regime_gate_review",
-      "runner": "evidence_regime_gate",
-      "family_id": "donchian_momentum",
-      "family_name": "Donchian + 모멘텀",
-      "strategies": [
-        "momentum_pullback",
-        "donchian_55"
-      ],
-      "priority": 68,
-      "hypothesis": "Donchian + 모멘텀에서 시장 장세 gate를 켜는 것이 항상 켜기보다 OOS 성과를 반복 개선하는가?",
-      "why_now": "TRAIN-only gate가 TEST 2/6구간에서 기준보다 나았고 평균 수익 차이는 -1.10%p입니다.",
-      "test_plan": "이미 계산된 rolling OOS regime 연구를 자동 판독합니다. TEST를 보고 같은 fold의 gate를 다시 조정하지 않습니다.",
-      "params": {},
-      "source_fingerprint": "96e27c2c7ffa",
-      "status": "DROP",
-      "decision": "장세 gate의 OOS 개선이 반복되지 않아 현재 가설은 폐기합니다.",
-      "result_summary": "gate 도움 2/6 · stitched Δ -9.09%p",
-      "created_at": "2026-10-10T01:59:35+00:00",
-      "updated_at": "2026-11-06T02:54:15+00:00",
-      "attempts": 20,
-      "evidence": {
-        "grade": "C",
-        "fold_count": 6,
-        "gate_helped_folds": 2,
-        "mean_delta_return_pct": -1.1,
-        "stitched_delta_pct": -9.09,
-        "worst_mdd_delta_pct": 0.0,
-        "selected_gate_counts": {
-          "all": 1,
-          "avoid_risk_off": 1,
-          "risk_on_only": 4
-        }
-      },
-      "last_run_at": "2026-11-06T02:54:18+00:00"
+      "last_run_at": "2026-11-07T02:27:55+00:00"
     },
     {
       "key": "regime_gate_review:donchian_core",
@@ -200,66 +256,29 @@
       ],
       "priority": 65,
       "hypothesis": "Donchian 단독에서 시장 장세 gate를 켜는 것이 항상 켜기보다 OOS 성과를 반복 개선하는가?",
-      "why_now": "TRAIN-only gate가 TEST 1/6구간에서 기준보다 나았고 평균 수익 차이는 -1.44%p입니다.",
+      "why_now": "TRAIN-only gate가 TEST 1/6구간에서 기준보다 나았고 평균 수익 차이는 -0.18%p입니다.",
       "test_plan": "이미 계산된 rolling OOS regime 연구를 자동 판독합니다. TEST를 보고 같은 fold의 gate를 다시 조정하지 않습니다.",
       "params": {},
-      "source_fingerprint": "55b7f84649e9",
+      "source_fingerprint": "3593cd31eba8",
       "status": "DROP",
       "decision": "장세 gate의 OOS 개선이 반복되지 않아 현재 가설은 폐기합니다.",
-      "result_summary": "gate 도움 1/6 · stitched Δ -9.18%p",
+      "result_summary": "gate 도움 1/6 · stitched Δ -1.43%p",
       "created_at": "2026-08-15T06:47:32+00:00",
-      "updated_at": "2026-11-06T02:54:15+00:00",
-      "attempts": 57,
+      "updated_at": "2026-11-07T02:27:52+00:00",
+      "attempts": 58,
       "evidence": {
         "grade": "C",
         "fold_count": 6,
         "gate_helped_folds": 1,
-        "mean_delta_return_pct": -1.44,
-        "stitched_delta_pct": -9.18,
+        "mean_delta_return_pct": -0.18,
+        "stitched_delta_pct": -1.43,
         "worst_mdd_delta_pct": 0.0,
         "selected_gate_counts": {
-          "risk_on_only": 5,
-          "avoid_risk_off": 1
+          "avoid_risk_off": 2,
+          "risk_on_only": 4
         }
       },
-      "last_run_at": "2026-11-06T02:54:18+00:00"
-    },
-    {
-      "key": "priority_ranker_review:donchian_core",
-      "id": "exp-828321563850",
-      "kind": "priority_ranker_review",
-      "runner": "evidence_priority_ranker",
-      "family_id": "donchian_core",
-      "family_name": "Donchian 단독",
-      "strategies": [
-        "donchian_55"
-      ],
-      "priority": 64,
-      "hypothesis": "Donchian 단독의 동시신호 경쟁에서 quality_pct 우선순위가 현재 priority보다 다음 구간 성과를 개선하는가?",
-      "why_now": "대안 ranker의 평균 TEST 차이 -5.74%p · 현재보다 우수한 fold 2회 · 슬롯 탈락 후 +5% 후보 3건.",
-      "test_plan": "TRAIN 분포로 만든 품질 백분위/혼합 ranker의 rolling OOS 결과를 현재 priority와 비교하고, 반복성·MDD·표본을 함께 판정합니다.",
-      "params": {
-        "ranker": "quality_pct"
-      },
-      "source_fingerprint": "75223ed78729",
-      "status": "DROP",
-      "decision": "대안 priority가 현재 방식보다 안정적으로 우월하지 않아 폐기합니다.",
-      "result_summary": "현재 priority 우위 fold 2 · 평균 Δ -5.74%p",
-      "created_at": "2026-10-23T01:02:30+00:00",
-      "updated_at": "2026-11-06T02:54:15+00:00",
-      "attempts": 11,
-      "evidence": {
-        "ranker": "quality_pct",
-        "folds_beating_current": 2,
-        "mean_delta_vs_current_pct": -5.74,
-        "worst_mdd_delta_pct": -2.13,
-        "total_test_trades": 349,
-        "alternative_positive_test_folds": 4,
-        "alternative_median_test_return_pct": 0.6,
-        "current_stitched_return_pct": -0.69,
-        "alternative_stitched_return_pct": -27.02
-      },
-      "last_run_at": "2026-11-06T02:54:18+00:00"
+      "last_run_at": "2026-11-07T02:27:55+00:00"
     },
     {
       "key": "priority_ranker_review:confirmed_sma_donchian",
@@ -273,32 +292,69 @@
         "sma200_20_squeeze",
         "donchian_55"
       ],
-      "priority": 61,
+      "priority": 62,
       "hypothesis": "확인형 + SMA200·20 + Donchian의 동시신호 경쟁에서 hybrid_50 우선순위가 현재 priority보다 다음 구간 성과를 개선하는가?",
-      "why_now": "대안 ranker의 평균 TEST 차이 -1.92%p · 현재보다 우수한 fold 2회 · 슬롯 탈락 후 +5% 후보 0건.",
+      "why_now": "대안 ranker의 평균 TEST 차이 -1.66%p · 현재보다 우수한 fold 2회 · 슬롯 탈락 후 +5% 후보 1건.",
       "test_plan": "TRAIN 분포로 만든 품질 백분위/혼합 ranker의 rolling OOS 결과를 현재 priority와 비교하고, 반복성·MDD·표본을 함께 판정합니다.",
       "params": {
         "ranker": "hybrid_50"
       },
-      "source_fingerprint": "5effd4bae4e3",
+      "source_fingerprint": "f8810d9ffb4a",
       "status": "DROP",
       "decision": "대안 priority가 현재 방식보다 안정적으로 우월하지 않아 폐기합니다.",
-      "result_summary": "현재 priority 우위 fold 2 · 평균 Δ -1.92%p",
+      "result_summary": "현재 priority 우위 fold 2 · 평균 Δ -1.66%p",
       "created_at": "2026-10-23T01:02:30+00:00",
-      "updated_at": "2026-11-06T02:54:15+00:00",
-      "attempts": 11,
+      "updated_at": "2026-11-07T02:27:52+00:00",
+      "attempts": 12,
       "evidence": {
         "ranker": "hybrid_50",
         "folds_beating_current": 2,
-        "mean_delta_vs_current_pct": -1.92,
-        "worst_mdd_delta_pct": -0.37,
-        "total_test_trades": 347,
-        "alternative_positive_test_folds": 2,
-        "alternative_median_test_return_pct": -2.01,
-        "current_stitched_return_pct": -3.8,
-        "alternative_stitched_return_pct": -13.5
+        "mean_delta_vs_current_pct": -1.66,
+        "worst_mdd_delta_pct": -4.53,
+        "total_test_trades": 367,
+        "alternative_positive_test_folds": 3,
+        "alternative_median_test_return_pct": 0.7,
+        "current_stitched_return_pct": 21.72,
+        "alternative_stitched_return_pct": 10.13
       },
-      "last_run_at": "2026-11-06T02:54:18+00:00"
+      "last_run_at": "2026-11-07T02:27:55+00:00"
+    },
+    {
+      "key": "priority_ranker_review:donchian_core",
+      "id": "exp-828321563850",
+      "kind": "priority_ranker_review",
+      "runner": "evidence_priority_ranker",
+      "family_id": "donchian_core",
+      "family_name": "Donchian 단독",
+      "strategies": [
+        "donchian_55"
+      ],
+      "priority": 61,
+      "hypothesis": "Donchian 단독의 동시신호 경쟁에서 quality_pct 우선순위가 현재 priority보다 다음 구간 성과를 개선하는가?",
+      "why_now": "대안 ranker의 평균 TEST 차이 -2.04%p · 현재보다 우수한 fold 2회 · 슬롯 탈락 후 +5% 후보 0건.",
+      "test_plan": "TRAIN 분포로 만든 품질 백분위/혼합 ranker의 rolling OOS 결과를 현재 priority와 비교하고, 반복성·MDD·표본을 함께 판정합니다.",
+      "params": {
+        "ranker": "quality_pct"
+      },
+      "source_fingerprint": "9629ee6c498a",
+      "status": "DROP",
+      "decision": "대안 priority가 현재 방식보다 안정적으로 우월하지 않아 폐기합니다.",
+      "result_summary": "현재 priority 우위 fold 2 · 평균 Δ -2.04%p",
+      "created_at": "2026-10-23T01:02:30+00:00",
+      "updated_at": "2026-11-07T02:27:52+00:00",
+      "attempts": 12,
+      "evidence": {
+        "ranker": "quality_pct",
+        "folds_beating_current": 2,
+        "mean_delta_vs_current_pct": -2.04,
+        "worst_mdd_delta_pct": -5.58,
+        "total_test_trades": 312,
+        "alternative_positive_test_folds": 4,
+        "alternative_median_test_return_pct": 1.17,
+        "current_stitched_return_pct": 31.6,
+        "alternative_stitched_return_pct": 18.39
+      },
+      "last_run_at": "2026-11-07T02:27:55+00:00"
     },
     {
       "key": "priority_ranker_review:donchian_momentum",
@@ -313,114 +369,72 @@
       ],
       "priority": 61,
       "hypothesis": "Donchian + 모멘텀의 동시신호 경쟁에서 quality_pct 우선순위가 현재 priority보다 다음 구간 성과를 개선하는가?",
-      "why_now": "대안 ranker의 평균 TEST 차이 -8.09%p · 현재보다 우수한 fold 1회 · 슬롯 탈락 후 +5% 후보 3건.",
+      "why_now": "대안 ranker의 평균 TEST 차이 -3.78%p · 현재보다 우수한 fold 2회 · 슬롯 탈락 후 +5% 후보 0건.",
       "test_plan": "TRAIN 분포로 만든 품질 백분위/혼합 ranker의 rolling OOS 결과를 현재 priority와 비교하고, 반복성·MDD·표본을 함께 판정합니다.",
       "params": {
         "ranker": "quality_pct"
       },
-      "source_fingerprint": "f1c5907ea999",
+      "source_fingerprint": "10f1ae10c1c3",
       "status": "DROP",
       "decision": "대안 priority가 현재 방식보다 안정적으로 우월하지 않아 폐기합니다.",
-      "result_summary": "현재 priority 우위 fold 1 · 평균 Δ -8.09%p",
+      "result_summary": "현재 priority 우위 fold 2 · 평균 Δ -3.78%p",
       "created_at": "2026-11-03T03:46:33+00:00",
-      "updated_at": "2026-11-06T02:54:15+00:00",
-      "attempts": 4,
+      "updated_at": "2026-11-07T02:27:52+00:00",
+      "attempts": 5,
       "evidence": {
         "ranker": "quality_pct",
-        "folds_beating_current": 1,
-        "mean_delta_vs_current_pct": -8.09,
-        "worst_mdd_delta_pct": -1.37,
-        "total_test_trades": 373,
-        "alternative_positive_test_folds": 4,
-        "alternative_median_test_return_pct": 2.08,
-        "current_stitched_return_pct": 41.37,
-        "alternative_stitched_return_pct": -10.54
+        "folds_beating_current": 2,
+        "mean_delta_vs_current_pct": -3.78,
+        "worst_mdd_delta_pct": -2.05,
+        "total_test_trades": 294,
+        "alternative_positive_test_folds": 3,
+        "alternative_median_test_return_pct": -1.66,
+        "current_stitched_return_pct": -0.42,
+        "alternative_stitched_return_pct": -19.65
       },
-      "last_run_at": "2026-11-06T02:54:18+00:00"
+      "last_run_at": "2026-11-07T02:27:55+00:00"
     },
     {
-      "key": "smart_money_selection_review:confirmed_sma_donchian",
-      "id": "exp-91af32cac2f4",
+      "key": "smart_money_selection_review:donchian_momentum",
+      "id": "exp-cb604919621d",
       "kind": "smart_money_selection_review",
       "runner": "evidence_smart_money_selection",
-      "family_id": "confirmed_sma_donchian",
-      "family_name": "확인형 + SMA200·20 + Donchian",
+      "family_id": "donchian_momentum",
+      "family_name": "Donchian + 모멘텀",
       "strategies": [
-        "confirmed_pullback",
-        "sma200_20_squeeze",
+        "momentum_pullback",
         "donchian_55"
       ],
       "priority": 56,
-      "hypothesis": "확인형 + SMA200·20 + Donchian에서 신호일 Smart Money Flow가 강한 후보만 남기면 다음 구간 계좌 성과가 개선되는가?",
-      "why_now": "패턴 mixed_positive · 고정필터 strong · 기준보다 우수한 fold 3/6 · stitched Δ +21.85%p.",
+      "hypothesis": "Donchian + 모멘텀에서 신호일 Smart Money Flow가 강한 후보만 남기면 다음 구간 계좌 성과가 개선되는가?",
+      "why_now": "패턴 mixed_positive · 고정필터 strong · 기준보다 우수한 fold 3/6 · stitched Δ +29.90%p.",
       "test_plan": "62/75점 임계값은 사전에 고정하고, 기존 품질 강도만 각 fold TRAIN에서 결정한 뒤 다음 해 TEST에서 baseline과 비교합니다. 개발증거이므로 자동 승격은 금지합니다.",
       "params": {
         "fixed_filter": "strong"
       },
-      "source_fingerprint": "07711d6a3aab",
+      "source_fingerprint": "a832ec4e050d",
       "status": "WATCH",
       "decision": "Smart Money 방향성은 보이지만 절대 성과·MDD·반복성 또는 leave-one-fold-out 안정성 중 하나 이상이 아직 Challenger 기준에 못 미칩니다.",
-      "result_summary": "Smart Money strong · fold 3/6 · stitched Δ +21.85%p",
-      "created_at": "2026-11-05T02:51:52+00:00",
-      "updated_at": "2026-11-06T02:54:15+00:00",
-      "attempts": 2,
+      "result_summary": "Smart Money strong · fold 3/6 · stitched Δ +29.90%p",
+      "created_at": "2026-11-03T03:46:33+00:00",
+      "updated_at": "2026-11-07T02:27:52+00:00",
+      "attempts": 5,
       "evidence": {
         "pattern": "mixed_positive",
         "fixed_filter": "strong",
         "fold_count": 6,
         "folds_beating_baseline": 3,
-        "mean_delta_return_vs_baseline_pct": 2.53,
-        "stitched_delta_vs_baseline_pct": 21.85,
-        "worst_mdd_delta_vs_baseline_pct": -6.6,
-        "total_test_trades": 267,
-        "absolute_stitched_test_return_pct": 18.05,
+        "mean_delta_return_vs_baseline_pct": 3.61,
+        "stitched_delta_vs_baseline_pct": 29.9,
+        "worst_mdd_delta_vs_baseline_pct": -4.56,
+        "total_test_trades": 222,
+        "absolute_stitched_test_return_pct": 29.48,
         "absolute_positive_folds": 5,
-        "absolute_median_test_return_pct": 3.51,
-        "leave_one_fold_out_min_absolute_stitched_pct": 6.71,
-        "leave_one_fold_out_min_delta_vs_baseline_pct": -15.74
+        "absolute_median_test_return_pct": 5.03,
+        "leave_one_fold_out_min_absolute_stitched_pct": 12.02,
+        "leave_one_fold_out_min_delta_vs_baseline_pct": -4.73
       },
-      "last_run_at": "2026-11-06T02:54:18+00:00"
-    },
-    {
-      "key": "smart_money_selection_review:donchian_core",
-      "id": "exp-d2900d349f22",
-      "kind": "smart_money_selection_review",
-      "runner": "evidence_smart_money_selection",
-      "family_id": "donchian_core",
-      "family_name": "Donchian 단독",
-      "strategies": [
-        "donchian_55"
-      ],
-      "priority": 56,
-      "hypothesis": "Donchian 단독에서 신호일 Smart Money Flow가 강한 후보만 남기면 다음 구간 계좌 성과가 개선되는가?",
-      "why_now": "패턴 mixed_positive · 고정필터 strong · 기준보다 우수한 fold 4/6 · stitched Δ +8.32%p.",
-      "test_plan": "62/75점 임계값은 사전에 고정하고, 기존 품질 강도만 각 fold TRAIN에서 결정한 뒤 다음 해 TEST에서 baseline과 비교합니다. 개발증거이므로 자동 승격은 금지합니다.",
-      "params": {
-        "fixed_filter": "strong"
-      },
-      "source_fingerprint": "37c1c4c10007",
-      "status": "WATCH",
-      "decision": "Smart Money 방향성은 보이지만 절대 성과·MDD·반복성 또는 leave-one-fold-out 안정성 중 하나 이상이 아직 Challenger 기준에 못 미칩니다.",
-      "result_summary": "Smart Money strong · fold 4/6 · stitched Δ +8.32%p",
-      "created_at": "2026-09-18T01:53:19+00:00",
-      "updated_at": "2026-11-06T02:54:15+00:00",
-      "attempts": 37,
-      "evidence": {
-        "pattern": "mixed_positive",
-        "fixed_filter": "strong",
-        "fold_count": 6,
-        "folds_beating_baseline": 4,
-        "mean_delta_return_vs_baseline_pct": 0.32,
-        "stitched_delta_vs_baseline_pct": 8.32,
-        "worst_mdd_delta_vs_baseline_pct": -8.3,
-        "total_test_trades": 267,
-        "absolute_stitched_test_return_pct": 7.63,
-        "absolute_positive_folds": 5,
-        "absolute_median_test_return_pct": 1.83,
-        "leave_one_fold_out_min_absolute_stitched_pct": -3.82,
-        "leave_one_fold_out_min_delta_vs_baseline_pct": -27.04
-      },
-      "last_run_at": "2026-11-06T02:54:18+00:00"
+      "last_run_at": "2026-11-07T02:27:55+00:00"
     },
     {
       "key": "flow_selection_review:confirmed_sma_donchian",
@@ -436,67 +450,68 @@
       ],
       "priority": 50,
       "hypothesis": "신호일의 섹터 Flow가 강한 후보를 우선하는 것이 이후 거래 품질과 반복적으로 연결되는가?",
-      "why_now": "Flow 패턴 mixed_positive · strong-weak 평균수익 차이 +0.18%p · 비교가능 fold 6개 중 strong 우위 4개.",
+      "why_now": "Flow 패턴 mixed_positive · strong-weak 평균수익 차이 +0.19%p · 비교가능 fold 6개 중 strong 우위 4개.",
       "test_plan": "Flow는 현재 개발증거이므로 결과가 좋아도 자동 Challenger 승격은 금지하고 WATCH까지만 허용합니다.",
       "params": {},
-      "source_fingerprint": "b04f9dff4852",
+      "source_fingerprint": "dc0604c959b7",
       "status": "WATCH",
       "decision": "Flow 방향성은 보이지만 현재 데이터는 개발증거라 Challenger 승격을 금지하고 WATCH로 유지합니다.",
-      "result_summary": "Flow mixed_positive · strong-weak +0.18%p",
+      "result_summary": "Flow mixed_positive · strong-weak +0.19%p",
       "created_at": "2026-11-06T02:54:15+00:00",
-      "updated_at": "2026-11-06T02:54:15+00:00",
-      "attempts": 1,
+      "updated_at": "2026-11-07T02:27:52+00:00",
+      "attempts": 2,
       "evidence": {
         "pattern": "mixed_positive",
-        "strong_minus_weak_mean_return_pp": 0.179,
-        "strong_minus_weak_win_rate_pp": -1.76,
+        "strong_minus_weak_mean_return_pp": 0.186,
+        "strong_minus_weak_win_rate_pp": -1.65,
         "comparable_folds": 6,
         "strong_beats_weak_folds": 4,
-        "spearman_flow_vs_trade_return": -0.0799
+        "spearman_flow_vs_trade_return": -0.0802
       },
-      "last_run_at": "2026-11-06T02:54:18+00:00"
+      "last_run_at": "2026-11-07T02:27:55+00:00"
     },
     {
-      "key": "smart_money_selection_review:donchian_momentum",
-      "id": "exp-cb604919621d",
+      "key": "smart_money_selection_review:confirmed_sma_donchian",
+      "id": "exp-91af32cac2f4",
       "kind": "smart_money_selection_review",
       "runner": "evidence_smart_money_selection",
-      "family_id": "donchian_momentum",
-      "family_name": "Donchian + 모멘텀",
+      "family_id": "confirmed_sma_donchian",
+      "family_name": "확인형 + SMA200·20 + Donchian",
       "strategies": [
-        "momentum_pullback",
+        "confirmed_pullback",
+        "sma200_20_squeeze",
         "donchian_55"
       ],
       "priority": 42,
-      "hypothesis": "Donchian + 모멘텀에서 신호일 Smart Money Flow가 강한 후보만 남기면 다음 구간 계좌 성과가 개선되는가?",
-      "why_now": "패턴 not_supported · 고정필터 strong · 기준보다 우수한 fold 4/6 · stitched Δ -28.45%p.",
+      "hypothesis": "확인형 + SMA200·20 + Donchian에서 신호일 Smart Money Flow가 강한 후보만 남기면 다음 구간 계좌 성과가 개선되는가?",
+      "why_now": "패턴 not_supported · 고정필터 strong · 기준보다 우수한 fold 3/6 · stitched Δ -17.43%p.",
       "test_plan": "62/75점 임계값은 사전에 고정하고, 기존 품질 강도만 각 fold TRAIN에서 결정한 뒤 다음 해 TEST에서 baseline과 비교합니다. 개발증거이므로 자동 승격은 금지합니다.",
       "params": {
         "fixed_filter": "strong"
       },
-      "source_fingerprint": "67951cd9b212",
+      "source_fingerprint": "8221428917f7",
       "status": "DROP",
       "decision": "Smart Money 고정필터가 OOS 계좌 성과를 안정적으로 개선하지 못해 현재 가설을 폐기합니다.",
-      "result_summary": "Smart Money strong · fold 4/6 · stitched Δ -28.45%p",
-      "created_at": "2026-11-03T03:46:33+00:00",
-      "updated_at": "2026-11-06T02:54:15+00:00",
-      "attempts": 4,
+      "result_summary": "Smart Money strong · fold 3/6 · stitched Δ -17.43%p",
+      "created_at": "2026-11-05T02:51:52+00:00",
+      "updated_at": "2026-11-07T02:27:52+00:00",
+      "attempts": 3,
       "evidence": {
         "pattern": "not_supported",
         "fixed_filter": "strong",
         "fold_count": 6,
-        "folds_beating_baseline": 4,
-        "mean_delta_return_vs_baseline_pct": -4.13,
-        "stitched_delta_vs_baseline_pct": -28.45,
-        "worst_mdd_delta_vs_baseline_pct": -8.3,
-        "total_test_trades": 271,
-        "absolute_stitched_test_return_pct": 12.92,
-        "absolute_positive_folds": 4,
-        "absolute_median_test_return_pct": 4.26,
-        "leave_one_fold_out_min_absolute_stitched_pct": 0.91,
-        "leave_one_fold_out_min_delta_vs_baseline_pct": -37.22
+        "folds_beating_baseline": 3,
+        "mean_delta_return_vs_baseline_pct": -2.52,
+        "stitched_delta_vs_baseline_pct": -17.43,
+        "worst_mdd_delta_vs_baseline_pct": -6.56,
+        "total_test_trades": 270,
+        "absolute_stitched_test_return_pct": 4.29,
+        "absolute_positive_folds": 5,
+        "absolute_median_test_return_pct": 1.2,
+        "leave_one_fold_out_min_absolute_stitched_pct": -4.97,
+        "leave_one_fold_out_min_delta_vs_baseline_pct": -27.72
       },
-      "last_run_at": "2026-11-06T02:54:18+00:00"
+      "last_run_at": "2026-11-07T02:27:55+00:00"
     }
   ],
   "counts": {
@@ -2099,16 +2114,59 @@
       "last_run_at": "2026-11-05T02:51:55+00:00",
       "retired_at": "2026-11-06T02:54:15+00:00",
       "retired_reason": "현재 진단에서 더 이상 실험 트리거가 유지되지 않음"
+    },
+    {
+      "key": "smart_money_selection_review:donchian_core",
+      "id": "exp-d2900d349f22",
+      "kind": "smart_money_selection_review",
+      "runner": "evidence_smart_money_selection",
+      "family_id": "donchian_core",
+      "family_name": "Donchian 단독",
+      "strategies": [
+        "donchian_55"
+      ],
+      "priority": 56,
+      "hypothesis": "Donchian 단독에서 신호일 Smart Money Flow가 강한 후보만 남기면 다음 구간 계좌 성과가 개선되는가?",
+      "why_now": "패턴 mixed_positive · 고정필터 strong · 기준보다 우수한 fold 4/6 · stitched Δ +8.32%p.",
+      "test_plan": "62/75점 임계값은 사전에 고정하고, 기존 품질 강도만 각 fold TRAIN에서 결정한 뒤 다음 해 TEST에서 baseline과 비교합니다. 개발증거이므로 자동 승격은 금지합니다.",
+      "params": {
+        "fixed_filter": "strong"
+      },
+      "source_fingerprint": "37c1c4c10007",
+      "status": "WATCH",
+      "decision": "Smart Money 방향성은 보이지만 절대 성과·MDD·반복성 또는 leave-one-fold-out 안정성 중 하나 이상이 아직 Challenger 기준에 못 미칩니다.",
+      "result_summary": "Smart Money strong · fold 4/6 · stitched Δ +8.32%p",
+      "created_at": "2026-09-18T01:53:19+00:00",
+      "updated_at": "2026-11-06T02:54:15+00:00",
+      "attempts": 37,
+      "evidence": {
+        "pattern": "mixed_positive",
+        "fixed_filter": "strong",
+        "fold_count": 6,
+        "folds_beating_baseline": 4,
+        "mean_delta_return_vs_baseline_pct": 0.32,
+        "stitched_delta_vs_baseline_pct": 8.32,
+        "worst_mdd_delta_vs_baseline_pct": -8.3,
+        "total_test_trades": 267,
+        "absolute_stitched_test_return_pct": 7.63,
+        "absolute_positive_folds": 5,
+        "absolute_median_test_return_pct": 1.83,
+        "leave_one_fold_out_min_absolute_stitched_pct": -3.82,
+        "leave_one_fold_out_min_delta_vs_baseline_pct": -27.04
+      },
+      "last_run_at": "2026-11-06T02:54:18+00:00",
+      "retired_at": "2026-11-07T02:27:52+00:00",
+      "retired_reason": "현재 진단에서 더 이상 실험 트리거가 유지되지 않음"
     }
   ],
   "source_generated_at": {
-    "walkforward": "2026-11-06T02:52:04+00:00",
-    "regime": "2026-11-06T02:52:16+00:00",
-    "volatility": "2026-11-06T02:52:25+00:00",
-    "priority": "2026-11-06T02:52:36+00:00",
-    "flow": "2026-11-06T02:53:11+00:00",
-    "smart_money": "2026-11-06T02:53:18+00:00",
-    "smart_component": "2026-11-06T02:53:25+00:00"
+    "walkforward": "2026-11-07T02:25:47+00:00",
+    "regime": "2026-11-07T02:25:59+00:00",
+    "volatility": "2026-11-07T02:26:08+00:00",
+    "priority": "2026-11-07T02:26:17+00:00",
+    "flow": "2026-11-07T02:26:59+00:00",
+    "smart_money": "2026-11-07T02:27:05+00:00",
+    "smart_component": "2026-11-07T02:27:12+00:00"
   },
   "policy": {
     "automatic_hypothesis_generation": true,
@@ -2126,9 +2184,9 @@
       "WATCH"
     ]
   },
-  "updated_at": "2026-11-06T02:54:18+00:00",
+  "updated_at": "2026-11-07T02:27:55+00:00",
   "last_runner": {
-    "ran_at": "2026-11-06T02:54:18+00:00",
+    "ran_at": "2026-11-07T02:27:55+00:00",
     "executed": 12,
     "max_runs": 12,
     "production_mutation": false,
