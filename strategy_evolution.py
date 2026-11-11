@@ -71,6 +71,8 @@ ELITE = 20
 FINALISTS = 5
 # Two rules that pick the same stock in the same week more than half the time are one idea, not two.
 SAME_FAMILY_OVERLAP = 0.5
+# Watched alongside the frozen plan (washout_plan_research): a next-day limit this far below the signal close.
+LIMIT_ENTRY_DISCOUNT_ATR = 0.5
 
 
 # ---------------------------------------------------------------- panel ----
@@ -721,6 +723,24 @@ def frozen_signals(ctx: Context, candidate: dict) -> tuple[dict, np.ndarray]:
     return genome, ctx.signals_at(conditions, genome['hold'])
 
 
+def limit_entry_outcome(panel: dict, day: int, col: int, limit: float, hold: int) -> tuple[bool, float | None] | None:
+    """Whether a next-day limit order would have filled and its net % return when sold at the close of the last hold day.
+
+    None while the holding window is not complete. Fill assumes the order is done whenever the low reaches the limit.
+    """
+    last = day + hold
+    if last >= len(panel['close']) or not np.isfinite(panel['close'][last, col]):
+        return None
+    low, open_ = float(panel['low'][day + 1, col]), float(panel['open'][day + 1, col])
+    if not low <= limit:
+        return False, None
+    commission = BACKTEST_COMMISSION_PCT / 100.0
+    friction = (BACKTEST_SLIPPAGE_BPS + BACKTEST_HALF_SPREAD_BPS) / 10000.0
+    paid = min(open_, limit) * (1 + friction) * (1 + commission)
+    received = float(panel['close'][last, col]) * (1 - friction) * (1 - commission)
+    return True, (received / paid - 1.0) * 100.0
+
+
 def track_candidates(ctx: Context, ledger: dict, shadow: dict) -> dict:
     """Append today's signals of frozen candidates and fill in outcomes that have matured.
 
@@ -747,6 +767,8 @@ def track_candidates(ctx: Context, ledger: dict, shadow: dict) -> dict:
                     'signal_close': round(float(ctx.panel['close'][last, j]), 4), 'atr': round(float(ctx.panel['atr'][last, j]), 4),
                     'plan': f"다음 거래일 시가 매수 · {genome['hold']}거래일 뒤 종가 매도", 'hold_days': genome['hold'],
                     'status': 'OPEN', 'return_pct': None,
+                    'limit_price': round(float(ctx.panel['close'][last, j] - LIMIT_ENTRY_DISCOUNT_ATR * ctx.panel['atr'][last, j]), 4),
+                    'limit_filled': None, 'limit_return_pct': None,
                 })
         for row in shadow['signals']:
             if row['candidate'] != candidate['name'] or row['status'] != 'OPEN':
@@ -757,7 +779,20 @@ def track_candidates(ctx: Context, ledger: dict, shadow: dict) -> dict:
             value = float(returns[i, j])
             if math.isfinite(value):
                 row['status'], row['return_pct'] = 'CLOSED', round(value, 3)
+            if row.get('limit_price') is not None and row.get('limit_filled') is None:
+                outcome = limit_entry_outcome(ctx.panel, i, j, row['limit_price'], row['hold_days'])
+                if outcome is not None:
+                    row['limit_filled'] = outcome[0]
+                    row['limit_return_pct'] = round(outcome[1], 3) if outcome[0] else None
     closed = [x['return_pct'] for x in shadow['signals'] if x['status'] == 'CLOSED']
+    limit = [x['limit_return_pct'] for x in shadow['signals'] if x.get('limit_filled')]
+    shadow['limit_entry'] = {
+        'discount_atr': LIMIT_ENTRY_DISCOUNT_ATR, 'exit': '보유 마지막 날 종가 매도(손절 없음)',
+        'decided': sum(1 for x in shadow['signals'] if x.get('limit_filled') is not None), 'filled': len(limit),
+        'avg_return_pct': round(float(np.mean(limit)), 3) if limit else None,
+        'win_rate_pct': round(sum(1 for x in limit if x > 0) / len(limit) * 100, 1) if limit else None,
+        'note': '저가가 지정가에 닿으면 체결된 것으로 봅니다. 관찰용 기록이며 규칙의 공식 성적이 아닙니다.',
+    }
     shadow['summary'] = {
         'signals': len(shadow['signals']), 'closed': len(closed),
         'avg_return_pct': round(float(np.mean(closed)), 3) if closed else None,

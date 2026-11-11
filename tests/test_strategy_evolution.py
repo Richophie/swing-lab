@@ -152,6 +152,20 @@ def test_family_candidate_is_frozen_once_and_tracked_append_only():
     old = [x for x in shadow['signals'] if (x['signal_date'], x['symbol']) in recorded]
     assert len(old) == len(recorded) and all(x['status'] == 'CLOSED' for x in old)
     assert shadow['summary']['closed'] == len(recorded)
+    # The limit-entry watch is priced on the signal day and settled with the same window.
+    assert all(x['limit_price'] < x['signal_close'] and x['limit_filled'] in (True, False) for x in old)
+    assert all((x['limit_return_pct'] is not None) == x['limit_filled'] for x in old)
+    assert shadow['limit_entry']['decided'] == len(old) and shadow['limit_entry']['filled'] == sum(x['limit_filled'] for x in old)
+
+
+def test_limit_entry_outcome_fills_at_the_limit_or_a_lower_open():
+    p = _tiny([100, 100, 100, 100], [101, 101, 101, 101], [99, 98, 99, 99], [100, 100, 100, 102])
+    assert se.limit_entry_outcome(p, 0, 0, 97.5, 3) == (False, None)
+    filled, value = se.limit_entry_outcome(p, 0, 0, 98.5, 3)
+    assert filled and math.isclose(value, _net(98.5, 102), rel_tol=1e-6)
+    gap = _tiny([100, 97, 100, 100], [101, 101, 101, 101], [99, 96, 99, 99], [100, 100, 100, 102])
+    assert math.isclose(se.limit_entry_outcome(gap, 0, 0, 98.5, 3)[1], _net(97, 102), rel_tol=1e-6)
+    assert se.limit_entry_outcome(p, 1, 0, 98.5, 3) is None
 
 
 def test_membership_mask_follows_snapshots_and_gates_signals():
