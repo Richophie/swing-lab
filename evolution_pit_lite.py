@@ -72,20 +72,12 @@ def build_report(panel: dict, snapshots: list[dict], ledger: dict, requested: in
 
 
 def main():
-    from entry_feature_pool import download, feature_frame
-    from market_data import indicators, load_price_history
     from sp500_pit_diagnostic import fetch_snapshots
-    import pandas as pd
 
     snapshots = fetch_snapshots()
-    tickers = sorted(set().union(*[set(r['members']) for r in snapshots if r['date'].isoformat() >= '2016-06-01']))
-    frames = download(tickers)
-    spy_close = load_price_history('SPY', 'max')['Close'].astype(float)
-    market = pd.DataFrame({'spy_ret5': spy_close / spy_close.shift(5) - 1, 'spy_ret20': spy_close / spy_close.shift(20) - 1,
-                           'spy_dist_sma200': spy_close / spy_close.rolling(200).mean() - 1})
-    panel = se.panel_from_frames(frames, market, feature_frame, indicators)
+    panel = se.load_panel() if se.PANEL_CACHE.exists() else se.build_panel()
     ledger = json.loads(se.OUT.read_text(encoding='utf-8'))
-    report = build_report(panel, snapshots, ledger, len(tickers))
+    report = build_report(panel, snapshots, ledger, int(panel.get('requested_symbols', len(panel['symbols']))))
     OUT.write_text(json.dumps(report, ensure_ascii=False, indent=1), encoding='utf-8')
     print(json.dumps({'coverage': report['coverage'], **{k: {g: (v['전체'][g].get('trades'), v['전체'][g].get('avg_return_pct')) for g in v['전체']} for k, v in report['candidates'].items()}}, ensure_ascii=False))
 

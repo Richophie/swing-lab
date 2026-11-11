@@ -93,7 +93,7 @@ def test_planted_edge_is_found_and_survives_every_gate():
     assert any(c['feature'] == 'x' and c['op'] == '>=' for c in champion['rule']['conditions'])
     assert champion['lockbox_opened'] is True and champion['lockbox']['avg_return_pct'] > 0
     assert champion['portfolio']['total_return_pct'] > 0
-    assert ledger['validation_looks'] == len(ledger['hall_of_fame'])
+    assert ledger['validation_looks'] == len(ledger['hall_of_fame']) == ledger['validation_families']
     assert ledger['research_only'] is True and ledger['production_rules_mutated'] is False
 
 
@@ -105,16 +105,27 @@ def test_pure_noise_produces_no_champion_and_keeps_lockbox_shut():
     assert ledger['champions'] == []
     assert len(ledger['runs']) == 2 and ledger['validation_looks'] == len(ledger['hall_of_fame'])
     assert ledger['lockbox_looks'] <= 1
-    assert ledger['gates']['next_validation_t_required'] == round(se.required_t(ledger['validation_looks'] + 1), 2)
+    assert ledger['gates']['next_validation_t_required'] == round(se.required_t(ledger['validation_families'] + 1), 2)
 
 
-def test_same_finalist_is_never_judged_twice():
+def test_a_judged_idea_is_never_judged_again_even_in_disguise():
     ctx = se.Context(_panel(edge_pct=1.5))
     ledger = se.run(ctx, {}, seed=1, population=60, generations=4)
-    first = {h['key'] for h in ledger['hall_of_fame']}
+    first = [h['key'] for h in ledger['hall_of_fame']]
+    families = se.judged_families(ctx, ledger)
+    assert ledger['validation_families'] == len(families) == len(first)
     ledger = se.run(ctx, ledger, seed=1, population=60, generations=4)
-    keys = [h['key'] for h in ledger['hall_of_fame']]
-    assert len(keys) == len(set(keys)) and first <= set(keys)
+    assert len(se.judged_families(ctx, ledger)) == len(ledger['hall_of_fame']) == ledger['validation_families']
+    # The same trades dressed up with a condition that never binds are still the same idea.
+    champion = ledger['champions'][0]
+    disguised = {**champion['genome'], 'conditions': [tuple(c) for c in champion['genome']['conditions']] + [('dollar_volume_log', '>=', 0)]}
+    assert se.same_family(se.footprint(ctx.signals(disguised)), families)
+    assert se.genome_key(se.prune(ctx, disguised)) == se.genome_key(se.prune(ctx, {**disguised, 'conditions': disguised['conditions'][:-1]}))
+
+
+def test_neighbour_floor_is_positive_for_a_real_edge():
+    ctx = se.Context(_panel(edge_pct=1.5))
+    assert se.neighbour_floor(ctx, {'conditions': [('x', '>=', 7)], 'hold': 3, 'stop_atr': None, 'target_atr': None}) > 0
 
 
 def test_family_candidate_is_frozen_once_and_tracked_append_only():
@@ -161,7 +172,11 @@ def test_frozen_signals_use_absolute_thresholds_on_any_panel():
     candidate = {'genome': {'conditions': [['x', '>=', 8]], 'hold': 3, 'stop_atr': None, 'target_atr': None},
                  'rule': {'conditions': [{'feature': 'x', 'op': '>=', 'threshold': 2.5}]}}
     genome, signals = se.frozen_signals(ctx, candidate)
-    assert genome['conditions'] == [('x', '>=', 0)]
+    assert genome['conditions'] == [('x', '>=', 8)]
+    both = {'genome': {'conditions': [['x', '>=', 1], ['x', '<=', 7]], 'hold': 3, 'stop_atr': None, 'target_atr': None},
+            'rule': {'conditions': [{'feature': 'x', 'op': '>=', 'threshold': -0.5}, {'feature': 'x', 'op': '<=', 'threshold': 0.5}]}}
+    inside = ctx.features['x'][se.frozen_signals(ctx, both)[1]]
+    assert len(inside) and (inside >= -0.5).all() and (inside <= 0.5).all()
     assert signals.any() and (ctx.features['x'][signals] >= 2.5).all()
 
 

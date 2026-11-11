@@ -150,9 +150,20 @@ const CONDITION_WORDS = {
   atr_pct: v => `하루 평균 ${(v * 100).toFixed(1)}% 이상 움직이는`,
   volume_5d_vs_20d: v => `최근 5일 거래량이 평소의 ${(v * 100).toFixed(0)}% 이하로 줄어든`,
   rel_volume: v => `당일 거래량이 평소의 ${(v * 100).toFixed(0)}% 이하인`,
+  lower_wick_atr: v => `당일 아래꼬리가 하루 평균 움직임의 ${(v * 100).toFixed(0)}% 이상으로 길게 달린`,
+  donchian_pos20: v => `최근 20일 고저 범위의 아래쪽 ${(v * 100).toFixed(0)}% 안에 있는`,
+  ret10: v => `최근 10일 동안 ${(v * 100).toFixed(1)}% 넘게 오르지 않은`,
+};
+const CANDIDATE_TITLES = {
+  evolved_champion_v1: '매도세가 마른 급락주 반등',
+  evolved_champion_v2: '아래꼬리를 단 급락주 반등',
+  deep_drawdown_washout_v1: '크게 빠진 뒤 연속 눌린 종목 반등',
 };
 const ruleWords = c => c.rule.conditions.map(x => (CONDITION_WORDS[x.feature] || (() => `${x.label} ${x.op} ${x.threshold}`))(Number(x.threshold))).join(', ');
-const candidateTitle = c => c.passed_automatic_gate ? '매도세가 마른 급락주 반등' : '크게 빠진 뒤 연속 눌린 종목 반등';
+const candidateTitle = c => CANDIDATE_TITLES[c.name] || (c.passed_automatic_gate ? '자동 탐색 통과 규칙' : '검증 중인 규칙');
+const stopWords = c => c.rule.stop_atr
+  ? `산 가격에서 하루 평균 움직임(ATR)의 ${c.rule.stop_atr}배만큼 내려가면 그날 손절합니다. 갭으로 떨어지면 손절가보다 더 낮게 팔릴 수 있습니다.`
+  : '손절가 없이 날짜로만 파는 규칙이라 보유 중 크게 빠질 수 있습니다.';
 // Candidates that passed every automatic gate come first.
 const candidatesOf = evo => [...((evo || {}).family_candidates || [])].sort((a, b) => Number(!!b.passed_automatic_gate) - Number(!!a.passed_automatic_gate));
 
@@ -170,7 +181,7 @@ function experimentSection(track, evo, pit) {
     const row = x => `<div class="row" data-go="#/stock/${esc(x.symbol)}"><div class="row-name"><b>${esc(x.symbol)}</b><small>${dateLabel(x.signal_date)} 신호 · 종가 ${usd(x.signal_close)}</small></div><div class="row-mid">${addTradingDays(x.signal_date, 1)} 시가 매수 → ${addTradingDays(x.signal_date, hold)} 종가 매도</div><div class="row-end">${x.signal_date === track.panel_last_date ? '<span class="tag is-ok">새 신호</span>' : '<span class="tag is-plain">보유 구간</span>'}</div></div>`;
     const badge = c.passed_automatic_gate ? '<span class="tag is-ok">과거 검증 통과</span>' : '<span class="tag is-warn">검증 미통과</span>';
     return `<div class="card pad prose" style="margin-top:12px"><p><b>${candidateTitle(c)}</b> ${badge}</p>
-      <p>${ruleWords(c)} S&P 500 종목을 다음 날 시가에 사서 <b>${hold}거래일 뒤 종가</b>에 팝니다. 손절가 없이 날짜로만 파는 규칙이라 보유 중 크게 빠질 수 있습니다.</p>
+      <p>${ruleWords(c)} S&P 500 종목을 다음 날 시가에 사서 <b>${hold}거래일 뒤 종가</b>에 팝니다. ${stopWords(c)}</p>
       ${members.trades ? `<p>과거 성적: 한 건당 평균 ${pct(members.avg_return_pct, 2)} (${members.trades}건, 이익 비율 ${share(members.win_rate_pct)}). 나중에 지수에서 빠진 회사만 보면 ${pct(left.avg_return_pct, 2)}였습니다.${c.passed_automatic_gate ? '' : ' 살아남은 회사 덕을 본 규칙일 가능성이 큽니다.'}</p>` : ''}
       <p class="muted" style="font-size:13.5px">실제 기록(${c.frozen_at}부터): 신호 ${mine.length}건 · 종료 ${closed.length}건${closed.length ? ` · 평균 ${pct(avg, 2)}` : ''}</p></div>
       ${open.length ? `<div class="card rows" style="margin-top:8px">${open.slice(0, 10).map(row).join('')}</div>` : `<p class="muted" style="margin:8px 4px 0;font-size:13.5px">${dateLabel(track.panel_last_date)} 기준 해당 종목 없음</p>`}`;
