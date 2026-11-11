@@ -337,7 +337,7 @@ function statRow(name, m) {
 }
 const statTable = rows => `<div class="card table-wrap"><table class="data"><thead><tr><th></th><th>추천 수</th><th>한 건당 평균</th><th>이익 비율</th><th>목표가 도달</th><th>손절</th></tr></thead><tbody>${rows.join('')}</tbody></table></div>`;
 async function reportView() {
-  const [d, exit, regime, entry, shadow] = await Promise.all(['forward_diagnostics.json', 'exit_policy_research.json', 'regime_rank_research.json', 'entry_timing_research.json', 'exit_challenger_shadow.json'].map(staticJson));
+  const [d, exit, regime, entry, shadow, feat] = await Promise.all(['forward_diagnostics.json', 'exit_policy_research.json', 'regime_rank_research.json', 'entry_timing_research.json', 'exit_challenger_shadow.json', 'entry_feature_research.json'].map(staticJson));
   if (!d || !(d.overall || {}).closed) { view.innerHTML = '<div class="page-head"><h1>성적표</h1></div><div class="card empty"><p>아직 결과가 확정된 추천이 없습니다.</p></div>'; return; }
   const o = d.overall, t = d.target_reachability || {}, names = d.strategy_names || {};
   const plainName = id => STRATEGY[id] ? STRATEGY[id].name : (names[id] || id);
@@ -365,7 +365,7 @@ async function reportView() {
       <div class="issue"><b>파는 방법 바꾸기 — ${passed.length ? '한 가지 통과' : '통과 없음'}</b><p>목표가 낮추기, 손절 넓히기, 더 오래 들고 가기 등 8가지를 비교했습니다. ${passed.length ? `${passed.join(', ')}만 통과해 실제 주문 없이 따로 추적하고 있습니다${shadow ? ` (현재 규칙 ${sb.trades || 0}건, 새 규칙 ${sc.trades || 0}건 종료 · ${shadow.minimum_closed_trades_required}건이 쌓이면 판단)` : ''}.` : '기준을 통과한 안이 없습니다.'}</p></div>
       <div class="issue"><b>시장이 나쁠 때 쉬는 기준 바꾸기 — ${gatePassed ? '통과' : '통과 없음'}</b><p>더 빨리 반응하는 6가지 기준을 시험했지만, 한 시기에 좋았던 기준이 다른 시기에는 나빴습니다.</p></div>
       <div class="issue"><b>사는 타이밍 바꾸기 — ${entryPassed ? '통과' : '통과 없음'}</b><p>하루 기다리기, 더 싸게 지정가로 사기, 반등을 확인하고 사기 등 7가지를 시험했습니다. 싸게 사려 하면 떨어지는 종목만 잡히고, 확인하고 사면 이익도 함께 줄었습니다.</p></div>
-      <div class="issue"><b>다음 연구</b><p>종목 수를 넓혀 “어떤 자리에서 사야 이기는가”를 다시 찾을 예정입니다. 검증을 통과하기 전에는 추천 규칙을 바꾸지 않습니다.</p></div>
+      ${feat ? `<div class="issue"><b>어떤 자리에서 사야 이기는지 찾기 — 후보 두 가지 추적 중</b><p>종목을 약 ${feat.symbol_count}개로 넓혀 지난 10년의 매수 신호 ${Number(feat.signal_count).toLocaleString('ko-KR')}건을 다시 분석했습니다. “상승 중 쉬어가기”는 신호가 나온 날 강하게 오르며 마감한 경우가, “눌림 후 반등”은 계획 손익비가 높은 경우가 조금 나았습니다. 다만 차이가 작고 최근 석 달 실제 추천에서는 확인되지 않아, 추천 규칙은 바꾸지 않고 따로 추적만 합니다.</p></div>` : ''}
     </div></section>
     <p class="muted" style="margin-top:18px;font-size:13px">수익률은 수수료를 빼기 전, 추천한 사는 가격의 중간값 기준입니다. 자세한 연구 화면은 아래 “연구실”에 있습니다.</p>`;
 }

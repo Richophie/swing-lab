@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "challenger_id": "entry_rule_v1_2026-11-11",
+  "status": "FORWARD_SHADOW",
+  "freeze_date": "2026-11-11",
+  "updated_at": "2026-11-11T06:59:49+00:00",
+  "live_trading_enabled": false,
+  "production_mutation_enabled": false,
+  "auto_retune": false,
+  "minimum_closed_per_group": 30,
+  "strategies": {
+    "momentum_pullback": {
+      "rule": {
+        "feature": "body_atr",
+        "label": "신호일에 강한 양봉 (몸통이 ATR의 0.62배 이상)",
+        "min": 0.61702
+      },
+      "signals": 0,
+      "unscored": 0,
+      "passing": {
+        "closed": 0
+      },
+      "failing": {
+        "closed": 0
+      },
+      "sample_ready": false
+    },
+    "confirmed_pullback": {
+      "rule": {
+        "feature": "plan_reward_risk",
+        "label": "계획 손익비 2.81 이상",
+        "min": 2.80611
+      },
+      "signals": 0,
+      "unscored": 0,
+      "passing": {
+        "closed": 0
+      },
+      "failing": {
+        "closed": 0
+      },
+      "sample_ready": false
+    }
+  },
+  "trades": []
+}

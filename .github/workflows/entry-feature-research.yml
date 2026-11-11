@@ -1,0 +1,66 @@
+name: Entry Feature Research
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'entry_feature_pool.py'
+      - 'entry_feature_research.py'
+      - 'entry_rule_shadow.py'
+      - 'tests/test_entry_feature_research.py'
+      - '.github/workflows/entry-feature-research.yml'
+  schedule:
+    # Weekly: the ten-year, ~500-symbol download is heavy and the answer moves slowly.
+    - cron: '20 3 * * 6'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: entry-feature-research
+  cancel-in-progress: true
+
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: pip install -r requirements.txt
+      - name: Compile
+        run: python -m py_compile entry_feature_pool.py entry_feature_research.py entry_rule_shadow.py
+      - name: Tests
+        run: PYTHONPATH=. python tests/test_entry_feature_research.py
+      - name: Rebuild wide-universe entry feature pool
+        if: github.event_name != 'pull_request'
+        run: python entry_feature_pool.py
+      - name: Rebuild entry feature research
+        run: python entry_feature_research.py
+      - name: Validate research-only contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('static/entry_feature_research.json').read_text(encoding='utf-8'))
+          assert d['research_only'] is True and d['production_rules_mutated'] is False, d
+          assert d['train_end_exclusive'] < d['forward_start_date'], d
+          assert d['signal_count'] > 1000, d['signal_count']
+          print({k:(v['signals'],v['train_pick_passes_oos']) for k,v in d['strategies'].items()})
+          PY
+      - name: Commit pool and research snapshot
+        if: github.event_name != 'pull_request'
+        run: |
+          git config user.name "swing-lab-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add static/entry_feature_pool.json static/entry_feature_research.json
+          if git diff --cached --quiet; then
+            echo "No data changes"
+          else
+            git commit -m "data: refresh entry feature pool and research [skip render]"
+            git pull --rebase origin main
+            git push
+          fi
