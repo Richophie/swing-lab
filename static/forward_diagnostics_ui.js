@@ -30,7 +30,15 @@ function finding(f){return `<li class="fd-finding is-${f.severity}"><em>${SEVERI
 function row(name,m){return `<tr><th>${name}</th><td>${m.closed}</td><td class="${tone(m.avg_return_pct)}">${pct(m.avg_return_pct)}</td><td>${share(m.win_rate_pct)}</td><td>${share(m.target_hit_pct)}</td><td>${share(m.stop_pct)}</td><td>${has(m.profit_factor)?N(m.profit_factor).toFixed(2):'—'}</td></tr>`}
 function table(title,note,rows){return `<div class="fd-box"><h3>${title}</h3><p>${note}</p><div class="fd-scroll"><table class="fd-table"><thead><tr><th></th><th>종료</th><th>평균 수익률</th><th>이익 비율</th><th>목표가 도달</th><th>손절</th><th>PF</th></tr></thead><tbody>${rows.join('')}</tbody></table></div></div>`}
 function reachBars(t){return (t.mfe_reach_by_level||[]).map(x=>`<div class="fd-bar"><span>+${x.level_pct}% 이상</span><div><i style="width:${Math.max(0,Math.min(100,N(x.reached_pct)))}%"></i></div><b>${share(x.reached_pct)}</b></div>`).join('')}
-function render(d){
+function policyRow(key,p,pick){const o=p.oos||{},t=p.train||{};const verdict=key==='baseline'?'기준':!p.passes_gate?'탈락':key===pick?'<b class="fd-pass">통과</b>':'미선정';return `<tr class="${key===pick&&p.passes_gate?'is-pick':''}"><th>${p.label}<small>${p.note}</small></th><td class="${tone(t.avg_return_pct)}">${pct(t.avg_return_pct)}</td><td class="${tone(o.avg_return_pct)}">${pct(o.avg_return_pct)}</td><td>${share(o.win_rate_pct)}</td><td>${has(o.avg_held_bars)?N(o.avg_held_bars).toFixed(1)+'일':'—'}</td><td>${verdict}</td></tr>`}
+function exitResearch(x,shadow){
+  if(!x||!x.strategies)return '';
+  const blocks=Object.values(x.strategies).map(s=>{const picked=s.train_pick_passes_oos?s.policies[s.train_pick].label:null;return `<div class="fd-exit"><h4>${s.name} <span class="${picked?'fd-pass':'fd-muted'}">${picked?`통과 · ${picked}`:'통과한 안 없음'}</span></h4><div class="fd-scroll"><table class="fd-table fd-policy"><thead><tr><th></th><th>학습구간 평균</th><th>검증구간 평균</th><th>검증 이익 비율</th><th>평균 보유</th><th>판정</th></tr></thead><tbody>${Object.entries(s.policies).map(([k,p])=>policyRow(k,p,s.train_pick)).join('')}</tbody></table></div></div>`}).join('');
+  const b=(shadow||{}).baseline||{},c=(shadow||{}).challenger||{};
+  const track=shadow?`<div class="fd-shadow"><b>가상 추적 중 · ${shadow.policy.label}</b><p>${shadow.freeze_date}부터 나오는 확인형 눌림반등 추천을 현재 규칙과 새 규칙으로 나란히 계산합니다. 실제 주문은 없고, 종료 ${shadow.minimum_closed_trades_required}건이 쌓이기 전에는 결론을 내지 않습니다.</p><div class="fd-kpis is-two">${kpi('현재 규칙',b.trades?pct(b.avg_return_pct):'대기 중',b.trades?tone(b.avg_return_pct):'',`종료 ${b.trades||0}건`)}${kpi('새 규칙',c.trades?pct(c.avg_return_pct):'대기 중',c.trades?tone(c.avg_return_pct):'',`종료 ${c.trades||0}건 · 보유 중 ${c.open||0}건`)}</div></div>`:'';
+  return `<div class="fd-box"><h3>청산 규칙을 바꾸면 나아질까</h3><p>같은 추천 신호에 파는 방법만 바꿔 과거 데이터로 비교했습니다. 학습구간(~${x.train_end_exclusive} 이전)에서 가장 좋은 안을 하나 고르고, 그 안이 검증구간에서도 현재 규칙보다 나을 때만 통과입니다. 수수료·슬리피지 포함.</p>${blocks}${track}<div class="fd-foot">${(x.limitations||[]).join(' ')}</div></div>`
+}
+function render(d,x,shadow){
   const body=document.getElementById('forwardDiagBody');if(!body)return;
   const o=d.overall||{},t=d.target_reachability||{},s=d.stop_recovery||{},names=d.strategy_names||{};
   if(!o.closed){body.innerHTML='<div class="status">아직 결과가 확정된 추천이 없습니다.</div>';return}
@@ -45,9 +53,10 @@ function render(d){
     ${table('월별','시장 흐름에 따라 달라지는지 봅니다.',Object.entries(d.by_month||{}).map(([k,m])=>row(k,m)))}
     ${table('엄선점수별','점수가 높을수록 결과가 좋아야 정상입니다.',((d.score_calibration||{}).buckets||[]).map(m=>row(`${m.score_from}~${m.score_to}점`,m)))}
     ${table('끝난 방식별','추천이 어떤 식으로 끝났는지입니다.',Object.entries(d.by_outcome||{}).map(([k,m])=>row(OUTCOME[k]||k,m)))}
+    ${exitResearch(x,shadow)}
     <div class="fd-foot">PF는 번 돈 합계 ÷ 잃은 돈 합계로, 1보다 크면 이익입니다. 이 화면은 기록을 읽기만 하며 추천 규칙·주문에 영향을 주지 않습니다.</div>`;
 }
-async function load(){const body=document.getElementById('forwardDiagBody');if(!body)return;try{const r=await fetch(`/static/forward_diagnostics.json?ts=${Date.now()}`,{cache:'no-store'});if(!r.ok)throw new Error(String(r.status));render(await r.json())}catch(e){body.innerHTML='<div class="status">실전 성적표를 불러오지 못했습니다. 다음 자동 스캔 후 다시 확인해주세요.</div>'}}
+async function load(){const body=document.getElementById('forwardDiagBody');if(!body)return;try{const r=await fetch(`/static/forward_diagnostics.json?ts=${Date.now()}`,{cache:'no-store'});if(!r.ok)throw new Error(String(r.status));const extra=await Promise.all(['exit_policy_research.json','exit_challenger_shadow.json'].map(f=>fetch(`/static/${f}?ts=${Date.now()}`,{cache:'no-store'}).then(y=>y.ok?y.json():null).catch(()=>null)));render(await r.json(),extra[0],extra[1])}catch(e){body.innerHTML='<div class="status">실전 성적표를 불러오지 못했습니다. 다음 자동 스캔 후 다시 확인해주세요.</div>'}}
 function bind(){ensurePage()}
 new MutationObserver(bind).observe(document.documentElement,{childList:true,subtree:true});bind();const timer=setInterval(bind,800);setTimeout(()=>clearInterval(timer),20000);
 })();
