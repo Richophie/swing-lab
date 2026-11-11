@@ -37,7 +37,8 @@ TRAIN_FOLDS = (('2017-11-01', '2019-06-30'), ('2019-07-01', '2021-03-31'), ('202
 VALIDATION = ('2023-01-01', '2024-12-31')
 LOCKBOX = ('2025-01-01', '2099-12-31')
 HOLDOUT_SYMBOL_PCT = 30
-SPLIT_VERSION = 'split-v1-2026-11-11'
+# v2: the universe is historical S&P 500 membership on the signal day, not today's large caps.
+SPLIT_VERSION = 'split-v2-pit-lite-2026-11-11'
 
 # ---- search space ----
 # Swing horizon only: three trading days up to about a week and a half.
@@ -71,13 +72,37 @@ FINALISTS = 5
 
 
 # ---------------------------------------------------------------- panel ----
-def build_panel(symbols: list[str] | None = None) -> dict:
-    """Aligned (day x symbol) arrays of prices and signal-day features."""
-    from entry_feature_pool import download, feature_frame
-    from market_data import indicators, load_price_history, load_us_universe, prefilter_symbols
-    from config import SCAN_CANDIDATE_LIMIT
+def membership_mask(dates: np.ndarray, symbols: np.ndarray, snapshots: list[dict]) -> np.ndarray:
+    """True where the symbol was an index member on that day (latest snapshot on or before it)."""
+    from bisect import bisect_right
+    days = [row['date'].isoformat() for row in snapshots]
+    members = [set(row['members']) for row in snapshots]
+    column = {str(s): j for j, s in enumerate(symbols)}
+    mask = np.zeros((len(dates), len(symbols)), dtype=bool)
+    for i, day in enumerate(dates):
+        k = bisect_right(days, str(day)) - 1
+        for symbol in (members[k] if k >= 0 else ()):
+            j = column.get(symbol)
+            if j is not None:
+                mask[i, j] = True
+    return mask
 
-    symbols = symbols or prefilter_symbols(load_us_universe(), SCAN_CANDIDATE_LIMIT)
+
+def build_panel() -> dict:
+    """Aligned (day x symbol) arrays of prices and signal-day features.
+
+    Universe: every company that was in the S&P 500 at some point since mid-2016 and whose
+    prices are still published. A day only counts while the company was a member, so a
+    company that later shrank out of the index stays in the test. Companies whose prices
+    are gone (delisted, merged) cannot be included; that part of survivorship bias remains.
+    """
+    from entry_feature_pool import download, feature_frame
+    from market_data import indicators, load_price_history
+    from sp500_pit_diagnostic import fetch_snapshots
+
+    snapshots = fetch_snapshots()
+    symbols = sorted(set().union(*[set(r['members']) for r in snapshots if r['date'].isoformat() >= '2016-06-01']))
+    latest = set(snapshots[-1]['members'])
     frames = download(symbols)
     spy = load_price_history('SPY', 'max')
     spy_close = spy['Close'].astype(float)
@@ -86,7 +111,11 @@ def build_panel(symbols: list[str] | None = None) -> dict:
         'spy_ret20': spy_close / spy_close.shift(20) - 1,
         'spy_dist_sma200': spy_close / spy_close.rolling(200).mean() - 1,
     })
-    return panel_from_frames(frames, market, feature_frame, indicators)
+    panel = panel_from_frames(frames, market, feature_frame, indicators)
+    panel['member'] = membership_mask(panel['dates'], panel['symbols'], snapshots)
+    panel['current_member'] = np.array([str(s) in latest for s in panel['symbols']])
+    panel['requested_symbols'] = len(symbols)
+    return panel
 
 
 def panel_from_frames(frames: dict, market: pd.DataFrame, feature_frame, indicators) -> dict:
@@ -115,6 +144,9 @@ def save_panel(panel: dict, path: Path = PANEL_CACHE) -> None:
     np.savez_compressed(path, dates=panel['dates'], symbols=panel['symbols'], atr=panel['atr'],
                         open=panel['open'], high=panel['high'], low=panel['low'], close=panel['close'],
                         feature_names=np.array(panel['feature_names']),
+                        member=panel.get('member', np.ones_like(panel['close'], dtype=bool)),
+                        current_member=panel.get('current_member', np.ones(len(panel['symbols']), dtype=bool)),
+                        requested_symbols=np.array(panel.get('requested_symbols', len(panel['symbols']))),
                         **{f'f_{k}': v for k, v in panel['features'].items()})
 
 
@@ -125,6 +157,7 @@ def load_panel(path: Path = PANEL_CACHE) -> dict:
         'dates': z['dates'].astype(str), 'symbols': z['symbols'].astype(str), 'atr': z['atr'],
         'open': z['open'], 'high': z['high'], 'low': z['low'], 'close': z['close'],
         'feature_names': names, 'features': {k: z[f'f_{k}'] for k in names},
+        'member': z['member'], 'current_member': z['current_member'], 'requested_symbols': int(z['requested_symbols']),
     }
 
 
@@ -180,6 +213,8 @@ class Context:
         self.features = panel['features']
         self.holdout_symbol = np.array([int(hashlib.sha256(s.encode()).hexdigest(), 16) % 100 < HOLDOUT_SYMBOL_PCT for s in self.symbols])
         self.tradable = (panel['close'] >= MIN_PRICE) & (self.features['dollar_volume_log'] >= MIN_DOLLAR_VOLUME_LOG)
+        if 'member' in panel:
+            self.tradable &= panel['member']
         self._returns = {}
         train_rows = self.rows(TRAIN_FOLDS[0][0], TRAIN_FOLDS[-1][1])
         search = ~self.holdout_symbol
@@ -465,6 +500,7 @@ def run(ctx: Context, ledger: dict, seed: int | None = None, population: int = P
             entry['portfolio'] = portfolio(ctx, item['genome'])
             ledger['champions'].append(entry)
         judged.append(entry); ledger['hall_of_fame'].append(entry)
+    track_champions(ledger)
     ledger['hall_of_fame'].sort(key=lambda x: x['fitness'], reverse=True)
     ledger['hall_of_fame'] = ledger['hall_of_fame'][:200]
     ledger['candidates_scored_total'] = ledger.get('candidates_scored_total', 0) + scored
@@ -477,7 +513,9 @@ def run(ctx: Context, ledger: dict, seed: int | None = None, population: int = P
     ledger.update({
         'version': 1, 'status': 'STRATEGY_EVOLUTION', 'research_only': True, 'production_rules_mutated': False,
         'updated_at': datetime.now(timezone.utc).isoformat(timespec='seconds'),
+        'universe': 'S&P 500 구성 이력(커뮤니티 자료) 기준, 신호일에 지수 구성종목이던 회사만. 가격이 남아 있지 않은 상장폐지·합병 회사는 제외됨',
         'data': {'first_date': str(ctx.dates[0]), 'last_date': str(ctx.dates[-1]), 'symbols': int(len(ctx.symbols)),
+                 'requested_symbols': int(ctx.panel.get('requested_symbols', len(ctx.symbols))),
                  'search_symbols': int((~ctx.holdout_symbol).sum()), 'holdout_symbols': int(ctx.holdout_symbol.sum())},
         'splits': {'train_folds': TRAIN_FOLDS, 'validation': VALIDATION, 'lockbox': LOCKBOX, 'holdout_symbol_pct': HOLDOUT_SYMBOL_PCT},
         'search_space': {'holds': HOLDS, 'stops_atr': STOPS_ATR, 'targets_atr': TARGETS_ATR, 'quantiles': QUANTILES,
@@ -521,6 +559,33 @@ def freeze_family_candidate(ctx: Context, ledger: dict, name: str, genome: dict,
     return entry
 
 
+def track_champions(ledger: dict) -> None:
+    """Every rule that passed all gates gets an append-only forward record from the day it passed."""
+    tracked = {c['key'] for c in ledger.setdefault('family_candidates', [])}
+    for champion in ledger.get('champions') or []:
+        if champion['key'] in tracked:
+            continue
+        number = 1 + sum(1 for c in ledger['family_candidates'] if c.get('passed_automatic_gate'))
+        ledger['family_candidates'].append({
+            'name': f'evolved_champion_v{number}', 'status': 'FORWARD_SHADOW',
+            'frozen_at': datetime.now(timezone.utc).strftime('%Y-%m-%d'),
+            'reason': f"run {champion['found_in_run']}: passed validation, symbol test and lockbox",
+            'key': champion['key'], 'genome': champion['genome'], 'rule': champion['rule'],
+            'stats': {**champion['train'], 'validation': champion['validation'], 'symbol_test': champion['symbol_test'], 'lockbox': champion['lockbox']},
+            'portfolio': champion.get('portfolio'), 'passed_automatic_gate': True, 'positive_in_every_segment': True,
+        })
+        tracked.add(champion['key'])
+
+
+def frozen_signals(ctx: Context, candidate: dict) -> tuple[dict, np.ndarray]:
+    """Signals from the candidate's frozen absolute thresholds, whatever panel is loaded."""
+    genome = {**candidate['genome'], 'conditions': []}
+    for condition in candidate['rule']['conditions']:
+        ctx.thresholds[condition['feature']] = np.full(len(QUANTILES), condition['threshold'])
+        genome['conditions'].append((condition['feature'], condition['op'], 0))
+    return genome, ctx.signals(genome)
+
+
 def track_candidates(ctx: Context, ledger: dict, shadow: dict) -> dict:
     """Append today's signals of frozen candidates and fill in outcomes that have matured.
 
@@ -534,8 +599,10 @@ def track_candidates(ctx: Context, ledger: dict, shadow: dict) -> dict:
     symbol_index = {str(s): i for i, s in enumerate(ctx.symbols)}
     last = len(ctx.dates) - 1
     for candidate in ledger.get('family_candidates') or []:
-        genome = dict(candidate['genome'], conditions=[tuple(c) for c in candidate['genome']['conditions']])
-        signals, returns = ctx.signals(genome), ctx.returns(genome)
+        saved = dict(ctx.thresholds)
+        genome, signals = frozen_signals(ctx, candidate)
+        ctx.thresholds = saved
+        returns = ctx.returns(genome)
         if str(ctx.dates[last]) >= candidate['frozen_at']:
             for j in np.flatnonzero(signals[last]):
                 key = (candidate['name'], str(ctx.dates[last]), str(ctx.symbols[j]))

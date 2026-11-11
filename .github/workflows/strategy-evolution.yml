@@ -9,6 +9,7 @@ on:
   pull_request:
     paths:
       - 'strategy_evolution.py'
+      - 'evolution_pit_lite.py'
       - 'tests/test_strategy_evolution.py'
       - '.github/workflows/strategy-evolution.yml'
   schedule:
@@ -34,12 +35,16 @@ jobs:
           cache: 'pip'
       - run: pip install -r requirements.txt
       - name: Compile
-        run: python -m py_compile strategy_evolution.py
+        run: python -m py_compile strategy_evolution.py evolution_pit_lite.py
       - name: Tests on synthetic data (planted edge found, noise rejected)
         run: PYTHONPATH=. python tests/test_strategy_evolution.py
       - name: Rebuild price panel, track frozen candidates, run the search
         if: github.event_name != 'pull_request'
         run: python strategy_evolution.py --rebuild-panel --runs ${{ github.event.inputs.runs || '4' }}
+      - name: Free partial survivorship check for frozen candidates
+        if: github.event_name != 'pull_request'
+        continue-on-error: true
+        run: python evolution_pit_lite.py
       - name: Validate ledger contract
         run: |
           python - <<'PY'
@@ -55,7 +60,7 @@ jobs:
         run: |
           git config user.name "swing-lab-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add static/strategy_evolution.json static/evolution_candidate_shadow.json
+          git add static/strategy_evolution.json static/evolution_candidate_shadow.json static/evolution_pit_lite.json
           if git diff --cached --quiet; then
             echo "No data changes"
           else

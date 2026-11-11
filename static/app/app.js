@@ -134,8 +134,53 @@ function historyRow(item) {
 }
 
 // ---------- views ----------
+// Weekdays only; exchange holidays are ignored, so the date is a guide, not a promise.
+function addTradingDays(iso, n) {
+  const d = new Date(`${String(iso).slice(0, 10)}T12:00:00`);
+  for (let left = n; left > 0;) { d.setDate(d.getDate() + 1); if (d.getDay() !== 0 && d.getDay() !== 6) left -= 1; }
+  return `${d.getMonth() + 1}월 ${d.getDate()}일`;
+}
+// The evolution engine's condition names, in words a trader would use.
+const pctAbs = v => Math.abs(v * 100).toFixed(0);
+const CONDITION_WORDS = {
+  drawdown_252d: v => `1년 고점에서 ${pctAbs(v)}% 넘게 내려온`,
+  drawdown_60d: v => `최근 석 달 고점에서 ${pctAbs(v)}% 넘게 내려온`,
+  dist_sma120: v => `120일 평균보다 ${pctAbs(v)}% 넘게 아래에 있는`,
+  up_days_5: v => `최근 5일 중 오른 날이 ${v.toFixed(0)}일 이하인`,
+  atr_pct: v => `하루 평균 ${(v * 100).toFixed(1)}% 이상 움직이는`,
+  volume_5d_vs_20d: v => `최근 5일 거래량이 평소의 ${(v * 100).toFixed(0)}% 이하로 줄어든`,
+  rel_volume: v => `당일 거래량이 평소의 ${(v * 100).toFixed(0)}% 이하인`,
+};
+const ruleWords = c => c.rule.conditions.map(x => (CONDITION_WORDS[x.feature] || (() => `${x.label} ${x.op} ${x.threshold}`))(Number(x.threshold))).join(', ');
+const candidateTitle = c => c.passed_automatic_gate ? '매도세가 마른 급락주 반등' : '크게 빠진 뒤 연속 눌린 종목 반등';
+// Candidates that passed every automatic gate come first.
+const candidatesOf = evo => [...((evo || {}).family_candidates || [])].sort((a, b) => Number(!!b.passed_automatic_gate) - Number(!!a.passed_automatic_gate));
+
+function experimentSection(track, evo, pit) {
+  const candidates = candidatesOf(evo);
+  if (!candidates.length || !track) return '';
+  const blocks = candidates.map(c => {
+    const hold = c.rule.hold_days;
+    const mine = (track.signals || []).filter(x => x.candidate === c.name);
+    const open = mine.filter(x => x.status === 'OPEN').sort((a, b) => b.signal_date.localeCompare(a.signal_date));
+    const closed = mine.filter(x => x.status === 'CLOSED');
+    const avg = closed.length ? closed.reduce((sum, x) => sum + Number(x.return_pct), 0) / closed.length : null;
+    const all = (((pit || {}).candidates || {})[c.name] || {})['전체'] || {};
+    const left = all.left_index || {}, members = all.all_members || {};
+    const row = x => `<div class="row" data-go="#/stock/${esc(x.symbol)}"><div class="row-name"><b>${esc(x.symbol)}</b><small>${dateLabel(x.signal_date)} 신호 · 종가 ${usd(x.signal_close)}</small></div><div class="row-mid">${addTradingDays(x.signal_date, 1)} 시가 매수 → ${addTradingDays(x.signal_date, hold)} 종가 매도</div><div class="row-end">${x.signal_date === track.panel_last_date ? '<span class="tag is-ok">새 신호</span>' : '<span class="tag is-plain">보유 구간</span>'}</div></div>`;
+    const badge = c.passed_automatic_gate ? '<span class="tag is-ok">과거 검증 통과</span>' : '<span class="tag is-warn">검증 미통과</span>';
+    return `<div class="card pad prose" style="margin-top:12px"><p><b>${candidateTitle(c)}</b> ${badge}</p>
+      <p>${ruleWords(c)} S&P 500 종목을 다음 날 시가에 사서 <b>${hold}거래일 뒤 종가</b>에 팝니다. 손절가 없이 날짜로만 파는 규칙이라 보유 중 크게 빠질 수 있습니다.</p>
+      ${members.trades ? `<p>과거 성적: 한 건당 평균 ${pct(members.avg_return_pct, 2)} (${members.trades}건, 이익 비율 ${share(members.win_rate_pct)}). 나중에 지수에서 빠진 회사만 보면 ${pct(left.avg_return_pct, 2)}였습니다.${c.passed_automatic_gate ? '' : ' 살아남은 회사 덕을 본 규칙일 가능성이 큽니다.'}</p>` : ''}
+      <p class="muted" style="font-size:13.5px">실제 기록(${c.frozen_at}부터): 신호 ${mine.length}건 · 종료 ${closed.length}건${closed.length ? ` · 평균 ${pct(avg, 2)}` : ''}</p></div>
+      ${open.length ? `<div class="card rows" style="margin-top:8px">${open.slice(0, 10).map(row).join('')}</div>` : `<p class="muted" style="margin:8px 4px 0;font-size:13.5px">${dateLabel(track.panel_last_date)} 기준 해당 종목 없음</p>`}`;
+  }).join('');
+  return `<section class="section"><div class="section-head"><h2>실험 추천 <span class="tag is-warn">실전 검증 중</span></h2><a class="link" href="#/report">근거 보기</a></div>
+    <p class="muted">컴퓨터가 과거 데이터에서 찾아낸 규칙입니다. 정식 추천이 아니며, 실제 돈을 넣는다면 잃어도 되는 소액으로만 하세요. 신호는 미국 장 마감 뒤 하루 한 번 갱신되고, 날짜는 휴장일을 반영하지 않은 예상입니다.</p>${blocks}</section>`;
+}
+
 async function todayView() {
-  const [latest, history, diag] = await Promise.all([api('/api/latest'), api('/api/history?size=4').catch(() => null), staticJson('forward_diagnostics.json')]);
+  const [latest, history, diag, track, evo, pit] = await Promise.all([api('/api/latest'), api('/api/history?size=4').catch(() => null), staticJson('forward_diagnostics.json'), staticJson('evolution_candidate_shadow.json'), staticJson('strategy_evolution.json'), staticJson('evolution_pit_lite.json')]);
   fx = latest.usdkrw || fx;
   const market = latest.market || {};
   const m = MARKET[market.state] || {cls: '', title: '시장 확인 중', text: market.brief || ''};
@@ -160,6 +205,7 @@ async function todayView() {
     <div class="page-head"><h1>오늘의 추천</h1><p>미국 주식 약 ${has(latest.candidate_count) ? Number(latest.candidate_count).toLocaleString('ko-KR') : '500'}개 중 조건을 통과한 종목만, 하루 최대 3개를 먼저 보여드립니다.</p></div>
     <div class="card market ${m.cls}"><span class="market-dot"></span><div><b>${esc(m.title)}</b><span>${esc(m.text)}</span></div></div>
     <section class="section"><div class="section-head"><h2>지금 살 만한 종목</h2><span class="muted">${latest.scanned_at ? `${timeLabel(latest.scanned_at)} 기준` : ''}</span></div>${picks}</section>
+    ${experimentSection(track, evo, pit)}
     ${o.closed ? `<section class="section"><div class="card notice"><div><b>지금까지의 실제 성적</b><span>추천 ${o.closed}건 · 한 건당 평균 <span class="${tone(o.avg_return_pct)}">${pct(o.avg_return_pct, 2)}</span> · 이익으로 끝난 비율 ${share(o.win_rate_pct)}</span></div><a class="btn" href="#/report">성적표 보기</a></div></section>` : ''}
     <section class="section"><div class="section-head"><h2>최근 추천은 어떻게 됐나</h2><a class="link" href="#/report">전체 성적</a></div>${recent}</section>`;
 }
@@ -336,31 +382,28 @@ function statRow(name, m) {
   return `<tr><td>${esc(name)}</td><td>${m.closed ?? m.trades ?? 0}</td><td class="${tone(m.avg_return_pct)}">${pct(m.avg_return_pct, 2)}</td><td>${share(m.win_rate_pct)}</td><td>${share(m.target_hit_pct)}</td><td>${share(m.stop_pct)}</td></tr>`;
 }
 const statTable = rows => `<div class="card table-wrap"><table class="data"><thead><tr><th></th><th>추천 수</th><th>한 건당 평균</th><th>이익 비율</th><th>목표가 도달</th><th>손절</th></tr></thead><tbody>${rows.join('')}</tbody></table></div>`;
-// The evolution engine's condition names, in words a trader would use.
-const CONDITION_WORDS = {
-  drawdown_252d: v => `1년 고점에서 ${Math.abs(v * 100).toFixed(0)}% 넘게 내려와 있고`,
-  up_days_5: v => `최근 5일 중 오른 날이 ${v.toFixed(0)}일 이하이고`,
-  atr_pct: v => `하루에 평균 ${(v * 100).toFixed(1)}% 이상 움직이는 종목을`,
-};
-function evolutionSection(evo, track) {
-  if (!evo || !(evo.runs || []).length) return '';
-  const c = (evo.family_candidates || [])[0];
-  const seg = (name, key) => { const m = ((c || {}).stats || {})[key] || {}; return `<tr><td>${name}</td><td>${m.trades ?? 0}</td><td class="${tone(m.avg_return_pct)}">${pct(m.avg_return_pct, 2)}</td><td>${share(m.win_rate_pct)}</td></tr>`; };
-  const words = c ? c.rule.conditions.map(x => (CONDITION_WORDS[x.feature] || (() => `${x.label} ${x.op} ${x.threshold}`))(Number(x.threshold))).join(' ') : '';
-  const t = (track || {}).summary || {}, open = ((track || {}).signals || []).filter(x => x.status === 'OPEN');
+function evolutionSection(evo, track, pit) {
+  if (!evo) return '';
+  const prev = evo.previous_ledger || {}, scored = Number(evo.candidates_scored_total || 0) + Number(prev.candidates_scored_total || 0);
+  const cov = (pit || {}).coverage || {};
+  const seg = (c, name, key) => { const m = (c.stats || {})[key] || {}; return `<tr><td>${name}</td><td>${m.trades ?? 0}</td><td class="${tone(m.avg_return_pct)}">${pct(m.avg_return_pct, 2)}</td><td>${share(m.win_rate_pct)}</td></tr>`; };
+  const blocks = candidatesOf(evo).map(c => {
+    const all = (((pit || {}).candidates || {})[c.name] || {})['전체'] || {};
+    return `<div class="card pad prose" style="margin-top:12px"><p><b>${candidateTitle(c)}</b> — ${c.passed_automatic_gate ? '세 가지 시험을 모두 통과했습니다.' : '자동 기준은 통과하지 못했고 참고용으로만 지켜봅니다.'}</p>
+      <p>${ruleWords(c)} 종목을 다음 날 시가에 사서 ${c.rule.hold_days}거래일 뒤 종가에 파는 규칙입니다.</p>
+      ${all.all_members ? `<p>살아남은 회사 효과 확인: 신호일에 지수에 있던 회사 전체 ${pct(all.all_members.avg_return_pct, 2)}, 지금도 지수에 있는 회사 ${pct(all.still_in_index.avg_return_pct, 2)}, 나중에 빠진 회사 ${pct(all.left_index.avg_return_pct, 2)}.</p>` : ''}</div>
+      <div class="card table-wrap" style="margin-top:8px"><table class="data"><thead><tr><th>과거 성적${c.passed_automatic_gate ? '' : ' (예전 종목 기준)'}</th><th>거래 수</th><th>한 건당 평균</th><th>이익 비율</th></tr></thead><tbody>
+      ${seg(c, '탐색 구간 ① 2017~2019', 'train_1')}${seg(c, '탐색 구간 ② 2019~2021', 'train_2')}${seg(c, '탐색 구간 ③ 2021~2022', 'train_3')}
+      ${seg(c, '시험 ① 2023~2024', 'validation')}${seg(c, '시험 ② 탐색에 안 쓴 종목', 'symbol_test')}${seg(c, '시험 ③ 2025년 이후', 'lockbox')}</tbody></table></div>`;
+  }).join('');
   return `<section class="section"><div class="section-head"><h2>새 규칙을 찾는 자동 탐색</h2></div><div class="card pad prose">
-    <p>컴퓨터가 지난 10년 ${evo.data.symbols}종목 데이터에서 “어떤 조건일 때 사서 며칠 들고 있으면 이익인가”를 스스로 조합해 보고, 살아남은 규칙을 탐색에 쓰지 않은 기간과 종목으로 다시 시험합니다. 평일마다 자동으로 반복합니다.</p>
-    <p><b>지금까지 ${Number(evo.candidates_scored_total).toLocaleString('ko-KR')}개 규칙을 시험했고, 자동 기준을 통과한 것은 ${(evo.champions || []).length}개입니다.</b> 오래 돌릴수록 우연히 맞는 규칙이 나오기 때문에, 시도 횟수가 늘면 통과 기준도 올라갑니다.</p>
-    ${c ? `<p><b>후보 1개를 따로 지켜보는 중입니다.</b> ${words} 다음 날 시가에 사서 ${c.rule.hold_days}거래일 뒤 종가에 파는 규칙입니다. 시험한 모든 구간에서 평균이 플러스였지만 통계적으로 확실하다고 할 수준은 아니고, 크게 빠졌다가 살아남은 종목만 데이터에 남아 있어 실제보다 좋게 보였을 수 있습니다. 그래서 추천에는 넣지 않고 ${c.frozen_at}부터 나오는 신호를 그날그날 기록해 실제로 맞는지 확인합니다.</p>` : ''}
-  </div>
-  ${c ? `<div class="card table-wrap" style="margin-top:12px"><table class="data"><thead><tr><th>후보 규칙의 과거 성적</th><th>거래 수</th><th>한 건당 평균</th><th>이익 비율</th></tr></thead><tbody>
-    ${seg('탐색 구간 ① 2017~2019', 'train_1')}${seg('탐색 구간 ② 2019~2021', 'train_2')}${seg('탐색 구간 ③ 2021~2022', 'train_3')}
-    ${seg('시험 ① 2023~2024', 'validation')}${seg('시험 ② 탐색에 안 쓴 종목', 'symbol_test')}${seg('시험 ③ 2025년 이후', 'lockbox')}</tbody></table></div>
-  <p class="muted" style="margin-top:10px;font-size:13.5px">실제 기록: 신호 ${t.signals || 0}건 중 ${t.closed || 0}건 종료${t.closed ? ` · 평균 ${pct(t.avg_return_pct, 2)}` : ''}${open.length ? ` · 진행 중 ${open.map(x => esc(x.symbol)).join(', ')}` : ''}. 수수료 포함, 참고용이며 추천이 아닙니다.</p>` : ''}
-  </section>`;
+    <p>컴퓨터가 지난 10년 데이터에서 “어떤 조건일 때 사서 며칠 들고 있으면 이익인가”를 스스로 조합해 보고, 살아남은 규칙을 탐색에 쓰지 않은 기간과 종목으로 다시 시험합니다. 평일마다 자동으로 반복합니다.</p>
+    <p><b>지금까지 ${scored.toLocaleString('ko-KR')}개 규칙을 시험했고, 세 가지 시험을 모두 통과한 것은 ${(evo.champions || []).length}개입니다.</b> 오래 돌릴수록 우연히 맞는 규칙이 나오기 때문에, 시도 횟수가 늘면 통과 기준도 올라갑니다.</p>
+    <p>대상은 “신호가 난 날 S&P 500에 들어 있던 회사”입니다. 지금 큰 회사만 보면 살아남은 회사 덕에 성적이 좋게 나오기 때문입니다. 다만 지수에서 빠진 회사 ${cov.former_members_since_2017 || '—'}곳 중 가격 자료가 무료로 남아 있는 곳은 ${cov.former_members_with_prices || '—'}곳뿐이라, 이 문제를 완전히 없애지는 못했습니다.</p>
+    <p>통과한 규칙도 정식 추천에는 넣지 않고, 첫 화면의 “실험 추천”에서 실제 신호를 날마다 기록해 확인합니다.</p></div>${blocks}</section>`;
 }
 async function reportView() {
-  const [d, exit, regime, entry, shadow, feat, evo, evoShadow] = await Promise.all(['forward_diagnostics.json', 'exit_policy_research.json', 'regime_rank_research.json', 'entry_timing_research.json', 'exit_challenger_shadow.json', 'entry_feature_research.json', 'strategy_evolution.json', 'evolution_candidate_shadow.json'].map(staticJson));
+  const [d, exit, regime, entry, shadow, feat, evo, evoShadow, pit] = await Promise.all(['forward_diagnostics.json', 'exit_policy_research.json', 'regime_rank_research.json', 'entry_timing_research.json', 'exit_challenger_shadow.json', 'entry_feature_research.json', 'strategy_evolution.json', 'evolution_candidate_shadow.json', 'evolution_pit_lite.json'].map(staticJson));
   if (!d || !(d.overall || {}).closed) { view.innerHTML = '<div class="page-head"><h1>성적표</h1></div><div class="card empty"><p>아직 결과가 확정된 추천이 없습니다.</p></div>'; return; }
   const o = d.overall, t = d.target_reachability || {}, names = d.strategy_names || {};
   const plainName = id => STRATEGY[id] ? STRATEGY[id].name : (names[id] || id);
@@ -390,7 +433,7 @@ async function reportView() {
       <div class="issue"><b>사는 타이밍 바꾸기 — ${entryPassed ? '통과' : '통과 없음'}</b><p>하루 기다리기, 더 싸게 지정가로 사기, 반등을 확인하고 사기 등 7가지를 시험했습니다. 싸게 사려 하면 떨어지는 종목만 잡히고, 확인하고 사면 이익도 함께 줄었습니다.</p></div>
       ${feat ? `<div class="issue"><b>어떤 자리에서 사야 이기는지 찾기 — 후보 두 가지 추적 중</b><p>종목을 약 ${feat.symbol_count}개로 넓혀 지난 10년의 매수 신호 ${Number(feat.signal_count).toLocaleString('ko-KR')}건을 다시 분석했습니다. “상승 중 쉬어가기”는 신호가 나온 날 강하게 오르며 마감한 경우가, “눌림 후 반등”은 계획 손익비가 높은 경우가 조금 나았습니다. 다만 차이가 작고 최근 석 달 실제 추천에서는 확인되지 않아, 추천 규칙은 바꾸지 않고 따로 추적만 합니다.</p></div>` : ''}
     </div></section>
-    ${evolutionSection(evo, evoShadow)}
+    ${evolutionSection(evo, evoShadow, pit)}
     <p class="muted" style="margin-top:18px;font-size:13px">수익률은 수수료를 빼기 전, 추천한 사는 가격의 중간값 기준입니다. 자세한 연구 화면은 아래 “연구실”에 있습니다.</p>`;
 }
 

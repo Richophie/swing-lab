@@ -143,6 +143,45 @@ def test_family_candidate_is_frozen_once_and_tracked_append_only():
     assert shadow['summary']['closed'] == len(recorded)
 
 
+def test_membership_mask_follows_snapshots_and_gates_signals():
+    from datetime import date
+    panel = _panel()
+    snapshots = [{'date': date(2017, 1, 1), 'members': ['S00', 'S01']}, {'date': date(2020, 1, 1), 'members': ['S01', 'S02']}]
+    mask = se.membership_mask(panel['dates'], panel['symbols'], snapshots)
+    before, after = int(np.searchsorted(panel['dates'], '2019-12-31')), int(np.searchsorted(panel['dates'], '2020-01-02'))
+    assert list(mask[before, :3]) == [True, True, False] and list(mask[after, :3]) == [False, True, True]
+    assert not mask[:, 3:].any()
+    ctx = se.Context({**panel, 'member': mask})
+    signals = ctx.signals({'conditions': [('x', '>=', 0)], 'hold': 3, 'stop_atr': None, 'target_atr': None})
+    assert signals.any() and not signals[~mask].any()
+
+
+def test_frozen_signals_use_absolute_thresholds_on_any_panel():
+    ctx = se.Context(_panel())
+    candidate = {'genome': {'conditions': [['x', '>=', 8]], 'hold': 3, 'stop_atr': None, 'target_atr': None},
+                 'rule': {'conditions': [{'feature': 'x', 'op': '>=', 'threshold': 2.5}]}}
+    genome, signals = se.frozen_signals(ctx, candidate)
+    assert genome['conditions'] == [('x', '>=', 0)]
+    assert signals.any() and (ctx.features['x'][signals] >= 2.5).all()
+
+
+def test_pit_lite_separates_current_and_former_members():
+    from datetime import date
+    import evolution_pit_lite as pl
+    panel = _panel(edge_pct=1.5)
+    names = [str(s) for s in panel['symbols']]
+    snapshots = [{'date': date(2017, 1, 1), 'members': names}, {'date': date(2026, 10, 1), 'members': names[:40]}]
+    ledger = {'family_candidates': [{'name': 'demo', 'genome': {'conditions': [['x', '>=', 0]], 'hold': 3, 'stop_atr': None, 'target_atr': None},
+                                     'rule': {'conditions': [{'feature': 'x', 'op': '>=', 'threshold': 0.8}]}}]}
+    report = pl.build_report(panel, snapshots, ledger, requested=70)
+    assert report['survivorship_free'] is False and report['status'] == 'DIAGNOSTIC_ONLY'
+    assert report['coverage'] == {'requested_tickers': 70, 'tickers_with_prices': 60, 'former_members_since_2017': 20,
+                                  'former_members_with_prices': 20, 'former_member_price_coverage_pct': 100.0}
+    whole = report['candidates']['demo']['전체']
+    assert whole['all_members']['trades'] == whole['still_in_index']['trades'] + whole['left_index']['trades']
+    assert whole['left_index']['trades'] > 0 and whole['all_members']['avg_return_pct'] > 0
+
+
 def test_ledger_refuses_a_different_split():
     try:
         se.run(se.Context(_panel()), {'split_version': 'other'}, population=20, generations=1)
