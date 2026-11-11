@@ -161,6 +161,14 @@ const CANDIDATE_TITLES = {
 };
 const ruleWords = c => c.rule.conditions.map(x => (CONDITION_WORDS[x.feature] || (() => `${x.label} ${x.op} ${x.threshold}`))(Number(x.threshold))).join(', ');
 const candidateTitle = c => CANDIDATE_TITLES[c.name] || (c.passed_automatic_gate ? '자동 탐색 통과 규칙' : '검증 중인 규칙');
+// The limit-entry variant is watched next to the frozen plan, never instead of it.
+const limitLine = mine => {
+  const decided = mine.filter(x => x.limit_filled === true || x.limit_filled === false);
+  const filled = decided.filter(x => x.limit_filled);
+  if (!decided.length) return '';
+  const avg = filled.length ? filled.reduce((sum, x) => sum + Number(x.limit_return_pct), 0) / filled.length : null;
+  return `<br>지정가로 샀다면: ${decided.length}건 중 ${filled.length}건 체결${filled.length ? ` · 평균 ${pct(avg, 2)}` : ''}`;
+};
 const stopWords = c => c.rule.stop_atr
   ? `산 가격에서 하루 평균 움직임(ATR)의 ${c.rule.stop_atr}배만큼 내려가면 그날 손절합니다. 갭으로 떨어지면 손절가보다 더 낮게 팔릴 수 있습니다.`
   : '손절가 없이 날짜로만 파는 규칙이라 보유 중 크게 빠질 수 있습니다.';
@@ -170,6 +178,8 @@ const candidatesOf = evo => [...((evo || {}).family_candidates || [])].sort((a, 
 function experimentSection(track, evo, pit) {
   const candidates = candidatesOf(evo);
   if (!candidates.length || !track) return '';
+  const limit = track.limit_entry;
+  const limitNote = limit ? `<div class="card pad prose" style="margin-top:12px"><p><b>지정가로 사는 방법(관찰 중)</b></p><p>다음 날 시가에 바로 사는 대신, 신호일 종가보다 하루 평균 움직임(ATR)의 ${limit.discount_atr}배 낮은 가격에 그날 하루만 지정가를 걸어 두는 방법입니다. 과거에는 한 건당 평균이 더 높았지만 신호 10건 중 4건 정도만 체결됐고, 확정 기준은 통과하지 못했습니다. 닿지 않으면 그 종목은 건너뜁니다. 파는 날은 같습니다.</p></div>` : '';
   const blocks = candidates.map(c => {
     const hold = c.rule.hold_days;
     const mine = (track.signals || []).filter(x => x.candidate === c.name);
@@ -178,16 +188,16 @@ function experimentSection(track, evo, pit) {
     const avg = closed.length ? closed.reduce((sum, x) => sum + Number(x.return_pct), 0) / closed.length : null;
     const all = (((pit || {}).candidates || {})[c.name] || {})['전체'] || {};
     const left = all.left_index || {}, members = all.all_members || {};
-    const row = x => `<div class="row" data-go="#/stock/${esc(x.symbol)}"><div class="row-name"><b>${esc(x.symbol)}</b><small>${dateLabel(x.signal_date)} 신호 · 종가 ${usd(x.signal_close)}</small></div><div class="row-mid">${addTradingDays(x.signal_date, 1)} 시가 매수 → ${addTradingDays(x.signal_date, hold)} 종가 매도</div><div class="row-end">${x.signal_date === track.panel_last_date ? '<span class="tag is-ok">새 신호</span>' : '<span class="tag is-plain">보유 구간</span>'}</div></div>`;
+    const row = x => `<div class="row" data-go="#/stock/${esc(x.symbol)}"><div class="row-name"><b>${esc(x.symbol)}</b><small>${dateLabel(x.signal_date)} 신호 · 종가 ${usd(x.signal_close)}</small></div><div class="row-mid">${addTradingDays(x.signal_date, 1)} 시가 매수 → ${addTradingDays(x.signal_date, hold)} 종가 매도${x.limit_price ? `<small style="display:block" class="muted">지정가로 살 경우 ${usd(x.limit_price)} (당일만 유효)</small>` : ''}</div><div class="row-end">${x.signal_date === track.panel_last_date ? '<span class="tag is-ok">새 신호</span>' : '<span class="tag is-plain">보유 구간</span>'}</div></div>`;
     const badge = c.passed_automatic_gate ? '<span class="tag is-ok">과거 검증 통과</span>' : '<span class="tag is-warn">검증 미통과</span>';
     return `<div class="card pad prose" style="margin-top:12px"><p><b>${candidateTitle(c)}</b> ${badge}</p>
       <p>${ruleWords(c)} S&P 500 종목을 다음 날 시가에 사서 <b>${hold}거래일 뒤 종가</b>에 팝니다. ${stopWords(c)}</p>
       ${members.trades ? `<p>과거 성적: 한 건당 평균 ${pct(members.avg_return_pct, 2)} (${members.trades}건, 이익 비율 ${share(members.win_rate_pct)}). 나중에 지수에서 빠진 회사만 보면 ${pct(left.avg_return_pct, 2)}였습니다.${c.passed_automatic_gate ? '' : ' 살아남은 회사 덕을 본 규칙일 가능성이 큽니다.'}</p>` : ''}
-      <p class="muted" style="font-size:13.5px">실제 기록(${c.frozen_at}부터): 신호 ${mine.length}건 · 종료 ${closed.length}건${closed.length ? ` · 평균 ${pct(avg, 2)}` : ''}</p></div>
+      <p class="muted" style="font-size:13.5px">실제 기록(${c.frozen_at}부터): 신호 ${mine.length}건 · 종료 ${closed.length}건${closed.length ? ` · 평균 ${pct(avg, 2)}` : ''}${limitLine(mine)}</p></div>
       ${open.length ? `<div class="card rows" style="margin-top:8px">${open.slice(0, 10).map(row).join('')}</div>` : `<p class="muted" style="margin:8px 4px 0;font-size:13.5px">${dateLabel(track.panel_last_date)} 기준 해당 종목 없음</p>`}`;
   }).join('');
   return `<section class="section"><div class="section-head"><h2>실험 추천 <span class="tag is-warn">실전 검증 중</span></h2><a class="link" href="#/report">근거 보기</a></div>
-    <p class="muted">컴퓨터가 과거 데이터에서 찾아낸 규칙입니다. 정식 추천이 아니며, 실제 돈을 넣는다면 잃어도 되는 소액으로만 하세요. 신호는 미국 장 마감 뒤 하루 한 번 갱신되고, 날짜는 휴장일을 반영하지 않은 예상입니다.</p>${blocks}</section>`;
+    <p class="muted">컴퓨터가 과거 데이터에서 찾아낸 규칙입니다. 정식 추천이 아니며, 실제 돈을 넣는다면 잃어도 되는 소액으로만 하세요. 신호는 미국 장 마감 뒤 하루 한 번 갱신되고, 날짜는 휴장일을 반영하지 않은 예상입니다.</p>${blocks}${limitNote}</section>`;
 }
 
 async function todayView() {
