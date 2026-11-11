@@ -76,3 +76,10 @@ def test_research_route_prefers_the_newest_remote_copy(monkeypatch):
     monkeypatch.setattr(repo_data, '_remote_json', lambda name: {'from': 'remote', 'name': name})
     body = paper_entry.app.test_client().get('/api/research/evolution_candidate_shadow.json').get_json()
     assert body == {'from': 'remote', 'name': 'evolution_candidate_shadow.json'}
+
+
+def test_signal_rows_keep_their_buy_and_sell_dates_on_phones():
+    css = (APP / 'app.css').read_text(encoding='utf-8')
+    js = (APP / 'app.js').read_text(encoding='utf-8')
+    assert 'class="row plan-row"' in js
+    assert '.row.plan-row .row-mid{display:block' in css.split('.row-mid{display:none}')[1]

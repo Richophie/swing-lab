@@ -188,6 +188,8 @@ table.data th:first-child,table.data td:first-child{text-align:left}
   .page-head h1{font-size:22px}
   .row{grid-template-columns:minmax(0,1fr) auto;padding:13px 16px}
   .row-mid{display:none}
+  /* A signal's buy and sell dates are the point of the row, so they move to their own line instead of hiding. */
+  .row.plan-row .row-mid{display:block;grid-column:1/-1;grid-row:2}
   .notice{flex-direction:column;align-items:stretch}
   .stock-price{text-align:left}
 }
