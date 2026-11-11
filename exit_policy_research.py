@@ -82,10 +82,16 @@ def mfe_atr(candidate: dict):
     return (max(highs) - entry) / atr if highs else None
 
 
-def execute(candidate: dict, policy: dict, commission: float, friction: float, reach_atr: float | None = None):
-    """Replay one signal. Same-bar target and stop resolves stop-first."""
+def execute(candidate: dict, policy: dict, commission: float, friction: float, reach_atr: float | None = None,
+            *, opened: float | None = None, intraday_entry: bool = False, gap_check_first_bar: bool = False):
+    """Replay one signal. Same-bar target and stop resolves stop-first.
+
+    ``opened`` overrides the default next-open entry (entry-timing research); the
+    path must then start at the entry bar. An intraday fill cannot know whether the
+    bar's high came before it, so the target is ignored on that first bar.
+    """
     path = candidate.get('path') or []
-    opened = raw_entry(candidate)
+    opened = raw_entry(candidate) if opened is None else opened
     atr = num(candidate.get('atr'))
     if opened is None or atr <= 0:
         return None
@@ -109,13 +115,13 @@ def execute(candidate: dict, policy: dict, commission: float, friction: float, r
     raw_exit, reason, held = num(path[hold - 1][4]), 'time', hold
     for i, bar in enumerate(path[:hold]):
         open_, high, low, close = (num(x) for x in bar[1:5])
-        if i > 0 and open_ <= stop:
+        if (i > 0 or gap_check_first_bar) and open_ <= stop:
             raw_exit, reason, held = open_, 'stop_gap', i + 1
             break
         if low <= stop:
             raw_exit, reason, held = stop, 'stop', i + 1
             break
-        if has_target and high >= target:
+        if has_target and high >= target and not (i == 0 and intraday_entry):
             # A gap above target is filled at target, not at the better open.
             raw_exit, reason, held = target, 'target', i + 1
             break
