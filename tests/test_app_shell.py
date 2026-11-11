@@ -56,3 +56,23 @@ if __name__ == '__main__':
         if name.startswith('test_') and callable(fn):
             fn()
     print('app shell PASS')
+
+
+def test_research_files_are_served_through_the_api_with_a_whitelist():
+    js = (APP / 'app.js').read_text(encoding='utf-8')
+    assert "fetch(`/static/${name}" not in js and '/api/research/${name}' in js
+    client = paper_entry.app.test_client()
+    for name in re.findall(r"staticJson\('([a-z_]+\.json)'\)", js):
+        assert name in paper_entry.app.view_functions['research_file'].__globals__['RESEARCH_FILES'], name
+        response = client.get(f'/api/research/{name}')
+        assert response.status_code == 200 and response.headers['Cache-Control'] == 'no-store' and isinstance(response.get_json(), dict)
+    assert client.get('/api/research/latest_scan.json').status_code == 404
+    assert client.get('/api/research/..%2Fconfig.py').status_code == 404
+
+
+def test_research_route_prefers_the_newest_remote_copy(monkeypatch):
+    import repo_data
+    monkeypatch.setattr(repo_data, 'remote_enabled', lambda: True)
+    monkeypatch.setattr(repo_data, '_remote_json', lambda name: {'from': 'remote', 'name': name})
+    body = paper_entry.app.test_client().get('/api/research/evolution_candidate_shadow.json').get_json()
+    assert body == {'from': 'remote', 'name': 'evolution_candidate_shadow.json'}
