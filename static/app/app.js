@@ -336,8 +336,31 @@ function statRow(name, m) {
   return `<tr><td>${esc(name)}</td><td>${m.closed ?? m.trades ?? 0}</td><td class="${tone(m.avg_return_pct)}">${pct(m.avg_return_pct, 2)}</td><td>${share(m.win_rate_pct)}</td><td>${share(m.target_hit_pct)}</td><td>${share(m.stop_pct)}</td></tr>`;
 }
 const statTable = rows => `<div class="card table-wrap"><table class="data"><thead><tr><th></th><th>추천 수</th><th>한 건당 평균</th><th>이익 비율</th><th>목표가 도달</th><th>손절</th></tr></thead><tbody>${rows.join('')}</tbody></table></div>`;
+// The evolution engine's condition names, in words a trader would use.
+const CONDITION_WORDS = {
+  drawdown_252d: v => `1년 고점에서 ${Math.abs(v * 100).toFixed(0)}% 넘게 내려와 있고`,
+  up_days_5: v => `최근 5일 중 오른 날이 ${v.toFixed(0)}일 이하이고`,
+  atr_pct: v => `하루에 평균 ${(v * 100).toFixed(1)}% 이상 움직이는 종목을`,
+};
+function evolutionSection(evo, track) {
+  if (!evo || !(evo.runs || []).length) return '';
+  const c = (evo.family_candidates || [])[0];
+  const seg = (name, key) => { const m = ((c || {}).stats || {})[key] || {}; return `<tr><td>${name}</td><td>${m.trades ?? 0}</td><td class="${tone(m.avg_return_pct)}">${pct(m.avg_return_pct, 2)}</td><td>${share(m.win_rate_pct)}</td></tr>`; };
+  const words = c ? c.rule.conditions.map(x => (CONDITION_WORDS[x.feature] || (() => `${x.label} ${x.op} ${x.threshold}`))(Number(x.threshold))).join(' ') : '';
+  const t = (track || {}).summary || {}, open = ((track || {}).signals || []).filter(x => x.status === 'OPEN');
+  return `<section class="section"><div class="section-head"><h2>새 규칙을 찾는 자동 탐색</h2></div><div class="card pad prose">
+    <p>컴퓨터가 지난 10년 ${evo.data.symbols}종목 데이터에서 “어떤 조건일 때 사서 며칠 들고 있으면 이익인가”를 스스로 조합해 보고, 살아남은 규칙을 탐색에 쓰지 않은 기간과 종목으로 다시 시험합니다. 평일마다 자동으로 반복합니다.</p>
+    <p><b>지금까지 ${Number(evo.candidates_scored_total).toLocaleString('ko-KR')}개 규칙을 시험했고, 자동 기준을 통과한 것은 ${(evo.champions || []).length}개입니다.</b> 오래 돌릴수록 우연히 맞는 규칙이 나오기 때문에, 시도 횟수가 늘면 통과 기준도 올라갑니다.</p>
+    ${c ? `<p><b>후보 1개를 따로 지켜보는 중입니다.</b> ${words} 다음 날 시가에 사서 ${c.rule.hold_days}거래일 뒤 종가에 파는 규칙입니다. 시험한 모든 구간에서 평균이 플러스였지만 통계적으로 확실하다고 할 수준은 아니고, 크게 빠졌다가 살아남은 종목만 데이터에 남아 있어 실제보다 좋게 보였을 수 있습니다. 그래서 추천에는 넣지 않고 ${c.frozen_at}부터 나오는 신호를 그날그날 기록해 실제로 맞는지 확인합니다.</p>` : ''}
+  </div>
+  ${c ? `<div class="card table-wrap" style="margin-top:12px"><table class="data"><thead><tr><th>후보 규칙의 과거 성적</th><th>거래 수</th><th>한 건당 평균</th><th>이익 비율</th></tr></thead><tbody>
+    ${seg('탐색 구간 ① 2017~2019', 'train_1')}${seg('탐색 구간 ② 2019~2021', 'train_2')}${seg('탐색 구간 ③ 2021~2022', 'train_3')}
+    ${seg('시험 ① 2023~2024', 'validation')}${seg('시험 ② 탐색에 안 쓴 종목', 'symbol_test')}${seg('시험 ③ 2025년 이후', 'lockbox')}</tbody></table></div>
+  <p class="muted" style="margin-top:10px;font-size:13.5px">실제 기록: 신호 ${t.signals || 0}건 중 ${t.closed || 0}건 종료${t.closed ? ` · 평균 ${pct(t.avg_return_pct, 2)}` : ''}${open.length ? ` · 진행 중 ${open.map(x => esc(x.symbol)).join(', ')}` : ''}. 수수료 포함, 참고용이며 추천이 아닙니다.</p>` : ''}
+  </section>`;
+}
 async function reportView() {
-  const [d, exit, regime, entry, shadow, feat] = await Promise.all(['forward_diagnostics.json', 'exit_policy_research.json', 'regime_rank_research.json', 'entry_timing_research.json', 'exit_challenger_shadow.json', 'entry_feature_research.json'].map(staticJson));
+  const [d, exit, regime, entry, shadow, feat, evo, evoShadow] = await Promise.all(['forward_diagnostics.json', 'exit_policy_research.json', 'regime_rank_research.json', 'entry_timing_research.json', 'exit_challenger_shadow.json', 'entry_feature_research.json', 'strategy_evolution.json', 'evolution_candidate_shadow.json'].map(staticJson));
   if (!d || !(d.overall || {}).closed) { view.innerHTML = '<div class="page-head"><h1>성적표</h1></div><div class="card empty"><p>아직 결과가 확정된 추천이 없습니다.</p></div>'; return; }
   const o = d.overall, t = d.target_reachability || {}, names = d.strategy_names || {};
   const plainName = id => STRATEGY[id] ? STRATEGY[id].name : (names[id] || id);
@@ -367,6 +390,7 @@ async function reportView() {
       <div class="issue"><b>사는 타이밍 바꾸기 — ${entryPassed ? '통과' : '통과 없음'}</b><p>하루 기다리기, 더 싸게 지정가로 사기, 반등을 확인하고 사기 등 7가지를 시험했습니다. 싸게 사려 하면 떨어지는 종목만 잡히고, 확인하고 사면 이익도 함께 줄었습니다.</p></div>
       ${feat ? `<div class="issue"><b>어떤 자리에서 사야 이기는지 찾기 — 후보 두 가지 추적 중</b><p>종목을 약 ${feat.symbol_count}개로 넓혀 지난 10년의 매수 신호 ${Number(feat.signal_count).toLocaleString('ko-KR')}건을 다시 분석했습니다. “상승 중 쉬어가기”는 신호가 나온 날 강하게 오르며 마감한 경우가, “눌림 후 반등”은 계획 손익비가 높은 경우가 조금 나았습니다. 다만 차이가 작고 최근 석 달 실제 추천에서는 확인되지 않아, 추천 규칙은 바꾸지 않고 따로 추적만 합니다.</p></div>` : ''}
     </div></section>
+    ${evolutionSection(evo, evoShadow)}
     <p class="muted" style="margin-top:18px;font-size:13px">수익률은 수수료를 빼기 전, 추천한 사는 가격의 중간값 기준입니다. 자세한 연구 화면은 아래 “연구실”에 있습니다.</p>`;
 }
 
