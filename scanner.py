@@ -7,7 +7,7 @@ import json
 import pandas as pd
 import yfinance as yf
 
-from config import APP_VERSION, CORE_VERSION, S_THRESHOLD, SCAN_CANDIDATE_LIMIT
+from config import APP_VERSION, CORE_VERSION, EXPERIMENTAL_STRATEGIES, S_THRESHOLD, SCAN_CANDIDATE_LIMIT
 from execution_quality import plan_execution_quality
 from market_data import load_us_universe, prefilter_symbols, market_snapshot, indicators, load_price_history
 from strategy_engine import evaluate_strategies, trade_plan, public_s_signals, experimental_s_signals
@@ -133,7 +133,7 @@ def scan_candidates(symbols,market,security_names,now_utc=None):
                 if not pub and not exp:continue
                 flow,flow_basis=_selection_flow(d,ev.get('flow') or {},state,scan_now)
                 ind=indicators(d);tail=ind.tail(35);close_tail=d['Close'].tail(35);all_s=pub+exp;all_s.sort(key=lambda x:x['score'],reverse=True);best=all_s[0]
-                row={'symbol':symbol,'name_ko':korean_name(symbol,security_names.get(symbol)),'security_name':security_names.get(symbol),'score':best['score'],'grade':'S','eligible':True,'strategy_id':best['id'],'strategy_name':best['name'],'strategy_reason':best['evidence'],'strategy_signals':[{'strategy_id':s['id'],'strategy_name':s['name'],'strategy_score':s['score'],'why':s['why'],'evidence':s['evidence'],'experimental':s['id']=='volatility_breakout','strict':bool(s.get('strict',False))} for s in all_s],'rsi':ev['metrics']['rsi'],'d120':ev['metrics']['d120'],'bb_pos':ev['metrics']['bb_pos'],'atr_pct':ev['metrics']['atr_pct'],'flow':flow,'live_flow':ev.get('flow') or {},'flow_basis':flow_basis,'sparkline':[round(float(x),2) for x in close_tail.tolist()],'bb_high_spark':[None if pd.isna(x) else round(float(x),2) for x in tail['bb_high'].tolist()],'bb_low_spark':[None if pd.isna(x) else round(float(x),2) for x in tail['bb_low'].tolist()]};rows.append(row)
+                row={'symbol':symbol,'name_ko':korean_name(symbol,security_names.get(symbol)),'security_name':security_names.get(symbol),'score':best['score'],'grade':'S','eligible':True,'strategy_id':best['id'],'strategy_name':best['name'],'strategy_reason':best['evidence'],'strategy_signals':[{'strategy_id':s['id'],'strategy_name':s['name'],'strategy_score':s['score'],'why':s['why'],'evidence':s['evidence'],'experimental':s['id'] in EXPERIMENTAL_STRATEGIES,'strict':bool(s.get('strict',False))} for s in all_s],'rsi':ev['metrics']['rsi'],'d120':ev['metrics']['d120'],'bb_pos':ev['metrics']['bb_pos'],'atr_pct':ev['metrics']['atr_pct'],'flow':flow,'live_flow':ev.get('flow') or {},'flow_basis':flow_basis,'sparkline':[round(float(x),2) for x in close_tail.tolist()],'bb_high_spark':[None if pd.isna(x) else round(float(x),2) for x in tail['bb_high'].tolist()],'bb_low_spark':[None if pd.isna(x) else round(float(x),2) for x in tail['bb_low'].tolist()]};rows.append(row)
             except Exception as exc:failed.append({'symbol':symbol,'reason':str(exc)})
     return rows,failed
 

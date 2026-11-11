@@ -1,0 +1,1330 @@
+{
+  "version": 1,
+  "generated_at": "2026-11-11T00:59:46+00:00",
+  "status": "ENTRY_TIMING_RESEARCH",
+  "research_only": true,
+  "production_rules_mutated": false,
+  "pool_generated_at": "2026-11-10T04:20:56+00:00",
+  "train_end_exclusive": "2024-04-03",
+  "forward_start_date": "2026-08-14",
+  "wait_bars": 3,
+  "min_fill_rate": 0.4,
+  "strategies": {
+    "confirmed_pullback": {
+      "name": "확인형 눌림반등",
+      "signals": 251,
+      "entries": {
+        "next_open": {
+          "label": "현재 규칙",
+          "note": "신호 다음 날 시가에 매수",
+          "train": {
+            "trades": 145,
+            "avg_return_pct": 0.083,
+            "median_return_pct": -0.539,
+            "win_rate_pct": 46.2,
+            "profit_factor": 1.048,
+            "target_hit_pct": 11.0,
+            "stop_pct": 37.2,
+            "avg_held_bars": 6.23,
+            "return_per_bar_pct": 0.0133,
+            "worst_trade_pct": -13.41,
+            "top_symbol_share_pct": 209.9
+          },
+          "oos": {
+            "trades": 52,
+            "avg_return_pct": 0.997,
+            "median_return_pct": 1.541,
+            "win_rate_pct": 61.5,
+            "profit_factor": 1.737,
+            "target_hit_pct": 7.7,
+            "stop_pct": 28.8,
+            "avg_held_bars": 6.65,
+            "return_per_bar_pct": 0.1499,
+            "worst_trade_pct": -7.0,
+            "top_symbol_share_pct": 25.8
+          },
+          "forward": {
+            "trades": 11,
+            "avg_return_pct": -1.488,
+            "median_return_pct": -2.883,
+            "win_rate_pct": 27.3,
+            "profit_factor": 0.466,
+            "target_hit_pct": 9.1,
+            "stop_pct": 63.6,
+            "avg_held_bars": 5.09,
+            "return_per_bar_pct": -0.2923,
+            "worst_trade_pct": -6.43,
+            "top_symbol_share_pct": null
+          },
+          "fill_rate": 0.828,
+          "passes_gate": null,
+          "fail_reasons": []
+        },
+        "delay_1d": {
+          "label": "하루 늦게",
+          "note": "신호 이틀 뒤 시가에 매수",
+          "train": {
+            "trades": 119,
+            "avg_return_pct": 0.12,
+            "median_return_pct": -0.644,
+            "win_rate_pct": 47.1,
+            "profit_factor": 1.073,
+            "target_hit_pct": 10.9,
+            "stop_pct": 38.7,
+            "avg_held_bars": 6.01,
+            "return_per_bar_pct": 0.02,
+            "worst_trade_pct": -14.2,
+            "top_symbol_share_pct": 169.1
+          },
+          "oos": {
+            "trades": 39,
+            "avg_return_pct": 0.94,
+            "median_return_pct": 0.029,
+            "win_rate_pct": 51.3,
+            "profit_factor": 1.69,
+            "target_hit_pct": 10.3,
+            "stop_pct": 25.6,
+            "avg_held_bars": 6.59,
+            "return_per_bar_pct": 0.1426,
+            "worst_trade_pct": -6.51,
+            "top_symbol_share_pct": 40.5
+          },
+          "forward": {
+            "trades": 6,
+            "avg_return_pct": -1.908,
+            "median_return_pct": -3.264,
+            "win_rate_pct": 16.7,
+            "profit_factor": 0.319,
+            "target_hit_pct": 16.7,
+            "stop_pct": 66.7,
+            "avg_held_bars": 4.83,
+            "return_per_bar_pct": -0.3947,
+            "worst_trade_pct": -4.45,
+            "top_symbol_share_pct": null
+          },
+          "fill_rate": 0.664,
+          "passes_gate": false,
+          "fail_reasons": [
+            "학습구간에서 현재 규칙보다 뚜렷하게 낫지 않음",
+            "검증구간에서 현재 규칙보다 낫지 않음"
+          ]
+        },
+        "first_close": {
+          "label": "다음 날 종가",
+          "note": "신호 다음 날 장 마감 가격에 매수",
+          "train": {
+            "trades": 125,
+            "avg_return_pct": 0.257,
+            "median_return_pct": -0.57,
+            "win_rate_pct": 47.2,
+            "profit_factor": 1.163,
+            "target_hit_pct": 10.4,
+            "stop_pct": 36.8,
+            "avg_held_bars": 6,
+            "return_per_bar_pct": 0.0428,
+            "worst_trade_pct": -11.94,
+            "top_symbol_share_pct": 88.5
+          },
+          "oos": {
+            "trades": 46,
+            "avg_return_pct": 0.55,
+            "median_return_pct": -0.093,
+            "win_rate_pct": 50.0,
+            "profit_factor": 1.342,
+            "target_hit_pct": 8.7,
+            "stop_pct": 34.8,
+            "avg_held_bars": 6.02,
+            "return_per_bar_pct": 0.0914,
+            "worst_trade_pct": -7.74,
+            "top_symbol_share_pct": 60.1
+          },
+          "forward": {
+            "trades": 7,
+            "avg_return_pct": -1.238,
+            "median_return_pct": -2.183,
+            "win_rate_pct": 28.6,
+            "profit_factor": 0.507,
+            "target_hit_pct": 14.3,
+            "stop_pct": 57.1,
+            "avg_held_bars": 5.29,
+            "return_per_bar_pct": -0.2342,
+            "worst_trade_pct": -6.16,
+            "top_symbol_share_pct": null
+          },
+          "fill_rate": 0.718,
+          "passes_gate": false,
+          "fail_reasons": [
+            "검증구간에서 현재 규칙보다 낫지 않음"
+          ]
+        },
+        "limit_buy_low": {
+          "label": "눌림 지정가",
+          "note": "진입구간 하단에 지정가를 걸고 3일 기다림, 안 오면 포기",
+          "train": {
+            "trades": 139,
+            "avg_return_pct": 0.094,
+            "median_return_pct": -1.249,
+            "win_rate_pct": 41.7,
+            "profit_factor": 1.054,
+            "target_hit_pct": 7.9,
+            "stop_pct": 49.6,
+            "avg_held_bars": 5.61,
+            "return_per_bar_pct": 0.0167,
+            "worst_trade_pct": -11.41,
+            "top_symbol_share_pct": 266.3
+          },
+          "oos": {
+            "trades": 48,
+            "avg_return_pct": 1.25,
+            "median_return_pct": 1.25,
+            "win_rate_pct": 52.1,
+            "profit_factor": 1.942,
+            "target_hit_pct": 10.4,
+            "stop_pct": 39.6,
+            "avg_held_bars": 5.98,
+            "return_per_bar_pct": 0.2091,
+            "worst_trade_pct": -5.1,
+            "top_symbol_share_pct": 32.9
+          },
+          "forward": {
+            "trades": 12,
+            "avg_return_pct": -0.924,
+            "median_return_pct": -2.573,
+            "win_rate_pct": 25.0,
+            "profit_factor": 0.57,
+            "target_hit_pct": 8.3,
+            "stop_pct": 66.7,
+            "avg_held_bars": 4.75,
+            "return_per_bar_pct": -0.1945,
+            "worst_trade_pct": -4.99,
+            "top_symbol_share_pct": null
+          },
+          "fill_rate": 0.786,
+          "passes_gate": false,
+          "fail_reasons": [
+            "학습구간에서 현재 규칙보다 뚜렷하게 낫지 않음"
+          ]
+        },
+        "limit_deep": {
+          "label": "깊은 눌림 지정가",
+          "note": "신호일 종가 - 1.0 ATR에 지정가, 3일 기다림",
+          "train": {
+            "trades": 68,
+            "avg_return_pct": -0.939,
+            "median_return_pct": -1.347,
+            "win_rate_pct": 19.1,
+            "profit_factor": 0.481,
+            "target_hit_pct": 2.9,
+            "stop_pct": 77.9,
+            "avg_held_bars": 3.93,
+            "return_per_bar_pct": -0.2391,
+            "worst_trade_pct": -7.86,
+            "top_symbol_share_pct": null
+          },
+          "oos": {
+            "trades": 17,
+            "avg_return_pct": 0.191,
+            "median_return_pct": -0.921,
+            "win_rate_pct": 23.5,
+            "profit_factor": 1.169,
+            "target_hit_pct": 0.0,
+            "stop_pct": 70.6,
+            "avg_held_bars": 3.94,
+            "return_per_bar_pct": 0.0485,
+            "worst_trade_pct": -3.53,
+            "top_symbol_share_pct": 279.4
+          },
+          "forward": {
+            "trades": 4,
+            "avg_return_pct": -1.497,
+            "median_return_pct": -1.359,
+            "win_rate_pct": 0.0,
+            "profit_factor": 0.0,
+            "target_hit_pct": 0.0,
+            "stop_pct": 100.0,
+            "avg_held_bars": 2.75,
+            "return_per_bar_pct": -0.5445,
+            "worst_trade_pct": -2.38,
+            "top_symbol_share_pct": null
+          },
+          "fill_rate": 0.357,
+          "passes_gate": false,
+          "fail_reasons": [
+            "표본 부족"
+          ]
+        },
+        "breakout_confirm": {
+          "label": "반등 확인 후",
+          "note": "신호 다음 날 고가를 넘어설 때 매수, 3일 안에 못 넘으면 포기",
+          "train": {
+            "trades": 103,
+            "avg_return_pct": 0.026,
+            "median_return_pct": -0.04,
+            "win_rate_pct": 49.5,
+            "profit_factor": 1.016,
+            "target_hit_pct": 13.6,
+            "stop_pct": 28.2,
+            "avg_held_bars": 6.26,
+            "return_per_bar_pct": 0.0041,
+            "worst_trade_pct": -15.9,
+            "top_symbol_share_pct": 667.6
+          },
+          "oos": {
+            "trades": 45,
+            "avg_return_pct": 0.549,
+            "median_return_pct": -0.174,
+            "win_rate_pct": 48.9,
+            "profit_factor": 1.424,
+            "target_hit_pct": 11.1,
+            "stop_pct": 17.8,
+            "avg_held_bars": 6.69,
+            "return_per_bar_pct": 0.0821,
+            "worst_trade_pct": -8.31,
+            "top_symbol_share_pct": 53.8
+          },
+          "forward": {
+            "trades": 8,
+            "avg_return_pct": -1.224,
+            "median_return_pct": -1.823,
+            "win_rate_pct": 37.5,
+            "profit_factor": 0.457,
+            "target_hit_pct": 12.5,
+            "stop_pct": 37.5,
+            "avg_held_bars": 4.62,
+            "return_per_bar_pct": -0.2647,
+            "worst_trade_pct": -8.43,
+            "top_symbol_share_pct": null
+          },
+          "fill_rate": 0.622,
+          "passes_gate": false,
+          "fail_reasons": [
+            "학습구간에서 현재 규칙보다 뚜렷하게 낫지 않음",
+            "검증구간에서 현재 규칙보다 낫지 않음"
+          ]
+        },
+        "up_close_confirm": {
+          "label": "양봉 확인 후",
+          "note": "신호 뒤 처음으로 오르며 마감한 날의 다음 시가에 매수 (3일 한도)",
+          "train": {
+            "trades": 104,
+            "avg_return_pct": 0.178,
+            "median_return_pct": 0.532,
+            "win_rate_pct": 54.8,
+            "profit_factor": 1.112,
+            "target_hit_pct": 17.3,
+            "stop_pct": 20.2,
+            "avg_held_bars": 6.74,
+            "return_per_bar_pct": 0.0265,
+            "worst_trade_pct": -14.23,
+            "top_symbol_share_pct": 141.8
+          },
+          "oos": {
+            "trades": 51,
+            "avg_return_pct": 0.647,
+            "median_return_pct": 0.138,
+            "win_rate_pct": 51.0,
+            "profit_factor": 1.51,
+            "target_hit_pct": 11.8,
+            "stop_pct": 19.6,
+            "avg_held_bars": 6.61,
+            "return_per_bar_pct": 0.0979,
+            "worst_trade_pct": -8.31,
+            "top_symbol_share_pct": 41.2
+          },
+          "forward": {
+            "trades": 5,
+            "avg_return_pct": -0.185,
+            "median_return_pct": -2.353,
+            "win_rate_pct": 40.0,
+            "profit_factor": 0.891,
+            "target_hit_pct": 20.0,
+            "stop_pct": 20.0,
+            "avg_held_bars": 6.4,
+            "return_per_bar_pct": -0.0289,
+            "worst_trade_pct": -3.47,
+            "top_symbol_share_pct": null
+          },
+          "fill_rate": 0.651,
+          "passes_gate": false,
+          "fail_reasons": [
+            "학습구간에서 현재 규칙보다 뚜렷하게 낫지 않음",
+            "검증구간에서 현재 규칙보다 낫지 않음"
+          ]
+        }
+      },
+      "train_pick": "first_close",
+      "train_pick_passes_oos": false
+    },
+    "momentum_pullback": {
+      "name": "모멘텀 눌림 지속",
+      "signals": 123,
+      "entries": {
+        "next_open": {
+          "label": "현재 규칙",
+          "note": "신호 다음 날 시가에 매수",
+          "train": {
+            "trades": 70,
+            "avg_return_pct": 0.843,
+            "median_return_pct": 1.279,
+            "win_rate_pct": 58.6,
+            "profit_factor": 1.545,
+            "target_hit_pct": 35.7,
+            "stop_pct": 22.9,
+            "avg_held_bars": 6.8,
+            "return_per_bar_pct": 0.1239,
+            "worst_trade_pct": -7.96,
+            "top_symbol_share_pct": 23.9
+          },
+          "oos": {
+            "trades": 33,
+            "avg_return_pct": -0.154,
+            "median_return_pct": -0.251,
+            "win_rate_pct": 48.5,
+            "profit_factor": 0.933,
+            "target_hit_pct": 39.4,
+            "stop_pct": 36.4,
+            "avg_held_bars": 5.91,
+            "return_per_bar_pct": -0.026,
+            "worst_trade_pct": -10.99,
+            "top_symbol_share_pct": null
+          },
+          "forward": {
+            "trades": 4,
+            "avg_return_pct": -0.614,
+            "median_return_pct": -1.37,
+            "win_rate_pct": 50.0,
+            "profit_factor": 0.733,
+            "target_hit_pct": 25.0,
+            "stop_pct": 25.0,
+            "avg_held_bars": 8.25,
+            "return_per_bar_pct": -0.0744,
+            "worst_trade_pct": -5.76,
+            "top_symbol_share_pct": null
+          },
+          "fill_rate": 0.88,
+          "passes_gate": null,
+          "fail_reasons": []
+        },
+        "delay_1d": {
+          "label": "하루 늦게",
+          "note": "신호 이틀 뒤 시가에 매수",
+          "train": {
+            "trades": 61,
+            "avg_return_pct": 0.525,
+            "median_return_pct": 0.989,
+            "win_rate_pct": 54.1,
+            "profit_factor": 1.303,
+            "target_hit_pct": 37.7,
+            "stop_pct": 23.0,
+            "avg_held_bars": 6.62,
+            "return_per_bar_pct": 0.0793,
+            "worst_trade_pct": -9.95,
+            "top_symbol_share_pct": 39.1
+          },
+          "oos": {
+            "trades": 28,
+            "avg_return_pct": 0.022,
+            "median_return_pct": -1.501,
+            "win_rate_pct": 46.4,
+            "profit_factor": 1.011,
+            "target_hit_pct": 35.7,
+            "stop_pct": 35.7,
+            "avg_held_bars": 5.82,
+            "return_per_bar_pct": 0.0038,
+            "worst_trade_pct": -6.38,
+            "top_symbol_share_pct": 1804.9
+          },
+          "forward": {
+            "trades": 4,
+            "avg_return_pct": -2.016,
+            "median_return_pct": -2.611,
+            "win_rate_pct": 25.0,
+            "profit_factor": 0.341,
+            "target_hit_pct": 25.0,
+            "stop_pct": 50.0,
+            "avg_held_bars": 6,
+            "return_per_bar_pct": -0.336,
+            "worst_trade_pct": -7.02,
+            "top_symbol_share_pct": null
+          },
+          "fill_rate": 0.761,
+          "passes_gate": false,
+          "fail_reasons": [
+            "표본 부족"
+          ]
+        },
+        "first_close": {
+          "label": "다음 날 종가",
+          "note": "신호 다음 날 장 마감 가격에 매수",
+          "train": {
+            "trades": 61,
+            "avg_return_pct": 0.829,
+            "median_return_pct": 1.08,
+            "win_rate_pct": 55.7,
+            "profit_factor": 1.498,
+            "target_hit_pct": 41.0,
+            "stop_pct": 23.0,
+            "avg_held_bars": 6.31,
+            "return_per_bar_pct": 0.1313,
+            "worst_trade_pct": -7.67,
+            "top_symbol_share_pct": 26.4
+          },
+          "oos": {
+            "trades": 30,
+            "avg_return_pct": -0.005,
+            "median_return_pct": -1.43,
+            "win_rate_pct": 46.7,
+            "profit_factor": 0.998,
+            "target_hit_pct": 36.7,
+            "stop_pct": 36.7,
+            "avg_held_bars": 5.77,
+            "return_per_bar_pct": -0.0009,
+            "worst_trade_pct": -7.84,
+            "top_symbol_share_pct": null
+          },
+          "forward": {
+            "trades": 4,
+            "avg_return_pct": -2.463,
+            "median_return_pct": -3.661,
+            "win_rate_pct": 25.0,
+            "profit_factor": 0.307,
+            "target_hit_pct": 25.0,
+            "stop_pct": 50.0,
+            "avg_held_bars": 6,
+            "return_per_bar_pct": -0.4106,
+            "worst_trade_pct": -6.91,
+            "top_symbol_share_pct": null
+          },
+          "fill_rate": 0.778,
+          "passes_gate": false,
+          "fail_reasons": [
+            "학습구간에서 현재 규칙보다 뚜렷하게 낫지 않음",
+            "검증구간에서 이익이 아님"
+          ]
+        },
+        "limit_buy_low": {
+          "label": "눌림 지정가",
+          "note": "진입구간 하단에 지정가를 걸고 3일 기다림, 안 오면 포기",
+          "train": {
+            "trades": 49,
+            "avg_return_pct": 1.795,
+            "median_return_pct": 2.229,
+            "win_rate_pct": 59.2,
+            "profit_factor": 2.251,
+            "target_hit_pct": 38.8,
+            "stop_pct": 32.7,
+            "avg_held_bars": 6.2,
+            "return_per_bar_pct": 0.2894,
+            "worst_trade_pct": -7.03,
+            "top_symbol_share_pct": 18.0
+          },
+          "oos": {
+            "trades": 25,
+            "avg_return_pct": -0.212,
+            "median_return_pct": -2.091,
+            "win_rate_pct": 40.0,
+            "profit_factor": 0.909,
+            "target_hit_pct": 24.0,
+            "stop_pct": 44.0,
+            "avg_held_bars": 6.08,
+            "return_per_bar_pct": -0.0348,
+            "worst_trade_pct": -8.24,
+            "top_symbol_share_pct": null
+          },
+          "forward": {
+            "trades": 3,
+            "avg_return_pct": -1.191,
+            "median_return_pct": -3.855,
+            "win_rate_pct": 33.3,
+            "profit_factor": 0.628,
+            "target_hit_pct": 33.3,
+            "stop_pct": 66.7,
+            "avg_held_bars": 5.33,
+            "return_per_bar_pct": -0.2233,
+            "worst_trade_pct": -5.76,
+            "top_symbol_share_pct": null
+          },
+          "fill_rate": 0.632,
+          "passes_gate": false,
+          "fail_reasons": [
+            "표본 부족"
+          ]
+        },
+        "limit_deep": {
+          "label": "깊은 눌림 지정가",
+          "note": "신호일 종가 - 1.0 ATR에 지정가, 3일 기다림",
+          "train": {
+            "trades": 23,
+            "avg_return_pct": 1.153,
+            "median_return_pct": -1.236,
+            "win_rate_pct": 43.5,
+            "profit_factor": 1.814,
+            "target_hit_pct": 17.4,
+            "stop_pct": 56.5,
+            "avg_held_bars": 5.43,
+            "return_per_bar_pct": 0.2122,
+            "worst_trade_pct": -3.78,
+            "top_symbol_share_pct": 46.5
+          },
+          "oos": {
+            "trades": 13,
+            "avg_return_pct": -0.97,
+            "median_return_pct": -1.698,
+            "win_rate_pct": 23.1,
+            "profit_factor": 0.548,
+            "target_hit_pct": 7.7,
+            "stop_pct": 69.2,
+            "avg_held_bars": 4.23,
+            "return_per_bar_pct": -0.2292,
+            "worst_trade_pct": -8.65,
+            "top_symbol_share_pct": null
+          },
+          "forward": {
+            "trades": 2,
+            "avg_return_pct": 2.128,
+            "median_return_pct": 2.128,
+            "win_rate_pct": 50.0,
+            "profit_factor": 2.743,
+            "target_hit_pct": 50.0,
+            "stop_pct": 50.0,
+            "avg_held_bars": 4,
+            "return_per_bar_pct": 0.5319,
+            "worst_trade_pct": -2.44,
+            "top_symbol_share_pct": 157.4
+          },
+          "fill_rate": 0.308,
+          "passes_gate": false,
+          "fail_reasons": [
+            "표본 부족"
+          ]
+        },
+        "breakout_confirm": {
+          "label": "반등 확인 후",
+          "note": "신호 다음 날 고가를 넘어설 때 매수, 3일 안에 못 넘으면 포기",
+          "train": {
+            "trades": 56,
+            "avg_return_pct": 0.163,
+            "median_return_pct": 0.65,
+            "win_rate_pct": 60.7,
+            "profit_factor": 1.092,
+            "target_hit_pct": 48.2,
+            "stop_pct": 16.1,
+            "avg_held_bars": 6.41,
+            "return_per_bar_pct": 0.0255,
+            "worst_trade_pct": -10.7,
+            "top_symbol_share_pct": 103.9
+          },
+          "oos": {
+            "trades": 20,
+            "avg_return_pct": 0.66,
+            "median_return_pct": 1.57,
+            "win_rate_pct": 70.0,
+            "profit_factor": 1.521,
+            "target_hit_pct": 65.0,
+            "stop_pct": 20.0,
+            "avg_held_bars": 4.35,
+            "return_per_bar_pct": 0.1518,
+            "worst_trade_pct": -6.14,
+            "top_symbol_share_pct": 66.8
+          },
+          "forward": {
+            "trades": 4,
+            "avg_return_pct": -3.502,
+            "median_return_pct": -4.826,
+            "win_rate_pct": 25.0,
+            "profit_factor": 0.23,
+            "target_hit_pct": 25.0,
+            "stop_pct": 25.0,
+            "avg_held_bars": 7.25,
+            "return_per_bar_pct": -0.4831,
+            "worst_trade_pct": -8.53,
+            "top_symbol_share_pct": null
+          },
+          "fill_rate": 0.65,
+          "passes_gate": false,
+          "fail_reasons": [
+            "표본 부족"
+          ]
+        },
+        "up_close_confirm": {
+          "label": "양봉 확인 후",
+          "note": "신호 뒤 처음으로 오르며 마감한 날의 다음 시가에 매수 (3일 한도)",
+          "train": {
+            "trades": 55,
+            "avg_return_pct": -0.451,
+            "median_return_pct": 0.263,
+            "win_rate_pct": 56.4,
+            "profit_factor": 0.781,
+            "target_hit_pct": 40.0,
+            "stop_pct": 23.6,
+            "avg_held_bars": 6.45,
+            "return_per_bar_pct": -0.0699,
+            "worst_trade_pct": -10.7,
+            "top_symbol_share_pct": null
+          },
+          "oos": {
+            "trades": 21,
+            "avg_return_pct": 1.137,
+            "median_return_pct": 1.709,
+            "win_rate_pct": 71.4,
+            "profit_factor": 2.401,
+            "target_hit_pct": 66.7,
+            "stop_pct": 14.3,
+            "avg_held_bars": 5.24,
+            "return_per_bar_pct": 0.217,
+            "worst_trade_pct": -5.29,
+            "top_symbol_share_pct": 30.3
+          },
+          "forward": {
+            "trades": 3,
+            "avg_return_pct": -4.305,
+            "median_return_pct": -7.018,
+            "win_rate_pct": 33.3,
+            "profit_factor": 0.169,
+            "target_hit_pct": 33.3,
+            "stop_pct": 33.3,
+            "avg_held_bars": 6.67,
+            "return_per_bar_pct": -0.6458,
+            "worst_trade_pct": -8.53,
+            "top_symbol_share_pct": null
+          },
+          "fill_rate": 0.65,
+          "passes_gate": false,
+          "fail_reasons": [
+            "표본 부족"
+          ]
+        }
+      },
+      "train_pick": "first_close",
+      "train_pick_passes_oos": false
+    },
+    "rsi2_trend_reversion": {
+      "name": "RSI2 추세내 과매도",
+      "signals": 910,
+      "entries": {
+        "next_open": {
+          "label": "현재 규칙",
+          "note": "신호 다음 날 시가에 매수",
+          "train": {
+            "trades": 551,
+            "avg_return_pct": -0.4,
+            "median_return_pct": -0.562,
+            "win_rate_pct": 44.1,
+            "profit_factor": 0.734,
+            "target_hit_pct": 11.6,
+            "stop_pct": 35.9,
+            "avg_held_bars": 3.95,
+            "return_per_bar_pct": -0.1014,
+            "worst_trade_pct": -7.56,
+            "top_symbol_share_pct": null
+          },
+          "oos": {
+            "trades": 253,
+            "avg_return_pct": 0.24,
+            "median_return_pct": 0.595,
+            "win_rate_pct": 56.1,
+            "profit_factor": 1.194,
+            "target_hit_pct": 15.8,
+            "stop_pct": 26.1,
+            "avg_held_bars": 4.32,
+            "return_per_bar_pct": 0.0554,
+            "worst_trade_pct": -8.81,
+            "top_symbol_share_pct": 30.6
+          },
+          "forward": {
+            "trades": 26,
+            "avg_return_pct": -1.206,
+            "median_return_pct": -1.811,
+            "win_rate_pct": 38.5,
+            "profit_factor": 0.395,
+            "target_hit_pct": 7.7,
+            "stop_pct": 26.9,
+            "avg_held_bars": 4.85,
+            "return_per_bar_pct": -0.249,
+            "worst_trade_pct": -6.07,
+            "top_symbol_share_pct": null
+          },
+          "fill_rate": 0.914,
+          "passes_gate": null,
+          "fail_reasons": []
+        },
+        "delay_1d": {
+          "label": "하루 늦게",
+          "note": "신호 이틀 뒤 시가에 매수",
+          "train": {
+            "trades": 401,
+            "avg_return_pct": -0.514,
+            "median_return_pct": -0.743,
+            "win_rate_pct": 43.9,
+            "profit_factor": 0.654,
+            "target_hit_pct": 13.2,
+            "stop_pct": 34.4,
+            "avg_held_bars": 4.05,
+            "return_per_bar_pct": -0.1267,
+            "worst_trade_pct": -8.61,
+            "top_symbol_share_pct": null
+          },
+          "oos": {
+            "trades": 205,
+            "avg_return_pct": 0.227,
+            "median_return_pct": 0.381,
+            "win_rate_pct": 54.6,
+            "profit_factor": 1.187,
+            "target_hit_pct": 18.5,
+            "stop_pct": 24.4,
+            "avg_held_bars": 4.23,
+            "return_per_bar_pct": 0.0535,
+            "worst_trade_pct": -7.67,
+            "top_symbol_share_pct": 45.8
+          },
+          "forward": {
+            "trades": 27,
+            "avg_return_pct": -1.193,
+            "median_return_pct": -2.02,
+            "win_rate_pct": 33.3,
+            "profit_factor": 0.389,
+            "target_hit_pct": 7.4,
+            "stop_pct": 37.0,
+            "avg_held_bars": 4.3,
+            "return_per_bar_pct": -0.2777,
+            "worst_trade_pct": -5.25,
+            "top_symbol_share_pct": null
+          },
+          "fill_rate": 0.689,
+          "passes_gate": false,
+          "fail_reasons": [
+            "학습구간에서 현재 규칙보다 뚜렷하게 낫지 않음",
+            "학습구간 평균 수익률이 0 이하",
+            "검증구간에서 현재 규칙보다 낫지 않음"
+          ]
+        },
+        "first_close": {
+          "label": "다음 날 종가",
+          "note": "신호 다음 날 장 마감 가격에 매수",
+          "train": {
+            "trades": 434,
+            "avg_return_pct": -0.572,
+            "median_return_pct": -1.015,
+            "win_rate_pct": 42.9,
+            "profit_factor": 0.645,
+            "target_hit_pct": 13.1,
+            "stop_pct": 36.4,
+            "avg_held_bars": 3.84,
+            "return_per_bar_pct": -0.1489,
+            "worst_trade_pct": -8.63,
+            "top_symbol_share_pct": null
+          },
+          "oos": {
+            "trades": 217,
+            "avg_return_pct": 0.563,
+            "median_return_pct": 0.892,
+            "win_rate_pct": 56.7,
+            "profit_factor": 1.498,
+            "target_hit_pct": 22.1,
+            "stop_pct": 24.9,
+            "avg_held_bars": 4.13,
+            "return_per_bar_pct": 0.1363,
+            "worst_trade_pct": -8.19,
+            "top_symbol_share_pct": 18.5
+          },
+          "forward": {
+            "trades": 27,
+            "avg_return_pct": -0.907,
+            "median_return_pct": -1.742,
+            "win_rate_pct": 44.4,
+            "profit_factor": 0.517,
+            "target_hit_pct": 7.4,
+            "stop_pct": 33.3,
+            "avg_held_bars": 4.33,
+            "return_per_bar_pct": -0.2094,
+            "worst_trade_pct": -6.35,
+            "top_symbol_share_pct": null
+          },
+          "fill_rate": 0.74,
+          "passes_gate": false,
+          "fail_reasons": [
+            "학습구간에서 현재 규칙보다 뚜렷하게 낫지 않음",
+            "학습구간 평균 수익률이 0 이하"
+          ]
+        },
+        "limit_buy_low": {
+          "label": "눌림 지정가",
+          "note": "진입구간 하단에 지정가를 걸고 3일 기다림, 안 오면 포기",
+          "train": {
+            "trades": 481,
+            "avg_return_pct": -0.431,
+            "median_return_pct": -0.967,
+            "win_rate_pct": 38.5,
+            "profit_factor": 0.702,
+            "target_hit_pct": 7.9,
+            "stop_pct": 45.3,
+            "avg_held_bars": 3.66,
+            "return_per_bar_pct": -0.1178,
+            "worst_trade_pct": -7.56,
+            "top_symbol_share_pct": null
+          },
+          "oos": {
+            "trades": 209,
+            "avg_return_pct": 0.105,
+            "median_return_pct": 0.229,
+            "win_rate_pct": 53.6,
+            "profit_factor": 1.085,
+            "target_hit_pct": 9.1,
+            "stop_pct": 34.0,
+            "avg_held_bars": 4.16,
+            "return_per_bar_pct": 0.0252,
+            "worst_trade_pct": -6.47,
+            "top_symbol_share_pct": 67.7
+          },
+          "forward": {
+            "trades": 26,
+            "avg_return_pct": -0.547,
+            "median_return_pct": -0.803,
+            "win_rate_pct": 34.6,
+            "profit_factor": 0.672,
+            "target_hit_pct": 7.7,
+            "stop_pct": 34.6,
+            "avg_held_bars": 4.5,
+            "return_per_bar_pct": -0.1216,
+            "worst_trade_pct": -5.85,
+            "top_symbol_share_pct": null
+          },
+          "fill_rate": 0.784,
+          "passes_gate": false,
+          "fail_reasons": [
+            "학습구간에서 현재 규칙보다 뚜렷하게 낫지 않음",
+            "학습구간 평균 수익률이 0 이하",
+            "검증구간에서 현재 규칙보다 낫지 않음"
+          ]
+        },
+        "limit_deep": {
+          "label": "깊은 눌림 지정가",
+          "note": "신호일 종가 - 1.0 ATR에 지정가, 3일 기다림",
+          "train": {
+            "trades": 253,
+            "avg_return_pct": -0.372,
+            "median_return_pct": -1.181,
+            "win_rate_pct": 22.5,
+            "profit_factor": 0.655,
+            "target_hit_pct": 2.0,
+            "stop_pct": 75.9,
+            "avg_held_bars": 2.47,
+            "return_per_bar_pct": -0.1505,
+            "worst_trade_pct": -4.91,
+            "top_symbol_share_pct": null
+          },
+          "oos": {
+            "trades": 77,
+            "avg_return_pct": -0.099,
+            "median_return_pct": -1.19,
+            "win_rate_pct": 26.0,
+            "profit_factor": 0.912,
+            "target_hit_pct": 5.2,
+            "stop_pct": 72.7,
+            "avg_held_bars": 2.65,
+            "return_per_bar_pct": -0.0373,
+            "worst_trade_pct": -3.46,
+            "top_symbol_share_pct": null
+          },
+          "forward": {
+            "trades": 9,
+            "avg_return_pct": 0.475,
+            "median_return_pct": -0.901,
+            "win_rate_pct": 44.4,
+            "profit_factor": 1.503,
+            "target_hit_pct": 11.1,
+            "stop_pct": 55.6,
+            "avg_held_bars": 3.67,
+            "return_per_bar_pct": 0.1295,
+            "worst_trade_pct": -2.54,
+            "top_symbol_share_pct": 189.2
+          },
+          "fill_rate": 0.375,
+          "passes_gate": false,
+          "fail_reasons": [
+            "체결되는 신호가 너무 적음",
+            "학습구간에서 현재 규칙보다 뚜렷하게 낫지 않음",
+            "학습구간 평균 수익률이 0 이하",
+            "검증구간에서 이익이 아님",
+            "검증구간에서 현재 규칙보다 낫지 않음"
+          ]
+        },
+        "breakout_confirm": {
+          "label": "반등 확인 후",
+          "note": "신호 다음 날 고가를 넘어설 때 매수, 3일 안에 못 넘으면 포기",
+          "train": {
+            "trades": 394,
+            "avg_return_pct": -0.514,
+            "median_return_pct": -0.258,
+            "win_rate_pct": 47.7,
+            "profit_factor": 0.659,
+            "target_hit_pct": 25.6,
+            "stop_pct": 24.1,
+            "avg_held_bars": 4.01,
+            "return_per_bar_pct": -0.1284,
+            "worst_trade_pct": -9.05,
+            "top_symbol_share_pct": null
+          },
+          "oos": {
+            "trades": 203,
+            "avg_return_pct": -0.091,
+            "median_return_pct": 0.627,
+            "win_rate_pct": 56.2,
+            "profit_factor": 0.931,
+            "target_hit_pct": 29.6,
+            "stop_pct": 16.3,
+            "avg_held_bars": 4.2,
+            "return_per_bar_pct": -0.0216,
+            "worst_trade_pct": -13.16,
+            "top_symbol_share_pct": null
+          },
+          "forward": {
+            "trades": 19,
+            "avg_return_pct": -1.348,
+            "median_return_pct": -1.094,
+            "win_rate_pct": 36.8,
+            "profit_factor": 0.244,
+            "target_hit_pct": 10.5,
+            "stop_pct": 31.6,
+            "avg_held_bars": 4.58,
+            "return_per_bar_pct": -0.2944,
+            "worst_trade_pct": -6.19,
+            "top_symbol_share_pct": null
+          },
+          "fill_rate": 0.678,
+          "passes_gate": false,
+          "fail_reasons": [
+            "학습구간에서 현재 규칙보다 뚜렷하게 낫지 않음",
+            "학습구간 평균 수익률이 0 이하",
+            "검증구간에서 이익이 아님",
+            "검증구간에서 현재 규칙보다 낫지 않음"
+          ]
+        },
+        "up_close_confirm": {
+          "label": "양봉 확인 후",
+          "note": "신호 뒤 처음으로 오르며 마감한 날의 다음 시가에 매수 (3일 한도)",
+          "train": {
+            "trades": 389,
+            "avg_return_pct": -0.517,
+            "median_return_pct": -0.104,
+            "win_rate_pct": 48.1,
+            "profit_factor": 0.655,
+            "target_hit_pct": 25.7,
+            "stop_pct": 23.4,
+            "avg_held_bars": 3.95,
+            "return_per_bar_pct": -0.1309,
+            "worst_trade_pct": -11.69,
+            "top_symbol_share_pct": null
+          },
+          "oos": {
+            "trades": 198,
+            "avg_return_pct": -0.286,
+            "median_return_pct": 0.158,
+            "win_rate_pct": 53.0,
+            "profit_factor": 0.805,
+            "target_hit_pct": 28.8,
+            "stop_pct": 18.7,
+            "avg_held_bars": 4.11,
+            "return_per_bar_pct": -0.0696,
+            "worst_trade_pct": -13.16,
+            "top_symbol_share_pct": null
+          },
+          "forward": {
+            "trades": 14,
+            "avg_return_pct": -1.109,
+            "median_return_pct": -1.952,
+            "win_rate_pct": 35.7,
+            "profit_factor": 0.409,
+            "target_hit_pct": 21.4,
+            "stop_pct": 28.6,
+            "avg_held_bars": 4.36,
+            "return_per_bar_pct": -0.2545,
+            "worst_trade_pct": -4.48,
+            "top_symbol_share_pct": null
+          },
+          "fill_rate": 0.667,
+          "passes_gate": false,
+          "fail_reasons": [
+            "학습구간에서 현재 규칙보다 뚜렷하게 낫지 않음",
+            "학습구간 평균 수익률이 0 이하",
+            "검증구간에서 이익이 아님",
+            "검증구간에서 현재 규칙보다 낫지 않음"
+          ]
+        }
+      },
+      "train_pick": "limit_buy_low",
+      "train_pick_passes_oos": false
+    }
+  },
+  "signal_families": {
+    "rsi2_trend_reversion": {
+      "name": "RSI2 추세내 과매도",
+      "train": {
+        "trades": 551,
+        "avg_return_pct": -0.4,
+        "median_return_pct": -0.562,
+        "win_rate_pct": 44.1,
+        "profit_factor": 0.734,
+        "worst_trade_pct": -7.56,
+        "top_symbol_share_pct": null,
+        "avg_held_days": 4.26
+      },
+      "oos": {
+        "trades": 253,
+        "avg_return_pct": 0.24,
+        "median_return_pct": 0.595,
+        "win_rate_pct": 56.1,
+        "profit_factor": 1.194,
+        "worst_trade_pct": -8.81,
+        "top_symbol_share_pct": 30.6,
+        "avg_held_days": 4.8
+      },
+      "forward": {
+        "trades": 26,
+        "avg_return_pct": -1.206,
+        "median_return_pct": -1.811,
+        "win_rate_pct": 38.5,
+        "profit_factor": 0.395,
+        "worst_trade_pct": -6.07,
+        "top_symbol_share_pct": null,
+        "avg_held_days": 5.58
+      }
+    },
+    "confirmed_pullback": {
+      "name": "확인형 눌림반등",
+      "train": {
+        "trades": 145,
+        "avg_return_pct": 0.083,
+        "median_return_pct": -0.539,
+        "win_rate_pct": 46.2,
+        "profit_factor": 1.048,
+        "worst_trade_pct": -13.41,
+        "top_symbol_share_pct": 209.9,
+        "avg_held_days": 7.65
+      },
+      "oos": {
+        "trades": 52,
+        "avg_return_pct": 0.997,
+        "median_return_pct": 1.541,
+        "win_rate_pct": 61.5,
+        "profit_factor": 1.737,
+        "worst_trade_pct": -7.0,
+        "top_symbol_share_pct": 25.8,
+        "avg_held_days": 8.4
+      },
+      "forward": {
+        "trades": 11,
+        "avg_return_pct": -1.488,
+        "median_return_pct": -2.883,
+        "win_rate_pct": 27.3,
+        "profit_factor": 0.466,
+        "worst_trade_pct": -6.43,
+        "top_symbol_share_pct": null,
+        "avg_held_days": 5.82
+      }
+    },
+    "breakout_20d": {
+      "name": "20일 신고가 돌파",
+      "train": {
+        "trades": 2290,
+        "avg_return_pct": -0.256,
+        "median_return_pct": -1.36,
+        "win_rate_pct": 41.9,
+        "profit_factor": 0.856,
+        "worst_trade_pct": -24.5,
+        "top_symbol_share_pct": null,
+        "avg_held_days": 6.92
+      },
+      "oos": {
+        "trades": 971,
+        "avg_return_pct": -0.027,
+        "median_return_pct": -1.356,
+        "win_rate_pct": 44.4,
+        "profit_factor": 0.986,
+        "worst_trade_pct": -18.45,
+        "top_symbol_share_pct": null,
+        "avg_held_days": 6.77
+      },
+      "forward": {
+        "trades": 78,
+        "avg_return_pct": -0.912,
+        "median_return_pct": -2.566,
+        "win_rate_pct": 32.1,
+        "profit_factor": 0.629,
+        "worst_trade_pct": -6.45,
+        "top_symbol_share_pct": null,
+        "avg_held_days": 5.82
+      }
+    },
+    "donchian_55": {
+      "name": "Donchian 55일 돌파",
+      "train": {
+        "trades": 5604,
+        "avg_return_pct": 0.821,
+        "median_return_pct": -2.886,
+        "win_rate_pct": 32.6,
+        "profit_factor": 1.289,
+        "worst_trade_pct": -26.49,
+        "top_symbol_share_pct": 30.3,
+        "avg_held_days": 30.51
+      },
+      "oos": {
+        "trades": 2552,
+        "avg_return_pct": 1.332,
+        "median_return_pct": -3.293,
+        "win_rate_pct": 33.8,
+        "profit_factor": 1.407,
+        "worst_trade_pct": -20.81,
+        "top_symbol_share_pct": 26.3,
+        "avg_held_days": 30.23
+      },
+      "forward": {
+        "trades": 145,
+        "avg_return_pct": -3.027,
+        "median_return_pct": -4.24,
+        "win_rate_pct": 22.1,
+        "profit_factor": 0.268,
+        "worst_trade_pct": -13.51,
+        "top_symbol_share_pct": null,
+        "avg_held_days": 15.61
+      }
+    },
+    "larry_williams_vb": {
+      "name": "Larry Williams식 변동성 돌파",
+      "train": {
+        "trades": 11313,
+        "avg_return_pct": -0.363,
+        "median_return_pct": -0.36,
+        "win_rate_pct": 32.7,
+        "profit_factor": 0.44,
+        "worst_trade_pct": -10.52,
+        "top_symbol_share_pct": null,
+        "avg_held_days": 1
+      },
+      "oos": {
+        "trades": 5596,
+        "avg_return_pct": -0.328,
+        "median_return_pct": -0.34,
+        "win_rate_pct": 34.4,
+        "profit_factor": 0.513,
+        "worst_trade_pct": -10.92,
+        "top_symbol_share_pct": null,
+        "avg_held_days": 1
+      },
+      "forward": {
+        "trades": 550,
+        "avg_return_pct": -0.372,
+        "median_return_pct": -0.377,
+        "win_rate_pct": 33.6,
+        "profit_factor": 0.454,
+        "worst_trade_pct": -6.37,
+        "top_symbol_share_pct": null,
+        "avg_held_days": 1
+      }
+    },
+    "volume_breakout": {
+      "name": "거래량 동반 돌파",
+      "train": {
+        "trades": 407,
+        "avg_return_pct": 0.132,
+        "median_return_pct": 0.028,
+        "win_rate_pct": 50.1,
+        "profit_factor": 1.079,
+        "worst_trade_pct": -11.23,
+        "top_symbol_share_pct": 92.2,
+        "avg_held_days": 6.43
+      },
+      "oos": {
+        "trades": 156,
+        "avg_return_pct": -0.402,
+        "median_return_pct": -0.381,
+        "win_rate_pct": 48.1,
+        "profit_factor": 0.825,
+        "worst_trade_pct": -19.86,
+        "top_symbol_share_pct": null,
+        "avg_held_days": 6.75
+      },
+      "forward": {
+        "trades": 10,
+        "avg_return_pct": -0.662,
+        "median_return_pct": -1.716,
+        "win_rate_pct": 40.0,
+        "profit_factor": 0.729,
+        "worst_trade_pct": -11.01,
+        "top_symbol_share_pct": null,
+        "avg_held_days": 6.7
+      }
+    },
+    "sma200_20_squeeze": {
+      "name": "SMA200·20 스퀴즈",
+      "train": {
+        "trades": 216,
+        "avg_return_pct": 0.601,
+        "median_return_pct": -0.688,
+        "win_rate_pct": 42.6,
+        "profit_factor": 1.362,
+        "worst_trade_pct": -10.82,
+        "top_symbol_share_pct": 23.4,
+        "avg_held_days": 18.07
+      },
+      "oos": {
+        "trades": 66,
+        "avg_return_pct": 0.166,
+        "median_return_pct": -1.834,
+        "win_rate_pct": 42.4,
+        "profit_factor": 1.076,
+        "worst_trade_pct": -8.76,
+        "top_symbol_share_pct": 298.3,
+        "avg_held_days": 15.39
+      },
+      "forward": {
+        "trades": 4,
+        "avg_return_pct": -3.086,
+        "median_return_pct": -3.083,
+        "win_rate_pct": 0.0,
+        "profit_factor": 0.0,
+        "worst_trade_pct": -3.4,
+        "top_symbol_share_pct": null,
+        "avg_held_days": 8.75
+      }
+    },
+    "momentum_pullback": {
+      "name": "모멘텀 눌림 지속",
+      "train": {
+        "trades": 70,
+        "avg_return_pct": 0.843,
+        "median_return_pct": 1.279,
+        "win_rate_pct": 58.6,
+        "profit_factor": 1.545,
+        "worst_trade_pct": -7.96,
+        "top_symbol_share_pct": 23.9,
+        "avg_held_days": 8.4
+      },
+      "oos": {
+        "trades": 33,
+        "avg_return_pct": -0.154,
+        "median_return_pct": -0.251,
+        "win_rate_pct": 48.5,
+        "profit_factor": 0.933,
+        "worst_trade_pct": -10.99,
+        "top_symbol_share_pct": null,
+        "avg_held_days": 7.15
+      },
+      "forward": {
+        "trades": 4,
+        "avg_return_pct": -0.614,
+        "median_return_pct": -1.37,
+        "win_rate_pct": 50.0,
+        "profit_factor": 0.733,
+        "worst_trade_pct": -5.76,
+        "top_symbol_share_pct": null,
+        "avg_held_days": 10.5
+      }
+    }
+  },
+  "limitations": [
+    "지정가·돌파 매수는 일봉으로만 체결을 판정합니다. 체결된 날의 목표가 도달은 순서를 알 수 없어 인정하지 않습니다.",
+    "체결되지 않은 신호는 평균에서 빠집니다. 체결률이 낮으면 같은 기간에 거래 기회가 줄어듭니다.",
+    "현재 유동성 상위 종목을 과거로 되감은 풀이라 생존편향이 있습니다."
+  ]
+}

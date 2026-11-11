@@ -15,7 +15,7 @@ def _scan(*, elite=False, score=90.0, elite_score=80.0, results=True):
                 'bb_pos': 17.2,
                 'strategy_signals': [
                     {
-                        'strategy_id': 'rsi2_trend_reversion',
+                        'strategy_id': 'momentum_pullback',
                         'strategy_name': 'RSI2 추세내 과매도',
                         'strategy_score': score,
                         'elite_score': elite_score,
@@ -32,7 +32,7 @@ def _scan(*, elite=False, score=90.0, elite_score=80.0, results=True):
                     }
                 ],
                 'strategy_trade_plans': {
-                    'rsi2_trend_reversion': {
+                    'momentum_pullback': {
                         'entry_low': 112.8,
                         'entry_high': 113.4,
                         'target': 116.2,

@@ -29,21 +29,23 @@ def _fake_state(closed=0, *, live=False, errors=None):
 def test_current_forward_gate_waits_for_real_forward_sample():
     report = fr.build_report()
     assert report['status'] == 'FORWARD_PROMOTION_REVIEW'
-    assert report['gate'] == 'WAIT_FORWARD_SAMPLE'
     assert report['minimum_closed_trades_required'] == 30
-    # Forward samples accumulate over time; zero is not a permanent invariant.
-    assert 0 <= report['minimum_closed_trades_observed'] < report['minimum_closed_trades_required']
+    # Forward samples accumulate over time, so the gate follows the slowest challenger.
+    slowest = report['minimum_closed_trades_observed']
+    waiting = slowest < report['minimum_closed_trades_required']
+    assert report['gate'] == ('WAIT_FORWARD_SAMPLE' if waiting else 'HUMAN_REVIEW_READY')
     assert report['paper_infrastructure']['ready'] is True
     assert report['paper_infrastructure']['mode'] == 'LOCAL_SIMULATED_ONLY'
     assert report['paper_infrastructure']['real_broker_connected'] is False
-    assert report['official_paper_strategy_ready'] is False
+    assert report['official_paper_strategy_ready'] is (not waiting)
     assert report['automatic_promotion_enabled'] is False
     assert report['live_order_submission_enabled'] is False
     assert len(report['challengers']) == 4
     assert all(x['safety_pass'] for x in report['challengers'])
-    assert not any(x['sample_ready'] for x in report['challengers'])
+    assert all(x['sample_ready'] == (x['closed_trades'] >= 30) for x in report['challengers'])
     assert {(x['challenger'], x['baseline']) for x in report['comparisons']} == {('v2', 'v1'), ('v3', 'v2'), ('v4', 'v2')}
-    assert not any(x['judgement_allowed'] for x in report['comparisons'])
+    ready = {x['key'] for x in report['challengers'] if x['sample_ready']}
+    assert all(x['judgement_allowed'] == ({x['challenger'], x['baseline']} <= ready) for x in report['comparisons'])
 
 
 def test_sample_threshold_is_coarse_and_predeclared():

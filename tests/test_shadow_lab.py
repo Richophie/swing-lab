@@ -6,7 +6,7 @@ def _item(symbol, rr, score=90):
     return {
         'market_date': '2026-08-13',
         'symbol': symbol,
-        'strategy_id': 'rsi2_trend_reversion',
+        'strategy_id': 'momentum_pullback',
         'strategy_name': 'RSI2 추세내 과매도',
         'score': score,
         'risk_reward': rr,
@@ -28,7 +28,7 @@ def _live_scan_without_raw_atr(symbol='AAA'):
             {
                 'symbol': symbol,
                 'strategy_trade_plans': {
-                    'rsi2_trend_reversion': {
+                    'momentum_pullback': {
                         'entry_low': 99.0,
                         'entry_high': 101.0,
                         'target': 106.0,

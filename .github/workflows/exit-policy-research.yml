@@ -1,0 +1,78 @@
+name: Exit Policy Research
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'exit_policy_research.py'
+      - 'exit_challenger_shadow.py'
+      - 'regime_rank_research.py'
+      - 'entry_timing_research.py'
+      - 'tests/test_entry_timing_research.py'
+      - 'tests/test_regime_rank_research.py'
+      - 'forward_diagnostics.py'
+      - 'tests/test_exit_policy_research.py'
+      - 'tests/test_forward_diagnostics.py'
+      - 'static/forward_diagnostics_ui.js'
+      - '.github/workflows/exit-policy-research.yml'
+  schedule:
+    # After the daily backtest research pipeline has refreshed the replay pool.
+    - cron: '50 23 * * 1-5'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: exit-policy-research
+  cancel-in-progress: true
+
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: pip install -r requirements.txt
+      - name: Compile
+        run: python -m py_compile forward_diagnostics.py exit_policy_research.py exit_challenger_shadow.py regime_rank_research.py entry_timing_research.py
+      - name: JavaScript syntax
+        run: node --check static/forward_diagnostics_ui.js
+      - name: Tests
+        run: |
+          PYTHONPATH=. python tests/test_forward_diagnostics.py
+          PYTHONPATH=. python tests/test_exit_policy_research.py
+          PYTHONPATH=. python tests/test_regime_rank_research.py
+          PYTHONPATH=. python tests/test_entry_timing_research.py
+      - name: Rebuild exit policy research from the replay pool
+        run: python exit_policy_research.py
+      - name: Rebuild market gate and daily top-N research
+        run: python regime_rank_research.py
+      - name: Rebuild entry timing research
+        run: python entry_timing_research.py
+      - name: Validate research-only contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('static/exit_policy_research.json').read_text(encoding='utf-8'))
+          assert d['research_only'] is True and d['production_rules_mutated'] is False, d
+          assert d['train_end_exclusive'] < d['forward_start_date'], d
+          print({k:(v['train_pick'],v['train_pick_passes_oos']) for k,v in d['strategies'].items()})
+          PY
+      - name: Commit research snapshot
+        if: github.event_name != 'pull_request'
+        run: |
+          git config user.name "swing-lab-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add static/exit_policy_research.json static/regime_rank_research.json static/entry_timing_research.json
+          if git diff --cached --quiet; then
+            echo "No data changes"
+          else
+            git commit -m "data: refresh exit, market gate and ranking research [skip render]"
+            git pull --rebase origin main
+            git push
+          fi

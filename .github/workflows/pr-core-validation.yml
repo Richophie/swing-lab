@@ -38,6 +38,8 @@ on:
       - 'signal_log.py'
       - 'journal.py'
       - 'app.py'
+      - 'static/app/**'
+      - 'tests/test_app_shell.py'
       - 'qa.py'
       - 'static/dashboard.html'
       - 'static/dashboard.js'
@@ -150,6 +152,8 @@ jobs:
         run: PYTHONPATH=. python tests/test_repo_data.py
       - name: Startup and deploy stability tests
         run: PYTHONPATH=. python tests/test_startup_stability.py
+      - name: New app shell tests
+        run: node --check static/app/app.js && PYTHONPATH=. python tests/test_app_shell.py
       - name: Detail, Backtest V2 and Paper UI regression test
         run: PYTHONPATH=. python tests/test_ui_wiring.py
       - name: Corporate-action price-basis audit

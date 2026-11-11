@@ -148,7 +148,10 @@ def _paper_state_path():
     return PAPER_CLIENT_DIR/f'{token}.json'
 
 @app.route('/')
-def index():return send_from_directory('static','dashboard.html')
+def index():return send_from_directory('static/app','index.html')
+# The original research dashboard stays available as the advanced "연구실" screen.
+@app.route('/classic')
+def classic():return send_from_directory('static','dashboard.html')
 @app.route('/health')
 def health():return jsonify({'ok':True,'version':APP_VERSION,'core':CORE_VERSION,'architecture':'clean'})
 @app.route('/api/version')

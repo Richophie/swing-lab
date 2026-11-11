@@ -24,7 +24,7 @@ def main():
     check(event_bucket({})=='LEGACY_UNTRACKED', 'legacy records should stay explicit')
 
     row={'symbol':'AAA','name_ko':'AAA','security_name':'AAA Inc','rsi':40,'d120':2,'bb_pos':10,'event_risk':dict(snap),'sparkline':[],'bb_high_spark':[],'bb_low_spark':[]}
-    sig={'strategy_id':'rsi2_trend_reversion','strategy_name':'RSI2','elite_score':80,'strategy_score':90,'evidence':'x','selection_reason':'y'}
+    sig={'strategy_id':'momentum_pullback','strategy_name':'RSI2','elite_score':80,'strategy_score':90,'evidence':'x','selection_reason':'y'}
     plan={'entry_low':10,'entry_high':10.2,'target':11,'stop':9,'target_pct':8,'stop_pct':10,'target_days':{'days_low':1,'days_high':5},'risk_reward':1.2}
     frozen=journal.freeze_signal(row,sig,plan,'2026-08-13T21:00:00+00:00','2026-08-13')
     check(frozen['event_risk_snapshot']['risk_code']=='WITHIN_HOLD', 'official journal must freeze event risk')
@@ -40,13 +40,13 @@ def main():
         scan_path=Path(td)/'latest_scan.json'
         scan_path.write_text(json.dumps({'scanned_at':'2026-08-13T09:00:00+00:00','results':[{
             'symbol':'AAA','event_risk':dict(snap),
-            'strategy_signals':[{'strategy_id':'rsi2_trend_reversion','strategy_name':'RSI2','elite_pass':True,'elite_score':80,'strategy_score':90}],
-            'strategy_trade_plans':{'rsi2_trend_reversion':plan},'trade_plan':plan,
+            'strategy_signals':[{'strategy_id':'momentum_pullback','strategy_name':'RSI2','elite_pass':True,'elite_score':80,'strategy_score':90}],
+            'strategy_trade_plans':{'momentum_pullback':plan},'trade_plan':plan,
         }]}),encoding='utf-8')
         old=pbs.SCAN_FILE
         try:
             pbs.SCAN_FILE=scan_path
-            info=pbs.latest_plan('AAA','rsi2_trend_reversion')
+            info=pbs.latest_plan('AAA','momentum_pullback')
         finally:
             pbs.SCAN_FILE=old
         check(info['event_risk_snapshot']['risk_code']=='WITHIN_HOLD', 'Paper latest-plan metadata should carry event snapshot')

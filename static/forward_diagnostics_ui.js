@@ -1,0 +1,71 @@
+(()=>{
+const PAGE='forwarddiag';
+const $=s=>document.querySelector(s);
+const N=v=>Number(v)||0;
+const has=v=>v!==null&&v!==undefined;
+const pct=v=>has(v)?`${N(v)>=0?'+':''}${N(v).toFixed(2)}%`:'—';
+const share=v=>has(v)?`${N(v).toFixed(0)}%`:'—';
+const tone=v=>N(v)>=0?'up':'down';
+const SEVERITY={high:'먼저 볼 것',medium:'확인 필요',low:'참고'};
+const OUTCOME={SUCCESS:'목표가 도달',STOP:'손절',EXPIRED_GAIN:'기간 만료 · 이익',EXPIRED_LOSS:'기간 만료 · 손실',EXPIRED_FLAT:'기간 만료 · 본전'};
+
+function ensurePage(){
+  const shell=$('main.shell');if(!shell)return null;
+  let page=document.getElementById(PAGE);
+  if(!page){page=document.createElement('section');page.id=PAGE;page.className='fd-page';page.innerHTML='<article class="panel fd-panel"><div id="forwardDiagBody"><div class="status">실전 성적표를 불러오는 중…</div></div></article>';const detail=document.getElementById('detail');detail?shell.insertBefore(page,detail):shell.appendChild(page)}
+  const nav=$('.nav');if(!nav)return page;
+  let b=nav.querySelector(`[data-page="${PAGE}"]`);
+  if(!b){b=document.createElement('button');b.dataset.page=PAGE;b.textContent='실전 성적표';nav.appendChild(b)}
+  b.onclick=e=>{e.preventDefault();show(page,b);load()};
+  // Other tabs keep their own show/hide lists, so this page hides itself when they are clicked.
+  if(!nav.dataset.fdBound){nav.dataset.fdBound='1';nav.addEventListener('click',e=>{const x=e.target.closest('button');if(x&&x.dataset.page!==PAGE)page.style.display='none'},true)}
+  return page
+}
+function show(page,button){
+  document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('on',x===button));
+  document.querySelectorAll('main.shell > section').forEach(x=>{x.style.display=x===page?'block':'none'});
+}
+function kpi(label,value,cls,hint){return `<div class="fd-kpi"><span>${label}</span><b class="${cls||''}">${value}</b><small>${hint||''}</small></div>`}
+function finding(f){return `<li class="fd-finding is-${f.severity}"><em>${SEVERITY[f.severity]||''}</em><div><b>${f.title}</b><p>${f.evidence}</p><small>다음 단계 · ${f.next_step}</small></div></li>`}
+function row(name,m){return `<tr><th>${name}</th><td>${m.closed}</td><td class="${tone(m.avg_return_pct)}">${pct(m.avg_return_pct)}</td><td>${share(m.win_rate_pct)}</td><td>${share(m.target_hit_pct)}</td><td>${share(m.stop_pct)}</td><td>${has(m.profit_factor)?N(m.profit_factor).toFixed(2):'—'}</td></tr>`}
+function table(title,note,rows){return `<div class="fd-box"><h3>${title}</h3><p>${note}</p><div class="fd-scroll"><table class="fd-table"><thead><tr><th></th><th>종료</th><th>평균 수익률</th><th>이익 비율</th><th>목표가 도달</th><th>손절</th><th>PF</th></tr></thead><tbody>${rows.join('')}</tbody></table></div></div>`}
+function reachBars(t){return (t.mfe_reach_by_level||[]).map(x=>`<div class="fd-bar"><span>+${x.level_pct}% 이상</span><div><i style="width:${Math.max(0,Math.min(100,N(x.reached_pct)))}%"></i></div><b>${share(x.reached_pct)}</b></div>`).join('')}
+function policyRow(key,p,pick){const o=p.oos||{},t=p.train||{};const verdict=key==='baseline'?'기준':!p.passes_gate?'탈락':key===pick?'<b class="fd-pass">통과</b>':'미선정';return `<tr class="${key===pick&&p.passes_gate?'is-pick':''}"><th>${p.label}<small>${p.note}</small></th><td class="${tone(t.avg_return_pct)}">${pct(t.avg_return_pct)}</td><td class="${tone(o.avg_return_pct)}">${pct(o.avg_return_pct)}</td><td>${share(o.win_rate_pct)}</td><td>${has(o.avg_held_bars)?N(o.avg_held_bars).toFixed(1)+'일':'—'}</td><td>${verdict}</td></tr>`}
+function exitResearch(x,shadow){
+  if(!x||!x.strategies)return '';
+  const blocks=Object.values(x.strategies).map(s=>{const picked=s.train_pick_passes_oos?s.policies[s.train_pick].label:null;return `<div class="fd-exit"><h4>${s.name} <span class="${picked?'fd-pass':'fd-muted'}">${picked?`통과 · ${picked}`:'통과한 안 없음'}</span></h4><div class="fd-scroll"><table class="fd-table fd-policy"><thead><tr><th></th><th>학습구간 평균</th><th>검증구간 평균</th><th>검증 이익 비율</th><th>평균 보유</th><th>판정</th></tr></thead><tbody>${Object.entries(s.policies).map(([k,p])=>policyRow(k,p,s.train_pick)).join('')}</tbody></table></div></div>`}).join('');
+  const b=(shadow||{}).baseline||{},c=(shadow||{}).challenger||{};
+  const track=shadow?`<div class="fd-shadow"><b>가상 추적 중 · ${shadow.policy.label}</b><p>${shadow.freeze_date}부터 나오는 확인형 눌림반등 추천을 현재 규칙과 새 규칙으로 나란히 계산합니다. 실제 주문은 없고, 종료 ${shadow.minimum_closed_trades_required}건이 쌓이기 전에는 결론을 내지 않습니다.</p><div class="fd-kpis is-two">${kpi('현재 규칙',b.trades?pct(b.avg_return_pct):'대기 중',b.trades?tone(b.avg_return_pct):'',`종료 ${b.trades||0}건`)}${kpi('새 규칙',c.trades?pct(c.avg_return_pct):'대기 중',c.trades?tone(c.avg_return_pct):'',`종료 ${c.trades||0}건 · 보유 중 ${c.open||0}건`)}</div></div>`:'';
+  return `<div class="fd-box"><h3>청산 규칙을 바꾸면 나아질까</h3><p>같은 추천 신호에 파는 방법만 바꿔 과거 데이터로 비교했습니다. 학습구간(~${x.train_end_exclusive} 이전)에서 가장 좋은 안을 하나 고르고, 그 안이 검증구간에서도 현재 규칙보다 나을 때만 통과입니다. 수수료·슬리피지 포함.</p>${blocks}${track}<div class="fd-foot">${(x.limitations||[]).join(' ')}</div></div>`
+}
+function gateRow(key,p,pick,base){const o=p.oos||{},t=p.train||{};const verdict=key===base?'기준':!p.passes_gate?'탈락':key===pick?'<b class="fd-pass">통과</b>':'미선정';return `<tr><th>${p.label}<small>${p.note}</small></th><td class="${tone(t.avg_return_pct)}">${pct(t.avg_return_pct)}</td><td class="${tone(o.avg_return_pct)}">${pct(o.avg_return_pct)}</td><td>${share(o.win_rate_pct)}</td><td>${o.trades||0}건</td><td>${verdict}</td></tr>`}
+function gateTable(rows,pick,base){return `<div class="fd-scroll"><table class="fd-table fd-policy"><thead><tr><th></th><th>학습구간 평균</th><th>검증구간 평균</th><th>검증 이익 비율</th><th>검증 건수</th><th>판정</th></tr></thead><tbody>${Object.entries(rows).map(([k,p])=>gateRow(k,p,pick,base)).join('')}</tbody></table></div>`}
+function regimeResearch(g,top){
+  if(!g||!g.regime_all_strategies)return '';
+  const r=g.regime_all_strategies,k=g.ranking,a=(top||{}).all||{},t=(top||{}).top_n_by_elite_score||{};
+  const live=t.closed?`<p class="fd-live">실제 추천 기록에서는 전체 ${a.closed}건 평균 ${pct(a.avg_return_pct)}, 하루 엄선점수 상위 ${top.n}개만 골랐다면 ${t.closed}건 평균 ${pct(t.avg_return_pct)}였습니다.</p>`:'';
+  return `<div class="fd-box"><h3>시장이 나쁠 때 쉬거나, 하루 몇 개만 고르면 나아질까</h3><p>같은 과거 신호에서 추천을 걸러내는 조건만 바꿔 비교했습니다. 판정 방식은 위 청산 규칙 비교와 같습니다.</p><div class="fd-exit"><h4>시장 조건 <span class="${r.train_pick_passes_oos?'fd-pass':'fd-muted'}">${r.train_pick_passes_oos?`통과 · ${r.gates[r.train_pick].label}`:'통과한 조건 없음'}</span></h4>${gateTable(r.gates,r.train_pick,'current')}</div><div class="fd-exit"><h4>하루 상위 ${k.top_n}개만 <span class="fd-muted">과거 풀은 하루 평균 ${g.avg_signals_per_day}건이라 차이가 작게 나옵니다</span></h4>${gateTable(k.rankers,k.train_pick,'all')}${live}</div><div class="fd-foot">${(g.limitations||[]).join(' ')}</div></div>`
+}
+function render(d,x,shadow,g){
+  const body=document.getElementById('forwardDiagBody');if(!body)return;
+  const o=d.overall||{},t=d.target_reachability||{},s=d.stop_recovery||{},names=d.strategy_names||{};
+  if(!o.closed){body.innerHTML='<div class="status">아직 결과가 확정된 추천이 없습니다.</div>';return}
+  const list=(d.findings||[]).map(finding).join('');
+  body.innerHTML=`
+    <div class="fd-hero"><div class="eyebrow">마감 확정 추천 · 실제 결과</div><h2>추천 ${o.closed}건은 실제로 어떻게 됐을까</h2><p>${d.first_market_date||''} ~ ${d.last_market_date||''} 사이에 마감 후 확정된 추천만 셉니다. 백테스트가 아니라 추천 다음 날부터 실제 주가로 판정한 결과입니다.</p></div>
+    <div class="fd-kpis">${kpi('한 건당 평균 수익률',pct(o.avg_return_pct),tone(o.avg_return_pct),'수수료 전 · 진입구간 중앙 기준')}${kpi('이익으로 끝난 비율',share(o.win_rate_pct),'',`${o.closed}건 중`)}${kpi('목표가 도달',share(o.target_hit_pct),'','목표가를 실제로 찍은 비율')}${kpi('손절',share(o.stop_pct),'','손절가에 걸린 비율')}${kpi('실제 손익비',has(o.realized_reward_risk)?`${N(o.realized_reward_risk).toFixed(2)} : 1`:'—','',`표시 손익비 중앙값 ${has(t.median_planned_reward_risk)?t.median_planned_reward_risk:'—'} : 1`)}</div>
+    <div class="fd-box"><h3>지금 보이는 문제</h3><p>${d.review_ready?'숫자로 확인된 것만 적습니다. 운영 규칙은 여기서 바뀌지 않고, 고칠 안은 따로 검증합니다.':`종료 ${d.minimum_closed_for_review}건이 쌓이면 진단을 표시합니다.`}</p><ul class="fd-findings">${list||'<li class="fd-none">표시할 문제가 없습니다.</li>'}</ul></div>
+    <div class="fd-grid"><div class="fd-box"><h3>보유기간 안에 얼마나 올랐나</h3><p>추천 후 관찰기간(중앙값 ${has(t.median_bars_observed)?t.median_bars_observed:'—'}거래일) 동안 한 번이라도 찍은 최고 상승폭입니다. 목표가 중앙값은 +${has(t.median_target_pct)?t.median_target_pct:'—'}%입니다.</p>${reachBars(t)}</div>
+    <div class="fd-box"><h3>손절된 종목은 그 뒤 어떻게 됐나</h3><p>${s.mark_date||''} 종가 한 시점 기준이며, 검증된 매매 규칙이 아닙니다.</p><div class="fd-kpis is-two">${kpi('지금 진입가 위에 있는 비율',share(s.stopped_now_above_entry_pct),'',`손절 ${s.stopped||0}건 중`)}${kpi('지금까지 들고 있었다면',pct(s.stopped_avg_mark_return_pct),tone(s.stopped_avg_mark_return_pct),'손절 종목 평균')}</div></div></div>
+    ${table('전략별','같은 기간, 전략마다 따로 센 결과입니다.',Object.entries(d.by_strategy||{}).map(([k,m])=>row(names[k]||k,m)))}
+    ${table('월별','시장 흐름에 따라 달라지는지 봅니다.',Object.entries(d.by_month||{}).map(([k,m])=>row(k,m)))}
+    ${table('엄선점수별','점수가 높을수록 결과가 좋아야 정상입니다.',((d.score_calibration||{}).buckets||[]).map(m=>row(`${m.score_from}~${m.score_to}점`,m)))}
+    ${table('끝난 방식별','추천이 어떤 식으로 끝났는지입니다.',Object.entries(d.by_outcome||{}).map(([k,m])=>row(OUTCOME[k]||k,m)))}
+    ${exitResearch(x,shadow)}
+    ${regimeResearch(g,d.daily_top_n)}
+    <div class="fd-foot">PF는 번 돈 합계 ÷ 잃은 돈 합계로, 1보다 크면 이익입니다. 이 화면은 기록을 읽기만 하며 추천 규칙·주문에 영향을 주지 않습니다.</div>`;
+}
+async function load(){const body=document.getElementById('forwardDiagBody');if(!body)return;try{const r=await fetch(`/static/forward_diagnostics.json?ts=${Date.now()}`,{cache:'no-store'});if(!r.ok)throw new Error(String(r.status));const extra=await Promise.all(['exit_policy_research.json','exit_challenger_shadow.json','regime_rank_research.json'].map(f=>fetch(`/static/${f}?ts=${Date.now()}`,{cache:'no-store'}).then(y=>y.ok?y.json():null).catch(()=>null)));render(await r.json(),extra[0],extra[1],extra[2])}catch(e){body.innerHTML='<div class="status">실전 성적표를 불러오지 못했습니다. 다음 자동 스캔 후 다시 확인해주세요.</div>'}}
+function bind(){ensurePage()}
+new MutationObserver(bind).observe(document.documentElement,{childList:true,subtree:true});bind();const timer=setInterval(bind,800);setTimeout(()=>clearInterval(timer),20000);
+})();

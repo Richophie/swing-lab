@@ -1,0 +1,6546 @@
+{
+  "version": 1,
+  "generated_at": "2026-11-11T06:59:11+00:00",
+  "status": "ENTRY_FEATURE_RESEARCH",
+  "research_only": true,
+  "production_rules_mutated": false,
+  "pool_generated_at": "2026-11-11T06:58:45+00:00",
+  "symbol_count": 489,
+  "signal_count": 10932,
+  "train_end_exclusive": "2024-04-16",
+  "forward_start_date": "2026-08-14",
+  "gate": {
+    "min_train_trades": 150,
+    "min_oos_trades": 60,
+    "min_stable_spread_pct": 0.3,
+    "rule": "TRAIN 3분위로 자르고 TRAIN에서 규칙 하나를 고른 뒤 OOS는 통과/탈락만 판정"
+  },
+  "strategies": {
+    "confirmed_pullback": {
+      "signals": 1577,
+      "baseline": {
+        "train": {
+          "trades": 1023,
+          "avg_return_pct": -0.321,
+          "win_rate_pct": 46.6,
+          "profit_factor": 0.823,
+          "stop_pct": 33.8
+        },
+        "oos": {
+          "trades": 465,
+          "avg_return_pct": -0.116,
+          "win_rate_pct": 44.1,
+          "profit_factor": 0.927,
+          "stop_pct": 31.4
+        },
+        "forward": {
+          "trades": 89,
+          "avg_return_pct": -0.708,
+          "win_rate_pct": 36.0,
+          "profit_factor": 0.622,
+          "stop_pct": 47.2
+        }
+      },
+      "candidate_rules_compared": 52,
+      "train_pick": {
+        "feature": "plan_reward_risk",
+        "label": "계획 손익비",
+        "shape": "keep_best",
+        "direction": "높을수록 좋음",
+        "cuts": [
+          1.96975,
+          2.80611
+        ],
+        "train": {
+          "trades": 341,
+          "avg_return_pct": 0.302,
+          "win_rate_pct": 51.6,
+          "profit_factor": 1.206,
+          "stop_pct": 28.2
+        },
+        "oos": {
+          "trades": 166,
+          "avg_return_pct": 0.006,
+          "win_rate_pct": 47.6,
+          "profit_factor": 1.004,
+          "stop_pct": 25.3
+        },
+        "forward": {
+          "trades": 38,
+          "avg_return_pct": -0.766,
+          "win_rate_pct": 36.8,
+          "profit_factor": 0.6,
+          "stop_pct": 42.1
+        },
+        "passes_gate": true,
+        "fail_reasons": []
+      },
+      "train_pick_passes_oos": true,
+      "rules_passing_gate": 4,
+      "stable_features": [
+        "close_in_range",
+        "dollar_volume_log",
+        "ret20",
+        "ret60",
+        "ret5",
+        "dist_sma120"
+      ],
+      "features": {
+        "body_atr": {
+          "label": "당일 몸통 / ATR",
+          "cuts": [
+            0.22703,
+            0.58267
+          ],
+          "train": [
+            {
+              "trades": 341,
+              "avg_return_pct": 0.284,
+              "win_rate_pct": 52.2,
+              "profit_factor": 1.199,
+              "stop_pct": 29.9
+            },
+            {
+              "trades": 341,
+              "avg_return_pct": -0.263,
+              "win_rate_pct": 44.0,
+              "profit_factor": 0.847,
+              "stop_pct": 32.6
+            },
+            {
+              "trades": 341,
+              "avg_return_pct": -0.984,
+              "win_rate_pct": 43.7,
+              "profit_factor": 0.574,
+              "stop_pct": 39.0
+            }
+          ],
+          "oos": [
+            {
+              "trades": 181,
+              "avg_return_pct": 0.052,
+              "win_rate_pct": 45.3,
+              "profit_factor": 1.035,
+              "stop_pct": 30.4
+            },
+            {
+              "trades": 179,
+              "avg_return_pct": -0.577,
+              "win_rate_pct": 39.7,
+              "profit_factor": 0.692,
+              "stop_pct": 36.3
+            },
+            {
+              "trades": 105,
+              "avg_return_pct": 0.381,
+              "win_rate_pct": 49.5,
+              "profit_factor": 1.295,
+              "stop_pct": 24.8
+            }
+          ],
+          "forward": [
+            {
+              "trades": 49,
+              "avg_return_pct": -0.168,
+              "win_rate_pct": 38.8,
+              "profit_factor": 0.907,
+              "stop_pct": 53.1
+            },
+            {
+              "trades": 25,
+              "avg_return_pct": -1.653,
+              "win_rate_pct": 24.0,
+              "profit_factor": 0.234,
+              "stop_pct": 48.0
+            },
+            {
+              "trades": 15,
+              "avg_return_pct": -0.899,
+              "win_rate_pct": 46.7,
+              "profit_factor": 0.451,
+              "stop_pct": 26.7
+            }
+          ],
+          "train_spread_pct": -1.268,
+          "oos_spread_pct": 0.329,
+          "higher_is_better": false,
+          "stable": false
+        },
+        "close_in_range": {
+          "label": "당일 종가의 고저 범위 안 위치",
+          "cuts": [
+            0.62963,
+            0.84906
+          ],
+          "train": [
+            {
+              "trades": 340,
+              "avg_return_pct": 0.05,
+              "win_rate_pct": 47.4,
+              "profit_factor": 1.033,
+              "stop_pct": 30.9
+            },
+            {
+              "trades": 340,
+              "avg_return_pct": 0.036,
+              "win_rate_pct": 48.8,
+              "profit_factor": 1.022,
+              "stop_pct": 31.2
+            },
+            {
+              "trades": 341,
+              "avg_return_pct": -1.057,
+              "win_rate_pct": 43.4,
+              "profit_factor": 0.552,
+              "stop_pct": 39.6
+            }
+          ],
+          "oos": [
+            {
+              "trades": 171,
+              "avg_return_pct": -0.18,
+              "win_rate_pct": 41.5,
+              "profit_factor": 0.897,
+              "stop_pct": 37.4
+            },
+            {
+              "trades": 162,
+              "avg_return_pct": 0.329,
+              "win_rate_pct": 50.0,
+              "profit_factor": 1.251,
+              "stop_pct": 26.5
+            },
+            {
+              "trades": 132,
+              "avg_return_pct": -0.578,
+              "win_rate_pct": 40.2,
+              "profit_factor": 0.67,
+              "stop_pct": 29.5
+            }
+          ],
+          "forward": [
+            {
+              "trades": 38,
+              "avg_return_pct": -0.163,
+              "win_rate_pct": 39.5,
+              "profit_factor": 0.909,
+              "stop_pct": 52.6
+            },
+            {
+              "trades": 31,
+              "avg_return_pct": -1.523,
+              "win_rate_pct": 25.8,
+              "profit_factor": 0.276,
+              "stop_pct": 45.2
+            },
+            {
+              "trades": 20,
+              "avg_return_pct": -0.48,
+              "win_rate_pct": 45.0,
+              "profit_factor": 0.714,
+              "stop_pct": 40.0
+            }
+          ],
+          "train_spread_pct": -1.107,
+          "oos_spread_pct": -0.398,
+          "higher_is_better": false,
+          "stable": true
+        },
+        "plan_reward_risk": {
+          "label": "계획 손익비",
+          "cuts": [
+            1.96975,
+            2.80611
+          ],
+          "train": [
+            {
+              "trades": 341,
+              "avg_return_pct": -0.757,
+              "win_rate_pct": 46.0,
+              "profit_factor": 0.648,
+              "stop_pct": 37.8
+            },
+            {
+              "trades": 341,
+              "avg_return_pct": -0.508,
+              "win_rate_pct": 42.2,
+              "profit_factor": 0.723,
+              "stop_pct": 35.5
+            },
+            {
+              "trades": 341,
+              "avg_return_pct": 0.302,
+              "win_rate_pct": 51.6,
+              "profit_factor": 1.206,
+              "stop_pct": 28.2
+            }
+          ],
+          "oos": [
+            {
+              "trades": 143,
+              "avg_return_pct": 0.121,
+              "win_rate_pct": 45.5,
+              "profit_factor": 1.084,
+              "stop_pct": 28.0
+            },
+            {
+              "trades": 156,
+              "avg_return_pct": -0.462,
+              "win_rate_pct": 39.1,
+              "profit_factor": 0.752,
+              "stop_pct": 41.0
+            },
+            {
+              "trades": 166,
+              "avg_return_pct": 0.006,
+              "win_rate_pct": 47.6,
+              "profit_factor": 1.004,
+              "stop_pct": 25.3
+            }
+          ],
+          "forward": [
+            {
+              "trades": 22,
+              "avg_return_pct": -1.034,
+              "win_rate_pct": 27.3,
+              "profit_factor": 0.537,
+              "stop_pct": 59.1
+            },
+            {
+              "trades": 29,
+              "avg_return_pct": -0.384,
+              "win_rate_pct": 41.4,
+              "profit_factor": 0.752,
+              "stop_pct": 44.8
+            },
+            {
+              "trades": 38,
+              "avg_return_pct": -0.766,
+              "win_rate_pct": 36.8,
+              "profit_factor": 0.6,
+              "stop_pct": 42.1
+            }
+          ],
+          "train_spread_pct": 1.059,
+          "oos_spread_pct": -0.115,
+          "higher_is_better": true,
+          "stable": false
+        },
+        "volume_5d_vs_20d": {
+          "label": "최근 5일 거래량 / 20일 평균",
+          "cuts": [
+            1.12578,
+            1.32241
+          ],
+          "train": [
+            {
+              "trades": 341,
+              "avg_return_pct": -0.009,
+              "win_rate_pct": 44.3,
+              "profit_factor": 0.994,
+              "stop_pct": 36.7
+            },
+            {
+              "trades": 341,
+              "avg_return_pct": 0.075,
+              "win_rate_pct": 53.7,
+              "profit_factor": 1.052,
+              "stop_pct": 28.4
+            },
+            {
+              "trades": 341,
+              "avg_return_pct": -1.029,
+              "win_rate_pct": 41.9,
+              "profit_factor": 0.584,
+              "stop_pct": 36.4
+            }
+          ],
+          "oos": [
+            {
+              "trades": 202,
+              "avg_return_pct": 0.095,
+              "win_rate_pct": 47.0,
+              "profit_factor": 1.069,
+              "stop_pct": 26.7
+            },
+            {
+              "trades": 134,
+              "avg_return_pct": -0.397,
+              "win_rate_pct": 41.0,
+              "profit_factor": 0.774,
+              "stop_pct": 38.1
+            },
+            {
+              "trades": 129,
+              "avg_return_pct": -0.154,
+              "win_rate_pct": 42.6,
+              "profit_factor": 0.914,
+              "stop_pct": 31.8
+            }
+          ],
+          "forward": [
+            {
+              "trades": 41,
+              "avg_return_pct": -1.042,
+              "win_rate_pct": 36.6,
+              "profit_factor": 0.394,
+              "stop_pct": 46.3
+            },
+            {
+              "trades": 26,
+              "avg_return_pct": -0.445,
+              "win_rate_pct": 30.8,
+              "profit_factor": 0.759,
+              "stop_pct": 50.0
+            },
+            {
+              "trades": 22,
+              "avg_return_pct": -0.397,
+              "win_rate_pct": 40.9,
+              "profit_factor": 0.819,
+              "stop_pct": 45.5
+            }
+          ],
+          "train_spread_pct": -1.02,
+          "oos_spread_pct": -0.249,
+          "higher_is_better": false,
+          "stable": false
+        },
+        "up_days_5": {
+          "label": "최근 5일 중 상승 마감 일수",
+          "cuts": [
+            2.0,
+            3.0
+          ],
+          "train": [
+            {
+              "trades": 186,
+              "avg_return_pct": -1.021,
+              "win_rate_pct": 44.1,
+              "profit_factor": 0.575,
+              "stop_pct": 43.5
+            },
+            {
+              "trades": 460,
+              "avg_return_pct": -0.17,
+              "win_rate_pct": 45.7,
+              "profit_factor": 0.903,
+              "stop_pct": 32.8
+            },
+            {
+              "trades": 377,
+              "avg_return_pct": -0.159,
+              "win_rate_pct": 49.1,
+              "profit_factor": 0.901,
+              "stop_pct": 30.2
+            }
+          ],
+          "oos": [
+            {
+              "trades": 67,
+              "avg_return_pct": 0.137,
+              "win_rate_pct": 49.3,
+              "profit_factor": 1.11,
+              "stop_pct": 23.9
+            },
+            {
+              "trades": 216,
+              "avg_return_pct": -0.134,
+              "win_rate_pct": 43.5,
+              "profit_factor": 0.917,
+              "stop_pct": 32.4
+            },
+            {
+              "trades": 182,
+              "avg_return_pct": -0.188,
+              "win_rate_pct": 42.9,
+              "profit_factor": 0.891,
+              "stop_pct": 33.0
+            }
+          ],
+          "forward": [
+            {
+              "trades": 9,
+              "avg_return_pct": -0.527,
+              "win_rate_pct": 44.4,
+              "profit_factor": 0.66,
+              "stop_pct": 33.3
+            },
+            {
+              "trades": 44,
+              "avg_return_pct": -0.922,
+              "win_rate_pct": 31.8,
+              "profit_factor": 0.56,
+              "stop_pct": 52.3
+            },
+            {
+              "trades": 36,
+              "avg_return_pct": -0.491,
+              "win_rate_pct": 38.9,
+              "profit_factor": 0.709,
+              "stop_pct": 44.4
+            }
+          ],
+          "train_spread_pct": 0.862,
+          "oos_spread_pct": -0.325,
+          "higher_is_better": true,
+          "stable": false
+        },
+        "rel_volume": {
+          "label": "당일 거래량 / 20일 평균",
+          "cuts": [
+            1.1138,
+            1.31691
+          ],
+          "train": [
+            {
+              "trades": 341,
+              "avg_return_pct": 0.081,
+              "win_rate_pct": 48.7,
+              "profit_factor": 1.053,
+              "stop_pct": 32.8
+            },
+            {
+              "trades": 341,
+              "avg_return_pct": -0.316,
+              "win_rate_pct": 46.0,
+              "profit_factor": 0.826,
+              "stop_pct": 34.0
+            },
+            {
+              "trades": 341,
+              "avg_return_pct": -0.727,
+              "win_rate_pct": 45.2,
+              "profit_factor": 0.655,
+              "stop_pct": 34.6
+            }
+          ],
+          "oos": [
+            {
+              "trades": 148,
+              "avg_return_pct": -0.047,
+              "win_rate_pct": 43.2,
+              "profit_factor": 0.973,
+              "stop_pct": 33.1
+            },
+            {
+              "trades": 158,
+              "avg_return_pct": -0.205,
+              "win_rate_pct": 44.9,
+              "profit_factor": 0.864,
+              "stop_pct": 28.5
+            },
+            {
+              "trades": 159,
+              "avg_return_pct": -0.091,
+              "win_rate_pct": 44.0,
+              "profit_factor": 0.942,
+              "stop_pct": 32.7
+            }
+          ],
+          "forward": [
+            {
+              "trades": 32,
+              "avg_return_pct": -0.519,
+              "win_rate_pct": 46.9,
+              "profit_factor": 0.664,
+              "stop_pct": 40.6
+            },
+            {
+              "trades": 35,
+              "avg_return_pct": -0.431,
+              "win_rate_pct": 34.3,
+              "profit_factor": 0.77,
+              "stop_pct": 42.9
+            },
+            {
+              "trades": 22,
+              "avg_return_pct": -1.423,
+              "win_rate_pct": 22.7,
+              "profit_factor": 0.394,
+              "stop_pct": 63.6
+            }
+          ],
+          "train_spread_pct": -0.808,
+          "oos_spread_pct": -0.044,
+          "higher_is_better": false,
+          "stable": false
+        },
+        "dollar_volume_log": {
+          "label": "거래대금(로그)",
+          "cuts": [
+            8.13633,
+            8.44677
+          ],
+          "train": [
+            {
+              "trades": 341,
+              "avg_return_pct": 0.227,
+              "win_rate_pct": 52.5,
+              "profit_factor": 1.16,
+              "stop_pct": 29.0
+            },
+            {
+              "trades": 341,
+              "avg_return_pct": -0.682,
+              "win_rate_pct": 43.4,
+              "profit_factor": 0.654,
+              "stop_pct": 36.4
+            },
+            {
+              "trades": 341,
+              "avg_return_pct": -0.508,
+              "win_rate_pct": 44.0,
+              "profit_factor": 0.754,
+              "stop_pct": 36.1
+            }
+          ],
+          "oos": [
+            {
+              "trades": 56,
+              "avg_return_pct": 0.584,
+              "win_rate_pct": 55.4,
+              "profit_factor": 1.375,
+              "stop_pct": 28.6
+            },
+            {
+              "trades": 153,
+              "avg_return_pct": -0.183,
+              "win_rate_pct": 41.2,
+              "profit_factor": 0.867,
+              "stop_pct": 29.4
+            },
+            {
+              "trades": 256,
+              "avg_return_pct": -0.229,
+              "win_rate_pct": 43.4,
+              "profit_factor": 0.868,
+              "stop_pct": 33.2
+            }
+          ],
+          "forward": [
+            {
+              "trades": 13,
+              "avg_return_pct": -1.802,
+              "win_rate_pct": 23.1,
+              "profit_factor": 0.284,
+              "stop_pct": 69.2
+            },
+            {
+              "trades": 30,
+              "avg_return_pct": -0.87,
+              "win_rate_pct": 36.7,
+              "profit_factor": 0.393,
+              "stop_pct": 33.3
+            },
+            {
+              "trades": 46,
+              "avg_return_pct": -0.293,
+              "win_rate_pct": 39.1,
+              "profit_factor": 0.852,
+              "stop_pct": 50.0
+            }
+          ],
+          "train_spread_pct": -0.735,
+          "oos_spread_pct": -0.813,
+          "higher_is_better": false,
+          "stable": true
+        },
+        "spy_ret20": {
+          "label": "SPY 최근 20일 수익률",
+          "cuts": [
+            -0.01344,
+            0.01844
+          ],
+          "train": [
+            {
+              "trades": 340,
+              "avg_return_pct": -0.757,
+              "win_rate_pct": 44.4,
+              "profit_factor": 0.688,
+              "stop_pct": 39.4
+            },
+            {
+              "trades": 341,
+              "avg_return_pct": -0.186,
+              "win_rate_pct": 49.6,
+              "profit_factor": 0.877,
+              "stop_pct": 31.7
+            },
+            {
+              "trades": 342,
+              "avg_return_pct": -0.022,
+              "win_rate_pct": 45.9,
+              "profit_factor": 0.985,
+              "stop_pct": 30.4
+            }
+          ],
+          "oos": [
+            {
+              "trades": 116,
+              "avg_return_pct": 0.917,
+              "win_rate_pct": 56.9,
+              "profit_factor": 1.717,
+              "stop_pct": 24.1
+            },
+            {
+              "trades": 129,
+              "avg_return_pct": 0.001,
+              "win_rate_pct": 47.3,
+              "profit_factor": 1.001,
+              "stop_pct": 26.4
+            },
+            {
+              "trades": 220,
+              "avg_return_pct": -0.729,
+              "win_rate_pct": 35.5,
+              "profit_factor": 0.592,
+              "stop_pct": 38.2
+            }
+          ],
+          "forward": [
+            {
+              "trades": 16,
+              "avg_return_pct": -0.914,
+              "win_rate_pct": 37.5,
+              "profit_factor": 0.417,
+              "stop_pct": 50.0
+            },
+            {
+              "trades": 60,
+              "avg_return_pct": -0.883,
+              "win_rate_pct": 30.0,
+              "profit_factor": 0.581,
+              "stop_pct": 51.7
+            },
+            {
+              "trades": 13,
+              "avg_return_pct": 0.354,
+              "win_rate_pct": 61.5,
+              "profit_factor": 1.302,
+              "stop_pct": 23.1
+            }
+          ],
+          "train_spread_pct": 0.735,
+          "oos_spread_pct": -1.646,
+          "higher_is_better": true,
+          "stable": false
+        },
+        "ret20": {
+          "label": "최근 20일 수익률",
+          "cuts": [
+            -0.07304,
+            -0.04685
+          ],
+          "train": [
+            {
+              "trades": 341,
+              "avg_return_pct": 0.145,
+              "win_rate_pct": 51.3,
+              "profit_factor": 1.079,
+              "stop_pct": 27.3
+            },
+            {
+              "trades": 340,
+              "avg_return_pct": -0.526,
+              "win_rate_pct": 45.6,
+              "profit_factor": 0.724,
+              "stop_pct": 35.6
+            },
+            {
+              "trades": 342,
+              "avg_return_pct": -0.582,
+              "win_rate_pct": 43.0,
+              "profit_factor": 0.658,
+              "stop_pct": 38.6
+            }
+          ],
+          "oos": [
+            {
+              "trades": 144,
+              "avg_return_pct": -0.057,
+              "win_rate_pct": 49.3,
+              "profit_factor": 0.968,
+              "stop_pct": 29.9
+            },
+            {
+              "trades": 175,
+              "avg_return_pct": 0.339,
+              "win_rate_pct": 45.1,
+              "profit_factor": 1.242,
+              "stop_pct": 28.6
+            },
+            {
+              "trades": 146,
+              "avg_return_pct": -0.719,
+              "win_rate_pct": 37.7,
+              "profit_factor": 0.56,
+              "stop_pct": 36.3
+            }
+          ],
+          "forward": [
+            {
+              "trades": 40,
+              "avg_return_pct": -0.315,
+              "win_rate_pct": 45.0,
+              "profit_factor": 0.82,
+              "stop_pct": 45.0
+            },
+            {
+              "trades": 28,
+              "avg_return_pct": -0.782,
+              "win_rate_pct": 35.7,
+              "profit_factor": 0.584,
+              "stop_pct": 35.7
+            },
+            {
+              "trades": 21,
+              "avg_return_pct": -1.358,
+              "win_rate_pct": 19.0,
+              "profit_factor": 0.351,
+              "stop_pct": 66.7
+            }
+          ],
+          "train_spread_pct": -0.727,
+          "oos_spread_pct": -0.662,
+          "higher_is_better": false,
+          "stable": true
+        },
+        "rsi2": {
+          "label": "RSI(2)",
+          "cuts": [
+            59.71017,
+            71.5868
+          ],
+          "train": [
+            {
+              "trades": 341,
+              "avg_return_pct": 0.25,
+              "win_rate_pct": 49.6,
+              "profit_factor": 1.172,
+              "stop_pct": 28.7
+            },
+            {
+              "trades": 341,
+              "avg_return_pct": -0.787,
+              "win_rate_pct": 43.1,
+              "profit_factor": 0.634,
+              "stop_pct": 38.1
+            },
+            {
+              "trades": 341,
+              "avg_return_pct": -0.426,
+              "win_rate_pct": 47.2,
+              "profit_factor": 0.769,
+              "stop_pct": 34.6
+            }
+          ],
+          "oos": [
+            {
+              "trades": 198,
+              "avg_return_pct": 0.009,
+              "win_rate_pct": 44.9,
+              "profit_factor": 1.005,
+              "stop_pct": 32.8
+            },
+            {
+              "trades": 149,
+              "avg_return_pct": -0.612,
+              "win_rate_pct": 40.9,
+              "profit_factor": 0.653,
+              "stop_pct": 34.2
+            },
+            {
+              "trades": 118,
+              "avg_return_pct": 0.301,
+              "win_rate_pct": 46.6,
+              "profit_factor": 1.217,
+              "stop_pct": 25.4
+            }
+          ],
+          "forward": [
+            {
+              "trades": 35,
+              "avg_return_pct": 0.22,
+              "win_rate_pct": 45.7,
+              "profit_factor": 1.145,
+              "stop_pct": 40.0
+            },
+            {
+              "trades": 27,
+              "avg_return_pct": -1.523,
+              "win_rate_pct": 25.9,
+              "profit_factor": 0.385,
+              "stop_pct": 66.7
+            },
+            {
+              "trades": 27,
+              "avg_return_pct": -1.096,
+              "win_rate_pct": 33.3,
+              "profit_factor": 0.368,
+              "stop_pct": 37.0
+            }
+          ],
+          "train_spread_pct": -0.676,
+          "oos_spread_pct": 0.292,
+          "higher_is_better": false,
+          "stable": false
+        },
+        "ret60": {
+          "label": "최근 60일 수익률",
+          "cuts": [
+            -0.02211,
+            0.01483
+          ],
+          "train": [
+            {
+              "trades": 341,
+              "avg_return_pct": -0.041,
+              "win_rate_pct": 45.7,
+              "profit_factor": 0.976,
+              "stop_pct": 36.1
+            },
+            {
+              "trades": 341,
+              "avg_return_pct": -0.205,
+              "win_rate_pct": 50.7,
+              "profit_factor": 0.869,
+              "stop_pct": 32.3
+            },
+            {
+              "trades": 341,
+              "avg_return_pct": -0.717,
+              "win_rate_pct": 43.4,
+              "profit_factor": 0.663,
+              "stop_pct": 33.1
+            }
+          ],
+          "oos": [
+            {
+              "trades": 206,
+              "avg_return_pct": -0.037,
+              "win_rate_pct": 44.7,
+              "profit_factor": 0.976,
+              "stop_pct": 36.9
+            },
+            {
+              "trades": 142,
+              "avg_return_pct": 0.032,
+              "win_rate_pct": 46.5,
+              "profit_factor": 1.022,
+              "stop_pct": 25.4
+            },
+            {
+              "trades": 117,
+              "avg_return_pct": -0.434,
+              "win_rate_pct": 40.2,
+              "profit_factor": 0.765,
+              "stop_pct": 29.1
+            }
+          ],
+          "forward": [
+            {
+              "trades": 31,
+              "avg_return_pct": 0.778,
+              "win_rate_pct": 48.4,
+              "profit_factor": 1.511,
+              "stop_pct": 48.4
+            },
+            {
+              "trades": 24,
+              "avg_return_pct": -1.209,
+              "win_rate_pct": 37.5,
+              "profit_factor": 0.267,
+              "stop_pct": 37.5
+            },
+            {
+              "trades": 34,
+              "avg_return_pct": -1.709,
+              "win_rate_pct": 23.5,
+              "profit_factor": 0.274,
+              "stop_pct": 52.9
+            }
+          ],
+          "train_spread_pct": -0.676,
+          "oos_spread_pct": -0.397,
+          "higher_is_better": false,
+          "stable": true
+        },
+        "spy_ret5": {
+          "label": "SPY 최근 5일 수익률",
+          "cuts": [
+            -0.00665,
+            0.00862
+          ],
+          "train": [
+            {
+              "trades": 341,
+              "avg_return_pct": -0.84,
+              "win_rate_pct": 43.1,
+              "profit_factor": 0.647,
+              "stop_pct": 39.6
+            },
+            {
+              "trades": 341,
+              "avg_return_pct": 0.075,
+              "win_rate_pct": 50.1,
+              "profit_factor": 1.051,
+              "stop_pct": 29.0
+            },
+            {
+              "trades": 341,
+              "avg_return_pct": -0.198,
+              "win_rate_pct": 46.6,
+              "profit_factor": 0.876,
+              "stop_pct": 32.8
+            }
+          ],
+          "oos": [
+            {
+              "trades": 156,
+              "avg_return_pct": -0.116,
+              "win_rate_pct": 46.8,
+              "profit_factor": 0.929,
+              "stop_pct": 28.2
+            },
+            {
+              "trades": 140,
+              "avg_return_pct": 0.114,
+              "win_rate_pct": 44.3,
+              "profit_factor": 1.076,
+              "stop_pct": 31.4
+            },
+            {
+              "trades": 169,
+              "avg_return_pct": -0.306,
+              "win_rate_pct": 41.4,
+              "profit_factor": 0.813,
+              "stop_pct": 34.3
+            }
+          ],
+          "forward": [
+            {
+              "trades": 28,
+              "avg_return_pct": -0.036,
+              "win_rate_pct": 46.4,
+              "profit_factor": 0.974,
+              "stop_pct": 39.3
+            },
+            {
+              "trades": 37,
+              "avg_return_pct": -1.032,
+              "win_rate_pct": 27.0,
+              "profit_factor": 0.533,
+              "stop_pct": 54.1
+            },
+            {
+              "trades": 24,
+              "avg_return_pct": -0.992,
+              "win_rate_pct": 37.5,
+              "profit_factor": 0.478,
+              "stop_pct": 45.8
+            }
+          ],
+          "train_spread_pct": 0.642,
+          "oos_spread_pct": -0.19,
+          "higher_is_better": true,
+          "stable": false
+        },
+        "ret5": {
+          "label": "최근 5일 수익률",
+          "cuts": [
+            -0.02638,
+            -0.00736
+          ],
+          "train": [
+            {
+              "trades": 340,
+              "avg_return_pct": -0.609,
+              "win_rate_pct": 45.9,
+              "profit_factor": 0.742,
+              "stop_pct": 32.9
+            },
+            {
+              "trades": 342,
+              "avg_return_pct": -0.207,
+              "win_rate_pct": 45.3,
+              "profit_factor": 0.87,
+              "stop_pct": 36.8
+            },
+            {
+              "trades": 341,
+              "avg_return_pct": -0.148,
+              "win_rate_pct": 48.7,
+              "profit_factor": 0.902,
+              "stop_pct": 31.7
+            }
+          ],
+          "oos": [
+            {
+              "trades": 124,
+              "avg_return_pct": -0.572,
+              "win_rate_pct": 38.7,
+              "profit_factor": 0.723,
+              "stop_pct": 37.1
+            },
+            {
+              "trades": 179,
+              "avg_return_pct": 0.016,
+              "win_rate_pct": 44.7,
+              "profit_factor": 1.011,
+              "stop_pct": 30.7
+            },
+            {
+              "trades": 162,
+              "avg_return_pct": 0.087,
+              "win_rate_pct": 47.5,
+              "profit_factor": 1.066,
+              "stop_pct": 27.8
+            }
+          ],
+          "forward": [
+            {
+              "trades": 18,
+              "avg_return_pct": -0.419,
+              "win_rate_pct": 44.4,
+              "profit_factor": 0.826,
+              "stop_pct": 50.0
+            },
+            {
+              "trades": 40,
+              "avg_return_pct": -0.767,
+              "win_rate_pct": 35.0,
+              "profit_factor": 0.597,
+              "stop_pct": 50.0
+            },
+            {
+              "trades": 31,
+              "avg_return_pct": -0.8,
+              "win_rate_pct": 32.3,
+              "profit_factor": 0.477,
+              "stop_pct": 41.9
+            }
+          ],
+          "train_spread_pct": 0.461,
+          "oos_spread_pct": 0.659,
+          "higher_is_better": true,
+          "stable": true
+        },
+        "dist_sma50": {
+          "label": "50일선과의 거리",
+          "cuts": [
+            -0.05171,
+            -0.03385
+          ],
+          "train": [
+            {
+              "trades": 341,
+              "avg_return_pct": -0.218,
+              "win_rate_pct": 48.1,
+              "profit_factor": 0.899,
+              "stop_pct": 33.4
+            },
+            {
+              "trades": 341,
+              "avg_return_pct": -0.095,
+              "win_rate_pct": 51.6,
+              "profit_factor": 0.942,
+              "stop_pct": 30.2
+            },
+            {
+              "trades": 341,
+              "avg_return_pct": -0.65,
+              "win_rate_pct": 40.2,
+              "profit_factor": 0.611,
+              "stop_pct": 37.8
+            }
+          ],
+          "oos": [
+            {
+              "trades": 157,
+              "avg_return_pct": -0.361,
+              "win_rate_pct": 43.3,
+              "profit_factor": 0.816,
+              "stop_pct": 35.7
+            },
+            {
+              "trades": 148,
+              "avg_return_pct": 0.003,
+              "win_rate_pct": 45.9,
+              "profit_factor": 1.002,
+              "stop_pct": 31.8
+            },
+            {
+              "trades": 160,
+              "avg_return_pct": 0.015,
+              "win_rate_pct": 43.1,
+              "profit_factor": 1.011,
+              "stop_pct": 26.9
+            }
+          ],
+          "forward": [
+            {
+              "trades": 42,
+              "avg_return_pct": -0.091,
+              "win_rate_pct": 42.9,
+              "profit_factor": 0.949,
+              "stop_pct": 45.2
+            },
+            {
+              "trades": 38,
+              "avg_return_pct": -0.92,
+              "win_rate_pct": 36.8,
+              "profit_factor": 0.484,
+              "stop_pct": 50.0
+            },
+            {
+              "trades": 9,
+              "avg_return_pct": -2.695,
+              "win_rate_pct": 0.0,
+              "profit_factor": 0.0,
+              "stop_pct": 44.4
+            }
+          ],
+          "train_spread_pct": -0.432,
+          "oos_spread_pct": 0.376,
+          "higher_is_better": false,
+          "stable": false
+        },
+        "drawdown_252d": {
+          "label": "1년 고점 대비 낙폭",
+          "cuts": [
+            -0.12844,
+            -0.09524
+          ],
+          "train": [
+            {
+              "trades": 324,
+              "avg_return_pct": -0.029,
+              "win_rate_pct": 48.1,
+              "profit_factor": 0.986,
+              "stop_pct": 34.0
+            },
+            {
+              "trades": 324,
+              "avg_return_pct": -0.62,
+              "win_rate_pct": 47.5,
+              "profit_factor": 0.691,
+              "stop_pct": 33.3
+            },
+            {
+              "trades": 324,
+              "avg_return_pct": -0.455,
+              "win_rate_pct": 42.0,
+              "profit_factor": 0.706,
+              "stop_pct": 35.8
+            }
+          ],
+          "oos": [
+            {
+              "trades": 143,
+              "avg_return_pct": -0.314,
+              "win_rate_pct": 46.2,
+              "profit_factor": 0.852,
+              "stop_pct": 36.4
+            },
+            {
+              "trades": 143,
+              "avg_return_pct": -0.195,
+              "win_rate_pct": 43.4,
+              "profit_factor": 0.876,
+              "stop_pct": 30.8
+            },
+            {
+              "trades": 179,
+              "avg_return_pct": 0.105,
+              "win_rate_pct": 43.0,
+              "profit_factor": 1.087,
+              "stop_pct": 27.9
+            }
+          ],
+          "forward": [
+            {
+              "trades": 44,
+              "avg_return_pct": 0.316,
+              "win_rate_pct": 47.7,
+              "profit_factor": 1.201,
+              "stop_pct": 38.6
+            },
+            {
+              "trades": 39,
+              "avg_return_pct": -1.53,
+              "win_rate_pct": 28.2,
+              "profit_factor": 0.256,
+              "stop_pct": 53.8
+            },
+            {
+              "trades": 6,
+              "avg_return_pct": -2.875,
+              "win_rate_pct": 0.0,
+              "profit_factor": 0.0,
+              "stop_pct": 66.7
+            }
+          ],
+          "train_spread_pct": -0.426,
+          "oos_spread_pct": 0.419,
+          "higher_is_better": false,
+          "stable": false
+        },
+        "dist_sma120": {
+          "label": "120일선과의 거리",
+          "cuts": [
+            -0.0085,
+            0.00402
+          ],
+          "train": [
+            {
+              "trades": 341,
+              "avg_return_pct": -0.167,
+              "win_rate_pct": 47.5,
+              "profit_factor": 0.904,
+              "stop_pct": 35.5
+            },
+            {
+              "trades": 341,
+              "avg_return_pct": -0.204,
+              "win_rate_pct": 46.6,
+              "profit_factor": 0.879,
+              "stop_pct": 37.2
+            },
+            {
+              "trades": 341,
+              "avg_return_pct": -0.592,
+              "win_rate_pct": 45.7,
+              "profit_factor": 0.708,
+              "stop_pct": 28.7
+            }
+          ],
+          "oos": [
+            {
+              "trades": 164,
+              "avg_return_pct": 0.344,
+              "win_rate_pct": 47.6,
+              "profit_factor": 1.225,
+              "stop_pct": 35.4
+            },
+            {
+              "trades": 143,
+              "avg_return_pct": 0.016,
+              "win_rate_pct": 44.1,
+              "profit_factor": 1.01,
+              "stop_pct": 36.4
+            },
+            {
+              "trades": 158,
+              "avg_return_pct": -0.712,
+              "win_rate_pct": 40.5,
+              "profit_factor": 0.581,
+              "stop_pct": 22.8
+            }
+          ],
+          "forward": [
+            {
+              "trades": 30,
+              "avg_return_pct": -0.896,
+              "win_rate_pct": 26.7,
+              "profit_factor": 0.501,
+              "stop_pct": 56.7
+            },
+            {
+              "trades": 37,
+              "avg_return_pct": -1.015,
+              "win_rate_pct": 40.5,
+              "profit_factor": 0.529,
+              "stop_pct": 48.6
+            },
+            {
+              "trades": 22,
+              "avg_return_pct": 0.065,
+              "win_rate_pct": 40.9,
+              "profit_factor": 1.043,
+              "stop_pct": 31.8
+            }
+          ],
+          "train_spread_pct": -0.425,
+          "oos_spread_pct": -1.056,
+          "higher_is_better": false,
+          "stable": true
+        },
+        "drawdown_60d": {
+          "label": "60일 고점 대비 낙폭",
+          "cuts": [
+            -0.11514,
+            -0.08405
+          ],
+          "train": [
+            {
+              "trades": 341,
+              "avg_return_pct": 0.052,
+              "win_rate_pct": 51.0,
+              "profit_factor": 1.025,
+              "stop_pct": 32.3
+            },
+            {
+              "trades": 341,
+              "avg_return_pct": -0.663,
+              "win_rate_pct": 46.0,
+              "profit_factor": 0.666,
+              "stop_pct": 33.4
+            },
+            {
+              "trades": 341,
+              "avg_return_pct": -0.352,
+              "win_rate_pct": 42.8,
+              "profit_factor": 0.744,
+              "stop_pct": 35.8
+            }
+          ],
+          "oos": [
+            {
+              "trades": 171,
+              "avg_return_pct": -0.26,
+              "win_rate_pct": 45.6,
+              "profit_factor": 0.872,
+              "stop_pct": 34.5
+            },
+            {
+              "trades": 167,
+              "avg_return_pct": 0.014,
+              "win_rate_pct": 44.3,
+              "profit_factor": 1.01,
+              "stop_pct": 28.1
+            },
+            {
+              "trades": 127,
+              "avg_return_pct": -0.092,
+              "win_rate_pct": 41.7,
+              "profit_factor": 0.927,
+              "stop_pct": 31.5
+            }
+          ],
+          "forward": [
+            {
+              "trades": 43,
+              "avg_return_pct": 0.44,
+              "win_rate_pct": 51.2,
+              "profit_factor": 1.285,
+              "stop_pct": 37.2
+            },
+            {
+              "trades": 45,
+              "avg_return_pct": -1.803,
+              "win_rate_pct": 22.2,
+              "profit_factor": 0.185,
+              "stop_pct": 57.8
+            },
+            {
+              "trades": 1,
+              "avg_return_pct": -0.792,
+              "win_rate_pct": 0.0,
+              "profit_factor": 0.0,
+              "stop_pct": 0.0
+            }
+          ],
+          "train_spread_pct": -0.404,
+          "oos_spread_pct": 0.168,
+          "higher_is_better": false,
+          "stable": false
+        },
+        "dist_sma200": {
+          "label": "200일선과의 거리",
+          "cuts": [
+            0.0175,
+            0.04856
+          ],
+          "train": [
+            {
+              "trades": 341,
+              "avg_return_pct": -0.485,
+              "win_rate_pct": 44.6,
+              "profit_factor": 0.736,
+              "stop_pct": 38.1
+            },
+            {
+              "trades": 340,
+              "avg_return_pct": -0.377,
+              "win_rate_pct": 46.2,
+              "profit_factor": 0.79,
+              "stop_pct": 33.5
+            },
+            {
+              "trades": 342,
+              "avg_return_pct": -0.102,
+              "win_rate_pct": 49.1,
+              "profit_factor": 0.944,
+              "stop_pct": 29.8
+            }
+          ],
+          "oos": [
+            {
+              "trades": 125,
+              "avg_return_pct": 0.077,
+              "win_rate_pct": 43.2,
+              "profit_factor": 1.057,
+              "stop_pct": 32.0
+            },
+            {
+              "trades": 148,
+              "avg_return_pct": 0.119,
+              "win_rate_pct": 48.0,
+              "profit_factor": 1.083,
+              "stop_pct": 29.1
+            },
+            {
+              "trades": 192,
+              "avg_return_pct": -0.422,
+              "win_rate_pct": 41.7,
+              "profit_factor": 0.777,
+              "stop_pct": 32.8
+            }
+          ],
+          "forward": [
+            {
+              "trades": 47,
+              "avg_return_pct": -1.135,
+              "win_rate_pct": 31.9,
+              "profit_factor": 0.4,
+              "stop_pct": 48.9
+            },
+            {
+              "trades": 21,
+              "avg_return_pct": -1.042,
+              "win_rate_pct": 33.3,
+              "profit_factor": 0.394,
+              "stop_pct": 47.6
+            },
+            {
+              "trades": 21,
+              "avg_return_pct": 0.581,
+              "win_rate_pct": 47.6,
+              "profit_factor": 1.292,
+              "stop_pct": 42.9
+            }
+          ],
+          "train_spread_pct": 0.383,
+          "oos_spread_pct": -0.499,
+          "higher_is_better": true,
+          "stable": false
+        },
+        "slope_sma120": {
+          "label": "120일선 기울기(20일)",
+          "cuts": [
+            0.01258,
+            0.02394
+          ],
+          "train": [
+            {
+              "trades": 341,
+              "avg_return_pct": -0.406,
+              "win_rate_pct": 44.9,
+              "profit_factor": 0.745,
+              "stop_pct": 36.1
+            },
+            {
+              "trades": 341,
+              "avg_return_pct": -0.512,
+              "win_rate_pct": 44.6,
+              "profit_factor": 0.709,
+              "stop_pct": 34.6
+            },
+            {
+              "trades": 341,
+              "avg_return_pct": -0.045,
+              "win_rate_pct": 50.4,
+              "profit_factor": 0.979,
+              "stop_pct": 30.8
+            }
+          ],
+          "oos": [
+            {
+              "trades": 119,
+              "avg_return_pct": 0.062,
+              "win_rate_pct": 45.4,
+              "profit_factor": 1.044,
+              "stop_pct": 31.9
+            },
+            {
+              "trades": 143,
+              "avg_return_pct": 0.264,
+              "win_rate_pct": 47.6,
+              "profit_factor": 1.202,
+              "stop_pct": 24.5
+            },
+            {
+              "trades": 203,
+              "avg_return_pct": -0.488,
+              "win_rate_pct": 40.9,
+              "profit_factor": 0.745,
+              "stop_pct": 36.0
+            }
+          ],
+          "forward": [
+            {
+              "trades": 36,
+              "avg_return_pct": -1.821,
+              "win_rate_pct": 22.2,
+              "profit_factor": 0.174,
+              "stop_pct": 61.1
+            },
+            {
+              "trades": 24,
+              "avg_return_pct": -0.403,
+              "win_rate_pct": 37.5,
+              "profit_factor": 0.761,
+              "stop_pct": 37.5
+            },
+            {
+              "trades": 29,
+              "avg_return_pct": 0.421,
+              "win_rate_pct": 51.7,
+              "profit_factor": 1.259,
+              "stop_pct": 37.9
+            }
+          ],
+          "train_spread_pct": 0.361,
+          "oos_spread_pct": -0.55,
+          "higher_is_better": true,
+          "stable": false
+        },
+        "rsi": {
+          "label": "RSI(14)",
+          "cuts": [
+            38.48503,
+            41.15269
+          ],
+          "train": [
+            {
+              "trades": 341,
+              "avg_return_pct": 0.083,
+              "win_rate_pct": 52.2,
+              "profit_factor": 1.051,
+              "stop_pct": 30.8
+            },
+            {
+              "trades": 341,
+              "avg_return_pct": -0.775,
+              "win_rate_pct": 42.2,
+              "profit_factor": 0.639,
+              "stop_pct": 36.4
+            },
+            {
+              "trades": 341,
+              "avg_return_pct": -0.271,
+              "win_rate_pct": 45.5,
+              "profit_factor": 0.837,
+              "stop_pct": 34.3
+            }
+          ],
+          "oos": [
+            {
+              "trades": 152,
+              "avg_return_pct": -0.198,
+              "win_rate_pct": 44.7,
+              "profit_factor": 0.876,
+              "stop_pct": 34.2
+            },
+            {
+              "trades": 164,
+              "avg_return_pct": -0.325,
+              "win_rate_pct": 41.5,
+              "profit_factor": 0.815,
+              "stop_pct": 33.5
+            },
+            {
+              "trades": 149,
+              "avg_return_pct": 0.198,
+              "win_rate_pct": 46.3,
+              "profit_factor": 1.138,
+              "stop_pct": 26.2
+            }
+          ],
+          "forward": [
+            {
+              "trades": 34,
+              "avg_return_pct": -0.213,
+              "win_rate_pct": 47.1,
+              "profit_factor": 0.873,
+              "stop_pct": 47.1
+            },
+            {
+              "trades": 26,
+              "avg_return_pct": -0.582,
+              "win_rate_pct": 34.6,
+              "profit_factor": 0.664,
+              "stop_pct": 50.0
+            },
+            {
+              "trades": 29,
+              "avg_return_pct": -1.402,
+              "win_rate_pct": 24.1,
+              "profit_factor": 0.373,
+              "stop_pct": 44.8
+            }
+          ],
+          "train_spread_pct": -0.354,
+          "oos_spread_pct": 0.396,
+          "higher_is_better": false,
+          "stable": false
+        },
+        "gap_pct": {
+          "label": "당일 시가 갭",
+          "cuts": [
+            -0.00015,
+            0.00594
+          ],
+          "train": [
+            {
+              "trades": 341,
+              "avg_return_pct": -0.134,
+              "win_rate_pct": 47.5,
+              "profit_factor": 0.918,
+              "stop_pct": 32.8
+            },
+            {
+              "trades": 341,
+              "avg_return_pct": -0.496,
+              "win_rate_pct": 45.2,
+              "profit_factor": 0.726,
+              "stop_pct": 37.2
+            },
+            {
+              "trades": 341,
+              "avg_return_pct": -0.332,
+              "win_rate_pct": 47.2,
+              "profit_factor": 0.835,
+              "stop_pct": 31.4
+            }
+          ],
+          "oos": [
+            {
+              "trades": 165,
+              "avg_return_pct": 0.023,
+              "win_rate_pct": 48.5,
+              "profit_factor": 1.016,
+              "stop_pct": 29.1
+            },
+            {
+              "trades": 186,
+              "avg_return_pct": -0.042,
+              "win_rate_pct": 41.4,
+              "profit_factor": 0.972,
+              "stop_pct": 30.1
+            },
+            {
+              "trades": 114,
+              "avg_return_pct": -0.438,
+              "win_rate_pct": 42.1,
+              "profit_factor": 0.781,
+              "stop_pct": 36.8
+            }
+          ],
+          "forward": [
+            {
+              "trades": 29,
+              "avg_return_pct": -0.427,
+              "win_rate_pct": 41.4,
+              "profit_factor": 0.756,
+              "stop_pct": 37.9
+            },
+            {
+              "trades": 26,
+              "avg_return_pct": -1.245,
+              "win_rate_pct": 23.1,
+              "profit_factor": 0.328,
+              "stop_pct": 53.8
+            },
+            {
+              "trades": 34,
+              "avg_return_pct": -0.537,
+              "win_rate_pct": 41.2,
+              "profit_factor": 0.731,
+              "stop_pct": 50.0
+            }
+          ],
+          "train_spread_pct": -0.198,
+          "oos_spread_pct": -0.461,
+          "higher_is_better": false,
+          "stable": false
+        },
+        "dist_sma20": {
+          "label": "20일선과의 거리",
+          "cuts": [
+            -0.04355,
+            -0.02798
+          ],
+          "train": [
+            {
+              "trades": 341,
+              "avg_return_pct": -0.507,
+              "win_rate_pct": 49.3,
+              "profit_factor": 0.795,
+              "stop_pct": 32.0
+            },
+            {
+              "trades": 341,
+              "avg_return_pct": -0.095,
+              "win_rate_pct": 47.5,
+              "profit_factor": 0.939,
+              "stop_pct": 31.1
+            },
+            {
+              "trades": 341,
+              "avg_return_pct": -0.361,
+              "win_rate_pct": 43.1,
+              "profit_factor": 0.745,
+              "stop_pct": 38.4
+            }
+          ],
+          "oos": [
+            {
+              "trades": 139,
+              "avg_return_pct": -0.451,
+              "win_rate_pct": 42.4,
+              "profit_factor": 0.791,
+              "stop_pct": 34.5
+            },
+            {
+              "trades": 146,
+              "avg_return_pct": 0.142,
+              "win_rate_pct": 46.6,
+              "profit_factor": 1.099,
+              "stop_pct": 28.1
+            },
+            {
+              "trades": 180,
+              "avg_return_pct": -0.066,
+              "win_rate_pct": 43.3,
+              "profit_factor": 0.949,
+              "stop_pct": 31.7
+            }
+          ],
+          "forward": [
+            {
+              "trades": 25,
+              "avg_return_pct": 0.163,
+              "win_rate_pct": 48.0,
+              "profit_factor": 1.084,
+              "stop_pct": 40.0
+            },
+            {
+              "trades": 32,
+              "avg_return_pct": -0.943,
+              "win_rate_pct": 34.4,
+              "profit_factor": 0.498,
+              "stop_pct": 46.9
+            },
+            {
+              "trades": 32,
+              "avg_return_pct": -1.153,
+              "win_rate_pct": 28.1,
+              "profit_factor": 0.366,
+              "stop_pct": 53.1
+            }
+          ],
+          "train_spread_pct": 0.146,
+          "oos_spread_pct": 0.385,
+          "higher_is_better": true,
+          "stable": false
+        },
+        "bb_pos": {
+          "label": "볼린저 밴드 안 위치",
+          "cuts": [
+            0.16849,
+            0.23609
+          ],
+          "train": [
+            {
+              "trades": 341,
+              "avg_return_pct": -0.228,
+              "win_rate_pct": 48.1,
+              "profit_factor": 0.878,
+              "stop_pct": 31.4
+            },
+            {
+              "trades": 341,
+              "avg_return_pct": -0.391,
+              "win_rate_pct": 45.5,
+              "profit_factor": 0.795,
+              "stop_pct": 36.1
+            },
+            {
+              "trades": 341,
+              "avg_return_pct": -0.343,
+              "win_rate_pct": 46.3,
+              "profit_factor": 0.795,
+              "stop_pct": 34.0
+            }
+          ],
+          "oos": [
+            {
+              "trades": 147,
+              "avg_return_pct": -0.384,
+              "win_rate_pct": 40.1,
+              "profit_factor": 0.778,
+              "stop_pct": 35.4
+            },
+            {
+              "trades": 146,
+              "avg_return_pct": -0.109,
+              "win_rate_pct": 43.8,
+              "profit_factor": 0.937,
+              "stop_pct": 33.6
+            },
+            {
+              "trades": 172,
+              "avg_return_pct": 0.107,
+              "win_rate_pct": 47.7,
+              "profit_factor": 1.078,
+              "stop_pct": 26.2
+            }
+          ],
+          "forward": [
+            {
+              "trades": 21,
+              "avg_return_pct": 0.887,
+              "win_rate_pct": 57.1,
+              "profit_factor": 1.603,
+              "stop_pct": 42.9
+            },
+            {
+              "trades": 28,
+              "avg_return_pct": -1.467,
+              "win_rate_pct": 28.6,
+              "profit_factor": 0.386,
+              "stop_pct": 57.1
+            },
+            {
+              "trades": 40,
+              "avg_return_pct": -1.014,
+              "win_rate_pct": 30.0,
+              "profit_factor": 0.411,
+              "stop_pct": 42.5
+            }
+          ],
+          "train_spread_pct": -0.115,
+          "oos_spread_pct": 0.491,
+          "higher_is_better": false,
+          "stable": false
+        },
+        "plan_target_pct": {
+          "label": "계획 목표 폭",
+          "cuts": [
+            0.07361,
+            0.10657
+          ],
+          "train": [
+            {
+              "trades": 341,
+              "avg_return_pct": -0.217,
+              "win_rate_pct": 44.0,
+              "profit_factor": 0.832,
+              "stop_pct": 38.1
+            },
+            {
+              "trades": 341,
+              "avg_return_pct": -0.416,
+              "win_rate_pct": 46.6,
+              "profit_factor": 0.771,
+              "stop_pct": 34.3
+            },
+            {
+              "trades": 341,
+              "avg_return_pct": -0.33,
+              "win_rate_pct": 49.3,
+              "profit_factor": 0.859,
+              "stop_pct": 29.0
+            }
+          ],
+          "oos": [
+            {
+              "trades": 148,
+              "avg_return_pct": -0.118,
+              "win_rate_pct": 41.2,
+              "profit_factor": 0.911,
+              "stop_pct": 35.8
+            },
+            {
+              "trades": 171,
+              "avg_return_pct": 0.127,
+              "win_rate_pct": 46.2,
+              "profit_factor": 1.092,
+              "stop_pct": 29.2
+            },
+            {
+              "trades": 146,
+              "avg_return_pct": -0.398,
+              "win_rate_pct": 44.5,
+              "profit_factor": 0.812,
+              "stop_pct": 29.5
+            }
+          ],
+          "forward": [
+            {
+              "trades": 33,
+              "avg_return_pct": -1.23,
+              "win_rate_pct": 24.2,
+              "profit_factor": 0.362,
+              "stop_pct": 60.6
+            },
+            {
+              "trades": 18,
+              "avg_return_pct": -0.727,
+              "win_rate_pct": 44.4,
+              "profit_factor": 0.586,
+              "stop_pct": 50.0
+            },
+            {
+              "trades": 38,
+              "avg_return_pct": -0.245,
+              "win_rate_pct": 42.1,
+              "profit_factor": 0.87,
+              "stop_pct": 34.2
+            }
+          ],
+          "train_spread_pct": -0.113,
+          "oos_spread_pct": -0.28,
+          "higher_is_better": false,
+          "stable": false
+        },
+        "plan_stop_pct": {
+          "label": "계획 손절 폭",
+          "cuts": [
+            0.0321,
+            0.0469
+          ],
+          "train": [
+            {
+              "trades": 341,
+              "avg_return_pct": -0.395,
+              "win_rate_pct": 41.3,
+              "profit_factor": 0.712,
+              "stop_pct": 39.6
+            },
+            {
+              "trades": 341,
+              "avg_return_pct": -0.085,
+              "win_rate_pct": 47.2,
+              "profit_factor": 0.947,
+              "stop_pct": 31.7
+            },
+            {
+              "trades": 341,
+              "avg_return_pct": -0.483,
+              "win_rate_pct": 51.3,
+              "profit_factor": 0.805,
+              "stop_pct": 30.2
+            }
+          ],
+          "oos": [
+            {
+              "trades": 170,
+              "avg_return_pct": 0.008,
+              "win_rate_pct": 40.6,
+              "profit_factor": 1.007,
+              "stop_pct": 32.9
+            },
+            {
+              "trades": 168,
+              "avg_return_pct": -0.274,
+              "win_rate_pct": 45.8,
+              "profit_factor": 0.841,
+              "stop_pct": 31.0
+            },
+            {
+              "trades": 127,
+              "avg_return_pct": -0.072,
+              "win_rate_pct": 46.5,
+              "profit_factor": 0.965,
+              "stop_pct": 29.9
+            }
+          ],
+          "forward": [
+            {
+              "trades": 26,
+              "avg_return_pct": -1.202,
+              "win_rate_pct": 30.8,
+              "profit_factor": 0.398,
+              "stop_pct": 61.5
+            },
+            {
+              "trades": 45,
+              "avg_return_pct": -1.483,
+              "win_rate_pct": 26.7,
+              "profit_factor": 0.271,
+              "stop_pct": 48.9
+            },
+            {
+              "trades": 18,
+              "avg_return_pct": 1.943,
+              "win_rate_pct": 66.7,
+              "profit_factor": 2.499,
+              "stop_pct": 22.2
+            }
+          ],
+          "train_spread_pct": -0.088,
+          "oos_spread_pct": -0.08,
+          "higher_is_better": false,
+          "stable": false
+        },
+        "atr_pct": {
+          "label": "하루 평균 움직임",
+          "cuts": [
+            0.01943,
+            0.02641
+          ],
+          "train": [
+            {
+              "trades": 341,
+              "avg_return_pct": -0.229,
+              "win_rate_pct": 45.2,
+              "profit_factor": 0.82,
+              "stop_pct": 36.7
+            },
+            {
+              "trades": 340,
+              "avg_return_pct": -0.421,
+              "win_rate_pct": 44.1,
+              "profit_factor": 0.762,
+              "stop_pct": 36.8
+            },
+            {
+              "trades": 342,
+              "avg_return_pct": -0.313,
+              "win_rate_pct": 50.6,
+              "profit_factor": 0.87,
+              "stop_pct": 28.1
+            }
+          ],
+          "oos": [
+            {
+              "trades": 157,
+              "avg_return_pct": 0.29,
+              "win_rate_pct": 45.2,
+              "profit_factor": 1.279,
+              "stop_pct": 30.6
+            },
+            {
+              "trades": 170,
+              "avg_return_pct": -0.472,
+              "win_rate_pct": 41.8,
+              "profit_factor": 0.71,
+              "stop_pct": 31.2
+            },
+            {
+              "trades": 138,
+              "avg_return_pct": -0.139,
+              "win_rate_pct": 45.7,
+              "profit_factor": 0.937,
+              "stop_pct": 32.6
+            }
+          ],
+          "forward": [
+            {
+              "trades": 22,
+              "avg_return_pct": -1.631,
+              "win_rate_pct": 18.2,
+              "profit_factor": 0.269,
+              "stop_pct": 68.2
+            },
+            {
+              "trades": 40,
+              "avg_return_pct": -1.017,
+              "win_rate_pct": 37.5,
+              "profit_factor": 0.433,
+              "stop_pct": 42.5
+            },
+            {
+              "trades": 27,
+              "avg_return_pct": 0.503,
+              "win_rate_pct": 48.1,
+              "profit_factor": 1.296,
+              "stop_pct": 37.0
+            }
+          ],
+          "train_spread_pct": -0.084,
+          "oos_spread_pct": -0.429,
+          "higher_is_better": false,
+          "stable": false
+        }
+      }
+    },
+    "momentum_pullback": {
+      "signals": 950,
+      "baseline": {
+        "train": {
+          "trades": 649,
+          "avg_return_pct": 0.279,
+          "win_rate_pct": 55.6,
+          "profit_factor": 1.151,
+          "stop_pct": 30.8
+        },
+        "oos": {
+          "trades": 284,
+          "avg_return_pct": -0.087,
+          "win_rate_pct": 50.0,
+          "profit_factor": 0.962,
+          "stop_pct": 36.6
+        },
+        "forward": {
+          "trades": 17,
+          "avg_return_pct": -0.929,
+          "win_rate_pct": 41.2,
+          "profit_factor": 0.651,
+          "stop_pct": 47.1
+        }
+      },
+      "candidate_rules_compared": 52,
+      "train_pick": {
+        "feature": "body_atr",
+        "label": "당일 몸통 / ATR",
+        "shape": "keep_best",
+        "direction": "높을수록 좋음",
+        "cuts": [
+          0.2179,
+          0.61702
+        ],
+        "train": {
+          "trades": 217,
+          "avg_return_pct": 0.811,
+          "win_rate_pct": 62.2,
+          "profit_factor": 1.541,
+          "stop_pct": 25.3
+        },
+        "oos": {
+          "trades": 74,
+          "avg_return_pct": 0.517,
+          "win_rate_pct": 54.1,
+          "profit_factor": 1.282,
+          "stop_pct": 27.0
+        },
+        "forward": {
+          "trades": 6,
+          "avg_return_pct": -0.212,
+          "win_rate_pct": 50.0,
+          "profit_factor": 0.925,
+          "stop_pct": 50.0
+        },
+        "passes_gate": true,
+        "fail_reasons": []
+      },
+      "train_pick_passes_oos": true,
+      "rules_passing_gate": 14,
+      "stable_features": [
+        "up_days_5",
+        "volume_5d_vs_20d",
+        "body_atr",
+        "spy_ret5",
+        "bb_pos",
+        "ret5",
+        "dist_sma20",
+        "dollar_volume_log"
+      ],
+      "features": {
+        "up_days_5": {
+          "label": "최근 5일 중 상승 마감 일수",
+          "cuts": [
+            2.0,
+            3.0
+          ],
+          "train": [
+            {
+              "trades": 79,
+              "avg_return_pct": 1.474,
+              "win_rate_pct": 65.8,
+              "profit_factor": 2.137,
+              "stop_pct": 24.1
+            },
+            {
+              "trades": 338,
+              "avg_return_pct": 0.166,
+              "win_rate_pct": 53.8,
+              "profit_factor": 1.085,
+              "stop_pct": 33.1
+            },
+            {
+              "trades": 232,
+              "avg_return_pct": 0.036,
+              "win_rate_pct": 54.7,
+              "profit_factor": 1.019,
+              "stop_pct": 29.7
+            }
+          ],
+          "oos": [
+            {
+              "trades": 37,
+              "avg_return_pct": 0.721,
+              "win_rate_pct": 51.4,
+              "profit_factor": 1.485,
+              "stop_pct": 27.0
+            },
+            {
+              "trades": 143,
+              "avg_return_pct": 0.019,
+              "win_rate_pct": 51.7,
+              "profit_factor": 1.009,
+              "stop_pct": 35.0
+            },
+            {
+              "trades": 104,
+              "avg_return_pct": -0.522,
+              "win_rate_pct": 47.1,
+              "profit_factor": 0.806,
+              "stop_pct": 42.3
+            }
+          ],
+          "forward": [
+            {
+              "trades": 3,
+              "avg_return_pct": 1.848,
+              "win_rate_pct": 66.7,
+              "profit_factor": 2.608,
+              "stop_pct": 0.0
+            },
+            {
+              "trades": 9,
+              "avg_return_pct": 0.057,
+              "win_rate_pct": 44.4,
+              "profit_factor": 1.028,
+              "stop_pct": 44.4
+            },
+            {
+              "trades": 5,
+              "avg_return_pct": -4.371,
+              "win_rate_pct": 20.0,
+              "profit_factor": 0.065,
+              "stop_pct": 80.0
+            }
+          ],
+          "train_spread_pct": -1.438,
+          "oos_spread_pct": -1.243,
+          "higher_is_better": false,
+          "stable": true
+        },
+        "volume_5d_vs_20d": {
+          "label": "최근 5일 거래량 / 20일 평균",
+          "cuts": [
+            0.85864,
+            1.04177
+          ],
+          "train": [
+            {
+              "trades": 216,
+              "avg_return_pct": -0.111,
+              "win_rate_pct": 50.0,
+              "profit_factor": 0.941,
+              "stop_pct": 34.7
+            },
+            {
+              "trades": 216,
+              "avg_return_pct": 0.197,
+              "win_rate_pct": 54.6,
+              "profit_factor": 1.104,
+              "stop_pct": 31.0
+            },
+            {
+              "trades": 217,
+              "avg_return_pct": 0.748,
+              "win_rate_pct": 62.2,
+              "profit_factor": 1.421,
+              "stop_pct": 26.7
+            }
+          ],
+          "oos": [
+            {
+              "trades": 83,
+              "avg_return_pct": -0.036,
+              "win_rate_pct": 48.2,
+              "profit_factor": 0.985,
+              "stop_pct": 42.2
+            },
+            {
+              "trades": 105,
+              "avg_return_pct": -1.014,
+              "win_rate_pct": 44.8,
+              "profit_factor": 0.641,
+              "stop_pct": 44.8
+            },
+            {
+              "trades": 96,
+              "avg_return_pct": 0.882,
+              "win_rate_pct": 57.3,
+              "profit_factor": 1.519,
+              "stop_pct": 22.9
+            }
+          ],
+          "forward": [
+            {
+              "trades": 11,
+              "avg_return_pct": -1.609,
+              "win_rate_pct": 36.4,
+              "profit_factor": 0.442,
+              "stop_pct": 45.5
+            },
+            {
+              "trades": 4,
+              "avg_return_pct": 1.58,
+              "win_rate_pct": 50.0,
+              "profit_factor": 2.027,
+              "stop_pct": 50.0
+            },
+            {
+              "trades": 2,
+              "avg_return_pct": -2.211,
+              "win_rate_pct": 50.0,
+              "profit_factor": 0.4,
+              "stop_pct": 50.0
+            }
+          ],
+          "train_spread_pct": 0.859,
+          "oos_spread_pct": 0.918,
+          "higher_is_better": true,
+          "stable": true
+        },
+        "body_atr": {
+          "label": "당일 몸통 / ATR",
+          "cuts": [
+            0.2179,
+            0.61702
+          ],
+          "train": [
+            {
+              "trades": 216,
+              "avg_return_pct": 0.067,
+              "win_rate_pct": 53.2,
+              "profit_factor": 1.034,
+              "stop_pct": 31.9
+            },
+            {
+              "trades": 216,
+              "avg_return_pct": -0.044,
+              "win_rate_pct": 51.4,
+              "profit_factor": 0.979,
+              "stop_pct": 35.2
+            },
+            {
+              "trades": 217,
+              "avg_return_pct": 0.811,
+              "win_rate_pct": 62.2,
+              "profit_factor": 1.541,
+              "stop_pct": 25.3
+            }
+          ],
+          "oos": [
+            {
+              "trades": 109,
+              "avg_return_pct": -0.306,
+              "win_rate_pct": 46.8,
+              "profit_factor": 0.883,
+              "stop_pct": 39.4
+            },
+            {
+              "trades": 101,
+              "avg_return_pct": -0.294,
+              "win_rate_pct": 50.5,
+              "profit_factor": 0.872,
+              "stop_pct": 40.6
+            },
+            {
+              "trades": 74,
+              "avg_return_pct": 0.517,
+              "win_rate_pct": 54.1,
+              "profit_factor": 1.282,
+              "stop_pct": 27.0
+            }
+          ],
+          "forward": [
+            {
+              "trades": 2,
+              "avg_return_pct": 0.257,
+              "win_rate_pct": 50.0,
+              "profit_factor": 3.638,
+              "stop_pct": 0.0
+            },
+            {
+              "trades": 9,
+              "avg_return_pct": -1.671,
+              "win_rate_pct": 33.3,
+              "profit_factor": 0.464,
+              "stop_pct": 55.6
+            },
+            {
+              "trades": 6,
+              "avg_return_pct": -0.212,
+              "win_rate_pct": 50.0,
+              "profit_factor": 0.925,
+              "stop_pct": 50.0
+            }
+          ],
+          "train_spread_pct": 0.744,
+          "oos_spread_pct": 0.823,
+          "higher_is_better": true,
+          "stable": true
+        },
+        "dist_sma50": {
+          "label": "50일선과의 거리",
+          "cuts": [
+            0.03571,
+            0.0603
+          ],
+          "train": [
+            {
+              "trades": 216,
+              "avg_return_pct": 0.663,
+              "win_rate_pct": 56.9,
+              "profit_factor": 1.377,
+              "stop_pct": 30.1
+            },
+            {
+              "trades": 216,
+              "avg_return_pct": 0.087,
+              "win_rate_pct": 54.2,
+              "profit_factor": 1.046,
+              "stop_pct": 31.5
+            },
+            {
+              "trades": 217,
+              "avg_return_pct": 0.087,
+              "win_rate_pct": 55.8,
+              "profit_factor": 1.046,
+              "stop_pct": 30.9
+            }
+          ],
+          "oos": [
+            {
+              "trades": 102,
+              "avg_return_pct": -0.272,
+              "win_rate_pct": 47.1,
+              "profit_factor": 0.888,
+              "stop_pct": 40.2
+            },
+            {
+              "trades": 89,
+              "avg_return_pct": -0.229,
+              "win_rate_pct": 48.3,
+              "profit_factor": 0.899,
+              "stop_pct": 34.8
+            },
+            {
+              "trades": 93,
+              "avg_return_pct": 0.25,
+              "win_rate_pct": 54.8,
+              "profit_factor": 1.113,
+              "stop_pct": 34.4
+            }
+          ],
+          "forward": [
+            {
+              "trades": 7,
+              "avg_return_pct": -0.375,
+              "win_rate_pct": 42.9,
+              "profit_factor": 0.846,
+              "stop_pct": 57.1
+            },
+            {
+              "trades": 4,
+              "avg_return_pct": 1.731,
+              "win_rate_pct": 75.0,
+              "profit_factor": 1.939,
+              "stop_pct": 25.0
+            },
+            {
+              "trades": 6,
+              "avg_return_pct": -3.35,
+              "win_rate_pct": 16.7,
+              "profit_factor": 0.034,
+              "stop_pct": 50.0
+            }
+          ],
+          "train_spread_pct": -0.576,
+          "oos_spread_pct": 0.522,
+          "higher_is_better": false,
+          "stable": false
+        },
+        "close_in_range": {
+          "label": "당일 종가의 고저 범위 안 위치",
+          "cuts": [
+            0.66387,
+            0.8642
+          ],
+          "train": [
+            {
+              "trades": 216,
+              "avg_return_pct": 0.442,
+              "win_rate_pct": 56.9,
+              "profit_factor": 1.249,
+              "stop_pct": 28.7
+            },
+            {
+              "trades": 216,
+              "avg_return_pct": 0.504,
+              "win_rate_pct": 57.9,
+              "profit_factor": 1.299,
+              "stop_pct": 29.2
+            },
+            {
+              "trades": 217,
+              "avg_return_pct": -0.109,
+              "win_rate_pct": 52.1,
+              "profit_factor": 0.947,
+              "stop_pct": 34.6
+            }
+          ],
+          "oos": [
+            {
+              "trades": 99,
+              "avg_return_pct": 0.071,
+              "win_rate_pct": 47.5,
+              "profit_factor": 1.029,
+              "stop_pct": 41.4
+            },
+            {
+              "trades": 88,
+              "avg_return_pct": -0.765,
+              "win_rate_pct": 45.5,
+              "profit_factor": 0.705,
+              "stop_pct": 37.5
+            },
+            {
+              "trades": 97,
+              "avg_return_pct": 0.365,
+              "win_rate_pct": 56.7,
+              "profit_factor": 1.191,
+              "stop_pct": 30.9
+            }
+          ],
+          "forward": [
+            {
+              "trades": 4,
+              "avg_return_pct": -2.415,
+              "win_rate_pct": 25.0,
+              "profit_factor": 0.068,
+              "stop_pct": 50.0
+            },
+            {
+              "trades": 5,
+              "avg_return_pct": -0.924,
+              "win_rate_pct": 40.0,
+              "profit_factor": 0.635,
+              "stop_pct": 60.0
+            },
+            {
+              "trades": 8,
+              "avg_return_pct": -0.19,
+              "win_rate_pct": 50.0,
+              "profit_factor": 0.932,
+              "stop_pct": 37.5
+            }
+          ],
+          "train_spread_pct": -0.551,
+          "oos_spread_pct": 0.294,
+          "higher_is_better": false,
+          "stable": false
+        },
+        "ret20": {
+          "label": "최근 20일 수익률",
+          "cuts": [
+            0.05909,
+            0.07403
+          ],
+          "train": [
+            {
+              "trades": 216,
+              "avg_return_pct": 0.638,
+              "win_rate_pct": 56.9,
+              "profit_factor": 1.425,
+              "stop_pct": 27.3
+            },
+            {
+              "trades": 216,
+              "avg_return_pct": -0.001,
+              "win_rate_pct": 55.6,
+              "profit_factor": 1.0,
+              "stop_pct": 35.6
+            },
+            {
+              "trades": 217,
+              "avg_return_pct": 0.199,
+              "win_rate_pct": 54.4,
+              "profit_factor": 1.101,
+              "stop_pct": 29.5
+            }
+          ],
+          "oos": [
+            {
+              "trades": 71,
+              "avg_return_pct": -0.723,
+              "win_rate_pct": 45.1,
+              "profit_factor": 0.694,
+              "stop_pct": 43.7
+            },
+            {
+              "trades": 93,
+              "avg_return_pct": -0.057,
+              "win_rate_pct": 48.4,
+              "profit_factor": 0.972,
+              "stop_pct": 33.3
+            },
+            {
+              "trades": 120,
+              "avg_return_pct": 0.265,
+              "win_rate_pct": 54.2,
+              "profit_factor": 1.107,
+              "stop_pct": 35.0
+            }
+          ],
+          "forward": [
+            {
+              "trades": 6,
+              "avg_return_pct": -2.291,
+              "win_rate_pct": 33.3,
+              "profit_factor": 0.447,
+              "stop_pct": 66.7
+            },
+            {
+              "trades": 5,
+              "avg_return_pct": 0.864,
+              "win_rate_pct": 60.0,
+              "profit_factor": 1.628,
+              "stop_pct": 40.0
+            },
+            {
+              "trades": 6,
+              "avg_return_pct": -1.062,
+              "win_rate_pct": 33.3,
+              "profit_factor": 0.528,
+              "stop_pct": 33.3
+            }
+          ],
+          "train_spread_pct": -0.439,
+          "oos_spread_pct": 0.988,
+          "higher_is_better": false,
+          "stable": false
+        },
+        "dist_sma200": {
+          "label": "200일선과의 거리",
+          "cuts": [
+            0.11814,
+            0.1956
+          ],
+          "train": [
+            {
+              "trades": 216,
+              "avg_return_pct": -0.176,
+              "win_rate_pct": 50.5,
+              "profit_factor": 0.912,
+              "stop_pct": 34.3
+            },
+            {
+              "trades": 216,
+              "avg_return_pct": 0.761,
+              "win_rate_pct": 60.2,
+              "profit_factor": 1.553,
+              "stop_pct": 25.0
+            },
+            {
+              "trades": 217,
+              "avg_return_pct": 0.251,
+              "win_rate_pct": 56.2,
+              "profit_factor": 1.116,
+              "stop_pct": 33.2
+            }
+          ],
+          "oos": [
+            {
+              "trades": 111,
+              "avg_return_pct": 0.249,
+              "win_rate_pct": 51.4,
+              "profit_factor": 1.117,
+              "stop_pct": 34.2
+            },
+            {
+              "trades": 74,
+              "avg_return_pct": -0.005,
+              "win_rate_pct": 52.7,
+              "profit_factor": 0.997,
+              "stop_pct": 36.5
+            },
+            {
+              "trades": 99,
+              "avg_return_pct": -0.526,
+              "win_rate_pct": 46.5,
+              "profit_factor": 0.805,
+              "stop_pct": 39.4
+            }
+          ],
+          "forward": [
+            {
+              "trades": 8,
+              "avg_return_pct": -1.204,
+              "win_rate_pct": 37.5,
+              "profit_factor": 0.594,
+              "stop_pct": 50.0
+            },
+            {
+              "trades": 4,
+              "avg_return_pct": -0.499,
+              "win_rate_pct": 25.0,
+              "profit_factor": 0.763,
+              "stop_pct": 50.0
+            },
+            {
+              "trades": 5,
+              "avg_return_pct": -0.834,
+              "win_rate_pct": 60.0,
+              "profit_factor": 0.682,
+              "stop_pct": 40.0
+            }
+          ],
+          "train_spread_pct": 0.427,
+          "oos_spread_pct": -0.775,
+          "higher_is_better": true,
+          "stable": false
+        },
+        "spy_ret5": {
+          "label": "SPY 최근 5일 수익률",
+          "cuts": [
+            -0.00579,
+            0.00569
+          ],
+          "train": [
+            {
+              "trades": 215,
+              "avg_return_pct": 0.759,
+              "win_rate_pct": 58.6,
+              "profit_factor": 1.43,
+              "stop_pct": 32.1
+            },
+            {
+              "trades": 216,
+              "avg_return_pct": -0.275,
+              "win_rate_pct": 50.9,
+              "profit_factor": 0.861,
+              "stop_pct": 32.4
+            },
+            {
+              "trades": 218,
+              "avg_return_pct": 0.354,
+              "win_rate_pct": 57.3,
+              "profit_factor": 1.198,
+              "stop_pct": 28.0
+            }
+          ],
+          "oos": [
+            {
+              "trades": 76,
+              "avg_return_pct": 0.26,
+              "win_rate_pct": 51.3,
+              "profit_factor": 1.127,
+              "stop_pct": 38.2
+            },
+            {
+              "trades": 81,
+              "avg_return_pct": 0.465,
+              "win_rate_pct": 59.3,
+              "profit_factor": 1.239,
+              "stop_pct": 28.4
+            },
+            {
+              "trades": 127,
+              "avg_return_pct": -0.648,
+              "win_rate_pct": 43.3,
+              "profit_factor": 0.759,
+              "stop_pct": 40.9
+            }
+          ],
+          "forward": [
+            {
+              "trades": 4,
+              "avg_return_pct": 6.068,
+              "win_rate_pct": 100.0,
+              "profit_factor": null,
+              "stop_pct": 0.0
+            },
+            {
+              "trades": 13,
+              "avg_return_pct": -3.082,
+              "win_rate_pct": 23.1,
+              "profit_factor": 0.115,
+              "stop_pct": 61.5
+            },
+            {
+              "trades": 0
+            }
+          ],
+          "train_spread_pct": -0.405,
+          "oos_spread_pct": -0.908,
+          "higher_is_better": false,
+          "stable": true
+        },
+        "rel_volume": {
+          "label": "당일 거래량 / 20일 평균",
+          "cuts": [
+            0.73601,
+            0.95354
+          ],
+          "train": [
+            {
+              "trades": 216,
+              "avg_return_pct": -0.027,
+              "win_rate_pct": 51.4,
+              "profit_factor": 0.985,
+              "stop_pct": 31.9
+            },
+            {
+              "trades": 215,
+              "avg_return_pct": 0.49,
+              "win_rate_pct": 57.2,
+              "profit_factor": 1.288,
+              "stop_pct": 30.2
+            },
+            {
+              "trades": 218,
+              "avg_return_pct": 0.373,
+              "win_rate_pct": 58.3,
+              "profit_factor": 1.19,
+              "stop_pct": 30.3
+            }
+          ],
+          "oos": [
+            {
+              "trades": 99,
+              "avg_return_pct": 0.235,
+              "win_rate_pct": 53.5,
+              "profit_factor": 1.111,
+              "stop_pct": 35.4
+            },
+            {
+              "trades": 78,
+              "avg_return_pct": -0.251,
+              "win_rate_pct": 52.6,
+              "profit_factor": 0.896,
+              "stop_pct": 39.7
+            },
+            {
+              "trades": 107,
+              "avg_return_pct": -0.267,
+              "win_rate_pct": 44.9,
+              "profit_factor": 0.889,
+              "stop_pct": 35.5
+            }
+          ],
+          "forward": [
+            {
+              "trades": 8,
+              "avg_return_pct": -1.518,
+              "win_rate_pct": 37.5,
+              "profit_factor": 0.376,
+              "stop_pct": 37.5
+            },
+            {
+              "trades": 5,
+              "avg_return_pct": -1.164,
+              "win_rate_pct": 40.0,
+              "profit_factor": 0.682,
+              "stop_pct": 60.0
+            },
+            {
+              "trades": 4,
+              "avg_return_pct": 0.541,
+              "win_rate_pct": 50.0,
+              "profit_factor": 1.288,
+              "stop_pct": 50.0
+            }
+          ],
+          "train_spread_pct": 0.4,
+          "oos_spread_pct": -0.502,
+          "higher_is_better": true,
+          "stable": false
+        },
+        "bb_pos": {
+          "label": "볼린저 밴드 안 위치",
+          "cuts": [
+            0.49662,
+            0.61488
+          ],
+          "train": [
+            {
+              "trades": 216,
+              "avg_return_pct": 0.424,
+              "win_rate_pct": 50.9,
+              "profit_factor": 1.204,
+              "stop_pct": 42.1
+            },
+            {
+              "trades": 216,
+              "avg_return_pct": 0.378,
+              "win_rate_pct": 58.8,
+              "profit_factor": 1.23,
+              "stop_pct": 26.9
+            },
+            {
+              "trades": 217,
+              "avg_return_pct": 0.035,
+              "win_rate_pct": 57.1,
+              "profit_factor": 1.019,
+              "stop_pct": 23.5
+            }
+          ],
+          "oos": [
+            {
+              "trades": 96,
+              "avg_return_pct": 0.678,
+              "win_rate_pct": 46.9,
+              "profit_factor": 1.319,
+              "stop_pct": 36.5
+            },
+            {
+              "trades": 112,
+              "avg_return_pct": -0.636,
+              "win_rate_pct": 48.2,
+              "profit_factor": 0.745,
+              "stop_pct": 41.1
+            },
+            {
+              "trades": 76,
+              "avg_return_pct": -0.246,
+              "win_rate_pct": 56.6,
+              "profit_factor": 0.891,
+              "stop_pct": 30.3
+            }
+          ],
+          "forward": [
+            {
+              "trades": 5,
+              "avg_return_pct": -0.522,
+              "win_rate_pct": 40.0,
+              "profit_factor": 0.81,
+              "stop_pct": 60.0
+            },
+            {
+              "trades": 7,
+              "avg_return_pct": -0.956,
+              "win_rate_pct": 42.9,
+              "profit_factor": 0.436,
+              "stop_pct": 28.6
+            },
+            {
+              "trades": 5,
+              "avg_return_pct": -1.298,
+              "win_rate_pct": 40.0,
+              "profit_factor": 0.67,
+              "stop_pct": 60.0
+            }
+          ],
+          "train_spread_pct": -0.389,
+          "oos_spread_pct": -0.924,
+          "higher_is_better": false,
+          "stable": true
+        },
+        "ret5": {
+          "label": "최근 5일 수익률",
+          "cuts": [
+            -0.0192,
+            -0.01045
+          ],
+          "train": [
+            {
+              "trades": 216,
+              "avg_return_pct": 0.327,
+              "win_rate_pct": 55.1,
+              "profit_factor": 1.156,
+              "stop_pct": 35.2
+            },
+            {
+              "trades": 216,
+              "avg_return_pct": 0.535,
+              "win_rate_pct": 59.3,
+              "profit_factor": 1.316,
+              "stop_pct": 27.3
+            },
+            {
+              "trades": 217,
+              "avg_return_pct": -0.025,
+              "win_rate_pct": 52.5,
+              "profit_factor": 0.986,
+              "stop_pct": 30.0
+            }
+          ],
+          "oos": [
+            {
+              "trades": 91,
+              "avg_return_pct": 0.504,
+              "win_rate_pct": 53.8,
+              "profit_factor": 1.214,
+              "stop_pct": 29.7
+            },
+            {
+              "trades": 102,
+              "avg_return_pct": -0.308,
+              "win_rate_pct": 47.1,
+              "profit_factor": 0.865,
+              "stop_pct": 41.2
+            },
+            {
+              "trades": 91,
+              "avg_return_pct": -0.432,
+              "win_rate_pct": 49.5,
+              "profit_factor": 0.809,
+              "stop_pct": 38.5
+            }
+          ],
+          "forward": [
+            {
+              "trades": 4,
+              "avg_return_pct": 2.03,
+              "win_rate_pct": 50.0,
+              "profit_factor": 3.709,
+              "stop_pct": 25.0
+            },
+            {
+              "trades": 8,
+              "avg_return_pct": -2.73,
+              "win_rate_pct": 37.5,
+              "profit_factor": 0.316,
+              "stop_pct": 62.5
+            },
+            {
+              "trades": 5,
+              "avg_return_pct": -0.415,
+              "win_rate_pct": 40.0,
+              "profit_factor": 0.799,
+              "stop_pct": 40.0
+            }
+          ],
+          "train_spread_pct": -0.352,
+          "oos_spread_pct": -0.936,
+          "higher_is_better": false,
+          "stable": true
+        },
+        "drawdown_60d": {
+          "label": "60일 고점 대비 낙폭",
+          "cuts": [
+            -0.05859,
+            -0.03804
+          ],
+          "train": [
+            {
+              "trades": 216,
+              "avg_return_pct": 0.062,
+              "win_rate_pct": 48.1,
+              "profit_factor": 1.025,
+              "stop_pct": 38.4
+            },
+            {
+              "trades": 216,
+              "avg_return_pct": 0.36,
+              "win_rate_pct": 55.6,
+              "profit_factor": 1.214,
+              "stop_pct": 29.2
+            },
+            {
+              "trades": 217,
+              "avg_return_pct": 0.413,
+              "win_rate_pct": 63.1,
+              "profit_factor": 1.307,
+              "stop_pct": 24.9
+            }
+          ],
+          "oos": [
+            {
+              "trades": 128,
+              "avg_return_pct": -0.383,
+              "win_rate_pct": 41.4,
+              "profit_factor": 0.859,
+              "stop_pct": 38.3
+            },
+            {
+              "trades": 82,
+              "avg_return_pct": 0.549,
+              "win_rate_pct": 58.5,
+              "profit_factor": 1.291,
+              "stop_pct": 32.9
+            },
+            {
+              "trades": 74,
+              "avg_return_pct": -0.282,
+              "win_rate_pct": 55.4,
+              "profit_factor": 0.862,
+              "stop_pct": 37.8
+            }
+          ],
+          "forward": [
+            {
+              "trades": 8,
+              "avg_return_pct": -1.208,
+              "win_rate_pct": 37.5,
+              "profit_factor": 0.558,
+              "stop_pct": 50.0
+            },
+            {
+              "trades": 5,
+              "avg_return_pct": -0.745,
+              "win_rate_pct": 40.0,
+              "profit_factor": 0.774,
+              "stop_pct": 40.0
+            },
+            {
+              "trades": 4,
+              "avg_return_pct": -0.601,
+              "win_rate_pct": 50.0,
+              "profit_factor": 0.651,
+              "stop_pct": 50.0
+            }
+          ],
+          "train_spread_pct": 0.351,
+          "oos_spread_pct": 0.101,
+          "higher_is_better": true,
+          "stable": false
+        },
+        "spy_ret20": {
+          "label": "SPY 최근 20일 수익률",
+          "cuts": [
+            0.01854,
+            0.04289
+          ],
+          "train": [
+            {
+              "trades": 216,
+              "avg_return_pct": 0.397,
+              "win_rate_pct": 54.6,
+              "profit_factor": 1.204,
+              "stop_pct": 32.9
+            },
+            {
+              "trades": 216,
+              "avg_return_pct": 0.376,
+              "win_rate_pct": 56.0,
+              "profit_factor": 1.22,
+              "stop_pct": 31.0
+            },
+            {
+              "trades": 217,
+              "avg_return_pct": 0.064,
+              "win_rate_pct": 56.2,
+              "profit_factor": 1.034,
+              "stop_pct": 28.6
+            }
+          ],
+          "oos": [
+            {
+              "trades": 103,
+              "avg_return_pct": -0.394,
+              "win_rate_pct": 48.5,
+              "profit_factor": 0.842,
+              "stop_pct": 41.7
+            },
+            {
+              "trades": 123,
+              "avg_return_pct": -0.314,
+              "win_rate_pct": 45.5,
+              "profit_factor": 0.868,
+              "stop_pct": 38.2
+            },
+            {
+              "trades": 58,
+              "avg_return_pct": 0.937,
+              "win_rate_pct": 62.1,
+              "profit_factor": 1.517,
+              "stop_pct": 24.1
+            }
+          ],
+          "forward": [
+            {
+              "trades": 6,
+              "avg_return_pct": -2.767,
+              "win_rate_pct": 16.7,
+              "profit_factor": 0.267,
+              "stop_pct": 66.7
+            },
+            {
+              "trades": 9,
+              "avg_return_pct": 1.056,
+              "win_rate_pct": 66.7,
+              "profit_factor": 1.683,
+              "stop_pct": 22.2
+            },
+            {
+              "trades": 2,
+              "avg_return_pct": -4.348,
+              "win_rate_pct": 0.0,
+              "profit_factor": 0.0,
+              "stop_pct": 100.0
+            }
+          ],
+          "train_spread_pct": -0.333,
+          "oos_spread_pct": 1.331,
+          "higher_is_better": false,
+          "stable": false
+        },
+        "dist_sma20": {
+          "label": "20일선과의 거리",
+          "cuts": [
+            -0.00026,
+            0.01085
+          ],
+          "train": [
+            {
+              "trades": 216,
+              "avg_return_pct": 0.424,
+              "win_rate_pct": 50.9,
+              "profit_factor": 1.204,
+              "stop_pct": 42.1
+            },
+            {
+              "trades": 216,
+              "avg_return_pct": 0.308,
+              "win_rate_pct": 58.3,
+              "profit_factor": 1.196,
+              "stop_pct": 26.9
+            },
+            {
+              "trades": 217,
+              "avg_return_pct": 0.104,
+              "win_rate_pct": 57.6,
+              "profit_factor": 1.055,
+              "stop_pct": 23.5
+            }
+          ],
+          "oos": [
+            {
+              "trades": 97,
+              "avg_return_pct": 0.628,
+              "win_rate_pct": 46.4,
+              "profit_factor": 1.293,
+              "stop_pct": 37.1
+            },
+            {
+              "trades": 91,
+              "avg_return_pct": -0.438,
+              "win_rate_pct": 49.5,
+              "profit_factor": 0.813,
+              "stop_pct": 41.8
+            },
+            {
+              "trades": 96,
+              "avg_return_pct": -0.478,
+              "win_rate_pct": 54.2,
+              "profit_factor": 0.803,
+              "stop_pct": 31.2
+            }
+          ],
+          "forward": [
+            {
+              "trades": 5,
+              "avg_return_pct": -0.522,
+              "win_rate_pct": 40.0,
+              "profit_factor": 0.81,
+              "stop_pct": 60.0
+            },
+            {
+              "trades": 5,
+              "avg_return_pct": 0.292,
+              "win_rate_pct": 60.0,
+              "profit_factor": 1.392,
+              "stop_pct": 20.0
+            },
+            {
+              "trades": 7,
+              "avg_return_pct": -2.092,
+              "win_rate_pct": 28.6,
+              "profit_factor": 0.473,
+              "stop_pct": 57.1
+            }
+          ],
+          "train_spread_pct": -0.32,
+          "oos_spread_pct": -1.106,
+          "higher_is_better": false,
+          "stable": true
+        },
+        "dollar_volume_log": {
+          "label": "거래대금(로그)",
+          "cuts": [
+            8.15518,
+            8.54623
+          ],
+          "train": [
+            {
+              "trades": 216,
+              "avg_return_pct": 0.527,
+              "win_rate_pct": 57.4,
+              "profit_factor": 1.285,
+              "stop_pct": 31.9
+            },
+            {
+              "trades": 216,
+              "avg_return_pct": 0.092,
+              "win_rate_pct": 52.8,
+              "profit_factor": 1.051,
+              "stop_pct": 32.4
+            },
+            {
+              "trades": 217,
+              "avg_return_pct": 0.218,
+              "win_rate_pct": 56.7,
+              "profit_factor": 1.116,
+              "stop_pct": 28.1
+            }
+          ],
+          "oos": [
+            {
+              "trades": 30,
+              "avg_return_pct": 1.05,
+              "win_rate_pct": 60.0,
+              "profit_factor": 1.492,
+              "stop_pct": 33.3
+            },
+            {
+              "trades": 89,
+              "avg_return_pct": -0.229,
+              "win_rate_pct": 52.8,
+              "profit_factor": 0.892,
+              "stop_pct": 37.1
+            },
+            {
+              "trades": 165,
+              "avg_return_pct": -0.218,
+              "win_rate_pct": 46.7,
+              "profit_factor": 0.91,
+              "stop_pct": 37.0
+            }
+          ],
+          "forward": [
+            {
+              "trades": 2,
+              "avg_return_pct": 0.667,
+              "win_rate_pct": 50.0,
+              "profit_factor": 7.854,
+              "stop_pct": 0.0
+            },
+            {
+              "trades": 6,
+              "avg_return_pct": -1.38,
+              "win_rate_pct": 33.3,
+              "profit_factor": 0.581,
+              "stop_pct": 66.7
+            },
+            {
+              "trades": 9,
+              "avg_return_pct": -0.983,
+              "win_rate_pct": 44.4,
+              "profit_factor": 0.65,
+              "stop_pct": 44.4
+            }
+          ],
+          "train_spread_pct": -0.309,
+          "oos_spread_pct": -1.268,
+          "higher_is_better": false,
+          "stable": true
+        },
+        "slope_sma120": {
+          "label": "120일선 기울기(20일)",
+          "cuts": [
+            0.02368,
+            0.04332
+          ],
+          "train": [
+            {
+              "trades": 216,
+              "avg_return_pct": 0.126,
+              "win_rate_pct": 51.4,
+              "profit_factor": 1.071,
+              "stop_pct": 31.0
+            },
+            {
+              "trades": 216,
+              "avg_return_pct": 0.292,
+              "win_rate_pct": 58.8,
+              "profit_factor": 1.167,
+              "stop_pct": 29.6
+            },
+            {
+              "trades": 217,
+              "avg_return_pct": 0.417,
+              "win_rate_pct": 56.7,
+              "profit_factor": 1.209,
+              "stop_pct": 31.8
+            }
+          ],
+          "oos": [
+            {
+              "trades": 115,
+              "avg_return_pct": 0.088,
+              "win_rate_pct": 51.3,
+              "profit_factor": 1.04,
+              "stop_pct": 35.7
+            },
+            {
+              "trades": 77,
+              "avg_return_pct": -0.18,
+              "win_rate_pct": 50.6,
+              "profit_factor": 0.914,
+              "stop_pct": 33.8
+            },
+            {
+              "trades": 92,
+              "avg_return_pct": -0.23,
+              "win_rate_pct": 47.8,
+              "profit_factor": 0.911,
+              "stop_pct": 40.2
+            }
+          ],
+          "forward": [
+            {
+              "trades": 8,
+              "avg_return_pct": -1.815,
+              "win_rate_pct": 25.0,
+              "profit_factor": 0.382,
+              "stop_pct": 62.5
+            },
+            {
+              "trades": 4,
+              "avg_return_pct": -0.503,
+              "win_rate_pct": 50.0,
+              "profit_factor": 0.766,
+              "stop_pct": 25.0
+            },
+            {
+              "trades": 5,
+              "avg_return_pct": 0.147,
+              "win_rate_pct": 60.0,
+              "profit_factor": 1.056,
+              "stop_pct": 40.0
+            }
+          ],
+          "train_spread_pct": 0.291,
+          "oos_spread_pct": -0.318,
+          "higher_is_better": true,
+          "stable": false
+        },
+        "plan_reward_risk": {
+          "label": "계획 손익비",
+          "cuts": [
+            1.34,
+            1.38246
+          ],
+          "train": [
+            {
+              "trades": 168,
+              "avg_return_pct": 0.65,
+              "win_rate_pct": 57.7,
+              "profit_factor": 1.329,
+              "stop_pct": 29.2
+            },
+            {
+              "trades": 264,
+              "avg_return_pct": -0.048,
+              "win_rate_pct": 55.3,
+              "profit_factor": 0.975,
+              "stop_pct": 31.4
+            },
+            {
+              "trades": 217,
+              "avg_return_pct": 0.388,
+              "win_rate_pct": 54.4,
+              "profit_factor": 1.23,
+              "stop_pct": 31.3
+            }
+          ],
+          "oos": [
+            {
+              "trades": 79,
+              "avg_return_pct": 1.179,
+              "win_rate_pct": 57.0,
+              "profit_factor": 1.699,
+              "stop_pct": 29.1
+            },
+            {
+              "trades": 87,
+              "avg_return_pct": -0.981,
+              "win_rate_pct": 49.4,
+              "profit_factor": 0.649,
+              "stop_pct": 43.7
+            },
+            {
+              "trades": 118,
+              "avg_return_pct": -0.276,
+              "win_rate_pct": 45.8,
+              "profit_factor": 0.882,
+              "stop_pct": 36.4
+            }
+          ],
+          "forward": [
+            {
+              "trades": 1,
+              "avg_return_pct": 5.074,
+              "win_rate_pct": 100.0,
+              "profit_factor": null,
+              "stop_pct": 0.0
+            },
+            {
+              "trades": 6,
+              "avg_return_pct": 1.996,
+              "win_rate_pct": 66.7,
+              "profit_factor": 2.177,
+              "stop_pct": 33.3
+            },
+            {
+              "trades": 10,
+              "avg_return_pct": -3.285,
+              "win_rate_pct": 20.0,
+              "profit_factor": 0.064,
+              "stop_pct": 60.0
+            }
+          ],
+          "train_spread_pct": -0.262,
+          "oos_spread_pct": -1.455,
+          "higher_is_better": false,
+          "stable": false
+        },
+        "ret60": {
+          "label": "최근 60일 수익률",
+          "cuts": [
+            0.08377,
+            0.16403
+          ],
+          "train": [
+            {
+              "trades": 216,
+              "avg_return_pct": 0.194,
+              "win_rate_pct": 52.3,
+              "profit_factor": 1.097,
+              "stop_pct": 32.4
+            },
+            {
+              "trades": 216,
+              "avg_return_pct": 0.21,
+              "win_rate_pct": 57.4,
+              "profit_factor": 1.122,
+              "stop_pct": 30.6
+            },
+            {
+              "trades": 217,
+              "avg_return_pct": 0.431,
+              "win_rate_pct": 57.1,
+              "profit_factor": 1.239,
+              "stop_pct": 29.5
+            }
+          ],
+          "oos": [
+            {
+              "trades": 95,
+              "avg_return_pct": 0.376,
+              "win_rate_pct": 54.7,
+              "profit_factor": 1.213,
+              "stop_pct": 28.4
+            },
+            {
+              "trades": 105,
+              "avg_return_pct": 0.372,
+              "win_rate_pct": 50.5,
+              "profit_factor": 1.164,
+              "stop_pct": 37.1
+            },
+            {
+              "trades": 84,
+              "avg_return_pct": -1.187,
+              "win_rate_pct": 44.0,
+              "profit_factor": 0.598,
+              "stop_pct": 45.2
+            }
+          ],
+          "forward": [
+            {
+              "trades": 4,
+              "avg_return_pct": -2.325,
+              "win_rate_pct": 25.0,
+              "profit_factor": 0.353,
+              "stop_pct": 50.0
+            },
+            {
+              "trades": 8,
+              "avg_return_pct": 0.969,
+              "win_rate_pct": 50.0,
+              "profit_factor": 1.785,
+              "stop_pct": 37.5
+            },
+            {
+              "trades": 5,
+              "avg_return_pct": -2.851,
+              "win_rate_pct": 40.0,
+              "profit_factor": 0.321,
+              "stop_pct": 60.0
+            }
+          ],
+          "train_spread_pct": 0.237,
+          "oos_spread_pct": -1.563,
+          "higher_is_better": true,
+          "stable": false
+        },
+        "gap_pct": {
+          "label": "당일 시가 갭",
+          "cuts": [
+            0.00052,
+            0.00679
+          ],
+          "train": [
+            {
+              "trades": 216,
+              "avg_return_pct": 0.515,
+              "win_rate_pct": 57.9,
+              "profit_factor": 1.298,
+              "stop_pct": 27.8
+            },
+            {
+              "trades": 216,
+              "avg_return_pct": 0.024,
+              "win_rate_pct": 53.7,
+              "profit_factor": 1.013,
+              "stop_pct": 34.3
+            },
+            {
+              "trades": 217,
+              "avg_return_pct": 0.296,
+              "win_rate_pct": 55.3,
+              "profit_factor": 1.149,
+              "stop_pct": 30.4
+            }
+          ],
+          "oos": [
+            {
+              "trades": 90,
+              "avg_return_pct": 1.038,
+              "win_rate_pct": 57.8,
+              "profit_factor": 1.683,
+              "stop_pct": 25.6
+            },
+            {
+              "trades": 105,
+              "avg_return_pct": -0.643,
+              "win_rate_pct": 46.7,
+              "profit_factor": 0.76,
+              "stop_pct": 46.7
+            },
+            {
+              "trades": 89,
+              "avg_return_pct": -0.571,
+              "win_rate_pct": 46.1,
+              "profit_factor": 0.784,
+              "stop_pct": 36.0
+            }
+          ],
+          "forward": [
+            {
+              "trades": 5,
+              "avg_return_pct": -1.46,
+              "win_rate_pct": 40.0,
+              "profit_factor": 0.618,
+              "stop_pct": 60.0
+            },
+            {
+              "trades": 6,
+              "avg_return_pct": 0.285,
+              "win_rate_pct": 50.0,
+              "profit_factor": 1.194,
+              "stop_pct": 16.7
+            },
+            {
+              "trades": 6,
+              "avg_return_pct": -1.701,
+              "win_rate_pct": 33.3,
+              "profit_factor": 0.412,
+              "stop_pct": 66.7
+            }
+          ],
+          "train_spread_pct": -0.219,
+          "oos_spread_pct": -1.609,
+          "higher_is_better": false,
+          "stable": false
+        },
+        "dist_sma120": {
+          "label": "120일선과의 거리",
+          "cuts": [
+            0.09348,
+            0.13861
+          ],
+          "train": [
+            {
+              "trades": 216,
+              "avg_return_pct": 0.349,
+              "win_rate_pct": 54.6,
+              "profit_factor": 1.196,
+              "stop_pct": 30.6
+            },
+            {
+              "trades": 216,
+              "avg_return_pct": 0.348,
+              "win_rate_pct": 58.8,
+              "profit_factor": 1.211,
+              "stop_pct": 28.7
+            },
+            {
+              "trades": 217,
+              "avg_return_pct": 0.14,
+              "win_rate_pct": 53.5,
+              "profit_factor": 1.066,
+              "stop_pct": 33.2
+            }
+          ],
+          "oos": [
+            {
+              "trades": 112,
+              "avg_return_pct": 0.097,
+              "win_rate_pct": 51.8,
+              "profit_factor": 1.049,
+              "stop_pct": 31.2
+            },
+            {
+              "trades": 81,
+              "avg_return_pct": -0.198,
+              "win_rate_pct": 50.6,
+              "profit_factor": 0.923,
+              "stop_pct": 42.0
+            },
+            {
+              "trades": 91,
+              "avg_return_pct": -0.215,
+              "win_rate_pct": 47.3,
+              "profit_factor": 0.913,
+              "stop_pct": 38.5
+            }
+          ],
+          "forward": [
+            {
+              "trades": 7,
+              "avg_return_pct": -0.1,
+              "win_rate_pct": 42.9,
+              "profit_factor": 0.952,
+              "stop_pct": 42.9
+            },
+            {
+              "trades": 1,
+              "avg_return_pct": -3.529,
+              "win_rate_pct": 0.0,
+              "profit_factor": 0.0,
+              "stop_pct": 100.0
+            },
+            {
+              "trades": 9,
+              "avg_return_pct": -1.285,
+              "win_rate_pct": 44.4,
+              "profit_factor": 0.571,
+              "stop_pct": 44.4
+            }
+          ],
+          "train_spread_pct": -0.209,
+          "oos_spread_pct": -0.312,
+          "higher_is_better": false,
+          "stable": false
+        },
+        "rsi2": {
+          "label": "RSI(2)",
+          "cuts": [
+            68.3269,
+            75.18893
+          ],
+          "train": [
+            {
+              "trades": 216,
+              "avg_return_pct": 0.45,
+              "win_rate_pct": 56.0,
+              "profit_factor": 1.228,
+              "stop_pct": 36.1
+            },
+            {
+              "trades": 216,
+              "avg_return_pct": 0.125,
+              "win_rate_pct": 54.6,
+              "profit_factor": 1.067,
+              "stop_pct": 33.3
+            },
+            {
+              "trades": 217,
+              "avg_return_pct": 0.26,
+              "win_rate_pct": 56.2,
+              "profit_factor": 1.155,
+              "stop_pct": 23.0
+            }
+          ],
+          "oos": [
+            {
+              "trades": 107,
+              "avg_return_pct": -1.002,
+              "win_rate_pct": 37.4,
+              "profit_factor": 0.658,
+              "stop_pct": 50.5
+            },
+            {
+              "trades": 78,
+              "avg_return_pct": 0.797,
+              "win_rate_pct": 62.8,
+              "profit_factor": 1.511,
+              "stop_pct": 23.1
+            },
+            {
+              "trades": 99,
+              "avg_return_pct": 0.203,
+              "win_rate_pct": 53.5,
+              "profit_factor": 1.092,
+              "stop_pct": 32.3
+            }
+          ],
+          "forward": [
+            {
+              "trades": 5,
+              "avg_return_pct": 0.094,
+              "win_rate_pct": 40.0,
+              "profit_factor": 1.042,
+              "stop_pct": 60.0
+            },
+            {
+              "trades": 6,
+              "avg_return_pct": -2.633,
+              "win_rate_pct": 16.7,
+              "profit_factor": 0.277,
+              "stop_pct": 66.7
+            },
+            {
+              "trades": 6,
+              "avg_return_pct": -0.078,
+              "win_rate_pct": 66.7,
+              "profit_factor": 0.962,
+              "stop_pct": 16.7
+            }
+          ],
+          "train_spread_pct": -0.19,
+          "oos_spread_pct": 1.205,
+          "higher_is_better": false,
+          "stable": false
+        },
+        "drawdown_252d": {
+          "label": "1년 고점 대비 낙폭",
+          "cuts": [
+            -0.08741,
+            -0.04782
+          ],
+          "train": [
+            {
+              "trades": 212,
+              "avg_return_pct": 0.312,
+              "win_rate_pct": 51.4,
+              "profit_factor": 1.143,
+              "stop_pct": 32.5
+            },
+            {
+              "trades": 212,
+              "avg_return_pct": 0.031,
+              "win_rate_pct": 53.3,
+              "profit_factor": 1.015,
+              "stop_pct": 34.0
+            },
+            {
+              "trades": 212,
+              "avg_return_pct": 0.5,
+              "win_rate_pct": 63.2,
+              "profit_factor": 1.383,
+              "stop_pct": 24.1
+            }
+          ],
+          "oos": [
+            {
+              "trades": 91,
+              "avg_return_pct": 0.073,
+              "win_rate_pct": 48.4,
+              "profit_factor": 1.029,
+              "stop_pct": 36.3
+            },
+            {
+              "trades": 103,
+              "avg_return_pct": -0.626,
+              "win_rate_pct": 41.7,
+              "profit_factor": 0.761,
+              "stop_pct": 39.8
+            },
+            {
+              "trades": 90,
+              "avg_return_pct": 0.367,
+              "win_rate_pct": 61.1,
+              "profit_factor": 1.215,
+              "stop_pct": 33.3
+            }
+          ],
+          "forward": [
+            {
+              "trades": 7,
+              "avg_return_pct": -0.67,
+              "win_rate_pct": 57.1,
+              "profit_factor": 0.764,
+              "stop_pct": 42.9
+            },
+            {
+              "trades": 7,
+              "avg_return_pct": -0.248,
+              "win_rate_pct": 28.6,
+              "profit_factor": 0.88,
+              "stop_pct": 42.9
+            },
+            {
+              "trades": 3,
+              "avg_return_pct": -3.124,
+              "win_rate_pct": 33.3,
+              "profit_factor": 0.14,
+              "stop_pct": 66.7
+            }
+          ],
+          "train_spread_pct": 0.188,
+          "oos_spread_pct": 0.294,
+          "higher_is_better": true,
+          "stable": false
+        },
+        "plan_stop_pct": {
+          "label": "계획 손절 폭",
+          "cuts": [
+            0.03651,
+            0.05061
+          ],
+          "train": [
+            {
+              "trades": 216,
+              "avg_return_pct": 0.281,
+              "win_rate_pct": 57.9,
+              "profit_factor": 1.221,
+              "stop_pct": 30.1
+            },
+            {
+              "trades": 216,
+              "avg_return_pct": 0.391,
+              "win_rate_pct": 56.5,
+              "profit_factor": 1.238,
+              "stop_pct": 29.6
+            },
+            {
+              "trades": 217,
+              "avg_return_pct": 0.165,
+              "win_rate_pct": 52.5,
+              "profit_factor": 1.063,
+              "stop_pct": 32.7
+            }
+          ],
+          "oos": [
+            {
+              "trades": 68,
+              "avg_return_pct": -0.052,
+              "win_rate_pct": 54.4,
+              "profit_factor": 0.971,
+              "stop_pct": 41.2
+            },
+            {
+              "trades": 120,
+              "avg_return_pct": -0.134,
+              "win_rate_pct": 50.8,
+              "profit_factor": 0.936,
+              "stop_pct": 34.2
+            },
+            {
+              "trades": 96,
+              "avg_return_pct": -0.054,
+              "win_rate_pct": 45.8,
+              "profit_factor": 0.981,
+              "stop_pct": 36.5
+            }
+          ],
+          "forward": [
+            {
+              "trades": 6,
+              "avg_return_pct": 0.574,
+              "win_rate_pct": 50.0,
+              "profit_factor": 1.487,
+              "stop_pct": 33.3
+            },
+            {
+              "trades": 2,
+              "avg_return_pct": -3.754,
+              "win_rate_pct": 0.0,
+              "profit_factor": 0.0,
+              "stop_pct": 100.0
+            },
+            {
+              "trades": 9,
+              "avg_return_pct": -1.304,
+              "win_rate_pct": 44.4,
+              "profit_factor": 0.617,
+              "stop_pct": 44.4
+            }
+          ],
+          "train_spread_pct": -0.116,
+          "oos_spread_pct": -0.002,
+          "higher_is_better": false,
+          "stable": false
+        },
+        "plan_target_pct": {
+          "label": "계획 목표 폭",
+          "cuts": [
+            0.05068,
+            0.06883
+          ],
+          "train": [
+            {
+              "trades": 216,
+              "avg_return_pct": 0.435,
+              "win_rate_pct": 59.7,
+              "profit_factor": 1.352,
+              "stop_pct": 28.7
+            },
+            {
+              "trades": 216,
+              "avg_return_pct": 0.055,
+              "win_rate_pct": 53.7,
+              "profit_factor": 1.03,
+              "stop_pct": 32.4
+            },
+            {
+              "trades": 217,
+              "avg_return_pct": 0.345,
+              "win_rate_pct": 53.5,
+              "profit_factor": 1.14,
+              "stop_pct": 31.3
+            }
+          ],
+          "oos": [
+            {
+              "trades": 74,
+              "avg_return_pct": 0.222,
+              "win_rate_pct": 59.5,
+              "profit_factor": 1.136,
+              "stop_pct": 35.1
+            },
+            {
+              "trades": 104,
+              "avg_return_pct": 0.179,
+              "win_rate_pct": 51.0,
+              "profit_factor": 1.088,
+              "stop_pct": 37.5
+            },
+            {
+              "trades": 106,
+              "avg_return_pct": -0.565,
+              "win_rate_pct": 42.5,
+              "profit_factor": 0.814,
+              "stop_pct": 36.8
+            }
+          ],
+          "forward": [
+            {
+              "trades": 4,
+              "avg_return_pct": 1.747,
+              "win_rate_pct": 75.0,
+              "profit_factor": 2.98,
+              "stop_pct": 25.0
+            },
+            {
+              "trades": 5,
+              "avg_return_pct": 1.09,
+              "win_rate_pct": 40.0,
+              "profit_factor": 1.859,
+              "stop_pct": 40.0
+            },
+            {
+              "trades": 8,
+              "avg_return_pct": -3.53,
+              "win_rate_pct": 25.0,
+              "profit_factor": 0.202,
+              "stop_pct": 62.5
+            }
+          ],
+          "train_spread_pct": -0.09,
+          "oos_spread_pct": -0.787,
+          "higher_is_better": false,
+          "stable": false
+        },
+        "rsi": {
+          "label": "RSI(14)",
+          "cuts": [
+            53.634,
+            56.71104
+          ],
+          "train": [
+            {
+              "trades": 216,
+              "avg_return_pct": 0.339,
+              "win_rate_pct": 49.1,
+              "profit_factor": 1.152,
+              "stop_pct": 39.4
+            },
+            {
+              "trades": 216,
+              "avg_return_pct": 0.222,
+              "win_rate_pct": 59.3,
+              "profit_factor": 1.122,
+              "stop_pct": 28.7
+            },
+            {
+              "trades": 217,
+              "avg_return_pct": 0.276,
+              "win_rate_pct": 58.5,
+              "profit_factor": 1.185,
+              "stop_pct": 24.4
+            }
+          ],
+          "oos": [
+            {
+              "trades": 114,
+              "avg_return_pct": -0.121,
+              "win_rate_pct": 41.2,
+              "profit_factor": 0.951,
+              "stop_pct": 41.2
+            },
+            {
+              "trades": 89,
+              "avg_return_pct": -0.401,
+              "win_rate_pct": 52.8,
+              "profit_factor": 0.837,
+              "stop_pct": 33.7
+            },
+            {
+              "trades": 81,
+              "avg_return_pct": 0.304,
+              "win_rate_pct": 59.3,
+              "profit_factor": 1.162,
+              "stop_pct": 33.3
+            }
+          ],
+          "forward": [
+            {
+              "trades": 6,
+              "avg_return_pct": -0.252,
+              "win_rate_pct": 50.0,
+              "profit_factor": 0.89,
+              "stop_pct": 50.0
+            },
+            {
+              "trades": 7,
+              "avg_return_pct": -0.451,
+              "win_rate_pct": 42.9,
+              "profit_factor": 0.833,
+              "stop_pct": 42.9
+            },
+            {
+              "trades": 4,
+              "avg_return_pct": -2.781,
+              "win_rate_pct": 25.0,
+              "profit_factor": 0.121,
+              "stop_pct": 50.0
+            }
+          ],
+          "train_spread_pct": -0.063,
+          "oos_spread_pct": 0.425,
+          "higher_is_better": false,
+          "stable": false
+        },
+        "atr_pct": {
+          "label": "하루 평균 움직임",
+          "cuts": [
+            0.02339,
+            0.03036
+          ],
+          "train": [
+            {
+              "trades": 216,
+              "avg_return_pct": 0.363,
+              "win_rate_pct": 58.8,
+              "profit_factor": 1.289,
+              "stop_pct": 30.1
+            },
+            {
+              "trades": 216,
+              "avg_return_pct": 0.053,
+              "win_rate_pct": 53.2,
+              "profit_factor": 1.029,
+              "stop_pct": 32.4
+            },
+            {
+              "trades": 217,
+              "avg_return_pct": 0.42,
+              "win_rate_pct": 54.8,
+              "profit_factor": 1.17,
+              "stop_pct": 30.0
+            }
+          ],
+          "oos": [
+            {
+              "trades": 69,
+              "avg_return_pct": 0.402,
+              "win_rate_pct": 60.9,
+              "profit_factor": 1.278,
+              "stop_pct": 33.3
+            },
+            {
+              "trades": 114,
+              "avg_return_pct": -0.051,
+              "win_rate_pct": 49.1,
+              "profit_factor": 0.977,
+              "stop_pct": 37.7
+            },
+            {
+              "trades": 101,
+              "avg_return_pct": -0.464,
+              "win_rate_pct": 43.6,
+              "profit_factor": 0.846,
+              "stop_pct": 37.6
+            }
+          ],
+          "forward": [
+            {
+              "trades": 5,
+              "avg_return_pct": 1.359,
+              "win_rate_pct": 60.0,
+              "profit_factor": 2.825,
+              "stop_pct": 20.0
+            },
+            {
+              "trades": 3,
+              "avg_return_pct": -0.36,
+              "win_rate_pct": 33.3,
+              "profit_factor": 0.825,
+              "stop_pct": 66.7
+            },
+            {
+              "trades": 9,
+              "avg_return_pct": -2.39,
+              "win_rate_pct": 33.3,
+              "profit_factor": 0.392,
+              "stop_pct": 55.6
+            }
+          ],
+          "train_spread_pct": 0.057,
+          "oos_spread_pct": -0.866,
+          "higher_is_better": true,
+          "stable": false
+        }
+      }
+    },
+    "rsi2_trend_reversion": {
+      "signals": 8405,
+      "baseline": {
+        "train": {
+          "trades": 5676,
+          "avg_return_pct": -0.317,
+          "win_rate_pct": 46.7,
+          "profit_factor": 0.782,
+          "stop_pct": 33.6
+        },
+        "oos": {
+          "trades": 2407,
+          "avg_return_pct": -0.118,
+          "win_rate_pct": 51.0,
+          "profit_factor": 0.912,
+          "stop_pct": 26.9
+        },
+        "forward": {
+          "trades": 322,
+          "avg_return_pct": -0.978,
+          "win_rate_pct": 37.0,
+          "profit_factor": 0.444,
+          "stop_pct": 28.3
+        }
+      },
+      "candidate_rules_compared": 52,
+      "train_pick": {
+        "feature": "plan_target_pct",
+        "label": "계획 목표 폭",
+        "shape": "keep_best",
+        "direction": "높을수록 좋음",
+        "cuts": [
+          0.03315,
+          0.05254
+        ],
+        "train": {
+          "trades": 1893,
+          "avg_return_pct": -0.031,
+          "win_rate_pct": 49.2,
+          "profit_factor": 0.982,
+          "stop_pct": 31.7
+        },
+        "oos": {
+          "trades": 871,
+          "avg_return_pct": -0.123,
+          "win_rate_pct": 49.4,
+          "profit_factor": 0.923,
+          "stop_pct": 23.3
+        },
+        "forward": {
+          "trades": 143,
+          "avg_return_pct": -1.231,
+          "win_rate_pct": 33.6,
+          "profit_factor": 0.419,
+          "stop_pct": 32.9
+        },
+        "passes_gate": false,
+        "fail_reasons": [
+          "학습구간 평균 수익률이 0 이하",
+          "검증구간에서 이익이 아님",
+          "검증구간에서 원신호보다 낫지 않음"
+        ]
+      },
+      "train_pick_passes_oos": false,
+      "rules_passing_gate": 0,
+      "stable_features": [],
+      "features": {
+        "spy_ret20": {
+          "label": "SPY 최근 20일 수익률",
+          "cuts": [
+            -0.00087,
+            0.02125
+          ],
+          "train": [
+            {
+              "trades": 1837,
+              "avg_return_pct": -0.591,
+              "win_rate_pct": 42.4,
+              "profit_factor": 0.664,
+              "stop_pct": 41.0
+            },
+            {
+              "trades": 1945,
+              "avg_return_pct": -0.246,
+              "win_rate_pct": 47.2,
+              "profit_factor": 0.812,
+              "stop_pct": 31.8
+            },
+            {
+              "trades": 1894,
+              "avg_return_pct": -0.126,
+              "win_rate_pct": 50.5,
+              "profit_factor": 0.905,
+              "stop_pct": 28.3
+            }
+          ],
+          "oos": [
+            {
+              "trades": 765,
+              "avg_return_pct": 0.318,
+              "win_rate_pct": 58.6,
+              "profit_factor": 1.262,
+              "stop_pct": 21.8
+            },
+            {
+              "trades": 703,
+              "avg_return_pct": -0.571,
+              "win_rate_pct": 43.4,
+              "profit_factor": 0.648,
+              "stop_pct": 31.4
+            },
+            {
+              "trades": 939,
+              "avg_return_pct": -0.134,
+              "win_rate_pct": 50.6,
+              "profit_factor": 0.891,
+              "stop_pct": 27.7
+            }
+          ],
+          "forward": [
+            {
+              "trades": 167,
+              "avg_return_pct": -0.94,
+              "win_rate_pct": 35.3,
+              "profit_factor": 0.473,
+              "stop_pct": 31.1
+            },
+            {
+              "trades": 86,
+              "avg_return_pct": -1.372,
+              "win_rate_pct": 32.6,
+              "profit_factor": 0.336,
+              "stop_pct": 31.4
+            },
+            {
+              "trades": 69,
+              "avg_return_pct": -0.581,
+              "win_rate_pct": 46.4,
+              "profit_factor": 0.557,
+              "stop_pct": 17.4
+            }
+          ],
+          "train_spread_pct": 0.465,
+          "oos_spread_pct": -0.452,
+          "higher_is_better": true,
+          "stable": false
+        },
+        "dist_sma20": {
+          "label": "20일선과의 거리",
+          "cuts": [
+            -0.04959,
+            -0.03039
+          ],
+          "train": [
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.044,
+              "win_rate_pct": 49.0,
+              "profit_factor": 0.974,
+              "stop_pct": 31.9
+            },
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.416,
+              "win_rate_pct": 44.7,
+              "profit_factor": 0.71,
+              "stop_pct": 34.2
+            },
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.492,
+              "win_rate_pct": 46.5,
+              "profit_factor": 0.61,
+              "stop_pct": 34.7
+            }
+          ],
+          "oos": [
+            {
+              "trades": 868,
+              "avg_return_pct": -0.1,
+              "win_rate_pct": 49.5,
+              "profit_factor": 0.936,
+              "stop_pct": 23.0
+            },
+            {
+              "trades": 835,
+              "avg_return_pct": -0.004,
+              "win_rate_pct": 52.0,
+              "profit_factor": 0.996,
+              "stop_pct": 28.1
+            },
+            {
+              "trades": 704,
+              "avg_return_pct": -0.275,
+              "win_rate_pct": 51.7,
+              "profit_factor": 0.764,
+              "stop_pct": 30.3
+            }
+          ],
+          "forward": [
+            {
+              "trades": 142,
+              "avg_return_pct": -1.199,
+              "win_rate_pct": 33.8,
+              "profit_factor": 0.427,
+              "stop_pct": 32.4
+            },
+            {
+              "trades": 109,
+              "avg_return_pct": -0.836,
+              "win_rate_pct": 34.9,
+              "profit_factor": 0.467,
+              "stop_pct": 23.9
+            },
+            {
+              "trades": 71,
+              "avg_return_pct": -0.756,
+              "win_rate_pct": 46.5,
+              "profit_factor": 0.455,
+              "stop_pct": 26.8
+            }
+          ],
+          "train_spread_pct": -0.448,
+          "oos_spread_pct": -0.175,
+          "higher_is_better": false,
+          "stable": false
+        },
+        "drawdown_60d": {
+          "label": "60일 고점 대비 낙폭",
+          "cuts": [
+            -0.09931,
+            -0.06938
+          ],
+          "train": [
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.063,
+              "win_rate_pct": 49.7,
+              "profit_factor": 0.963,
+              "stop_pct": 29.9
+            },
+            {
+              "trades": 1891,
+              "avg_return_pct": -0.403,
+              "win_rate_pct": 45.2,
+              "profit_factor": 0.723,
+              "stop_pct": 35.9
+            },
+            {
+              "trades": 1893,
+              "avg_return_pct": -0.487,
+              "win_rate_pct": 45.3,
+              "profit_factor": 0.592,
+              "stop_pct": 35.1
+            }
+          ],
+          "oos": [
+            {
+              "trades": 904,
+              "avg_return_pct": -0.176,
+              "win_rate_pct": 49.7,
+              "profit_factor": 0.893,
+              "stop_pct": 25.6
+            },
+            {
+              "trades": 836,
+              "avg_return_pct": 0.013,
+              "win_rate_pct": 52.2,
+              "profit_factor": 1.011,
+              "stop_pct": 25.0
+            },
+            {
+              "trades": 667,
+              "avg_return_pct": -0.203,
+              "win_rate_pct": 51.4,
+              "profit_factor": 0.82,
+              "stop_pct": 31.2
+            }
+          ],
+          "forward": [
+            {
+              "trades": 180,
+              "avg_return_pct": -1.183,
+              "win_rate_pct": 34.4,
+              "profit_factor": 0.423,
+              "stop_pct": 31.1
+            },
+            {
+              "trades": 99,
+              "avg_return_pct": -0.798,
+              "win_rate_pct": 39.4,
+              "profit_factor": 0.449,
+              "stop_pct": 25.3
+            },
+            {
+              "trades": 43,
+              "avg_return_pct": -0.538,
+              "win_rate_pct": 41.9,
+              "profit_factor": 0.569,
+              "stop_pct": 23.3
+            }
+          ],
+          "train_spread_pct": -0.424,
+          "oos_spread_pct": -0.027,
+          "higher_is_better": false,
+          "stable": false
+        },
+        "plan_target_pct": {
+          "label": "계획 목표 폭",
+          "cuts": [
+            0.03315,
+            0.05254
+          ],
+          "train": [
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.453,
+              "win_rate_pct": 46.7,
+              "profit_factor": 0.62,
+              "stop_pct": 34.7
+            },
+            {
+              "trades": 1891,
+              "avg_return_pct": -0.469,
+              "win_rate_pct": 44.2,
+              "profit_factor": 0.687,
+              "stop_pct": 34.5
+            },
+            {
+              "trades": 1893,
+              "avg_return_pct": -0.031,
+              "win_rate_pct": 49.2,
+              "profit_factor": 0.982,
+              "stop_pct": 31.7
+            }
+          ],
+          "oos": [
+            {
+              "trades": 711,
+              "avg_return_pct": -0.234,
+              "win_rate_pct": 51.6,
+              "profit_factor": 0.79,
+              "stop_pct": 30.9
+            },
+            {
+              "trades": 825,
+              "avg_return_pct": -0.013,
+              "win_rate_pct": 52.2,
+              "profit_factor": 0.99,
+              "stop_pct": 27.3
+            },
+            {
+              "trades": 871,
+              "avg_return_pct": -0.123,
+              "win_rate_pct": 49.4,
+              "profit_factor": 0.923,
+              "stop_pct": 23.3
+            }
+          ],
+          "forward": [
+            {
+              "trades": 68,
+              "avg_return_pct": -0.642,
+              "win_rate_pct": 47.1,
+              "profit_factor": 0.48,
+              "stop_pct": 25.0
+            },
+            {
+              "trades": 111,
+              "avg_return_pct": -0.859,
+              "win_rate_pct": 35.1,
+              "profit_factor": 0.469,
+              "stop_pct": 24.3
+            },
+            {
+              "trades": 143,
+              "avg_return_pct": -1.231,
+              "win_rate_pct": 33.6,
+              "profit_factor": 0.419,
+              "stop_pct": 32.9
+            }
+          ],
+          "train_spread_pct": 0.422,
+          "oos_spread_pct": 0.111,
+          "higher_is_better": true,
+          "stable": false
+        },
+        "drawdown_252d": {
+          "label": "1년 고점 대비 낙폭",
+          "cuts": [
+            -0.11118,
+            -0.0758
+          ],
+          "train": [
+            {
+              "trades": 1801,
+              "avg_return_pct": -0.133,
+              "win_rate_pct": 49.2,
+              "profit_factor": 0.923,
+              "stop_pct": 30.3
+            },
+            {
+              "trades": 1805,
+              "avg_return_pct": -0.4,
+              "win_rate_pct": 45.2,
+              "profit_factor": 0.735,
+              "stop_pct": 36.0
+            },
+            {
+              "trades": 1803,
+              "avg_return_pct": -0.484,
+              "win_rate_pct": 44.7,
+              "profit_factor": 0.61,
+              "stop_pct": 36.7
+            }
+          ],
+          "oos": [
+            {
+              "trades": 810,
+              "avg_return_pct": -0.171,
+              "win_rate_pct": 49.1,
+              "profit_factor": 0.897,
+              "stop_pct": 25.6
+            },
+            {
+              "trades": 825,
+              "avg_return_pct": 0.037,
+              "win_rate_pct": 53.2,
+              "profit_factor": 1.031,
+              "stop_pct": 24.2
+            },
+            {
+              "trades": 772,
+              "avg_return_pct": -0.227,
+              "win_rate_pct": 50.6,
+              "profit_factor": 0.803,
+              "stop_pct": 31.2
+            }
+          ],
+          "forward": [
+            {
+              "trades": 152,
+              "avg_return_pct": -1.149,
+              "win_rate_pct": 34.9,
+              "profit_factor": 0.44,
+              "stop_pct": 30.3
+            },
+            {
+              "trades": 126,
+              "avg_return_pct": -0.893,
+              "win_rate_pct": 38.1,
+              "profit_factor": 0.439,
+              "stop_pct": 27.0
+            },
+            {
+              "trades": 44,
+              "avg_return_pct": -0.637,
+              "win_rate_pct": 40.9,
+              "profit_factor": 0.483,
+              "stop_pct": 25.0
+            }
+          ],
+          "train_spread_pct": -0.351,
+          "oos_spread_pct": -0.056,
+          "higher_is_better": false,
+          "stable": false
+        },
+        "ret5": {
+          "label": "최근 5일 수익률",
+          "cuts": [
+            -0.05935,
+            -0.03901
+          ],
+          "train": [
+            {
+              "trades": 1891,
+              "avg_return_pct": -0.132,
+              "win_rate_pct": 48.8,
+              "profit_factor": 0.925,
+              "stop_pct": 33.4
+            },
+            {
+              "trades": 1891,
+              "avg_return_pct": -0.349,
+              "win_rate_pct": 46.4,
+              "profit_factor": 0.749,
+              "stop_pct": 33.1
+            },
+            {
+              "trades": 1894,
+              "avg_return_pct": -0.472,
+              "win_rate_pct": 44.9,
+              "profit_factor": 0.613,
+              "stop_pct": 34.4
+            }
+          ],
+          "oos": [
+            {
+              "trades": 780,
+              "avg_return_pct": -0.055,
+              "win_rate_pct": 52.1,
+              "profit_factor": 0.965,
+              "stop_pct": 23.7
+            },
+            {
+              "trades": 838,
+              "avg_return_pct": -0.12,
+              "win_rate_pct": 50.5,
+              "profit_factor": 0.906,
+              "stop_pct": 26.1
+            },
+            {
+              "trades": 789,
+              "avg_return_pct": -0.178,
+              "win_rate_pct": 50.6,
+              "profit_factor": 0.848,
+              "stop_pct": 30.9
+            }
+          ],
+          "forward": [
+            {
+              "trades": 109,
+              "avg_return_pct": -1.261,
+              "win_rate_pct": 33.9,
+              "profit_factor": 0.422,
+              "stop_pct": 28.4
+            },
+            {
+              "trades": 115,
+              "avg_return_pct": -0.839,
+              "win_rate_pct": 35.7,
+              "profit_factor": 0.468,
+              "stop_pct": 28.7
+            },
+            {
+              "trades": 98,
+              "avg_return_pct": -0.827,
+              "win_rate_pct": 41.8,
+              "profit_factor": 0.449,
+              "stop_pct": 27.6
+            }
+          ],
+          "train_spread_pct": -0.34,
+          "oos_spread_pct": -0.123,
+          "higher_is_better": false,
+          "stable": false
+        },
+        "ret60": {
+          "label": "최근 60일 수익률",
+          "cuts": [
+            0.01156,
+            0.07001
+          ],
+          "train": [
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.423,
+              "win_rate_pct": 44.9,
+              "profit_factor": 0.725,
+              "stop_pct": 34.3
+            },
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.419,
+              "win_rate_pct": 45.5,
+              "profit_factor": 0.71,
+              "stop_pct": 35.3
+            },
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.11,
+              "win_rate_pct": 49.8,
+              "profit_factor": 0.921,
+              "stop_pct": 31.2
+            }
+          ],
+          "oos": [
+            {
+              "trades": 909,
+              "avg_return_pct": -0.162,
+              "win_rate_pct": 50.9,
+              "profit_factor": 0.884,
+              "stop_pct": 27.1
+            },
+            {
+              "trades": 801,
+              "avg_return_pct": 0.127,
+              "win_rate_pct": 53.4,
+              "profit_factor": 1.111,
+              "stop_pct": 24.5
+            },
+            {
+              "trades": 697,
+              "avg_return_pct": -0.342,
+              "win_rate_pct": 48.4,
+              "profit_factor": 0.768,
+              "stop_pct": 29.6
+            }
+          ],
+          "forward": [
+            {
+              "trades": 105,
+              "avg_return_pct": -1.285,
+              "win_rate_pct": 32.4,
+              "profit_factor": 0.352,
+              "stop_pct": 37.1
+            },
+            {
+              "trades": 98,
+              "avg_return_pct": -1.007,
+              "win_rate_pct": 35.7,
+              "profit_factor": 0.445,
+              "stop_pct": 24.5
+            },
+            {
+              "trades": 119,
+              "avg_return_pct": -0.684,
+              "win_rate_pct": 42.0,
+              "profit_factor": 0.548,
+              "stop_pct": 23.5
+            }
+          ],
+          "train_spread_pct": 0.313,
+          "oos_spread_pct": -0.18,
+          "higher_is_better": true,
+          "stable": false
+        },
+        "dist_sma200": {
+          "label": "200일선과의 거리",
+          "cuts": [
+            0.04704,
+            0.0953
+          ],
+          "train": [
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.453,
+              "win_rate_pct": 44.3,
+              "profit_factor": 0.687,
+              "stop_pct": 34.9
+            },
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.348,
+              "win_rate_pct": 47.0,
+              "profit_factor": 0.744,
+              "stop_pct": 32.0
+            },
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.152,
+              "win_rate_pct": 48.8,
+              "profit_factor": 0.903,
+              "stop_pct": 33.9
+            }
+          ],
+          "oos": [
+            {
+              "trades": 768,
+              "avg_return_pct": -0.009,
+              "win_rate_pct": 53.3,
+              "profit_factor": 0.993,
+              "stop_pct": 25.0
+            },
+            {
+              "trades": 788,
+              "avg_return_pct": -0.166,
+              "win_rate_pct": 50.3,
+              "profit_factor": 0.871,
+              "stop_pct": 26.8
+            },
+            {
+              "trades": 851,
+              "avg_return_pct": -0.173,
+              "win_rate_pct": 49.7,
+              "profit_factor": 0.883,
+              "stop_pct": 28.8
+            }
+          ],
+          "forward": [
+            {
+              "trades": 117,
+              "avg_return_pct": -1.459,
+              "win_rate_pct": 28.2,
+              "profit_factor": 0.259,
+              "stop_pct": 32.5
+            },
+            {
+              "trades": 133,
+              "avg_return_pct": -0.735,
+              "win_rate_pct": 43.6,
+              "profit_factor": 0.583,
+              "stop_pct": 29.3
+            },
+            {
+              "trades": 72,
+              "avg_return_pct": -0.646,
+              "win_rate_pct": 38.9,
+              "profit_factor": 0.54,
+              "stop_pct": 19.4
+            }
+          ],
+          "train_spread_pct": 0.301,
+          "oos_spread_pct": -0.164,
+          "higher_is_better": true,
+          "stable": false
+        },
+        "plan_stop_pct": {
+          "label": "계획 손절 폭",
+          "cuts": [
+            0.02616,
+            0.03556
+          ],
+          "train": [
+            {
+              "trades": 1888,
+              "avg_return_pct": -0.385,
+              "win_rate_pct": 45.3,
+              "profit_factor": 0.652,
+              "stop_pct": 35.4
+            },
+            {
+              "trades": 1895,
+              "avg_return_pct": -0.464,
+              "win_rate_pct": 44.9,
+              "profit_factor": 0.682,
+              "stop_pct": 35.5
+            },
+            {
+              "trades": 1893,
+              "avg_return_pct": -0.104,
+              "win_rate_pct": 49.9,
+              "profit_factor": 0.943,
+              "stop_pct": 30.0
+            }
+          ],
+          "oos": [
+            {
+              "trades": 676,
+              "avg_return_pct": -0.052,
+              "win_rate_pct": 51.6,
+              "profit_factor": 0.947,
+              "stop_pct": 31.1
+            },
+            {
+              "trades": 863,
+              "avg_return_pct": -0.127,
+              "win_rate_pct": 51.0,
+              "profit_factor": 0.897,
+              "stop_pct": 26.8
+            },
+            {
+              "trades": 868,
+              "avg_return_pct": -0.161,
+              "win_rate_pct": 50.6,
+              "profit_factor": 0.906,
+              "stop_pct": 23.8
+            }
+          ],
+          "forward": [
+            {
+              "trades": 30,
+              "avg_return_pct": -0.981,
+              "win_rate_pct": 33.3,
+              "profit_factor": 0.303,
+              "stop_pct": 36.7
+            },
+            {
+              "trades": 145,
+              "avg_return_pct": -0.895,
+              "win_rate_pct": 33.8,
+              "profit_factor": 0.365,
+              "stop_pct": 22.1
+            },
+            {
+              "trades": 147,
+              "avg_return_pct": -1.06,
+              "win_rate_pct": 40.8,
+              "profit_factor": 0.513,
+              "stop_pct": 32.7
+            }
+          ],
+          "train_spread_pct": 0.281,
+          "oos_spread_pct": -0.109,
+          "higher_is_better": true,
+          "stable": false
+        },
+        "atr_pct": {
+          "label": "하루 평균 움직임",
+          "cuts": [
+            0.01744,
+            0.02366
+          ],
+          "train": [
+            {
+              "trades": 1890,
+              "avg_return_pct": -0.383,
+              "win_rate_pct": 45.4,
+              "profit_factor": 0.653,
+              "stop_pct": 35.3
+            },
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.463,
+              "win_rate_pct": 44.9,
+              "profit_factor": 0.683,
+              "stop_pct": 35.5
+            },
+            {
+              "trades": 1894,
+              "avg_return_pct": -0.107,
+              "win_rate_pct": 49.8,
+              "profit_factor": 0.941,
+              "stop_pct": 30.0
+            }
+          ],
+          "oos": [
+            {
+              "trades": 677,
+              "avg_return_pct": -0.051,
+              "win_rate_pct": 51.7,
+              "profit_factor": 0.948,
+              "stop_pct": 31.0
+            },
+            {
+              "trades": 866,
+              "avg_return_pct": -0.138,
+              "win_rate_pct": 50.7,
+              "profit_factor": 0.889,
+              "stop_pct": 26.9
+            },
+            {
+              "trades": 864,
+              "avg_return_pct": -0.151,
+              "win_rate_pct": 50.8,
+              "profit_factor": 0.912,
+              "stop_pct": 23.7
+            }
+          ],
+          "forward": [
+            {
+              "trades": 30,
+              "avg_return_pct": -0.981,
+              "win_rate_pct": 33.3,
+              "profit_factor": 0.303,
+              "stop_pct": 36.7
+            },
+            {
+              "trades": 142,
+              "avg_return_pct": -0.864,
+              "win_rate_pct": 33.8,
+              "profit_factor": 0.374,
+              "stop_pct": 21.8
+            },
+            {
+              "trades": 150,
+              "avg_return_pct": -1.086,
+              "win_rate_pct": 40.7,
+              "profit_factor": 0.503,
+              "stop_pct": 32.7
+            }
+          ],
+          "train_spread_pct": 0.276,
+          "oos_spread_pct": -0.1,
+          "higher_is_better": true,
+          "stable": false
+        },
+        "down_streak": {
+          "label": "연속 하락 마감 일수",
+          "cuts": [
+            3.0,
+            5.0
+          ],
+          "train": [
+            {
+              "trades": 976,
+              "avg_return_pct": -0.406,
+              "win_rate_pct": 45.7,
+              "profit_factor": 0.727,
+              "stop_pct": 32.8
+            },
+            {
+              "trades": 2342,
+              "avg_return_pct": -0.446,
+              "win_rate_pct": 45.3,
+              "profit_factor": 0.717,
+              "stop_pct": 36.9
+            },
+            {
+              "trades": 2358,
+              "avg_return_pct": -0.153,
+              "win_rate_pct": 48.5,
+              "profit_factor": 0.885,
+              "stop_pct": 30.7
+            }
+          ],
+          "oos": [
+            {
+              "trades": 349,
+              "avg_return_pct": -0.005,
+              "win_rate_pct": 52.1,
+              "profit_factor": 0.996,
+              "stop_pct": 26.9
+            },
+            {
+              "trades": 960,
+              "avg_return_pct": -0.246,
+              "win_rate_pct": 50.1,
+              "profit_factor": 0.821,
+              "stop_pct": 28.6
+            },
+            {
+              "trades": 1098,
+              "avg_return_pct": -0.042,
+              "win_rate_pct": 51.5,
+              "profit_factor": 0.968,
+              "stop_pct": 25.4
+            }
+          ],
+          "forward": [
+            {
+              "trades": 48,
+              "avg_return_pct": -1.405,
+              "win_rate_pct": 31.2,
+              "profit_factor": 0.322,
+              "stop_pct": 33.3
+            },
+            {
+              "trades": 136,
+              "avg_return_pct": -0.726,
+              "win_rate_pct": 41.2,
+              "profit_factor": 0.532,
+              "stop_pct": 24.3
+            },
+            {
+              "trades": 138,
+              "avg_return_pct": -1.078,
+              "win_rate_pct": 34.8,
+              "profit_factor": 0.418,
+              "stop_pct": 30.4
+            }
+          ],
+          "train_spread_pct": 0.253,
+          "oos_spread_pct": -0.037,
+          "higher_is_better": true,
+          "stable": false
+        },
+        "gap_pct": {
+          "label": "당일 시가 갭",
+          "cuts": [
+            -0.00621,
+            0.0
+          ],
+          "train": [
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.21,
+              "win_rate_pct": 49.0,
+              "profit_factor": 0.861,
+              "stop_pct": 31.3
+            },
+            {
+              "trades": 1689,
+              "avg_return_pct": -0.267,
+              "win_rate_pct": 47.4,
+              "profit_factor": 0.799,
+              "stop_pct": 35.1
+            },
+            {
+              "trades": 2095,
+              "avg_return_pct": -0.456,
+              "win_rate_pct": 44.1,
+              "profit_factor": 0.7,
+              "stop_pct": 34.5
+            }
+          ],
+          "oos": [
+            {
+              "trades": 626,
+              "avg_return_pct": -0.229,
+              "win_rate_pct": 50.8,
+              "profit_factor": 0.855,
+              "stop_pct": 28.9
+            },
+            {
+              "trades": 809,
+              "avg_return_pct": 0.079,
+              "win_rate_pct": 53.8,
+              "profit_factor": 1.07,
+              "stop_pct": 26.3
+            },
+            {
+              "trades": 972,
+              "avg_return_pct": -0.21,
+              "win_rate_pct": 48.9,
+              "profit_factor": 0.845,
+              "stop_pct": 26.1
+            }
+          ],
+          "forward": [
+            {
+              "trades": 97,
+              "avg_return_pct": -1.157,
+              "win_rate_pct": 34.0,
+              "profit_factor": 0.433,
+              "stop_pct": 32.0
+            },
+            {
+              "trades": 105,
+              "avg_return_pct": -0.812,
+              "win_rate_pct": 38.1,
+              "profit_factor": 0.487,
+              "stop_pct": 21.0
+            },
+            {
+              "trades": 120,
+              "avg_return_pct": -0.98,
+              "win_rate_pct": 38.3,
+              "profit_factor": 0.419,
+              "stop_pct": 31.7
+            }
+          ],
+          "train_spread_pct": -0.246,
+          "oos_spread_pct": 0.019,
+          "higher_is_better": false,
+          "stable": false
+        },
+        "slope_sma120": {
+          "label": "120일선 기울기(20일)",
+          "cuts": [
+            0.01935,
+            0.03298
+          ],
+          "train": [
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.396,
+              "win_rate_pct": 45.8,
+              "profit_factor": 0.695,
+              "stop_pct": 32.3
+            },
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.373,
+              "win_rate_pct": 45.7,
+              "profit_factor": 0.73,
+              "stop_pct": 33.9
+            },
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.183,
+              "win_rate_pct": 48.7,
+              "profit_factor": 0.892,
+              "stop_pct": 34.6
+            }
+          ],
+          "oos": [
+            {
+              "trades": 636,
+              "avg_return_pct": -0.073,
+              "win_rate_pct": 52.7,
+              "profit_factor": 0.937,
+              "stop_pct": 24.7
+            },
+            {
+              "trades": 800,
+              "avg_return_pct": -0.135,
+              "win_rate_pct": 50.9,
+              "profit_factor": 0.893,
+              "stop_pct": 28.5
+            },
+            {
+              "trades": 971,
+              "avg_return_pct": -0.133,
+              "win_rate_pct": 50.1,
+              "profit_factor": 0.912,
+              "stop_pct": 27.1
+            }
+          ],
+          "forward": [
+            {
+              "trades": 131,
+              "avg_return_pct": -1.306,
+              "win_rate_pct": 30.5,
+              "profit_factor": 0.282,
+              "stop_pct": 29.8
+            },
+            {
+              "trades": 88,
+              "avg_return_pct": -1.014,
+              "win_rate_pct": 42.0,
+              "profit_factor": 0.444,
+              "stop_pct": 29.5
+            },
+            {
+              "trades": 103,
+              "avg_return_pct": -0.532,
+              "win_rate_pct": 40.8,
+              "profit_factor": 0.673,
+              "stop_pct": 25.2
+            }
+          ],
+          "train_spread_pct": 0.213,
+          "oos_spread_pct": -0.06,
+          "higher_is_better": true,
+          "stable": false
+        },
+        "plan_reward_risk": {
+          "label": "계획 손익비",
+          "cuts": [
+            1.11055,
+            1.66219
+          ],
+          "train": [
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.425,
+              "win_rate_pct": 48.6,
+              "profit_factor": 0.701,
+              "stop_pct": 33.4
+            },
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.315,
+              "win_rate_pct": 45.8,
+              "profit_factor": 0.79,
+              "stop_pct": 33.8
+            },
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.213,
+              "win_rate_pct": 45.8,
+              "profit_factor": 0.853,
+              "stop_pct": 33.6
+            }
+          ],
+          "oos": [
+            {
+              "trades": 752,
+              "avg_return_pct": -0.307,
+              "win_rate_pct": 50.5,
+              "profit_factor": 0.765,
+              "stop_pct": 28.2
+            },
+            {
+              "trades": 901,
+              "avg_return_pct": -0.13,
+              "win_rate_pct": 50.8,
+              "profit_factor": 0.908,
+              "stop_pct": 28.6
+            },
+            {
+              "trades": 754,
+              "avg_return_pct": 0.085,
+              "win_rate_pct": 51.7,
+              "profit_factor": 1.066,
+              "stop_pct": 23.6
+            }
+          ],
+          "forward": [
+            {
+              "trades": 103,
+              "avg_return_pct": -0.814,
+              "win_rate_pct": 45.6,
+              "profit_factor": 0.489,
+              "stop_pct": 27.2
+            },
+            {
+              "trades": 117,
+              "avg_return_pct": -1.038,
+              "win_rate_pct": 32.5,
+              "profit_factor": 0.421,
+              "stop_pct": 28.2
+            },
+            {
+              "trades": 102,
+              "avg_return_pct": -1.076,
+              "win_rate_pct": 33.3,
+              "profit_factor": 0.43,
+              "stop_pct": 29.4
+            }
+          ],
+          "train_spread_pct": 0.212,
+          "oos_spread_pct": 0.392,
+          "higher_is_better": true,
+          "stable": false
+        },
+        "dist_sma50": {
+          "label": "50일선과의 거리",
+          "cuts": [
+            -0.03391,
+            -0.00657
+          ],
+          "train": [
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.145,
+              "win_rate_pct": 48.2,
+              "profit_factor": 0.909,
+              "stop_pct": 31.6
+            },
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.465,
+              "win_rate_pct": 44.8,
+              "profit_factor": 0.68,
+              "stop_pct": 35.1
+            },
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.343,
+              "win_rate_pct": 47.1,
+              "profit_factor": 0.743,
+              "stop_pct": 34.1
+            }
+          ],
+          "oos": [
+            {
+              "trades": 947,
+              "avg_return_pct": 0.02,
+              "win_rate_pct": 52.0,
+              "profit_factor": 1.014,
+              "stop_pct": 22.7
+            },
+            {
+              "trades": 747,
+              "avg_return_pct": -0.14,
+              "win_rate_pct": 51.3,
+              "profit_factor": 0.889,
+              "stop_pct": 27.0
+            },
+            {
+              "trades": 713,
+              "avg_return_pct": -0.279,
+              "win_rate_pct": 49.5,
+              "profit_factor": 0.788,
+              "stop_pct": 32.4
+            }
+          ],
+          "forward": [
+            {
+              "trades": 155,
+              "avg_return_pct": -1.131,
+              "win_rate_pct": 34.2,
+              "profit_factor": 0.419,
+              "stop_pct": 30.3
+            },
+            {
+              "trades": 107,
+              "avg_return_pct": -0.947,
+              "win_rate_pct": 33.6,
+              "profit_factor": 0.401,
+              "stop_pct": 27.1
+            },
+            {
+              "trades": 60,
+              "avg_return_pct": -0.64,
+              "win_rate_pct": 50.0,
+              "profit_factor": 0.598,
+              "stop_pct": 25.0
+            }
+          ],
+          "train_spread_pct": -0.198,
+          "oos_spread_pct": -0.299,
+          "higher_is_better": false,
+          "stable": false
+        },
+        "volume_5d_vs_20d": {
+          "label": "최근 5일 거래량 / 20일 평균",
+          "cuts": [
+            0.95264,
+            1.15944
+          ],
+          "train": [
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.418,
+              "win_rate_pct": 46.1,
+              "profit_factor": 0.712,
+              "stop_pct": 34.3
+            },
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.284,
+              "win_rate_pct": 46.8,
+              "profit_factor": 0.805,
+              "stop_pct": 34.1
+            },
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.251,
+              "win_rate_pct": 47.3,
+              "profit_factor": 0.829,
+              "stop_pct": 32.5
+            }
+          ],
+          "oos": [
+            {
+              "trades": 845,
+              "avg_return_pct": -0.21,
+              "win_rate_pct": 49.2,
+              "profit_factor": 0.846,
+              "stop_pct": 29.1
+            },
+            {
+              "trades": 867,
+              "avg_return_pct": -0.318,
+              "win_rate_pct": 48.7,
+              "profit_factor": 0.777,
+              "stop_pct": 29.0
+            },
+            {
+              "trades": 695,
+              "avg_return_pct": 0.243,
+              "win_rate_pct": 56.1,
+              "profit_factor": 1.203,
+              "stop_pct": 21.7
+            }
+          ],
+          "forward": [
+            {
+              "trades": 121,
+              "avg_return_pct": -0.552,
+              "win_rate_pct": 40.5,
+              "profit_factor": 0.63,
+              "stop_pct": 21.5
+            },
+            {
+              "trades": 116,
+              "avg_return_pct": -1.307,
+              "win_rate_pct": 33.6,
+              "profit_factor": 0.301,
+              "stop_pct": 33.6
+            },
+            {
+              "trades": 85,
+              "avg_return_pct": -1.136,
+              "win_rate_pct": 36.5,
+              "profit_factor": 0.428,
+              "stop_pct": 30.6
+            }
+          ],
+          "train_spread_pct": 0.167,
+          "oos_spread_pct": 0.453,
+          "higher_is_better": true,
+          "stable": false
+        },
+        "spy_ret5": {
+          "label": "SPY 최근 5일 수익률",
+          "cuts": [
+            -0.01678,
+            0.0003
+          ],
+          "train": [
+            {
+              "trades": 1891,
+              "avg_return_pct": -0.159,
+              "win_rate_pct": 48.6,
+              "profit_factor": 0.898,
+              "stop_pct": 35.0
+            },
+            {
+              "trades": 1888,
+              "avg_return_pct": -0.477,
+              "win_rate_pct": 44.8,
+              "profit_factor": 0.678,
+              "stop_pct": 35.5
+            },
+            {
+              "trades": 1897,
+              "avg_return_pct": -0.317,
+              "win_rate_pct": 46.8,
+              "profit_factor": 0.762,
+              "stop_pct": 30.4
+            }
+          ],
+          "oos": [
+            {
+              "trades": 604,
+              "avg_return_pct": 0.581,
+              "win_rate_pct": 63.6,
+              "profit_factor": 1.55,
+              "stop_pct": 17.4
+            },
+            {
+              "trades": 723,
+              "avg_return_pct": -0.591,
+              "win_rate_pct": 44.4,
+              "profit_factor": 0.643,
+              "stop_pct": 34.0
+            },
+            {
+              "trades": 1080,
+              "avg_return_pct": -0.193,
+              "win_rate_pct": 48.4,
+              "profit_factor": 0.85,
+              "stop_pct": 27.5
+            }
+          ],
+          "forward": [
+            {
+              "trades": 30,
+              "avg_return_pct": -0.791,
+              "win_rate_pct": 40.0,
+              "profit_factor": 0.435,
+              "stop_pct": 10.0
+            },
+            {
+              "trades": 197,
+              "avg_return_pct": -0.857,
+              "win_rate_pct": 38.1,
+              "profit_factor": 0.498,
+              "stop_pct": 28.9
+            },
+            {
+              "trades": 95,
+              "avg_return_pct": -1.289,
+              "win_rate_pct": 33.7,
+              "profit_factor": 0.349,
+              "stop_pct": 32.6
+            }
+          ],
+          "train_spread_pct": -0.158,
+          "oos_spread_pct": -0.774,
+          "higher_is_better": false,
+          "stable": false
+        },
+        "rsi2": {
+          "label": "RSI(2)",
+          "cuts": [
+            1.13155,
+            2.07596
+          ],
+          "train": [
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.211,
+              "win_rate_pct": 46.5,
+              "profit_factor": 0.849,
+              "stop_pct": 33.0
+            },
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.414,
+              "win_rate_pct": 46.1,
+              "profit_factor": 0.727,
+              "stop_pct": 35.5
+            },
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.327,
+              "win_rate_pct": 47.6,
+              "profit_factor": 0.775,
+              "stop_pct": 32.3
+            }
+          ],
+          "oos": [
+            {
+              "trades": 818,
+              "avg_return_pct": -0.167,
+              "win_rate_pct": 49.5,
+              "profit_factor": 0.877,
+              "stop_pct": 27.1
+            },
+            {
+              "trades": 793,
+              "avg_return_pct": -0.048,
+              "win_rate_pct": 52.8,
+              "profit_factor": 0.964,
+              "stop_pct": 26.7
+            },
+            {
+              "trades": 796,
+              "avg_return_pct": -0.138,
+              "win_rate_pct": 50.8,
+              "profit_factor": 0.895,
+              "stop_pct": 26.9
+            }
+          ],
+          "forward": [
+            {
+              "trades": 86,
+              "avg_return_pct": -0.94,
+              "win_rate_pct": 32.6,
+              "profit_factor": 0.424,
+              "stop_pct": 22.1
+            },
+            {
+              "trades": 108,
+              "avg_return_pct": -1.352,
+              "win_rate_pct": 32.4,
+              "profit_factor": 0.347,
+              "stop_pct": 31.5
+            },
+            {
+              "trades": 128,
+              "avg_return_pct": -0.689,
+              "win_rate_pct": 43.8,
+              "profit_factor": 0.564,
+              "stop_pct": 29.7
+            }
+          ],
+          "train_spread_pct": -0.116,
+          "oos_spread_pct": 0.029,
+          "higher_is_better": false,
+          "stable": false
+        },
+        "dist_sma120": {
+          "label": "120일선과의 거리",
+          "cuts": [
+            0.01267,
+            0.04856
+          ],
+          "train": [
+            {
+              "trades": 1891,
+              "avg_return_pct": -0.4,
+              "win_rate_pct": 44.7,
+              "profit_factor": 0.733,
+              "stop_pct": 34.1
+            },
+            {
+              "trades": 1893,
+              "avg_return_pct": -0.269,
+              "win_rate_pct": 47.4,
+              "profit_factor": 0.809,
+              "stop_pct": 34.7
+            },
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.284,
+              "win_rate_pct": 48.0,
+              "profit_factor": 0.806,
+              "stop_pct": 32.1
+            }
+          ],
+          "oos": [
+            {
+              "trades": 822,
+              "avg_return_pct": -0.099,
+              "win_rate_pct": 51.8,
+              "profit_factor": 0.927,
+              "stop_pct": 25.9
+            },
+            {
+              "trades": 805,
+              "avg_return_pct": 0.172,
+              "win_rate_pct": 54.7,
+              "profit_factor": 1.15,
+              "stop_pct": 23.5
+            },
+            {
+              "trades": 780,
+              "avg_return_pct": -0.438,
+              "win_rate_pct": 46.4,
+              "profit_factor": 0.709,
+              "stop_pct": 31.5
+            }
+          ],
+          "forward": [
+            {
+              "trades": 113,
+              "avg_return_pct": -1.362,
+              "win_rate_pct": 26.5,
+              "profit_factor": 0.369,
+              "stop_pct": 36.3
+            },
+            {
+              "trades": 106,
+              "avg_return_pct": -1.018,
+              "win_rate_pct": 40.6,
+              "profit_factor": 0.407,
+              "stop_pct": 25.5
+            },
+            {
+              "trades": 103,
+              "avg_return_pct": -0.517,
+              "win_rate_pct": 44.7,
+              "profit_factor": 0.62,
+              "stop_pct": 22.3
+            }
+          ],
+          "train_spread_pct": 0.116,
+          "oos_spread_pct": -0.339,
+          "higher_is_better": true,
+          "stable": false
+        },
+        "rsi": {
+          "label": "RSI(14)",
+          "cuts": [
+            35.42553,
+            40.90113
+          ],
+          "train": [
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.283,
+              "win_rate_pct": 45.2,
+              "profit_factor": 0.809,
+              "stop_pct": 33.8
+            },
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.278,
+              "win_rate_pct": 47.2,
+              "profit_factor": 0.816,
+              "stop_pct": 33.4
+            },
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.391,
+              "win_rate_pct": 47.8,
+              "profit_factor": 0.716,
+              "stop_pct": 33.6
+            }
+          ],
+          "oos": [
+            {
+              "trades": 876,
+              "avg_return_pct": 0.107,
+              "win_rate_pct": 53.1,
+              "profit_factor": 1.084,
+              "stop_pct": 22.6
+            },
+            {
+              "trades": 796,
+              "avg_return_pct": -0.261,
+              "win_rate_pct": 49.2,
+              "profit_factor": 0.818,
+              "stop_pct": 27.8
+            },
+            {
+              "trades": 735,
+              "avg_return_pct": -0.232,
+              "win_rate_pct": 50.5,
+              "profit_factor": 0.821,
+              "stop_pct": 31.2
+            }
+          ],
+          "forward": [
+            {
+              "trades": 113,
+              "avg_return_pct": -0.951,
+              "win_rate_pct": 31.0,
+              "profit_factor": 0.481,
+              "stop_pct": 28.3
+            },
+            {
+              "trades": 130,
+              "avg_return_pct": -0.975,
+              "win_rate_pct": 37.7,
+              "profit_factor": 0.402,
+              "stop_pct": 26.2
+            },
+            {
+              "trades": 79,
+              "avg_return_pct": -1.022,
+              "win_rate_pct": 44.3,
+              "profit_factor": 0.452,
+              "stop_pct": 31.6
+            }
+          ],
+          "train_spread_pct": -0.108,
+          "oos_spread_pct": -0.339,
+          "higher_is_better": false,
+          "stable": false
+        },
+        "body_atr": {
+          "label": "당일 몸통 / ATR",
+          "cuts": [
+            -0.76851,
+            -0.2959
+          ],
+          "train": [
+            {
+              "trades": 1891,
+              "avg_return_pct": -0.458,
+              "win_rate_pct": 43.9,
+              "profit_factor": 0.707,
+              "stop_pct": 38.6
+            },
+            {
+              "trades": 1891,
+              "avg_return_pct": -0.135,
+              "win_rate_pct": 49.5,
+              "profit_factor": 0.901,
+              "stop_pct": 30.8
+            },
+            {
+              "trades": 1891,
+              "avg_return_pct": -0.353,
+              "win_rate_pct": 46.8,
+              "profit_factor": 0.755,
+              "stop_pct": 31.4
+            }
+          ],
+          "oos": [
+            {
+              "trades": 755,
+              "avg_return_pct": -0.088,
+              "win_rate_pct": 51.1,
+              "profit_factor": 0.933,
+              "stop_pct": 27.0
+            },
+            {
+              "trades": 885,
+              "avg_return_pct": -0.007,
+              "win_rate_pct": 52.7,
+              "profit_factor": 0.995,
+              "stop_pct": 25.0
+            },
+            {
+              "trades": 767,
+              "avg_return_pct": -0.276,
+              "win_rate_pct": 49.0,
+              "profit_factor": 0.806,
+              "stop_pct": 29.1
+            }
+          ],
+          "forward": [
+            {
+              "trades": 98,
+              "avg_return_pct": -0.972,
+              "win_rate_pct": 37.8,
+              "profit_factor": 0.455,
+              "stop_pct": 26.5
+            },
+            {
+              "trades": 122,
+              "avg_return_pct": -0.905,
+              "win_rate_pct": 39.3,
+              "profit_factor": 0.452,
+              "stop_pct": 27.0
+            },
+            {
+              "trades": 102,
+              "avg_return_pct": -1.073,
+              "win_rate_pct": 33.3,
+              "profit_factor": 0.424,
+              "stop_pct": 31.4
+            }
+          ],
+          "train_spread_pct": 0.105,
+          "oos_spread_pct": -0.188,
+          "higher_is_better": true,
+          "stable": false
+        },
+        "dollar_volume_log": {
+          "label": "거래대금(로그)",
+          "cuts": [
+            8.10779,
+            8.45504
+          ],
+          "train": [
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.355,
+              "win_rate_pct": 46.6,
+              "profit_factor": 0.752,
+              "stop_pct": 34.6
+            },
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.18,
+              "win_rate_pct": 48.1,
+              "profit_factor": 0.87,
+              "stop_pct": 32.0
+            },
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.417,
+              "win_rate_pct": 45.5,
+              "profit_factor": 0.731,
+              "stop_pct": 34.2
+            }
+          ],
+          "oos": [
+            {
+              "trades": 297,
+              "avg_return_pct": 0.415,
+              "win_rate_pct": 60.6,
+              "profit_factor": 1.439,
+              "stop_pct": 21.2
+            },
+            {
+              "trades": 850,
+              "avg_return_pct": -0.111,
+              "win_rate_pct": 51.5,
+              "profit_factor": 0.917,
+              "stop_pct": 26.4
+            },
+            {
+              "trades": 1260,
+              "avg_return_pct": -0.249,
+              "win_rate_pct": 48.4,
+              "profit_factor": 0.826,
+              "stop_pct": 28.7
+            }
+          ],
+          "forward": [
+            {
+              "trades": 25,
+              "avg_return_pct": -2.268,
+              "win_rate_pct": 24.0,
+              "profit_factor": 0.083,
+              "stop_pct": 52.0
+            },
+            {
+              "trades": 101,
+              "avg_return_pct": -1.1,
+              "win_rate_pct": 35.6,
+              "profit_factor": 0.384,
+              "stop_pct": 33.7
+            },
+            {
+              "trades": 196,
+              "avg_return_pct": -0.751,
+              "win_rate_pct": 39.3,
+              "profit_factor": 0.546,
+              "stop_pct": 22.4
+            }
+          ],
+          "train_spread_pct": -0.062,
+          "oos_spread_pct": -0.664,
+          "higher_is_better": false,
+          "stable": false
+        },
+        "ret20": {
+          "label": "최근 20일 수익률",
+          "cuts": [
+            -0.04817,
+            -0.01474
+          ],
+          "train": [
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.244,
+              "win_rate_pct": 46.3,
+              "profit_factor": 0.846,
+              "stop_pct": 32.2
+            },
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.447,
+              "win_rate_pct": 45.0,
+              "profit_factor": 0.694,
+              "stop_pct": 36.1
+            },
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.261,
+              "win_rate_pct": 48.8,
+              "profit_factor": 0.803,
+              "stop_pct": 32.6
+            }
+          ],
+          "oos": [
+            {
+              "trades": 984,
+              "avg_return_pct": 0.124,
+              "win_rate_pct": 52.8,
+              "profit_factor": 1.092,
+              "stop_pct": 23.4
+            },
+            {
+              "trades": 739,
+              "avg_return_pct": -0.25,
+              "win_rate_pct": 50.5,
+              "profit_factor": 0.814,
+              "stop_pct": 28.6
+            },
+            {
+              "trades": 684,
+              "avg_return_pct": -0.324,
+              "win_rate_pct": 49.0,
+              "profit_factor": 0.752,
+              "stop_pct": 30.3
+            }
+          ],
+          "forward": [
+            {
+              "trades": 168,
+              "avg_return_pct": -0.994,
+              "win_rate_pct": 36.3,
+              "profit_factor": 0.459,
+              "stop_pct": 29.2
+            },
+            {
+              "trades": 95,
+              "avg_return_pct": -0.862,
+              "win_rate_pct": 32.6,
+              "profit_factor": 0.454,
+              "stop_pct": 28.4
+            },
+            {
+              "trades": 59,
+              "avg_return_pct": -1.121,
+              "win_rate_pct": 45.8,
+              "profit_factor": 0.385,
+              "stop_pct": 25.4
+            }
+          ],
+          "train_spread_pct": -0.017,
+          "oos_spread_pct": -0.448,
+          "higher_is_better": false,
+          "stable": false
+        },
+        "close_in_range": {
+          "label": "당일 종가의 고저 범위 안 위치",
+          "cuts": [
+            0.12245,
+            0.34483
+          ],
+          "train": [
+            {
+              "trades": 1833,
+              "avg_return_pct": -0.315,
+              "win_rate_pct": 46.1,
+              "profit_factor": 0.79,
+              "stop_pct": 36.2
+            },
+            {
+              "trades": 1839,
+              "avg_return_pct": -0.282,
+              "win_rate_pct": 46.9,
+              "profit_factor": 0.804,
+              "stop_pct": 32.4
+            },
+            {
+              "trades": 1838,
+              "avg_return_pct": -0.325,
+              "win_rate_pct": 47.8,
+              "profit_factor": 0.776,
+              "stop_pct": 33.1
+            }
+          ],
+          "oos": [
+            {
+              "trades": 755,
+              "avg_return_pct": 0.039,
+              "win_rate_pct": 53.4,
+              "profit_factor": 1.031,
+              "stop_pct": 24.9
+            },
+            {
+              "trades": 857,
+              "avg_return_pct": 0.014,
+              "win_rate_pct": 52.5,
+              "profit_factor": 1.011,
+              "stop_pct": 26.0
+            },
+            {
+              "trades": 783,
+              "avg_return_pct": -0.401,
+              "win_rate_pct": 47.6,
+              "profit_factor": 0.737,
+              "stop_pct": 29.8
+            }
+          ],
+          "forward": [
+            {
+              "trades": 100,
+              "avg_return_pct": -0.628,
+              "win_rate_pct": 39.0,
+              "profit_factor": 0.569,
+              "stop_pct": 20.0
+            },
+            {
+              "trades": 119,
+              "avg_return_pct": -1.311,
+              "win_rate_pct": 35.3,
+              "profit_factor": 0.351,
+              "stop_pct": 33.6
+            },
+            {
+              "trades": 103,
+              "avg_return_pct": -0.935,
+              "win_rate_pct": 36.9,
+              "profit_factor": 0.466,
+              "stop_pct": 30.1
+            }
+          ],
+          "train_spread_pct": -0.01,
+          "oos_spread_pct": -0.44,
+          "higher_is_better": false,
+          "stable": false
+        },
+        "rel_volume": {
+          "label": "당일 거래량 / 20일 평균",
+          "cuts": [
+            0.99732,
+            1.34506
+          ],
+          "train": [
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.307,
+              "win_rate_pct": 46.2,
+              "profit_factor": 0.77,
+              "stop_pct": 31.1
+            },
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.334,
+              "win_rate_pct": 46.7,
+              "profit_factor": 0.774,
+              "stop_pct": 35.3
+            },
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.311,
+              "win_rate_pct": 47.3,
+              "profit_factor": 0.8,
+              "stop_pct": 34.5
+            }
+          ],
+          "oos": [
+            {
+              "trades": 898,
+              "avg_return_pct": -0.062,
+              "win_rate_pct": 51.0,
+              "profit_factor": 0.95,
+              "stop_pct": 26.3
+            },
+            {
+              "trades": 805,
+              "avg_return_pct": -0.186,
+              "win_rate_pct": 51.7,
+              "profit_factor": 0.866,
+              "stop_pct": 28.1
+            },
+            {
+              "trades": 704,
+              "avg_return_pct": -0.112,
+              "win_rate_pct": 50.3,
+              "profit_factor": 0.921,
+              "stop_pct": 26.4
+            }
+          ],
+          "forward": [
+            {
+              "trades": 121,
+              "avg_return_pct": -0.639,
+              "win_rate_pct": 39.7,
+              "profit_factor": 0.552,
+              "stop_pct": 20.7
+            },
+            {
+              "trades": 122,
+              "avg_return_pct": -1.109,
+              "win_rate_pct": 36.1,
+              "profit_factor": 0.414,
+              "stop_pct": 32.0
+            },
+            {
+              "trades": 79,
+              "avg_return_pct": -1.297,
+              "win_rate_pct": 34.2,
+              "profit_factor": 0.37,
+              "stop_pct": 34.2
+            }
+          ],
+          "train_spread_pct": -0.004,
+          "oos_spread_pct": -0.05,
+          "higher_is_better": false,
+          "stable": false
+        },
+        "bb_pos": {
+          "label": "볼린저 밴드 안 위치",
+          "cuts": [
+            -0.06975,
+            0.07836
+          ],
+          "train": [
+            {
+              "trades": 1892,
+              "avg_return_pct": -0.332,
+              "win_rate_pct": 44.9,
+              "profit_factor": 0.786,
+              "stop_pct": 36.8
+            },
+            {
+              "trades": 1891,
+              "avg_return_pct": -0.285,
+              "win_rate_pct": 46.4,
+              "profit_factor": 0.8,
+              "stop_pct": 32.3
+            },
+            {
+              "trades": 1893,
+              "avg_return_pct": -0.335,
+              "win_rate_pct": 48.9,
+              "profit_factor": 0.759,
+              "stop_pct": 31.7
+            }
+          ],
+          "oos": [
+            {
+              "trades": 729,
+              "avg_return_pct": 0.028,
+              "win_rate_pct": 52.3,
+              "profit_factor": 1.022,
+              "stop_pct": 23.3
+            },
+            {
+              "trades": 930,
+              "avg_return_pct": -0.056,
+              "win_rate_pct": 51.6,
+              "profit_factor": 0.957,
+              "stop_pct": 26.9
+            },
+            {
+              "trades": 748,
+              "avg_return_pct": -0.338,
+              "win_rate_pct": 49.1,
+              "profit_factor": 0.76,
+              "stop_pct": 30.5
+            }
+          ],
+          "forward": [
+            {
+              "trades": 100,
+              "avg_return_pct": -1.48,
+              "win_rate_pct": 26.0,
+              "profit_factor": 0.336,
+              "stop_pct": 37.0
+            },
+            {
+              "trades": 130,
+              "avg_return_pct": -0.763,
+              "win_rate_pct": 37.7,
+              "profit_factor": 0.509,
+              "stop_pct": 24.6
+            },
+            {
+              "trades": 92,
+              "avg_return_pct": -0.738,
+              "win_rate_pct": 47.8,
+              "profit_factor": 0.52,
+              "stop_pct": 23.9
+            }
+          ],
+          "train_spread_pct": -0.003,
+          "oos_spread_pct": -0.366,
+          "higher_is_better": false,
+          "stable": false
+        },
+        "up_days_5": {
+          "label": "최근 5일 중 상승 마감 일수",
+          "cuts": [
+            0.0,
+            1.0
+          ],
+          "train": [
+            {
+              "trades": 0
+            },
+            {
+              "trades": 2661,
+              "avg_return_pct": -0.191,
+              "win_rate_pct": 48.3,
+              "profit_factor": 0.857,
+              "stop_pct": 30.6
+            },
+            {
+              "trades": 3015,
+              "avg_return_pct": -0.429,
+              "win_rate_pct": 45.4,
+              "profit_factor": 0.726,
+              "stop_pct": 36.3
+            }
+          ],
+          "oos": [
+            {
+              "trades": 0
+            },
+            {
+              "trades": 1159,
+              "avg_return_pct": -0.06,
+              "win_rate_pct": 51.1,
+              "profit_factor": 0.954,
+              "stop_pct": 25.3
+            },
+            {
+              "trades": 1248,
+              "avg_return_pct": -0.172,
+              "win_rate_pct": 51.0,
+              "profit_factor": 0.873,
+              "stop_pct": 28.4
+            }
+          ],
+          "forward": [
+            {
+              "trades": 0
+            },
+            {
+              "trades": 143,
+              "avg_return_pct": -1.074,
+              "win_rate_pct": 35.0,
+              "profit_factor": 0.416,
+              "stop_pct": 30.1
+            },
+            {
+              "trades": 179,
+              "avg_return_pct": -0.902,
+              "win_rate_pct": 38.5,
+              "profit_factor": 0.468,
+              "stop_pct": 26.8
+            }
+          ],
+          "train_spread_pct": null,
+          "oos_spread_pct": null,
+          "higher_is_better": null,
+          "stable": false
+        }
+      }
+    }
+  },
+  "limitations": [
+    "현재 유동성 상위 종목을 과거로 되감은 풀이라 생존편향이 있습니다.",
+    "엄선을 거치지 않은 원신호입니다. 실제 추천보다 범위가 넓습니다.",
+    "특징은 신호일 종가까지의 데이터만 사용합니다.",
+    "특징 수십 개를 비교하므로 학습구간에서 좋아 보이는 규칙은 우연으로도 나옵니다. 검증구간 통과만 의미가 있습니다.",
+    "검증구간 통과도 최종 결론이 아닙니다. 통과한 규칙은 Forward 가상 추적으로 확인해야 합니다."
+  ]
+}
