@@ -8,7 +8,6 @@ def test_baseline_snapshot_is_frozen_and_complete():
     assert b['baseline_version'] == BASELINE_VERSION
     assert b['public_strategies'] == [
         'confirmed_pullback',
-        'rsi2_trend_reversion',
         'momentum_pullback',
     ]
     assert b['s_threshold'] == 85.0

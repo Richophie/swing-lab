@@ -23,10 +23,9 @@ Swing Lab은 단순 스캐너가 아니라 **전략 신호 → 현재 자리 엄
 ## 현재 공개 전략
 
 1. `confirmed_pullback` — 확인형 눌림반등
-2. `rsi2_trend_reversion` — RSI2 추세내 과매도
-3. `momentum_pullback` — 모멘텀 눌림 지속
+2. `momentum_pullback` — 모멘텀 눌림 지속
 
-`volatility_breakout`은 실험/검증 전략으로 유지하며 메인 엄선에서는 제외합니다.
+`volatility_breakout`과 `rsi2_trend_reversion`은 실험/검증 전략으로 유지하며 메인 엄선에서는 제외합니다. `rsi2_trend_reversion`은 2026-11-11에 연구 전략으로 내렸습니다(`docs/DECISION_LOG.md`).
 
 strict signal과 BUY/TARGET/STOP의 canonical source는 `strategy_rules.py`입니다.
 
@@ -190,7 +189,7 @@ Paper CLI 예:
 
 ```bash
 python paper_broker_service.py status
-python paper_broker_service.py submit SIRI --strategy rsi2_trend_reversion
+python paper_broker_service.py submit SIRI --strategy momentum_pullback
 python paper_broker_service.py refresh
 python paper_broker_service.py reset
 ```

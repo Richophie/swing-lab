@@ -24,7 +24,7 @@ def synthetic_scan(at='2026-08-13T19:30:00+00:00', include=True, elite_pass=True
                 'bb_pos': 0.4,
                 'sparkline': [116.0, 117.5],
                 'strategy_trade_plans': {
-                    'rsi2_trend_reversion': {
+                    'momentum_pullback': {
                         'entry_low': 116.99,
                         'entry_high': 118.10,
                         'target': 125.91,
@@ -37,7 +37,7 @@ def synthetic_scan(at='2026-08-13T19:30:00+00:00', include=True, elite_pass=True
                 },
                 'strategy_signals': [
                     {
-                        'strategy_id': 'rsi2_trend_reversion',
+                        'strategy_id': 'momentum_pullback',
                         'strategy_name': 'RSI2 추세내 과매도',
                         'strategy_score': 91,
                         'elite_score': elite_score,

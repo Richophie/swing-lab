@@ -47,7 +47,12 @@ def freeze_signal(row,sig,plan,at,day):
 
 
 def _derived_key(x):return x.get('signal_key') or (f"{x.get('symbol')}|{x.get('strategy_id')}" if x.get('symbol') and x.get('strategy_id') else None)
-def _official_item(item):return not bool(item.get('experimental')) and item.get('strategy_id') in PUBLIC_STRATEGIES
+def _official_item(item):
+    # The bucket is frozen when a recommendation is recorded, so demoting a strategy
+    # later never rewrites the official record it already built.
+    if bool(item.get('experimental')):return False
+    bucket=item.get('performance_bucket')
+    return bucket=='official_public' if bucket else item.get('strategy_id') in PUBLIC_STRATEGIES
 
 
 def append_current_scan(scan,journal):

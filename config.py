@@ -1,13 +1,14 @@
-APP_VERSION = "16.5"
+APP_VERSION = "16.6"
 CORE_VERSION = "4.4"
 S_THRESHOLD = 85.0
 ELITE_MAX = 9999
 PUBLIC_STRATEGIES = (
     "confirmed_pullback",
-    "rsi2_trend_reversion",
     "momentum_pullback",
 )
-EXPERIMENTAL_STRATEGIES = ("volatility_breakout",)
+# rsi2_trend_reversion was demoted to research on 2026-11-11: negative after costs in
+# both the replay TRAIN window and 242 forward recommendations (see DECISION_LOG).
+EXPERIMENTAL_STRATEGIES = ("volatility_breakout", "rsi2_trend_reversion")
 
 # Main scan intentionally avoids the full US micro/small-cap universe.
 SCAN_CANDIDATE_LIMIT = 500

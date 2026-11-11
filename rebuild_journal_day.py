@@ -12,7 +12,7 @@ import json
 import pandas as pd
 import yfinance as yf
 
-from config import SCAN_CANDIDATE_LIMIT
+from config import EXPERIMENTAL_STRATEGIES, SCAN_CANDIDATE_LIMIT
 from market_data import load_us_universe, prefilter_symbols
 from strategy_engine import evaluate_strategies, trade_plan, public_s_signals, experimental_s_signals
 from scanner import _current_selection, _first_20d_pullback_overlay, _dedupe_share_classes
@@ -85,7 +85,7 @@ def rebuild():
                     sid = s['id']
                     plan = trade_plan(d, sid)
                     plans[sid] = plan
-                    experimental = sid == 'volatility_breakout'
+                    experimental = sid in EXPERIMENTAL_STRATEGIES
                     if experimental:
                         assessment = {'elite_pass':False,'elite_score':s['score'],'selection_reason':'실험 전략 · 엄선에서 제외'}
                     else:

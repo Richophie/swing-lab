@@ -145,10 +145,11 @@ Swing Lab의 전략은 **최근 몇 번 잘 맞았다는 이유로 임계값을 
 현재 공개 baseline:
 
 - `confirmed_pullback`
-- `rsi2_trend_reversion`
 - `momentum_pullback`
 
 실험 유지:
+
+- `rsi2_trend_reversion` (2026-11-11 강등)
 
 - `volatility_breakout`
 

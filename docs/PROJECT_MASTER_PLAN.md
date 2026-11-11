@@ -40,7 +40,7 @@ Swing Lab은 **미국주식 단기 스윙 후보를 자동 탐색하고, 현재 
 
 1. **미국 종목 universe 구성**
 2. **가격/지표 데이터 수집**
-3. **공개 3전략의 canonical strict signal 판정**
+3. **공개 전략의 canonical strict signal 판정**
 4. **전략별 S 신호 생성**
 5. **현재 자리 엄선**
    - 수급/유동성
@@ -59,10 +59,9 @@ Swing Lab은 **미국주식 단기 스윙 후보를 자동 탐색하고, 현재 
 
 ## 5. 공개 전략
 
-현재 메인 공개 전략은 3개다.
+현재 메인 공개 전략은 2개다. (`rsi2_trend_reversion`은 2026-11-11에 연구 전략으로 내렸다.)
 
 - `confirmed_pullback` — 확인형 눌림반등
-- `rsi2_trend_reversion` — RSI2 추세내 과매도
 - `momentum_pullback` — 모멘텀 눌림 지속
 
 `volatility_breakout` — 변동성 수축 돌파는 실험 전략으로 유지하며 메인 엄선 추천에서는 제외한다.

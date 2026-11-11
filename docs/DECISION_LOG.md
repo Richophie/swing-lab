@@ -461,3 +461,22 @@ RSI2 추세내 과매도를 공개 전략에서 연구 전략으로 내릴지 �
 **이유**
 
 사전 고정한 시장 조건 6종 중 통과한 것이 없다. 하루 상위 3개 선별은 Forward 기록에서 -0.64% → -0.48%로 손실을 줄일 뿐이다. 상세는 `REGIME_RANK_RESEARCH_2026-11-11.md`.
+
+---
+
+## 2026-11-11 · RSI2 추세내 과매도를 연구 전략으로 강등
+
+**결정**
+
+`rsi2_trend_reversion`을 `PUBLIC_STRATEGIES`에서 `EXPERIMENTAL_STRATEGIES`로 옮긴다. 공개 전략은 `confirmed_pullback`, `momentum_pullback` 두 개다. baseline은 `baseline-v1.1-2026-11-11`.
+
+- 이후 스캔에서 RSI2 신호는 실험 신호로만 표시되고 엄선·공식 추천·가상계좌 제출 대상에서 빠진다.
+- 이미 기록된 RSI2 공식 추천 242건은 공식 성과에 그대로 남는다. `journal._official_item`이 기록 시점의 `performance_bucket`을 우선하도록 바꿨다.
+
+**이유**
+
+Forward 242건 평균 -0.49%(PF 0.67), 리플레이 학습구간 551건 평균 -0.40%(PF 0.73). 8가지 청산 방식과 6가지 시장 조건 어느 것으로도 학습구간 평균이 양수가 되지 않았다. `VALIDATION_PROTOCOL`의 "pooled OOS가 지속적으로 음의 기대값이면 연구 상태로 내린다"에 해당하며, 사용자 승인을 받았다.
+
+**되돌리는 조건**
+
+새 진입 규칙이 챌린저로 분리 검증을 통과하고 Forward Shadow 표본을 채운 경우에만 다시 공개를 검토한다.

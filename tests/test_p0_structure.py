@@ -40,11 +40,11 @@ def test_official_journal_excludes_experimental_from_publish_and_summary():
         'scanned_at':'2026-08-13T21:10:00+00:00',
         'results':[{
             'symbol':'AAA','name_ko':'AAA','strategy_trade_plans':{
-                'rsi2_trend_reversion':{'entry_low':99,'entry_high':101,'target':105,'stop':95,'days_max':5},
+                'momentum_pullback':{'entry_low':99,'entry_high':101,'target':105,'stop':95,'days_max':5},
                 'volatility_breakout':{'entry_low':99,'entry_high':101,'target':106,'stop':95,'days_max':5},
             },
             'strategy_signals':[
-                {'strategy_id':'rsi2_trend_reversion','strategy_name':'RSI2','elite_pass':True,'experimental':False,'strategy_score':90,'elite_score':86},
+                {'strategy_id':'momentum_pullback','strategy_name':'RSI2','elite_pass':True,'experimental':False,'strategy_score':90,'elite_score':86},
                 {'strategy_id':'volatility_breakout','strategy_name':'VCP','elite_pass':True,'experimental':True,'strategy_score':95,'elite_score':95},
             ],
         }],
@@ -59,7 +59,7 @@ def test_official_journal_excludes_experimental_from_publish_and_summary():
     assert day == '2026-08-13'
     assert added == 1
     assert len(store['days'][0]['items']) == 1
-    assert store['days'][0]['items'][0]['strategy_id'] == 'rsi2_trend_reversion'
+    assert store['days'][0]['items'][0]['strategy_id'] == 'momentum_pullback'
     assert store['days'][0]['items'][0]['performance_bucket'] == 'official_public'
 
     official = {**store['days'][0]['items'][0], 'status_code':'SUCCESS', 'outcome_return_pct':2.0}
@@ -72,6 +72,18 @@ def test_official_journal_excludes_experimental_from_publish_and_summary():
     assert research['stop'] == 1
 
 
+def test_demoted_strategy_keeps_its_recorded_official_history():
+    recorded = {'strategy_id':'rsi2_trend_reversion','experimental':False,'performance_bucket':'official_public','status_code':'STOP','outcome_return_pct':-2.0}
+    unrecorded = {'strategy_id':'rsi2_trend_reversion','experimental':False,'status_code':'STOP','outcome_return_pct':-2.0}
+    assert journal._official_item(recorded) is True
+    assert journal._official_item(unrecorded) is False
+    store = {'days':[{'items':[dict(recorded)]}]}
+    journal.repair_legacy_entries(store)
+    assert store['days'][0]['items'][0]['performance_bucket'] == 'official_public'
+    summary,_ = journal.summarize(store)
+    assert summary['total_signals'] == 1
+
+
 def test_live_paper_order_is_tagged_research_origin():
     with tempfile.TemporaryDirectory() as tmp:
         path = Path(tmp)/'paper.json'
@@ -79,7 +91,7 @@ def test_live_paper_order_is_tagged_research_origin():
         old_fx = paper_broker_service.current_fx_rate
         old_date = paper_broker_service._latest_market_date
         paper_broker_service.latest_plan = lambda symbol,strategy_id=None:{
-            'symbol':'TEST','strategy_id':'rsi2_trend_reversion','strategy_name':'RSI2',
+            'symbol':'TEST','strategy_id':'momentum_pullback','strategy_name':'RSI2',
             'scan_date':'2026-08-13','plan':{'entry_low':99,'entry_high':101,'target':105,'stop':95,'atr':2,'days_max':5},
         }
         paper_broker_service.current_fx_rate = lambda:1000.0
@@ -101,6 +113,7 @@ def main():
     test_incomplete_daily_bar_uses_previous_completed_flow()
     test_closed_session_keeps_current_flow()
     test_official_journal_excludes_experimental_from_publish_and_summary()
+    test_demoted_strategy_keeps_its_recorded_official_history()
     test_live_paper_order_is_tagged_research_origin()
     print('P0 structure PASS')
 
