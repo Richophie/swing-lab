@@ -152,6 +152,15 @@ def index():return send_from_directory('static/app','index.html')
 # The original research dashboard stays available as the advanced "연구실" screen.
 @app.route('/classic')
 def classic():return send_from_directory('static','dashboard.html')
+# Research files are committed by GitHub Actions without a redeploy, so the app must not read the copy on disk.
+RESEARCH_FILES=frozenset({'evolution_candidate_shadow.json','evolution_pit_lite.json','forward_diagnostics.json','strategy_evolution.json'})
+@app.route('/api/research/<name>')
+def research_file(name):
+    if name not in RESEARCH_FILES:return jsonify({'error':'not found'}),404
+    from repo_data import load_json
+    data=load_json(Path(__file__).parent/'static'/name,None)
+    if data is None:return jsonify({'error':'not available'}),404
+    response=jsonify(data);response.headers['Cache-Control']='no-store';return response
 @app.route('/health')
 def health():return jsonify({'ok':True,'version':APP_VERSION,'core':CORE_VERSION,'architecture':'clean'})
 @app.route('/api/version')

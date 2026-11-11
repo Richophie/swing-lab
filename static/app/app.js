@@ -38,7 +38,8 @@ async function api(path, options = {}) {
   if (!res.ok || (data && data.error)) throw new Error((data && data.error) || `요청을 처리하지 못했습니다 (${res.status})`);
   return data;
 }
-const staticJson = name => fetch(`/static/${name}?ts=${Date.now()}`, {cache: 'no-store'}).then(r => r.ok ? r.json() : null).catch(() => null);
+// Served through the API so the newest file committed by the daily jobs is shown without a redeploy.
+const staticJson = name => fetch(`/api/research/${name}?ts=${Date.now()}`, {cache: 'no-store'}).then(r => r.ok ? r.json() : null).catch(() => null);
 
 // ---------- plain-language dictionaries ----------
 const STRATEGY = {
