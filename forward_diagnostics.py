@@ -203,6 +203,18 @@ def signal_load(items: list[dict]) -> dict:
     }
 
 
+def daily_top_n(rows: list[dict], n: int = BACKTEST_MAX_POSITIONS) -> dict:
+    """Would taking only each day's top-N by elite score have changed the outcome?"""
+    by_day = defaultdict(list)
+    for row in rows:
+        by_day[row['_day']].append(row)
+    kept = []
+    for day in sorted(by_day):
+        ranked = sorted(by_day[day], key=lambda x: (-(_n(x.get('elite_score_at_close'), _n(x.get('score'), 0.0)) or 0.0), str(x.get('symbol'))))
+        kept.extend(ranked[:n])
+    return {'n': n, 'all': metrics(rows), 'top_n_by_elite_score': metrics(kept)}
+
+
 def _finding(code: str, severity: str, title: str, evidence: str, next_step: str) -> dict:
     return {'code': code, 'severity': severity, 'title': title, 'evidence': evidence, 'next_step': next_step}
 
@@ -297,6 +309,7 @@ def build_report(history: dict | None = None) -> dict:
         'stop_recovery': stop_recovery(closed),
         'score_calibration': score_calibration(closed),
         'signal_load': signal_load(items),
+        'daily_top_n': daily_top_n(closed),
     }
     report['findings'] = findings(report)
     return report

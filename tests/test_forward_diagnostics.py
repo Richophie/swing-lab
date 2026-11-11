@@ -54,6 +54,15 @@ def test_spearman_handles_monotonic_and_ties():
     assert fd.spearman([1, 1, 1], [1, 2, 3]) is None
 
 
+def test_daily_top_n_keeps_highest_scores_per_day():
+    items = [_item('SUCCESS', 5.0, score=95.0), _item('STOP', -3.0, score=80.0), _item('STOP', -3.0, score=79.0), _item('STOP', -3.0, score=78.0),
+             _item('STOP', -2.0, score=70.0, day='2026-09-02')]
+    out = fd.daily_top_n(fd.closed_items(fd.load_items(_history(items))), n=2)
+    assert out['all']['closed'] == 5
+    assert out['top_n_by_elite_score']['closed'] == 3
+    assert out['top_n_by_elite_score']['avg_return_pct'] == 0.0
+
+
 def test_no_findings_before_formal_review_sample():
     items = [_item('STOP', -4.0, mark=3.0) for _ in range(fd.MIN_REVIEW_CLOSED - 1)]
     report = fd.build_report(_history(items))
@@ -105,6 +114,7 @@ if __name__ == '__main__':
     test_open_and_research_items_are_excluded()
     test_mfe_uses_buy_zone_midpoint()
     test_spearman_handles_monotonic_and_ties()
+    test_daily_top_n_keeps_highest_scores_per_day()
     test_no_findings_before_formal_review_sample()
     test_unreachable_targets_and_recovered_stops_are_flagged()
     test_healthy_sample_raises_no_target_or_strategy_flags()

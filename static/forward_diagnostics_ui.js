@@ -38,7 +38,15 @@ function exitResearch(x,shadow){
   const track=shadow?`<div class="fd-shadow"><b>가상 추적 중 · ${shadow.policy.label}</b><p>${shadow.freeze_date}부터 나오는 확인형 눌림반등 추천을 현재 규칙과 새 규칙으로 나란히 계산합니다. 실제 주문은 없고, 종료 ${shadow.minimum_closed_trades_required}건이 쌓이기 전에는 결론을 내지 않습니다.</p><div class="fd-kpis is-two">${kpi('현재 규칙',b.trades?pct(b.avg_return_pct):'대기 중',b.trades?tone(b.avg_return_pct):'',`종료 ${b.trades||0}건`)}${kpi('새 규칙',c.trades?pct(c.avg_return_pct):'대기 중',c.trades?tone(c.avg_return_pct):'',`종료 ${c.trades||0}건 · 보유 중 ${c.open||0}건`)}</div></div>`:'';
   return `<div class="fd-box"><h3>청산 규칙을 바꾸면 나아질까</h3><p>같은 추천 신호에 파는 방법만 바꿔 과거 데이터로 비교했습니다. 학습구간(~${x.train_end_exclusive} 이전)에서 가장 좋은 안을 하나 고르고, 그 안이 검증구간에서도 현재 규칙보다 나을 때만 통과입니다. 수수료·슬리피지 포함.</p>${blocks}${track}<div class="fd-foot">${(x.limitations||[]).join(' ')}</div></div>`
 }
-function render(d,x,shadow){
+function gateRow(key,p,pick,base){const o=p.oos||{},t=p.train||{};const verdict=key===base?'기준':!p.passes_gate?'탈락':key===pick?'<b class="fd-pass">통과</b>':'미선정';return `<tr><th>${p.label}<small>${p.note}</small></th><td class="${tone(t.avg_return_pct)}">${pct(t.avg_return_pct)}</td><td class="${tone(o.avg_return_pct)}">${pct(o.avg_return_pct)}</td><td>${share(o.win_rate_pct)}</td><td>${o.trades||0}건</td><td>${verdict}</td></tr>`}
+function gateTable(rows,pick,base){return `<div class="fd-scroll"><table class="fd-table fd-policy"><thead><tr><th></th><th>학습구간 평균</th><th>검증구간 평균</th><th>검증 이익 비율</th><th>검증 건수</th><th>판정</th></tr></thead><tbody>${Object.entries(rows).map(([k,p])=>gateRow(k,p,pick,base)).join('')}</tbody></table></div>`}
+function regimeResearch(g,top){
+  if(!g||!g.regime_all_strategies)return '';
+  const r=g.regime_all_strategies,k=g.ranking,a=(top||{}).all||{},t=(top||{}).top_n_by_elite_score||{};
+  const live=t.closed?`<p class="fd-live">실제 추천 기록에서는 전체 ${a.closed}건 평균 ${pct(a.avg_return_pct)}, 하루 엄선점수 상위 ${top.n}개만 골랐다면 ${t.closed}건 평균 ${pct(t.avg_return_pct)}였습니다.</p>`:'';
+  return `<div class="fd-box"><h3>시장이 나쁠 때 쉬거나, 하루 몇 개만 고르면 나아질까</h3><p>같은 과거 신호에서 추천을 걸러내는 조건만 바꿔 비교했습니다. 판정 방식은 위 청산 규칙 비교와 같습니다.</p><div class="fd-exit"><h4>시장 조건 <span class="${r.train_pick_passes_oos?'fd-pass':'fd-muted'}">${r.train_pick_passes_oos?`통과 · ${r.gates[r.train_pick].label}`:'통과한 조건 없음'}</span></h4>${gateTable(r.gates,r.train_pick,'current')}</div><div class="fd-exit"><h4>하루 상위 ${k.top_n}개만 <span class="fd-muted">과거 풀은 하루 평균 ${g.avg_signals_per_day}건이라 차이가 작게 나옵니다</span></h4>${gateTable(k.rankers,k.train_pick,'all')}${live}</div><div class="fd-foot">${(g.limitations||[]).join(' ')}</div></div>`
+}
+function render(d,x,shadow,g){
   const body=document.getElementById('forwardDiagBody');if(!body)return;
   const o=d.overall||{},t=d.target_reachability||{},s=d.stop_recovery||{},names=d.strategy_names||{};
   if(!o.closed){body.innerHTML='<div class="status">아직 결과가 확정된 추천이 없습니다.</div>';return}
@@ -54,9 +62,10 @@ function render(d,x,shadow){
     ${table('엄선점수별','점수가 높을수록 결과가 좋아야 정상입니다.',((d.score_calibration||{}).buckets||[]).map(m=>row(`${m.score_from}~${m.score_to}점`,m)))}
     ${table('끝난 방식별','추천이 어떤 식으로 끝났는지입니다.',Object.entries(d.by_outcome||{}).map(([k,m])=>row(OUTCOME[k]||k,m)))}
     ${exitResearch(x,shadow)}
+    ${regimeResearch(g,d.daily_top_n)}
     <div class="fd-foot">PF는 번 돈 합계 ÷ 잃은 돈 합계로, 1보다 크면 이익입니다. 이 화면은 기록을 읽기만 하며 추천 규칙·주문에 영향을 주지 않습니다.</div>`;
 }
-async function load(){const body=document.getElementById('forwardDiagBody');if(!body)return;try{const r=await fetch(`/static/forward_diagnostics.json?ts=${Date.now()}`,{cache:'no-store'});if(!r.ok)throw new Error(String(r.status));const extra=await Promise.all(['exit_policy_research.json','exit_challenger_shadow.json'].map(f=>fetch(`/static/${f}?ts=${Date.now()}`,{cache:'no-store'}).then(y=>y.ok?y.json():null).catch(()=>null)));render(await r.json(),extra[0],extra[1])}catch(e){body.innerHTML='<div class="status">실전 성적표를 불러오지 못했습니다. 다음 자동 스캔 후 다시 확인해주세요.</div>'}}
+async function load(){const body=document.getElementById('forwardDiagBody');if(!body)return;try{const r=await fetch(`/static/forward_diagnostics.json?ts=${Date.now()}`,{cache:'no-store'});if(!r.ok)throw new Error(String(r.status));const extra=await Promise.all(['exit_policy_research.json','exit_challenger_shadow.json','regime_rank_research.json'].map(f=>fetch(`/static/${f}?ts=${Date.now()}`,{cache:'no-store'}).then(y=>y.ok?y.json():null).catch(()=>null)));render(await r.json(),extra[0],extra[1],extra[2])}catch(e){body.innerHTML='<div class="status">실전 성적표를 불러오지 못했습니다. 다음 자동 스캔 후 다시 확인해주세요.</div>'}}
 function bind(){ensurePage()}
 new MutationObserver(bind).observe(document.documentElement,{childList:true,subtree:true});bind();const timer=setInterval(bind,800);setTimeout(()=>clearInterval(timer),20000);
 })();
