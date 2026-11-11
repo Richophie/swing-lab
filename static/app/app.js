@@ -176,7 +176,8 @@ const stopWords = c => c.rule.stop_atr
 const candidatesOf = evo => [...((evo || {}).family_candidates || [])].sort((a, b) => Number(!!b.passed_automatic_gate) - Number(!!a.passed_automatic_gate));
 
 function experimentSection(track, evo, pit) {
-  const candidates = candidatesOf(evo);
+  // The home screen only lists rules that passed every test; the rest stay in the report.
+  const candidates = candidatesOf(evo).filter(c => c.passed_automatic_gate);
   if (!candidates.length || !track) return '';
   const limit = track.limit_entry;
   const limitNote = limit ? `<div class="card pad prose" style="margin-top:12px"><p><b>지정가로 사는 방법(관찰 중)</b></p><p>다음 날 시가에 바로 사는 대신, 신호일 종가보다 하루 평균 움직임(ATR)의 ${limit.discount_atr}배 낮은 가격에 그날 하루만 지정가를 걸어 두는 방법입니다. 과거에는 한 건당 평균이 더 높았지만 신호 10건 중 4건 정도만 체결됐고, 확정 기준은 통과하지 못했습니다. 닿지 않으면 그 종목은 건너뜁니다. 파는 날은 같습니다.</p></div>` : '';
@@ -196,8 +197,9 @@ function experimentSection(track, evo, pit) {
       <p class="muted" style="font-size:13.5px">실제 기록(${c.frozen_at}부터): 신호 ${mine.length}건 · 종료 ${closed.length}건${closed.length ? ` · 평균 ${pct(avg, 2)}` : ''}${limitLine(mine)}</p></div>
       ${open.length ? `<div class="card rows" style="margin-top:8px">${open.slice(0, 10).map(row).join('')}</div>` : `<p class="muted" style="margin:8px 4px 0;font-size:13.5px">${dateLabel(track.panel_last_date)} 기준 해당 종목 없음</p>`}`;
   }).join('');
-  return `<section class="section"><div class="section-head"><h2>실험 추천 <span class="tag is-warn">실전 검증 중</span></h2><a class="link" href="#/report">근거 보기</a></div>
-    <p class="muted">컴퓨터가 과거 데이터에서 찾아낸 규칙입니다. 정식 추천이 아니며, 실제 돈을 넣는다면 잃어도 되는 소액으로만 하세요. 신호는 미국 장 마감 뒤 하루 한 번 갱신되고, 날짜는 휴장일을 반영하지 않은 예상입니다.</p>${blocks}${limitNote}</section>`;
+  const sizing = `<div class="card pad prose" style="margin-top:12px"><p><b>한 종목에 몰아 사지 마세요</b></p><p>이 규칙들은 20번에 1번꼴로 10% 넘게 잃습니다. 그런 매매만 미리 골라내는 방법은 찾지 못했습니다. 과거 기록에서 손실 폭을 줄인 방법은 5종목 이상으로 똑같이 나눠 사는 것 하나였습니다(3종목일 때 최대 낙폭 -33%, 5종목일 때 -27%).</p></div>`;
+  return `<section class="section"><div class="section-head"><h2>검증을 통과한 규칙의 신호 <span class="tag is-warn">실전 확인 중</span></h2><a class="link" href="#/report">근거 보기</a></div>
+    <p class="muted">컴퓨터가 과거 데이터에서 찾아 세 가지 시험을 통과한 규칙입니다. 과거에 통했다는 뜻이지 앞으로의 수익을 보장하지 않으며, 2025년 이후에는 성적이 약해졌습니다. 실제 돈을 넣는다면 잃어도 되는 소액으로만 하세요. 신호는 미국 장 마감 뒤 하루 한 번 갱신되고, 날짜는 휴장일을 반영하지 않은 예상입니다.</p>${blocks}${sizing}${limitNote}</section>`;
 }
 
 async function todayView() {
@@ -208,10 +210,13 @@ async function todayView() {
   const rows = (latest.results || []).filter(r => r.aggregate_eligible);
   const top = rows.slice(0, 3), rest = rows.slice(3);
   const o = (diag || {}).overall || {};
+  const losing = o.closed >= 30 && Number(o.avg_return_pct) < 0;
 
   let picks;
   if (top.length) {
     picks = `<div class="picks">${top.map(pickCard).join('')}</div>${rest.length ? `<details class="card more"><summary>조건을 통과한 종목 ${rest.length}개 더 보기</summary><div class="inner"><div class="picks">${rest.map(pickCard).join('')}</div></div></details>` : ''}`;
+    // While the live record of these rules is losing, their picks are folded away behind a warning.
+    if (losing) picks = `<details class="card more"><summary>기존 규칙이 고른 종목 ${rows.length}개 보기</summary><div class="inner">${picks}</div></details>`;
   } else {
     const reason = market.state === '조심'
       ? '미국 시장 전체가 약할 때는 새로 사지 않는 것이 규칙입니다. 시장이 회복되면 다시 추천이 나옵니다.'
@@ -223,12 +228,14 @@ async function todayView() {
   const recent = days.length ? `<div class="card rows">${days.map(d => `<div class="day-label">${dateLabel(d.date)} 추천</div>${d.items.slice(0, 6).map(historyRow).join('')}${d.items.length > 6 ? `<div class="row" data-go="#/report"><div class="row-name muted">외 ${d.items.length - 6}건</div><div class="row-mid"></div><div class="row-end muted">성적표에서 보기</div></div>` : ''}`).join('')}</div>` : '<div class="card empty"><p>아직 기록이 없습니다.</p></div>';
 
   view.innerHTML = `
-    <div class="page-head"><h1>오늘의 추천</h1><p>미국 주식 약 ${has(latest.candidate_count) ? Number(latest.candidate_count).toLocaleString('ko-KR') : '500'}개 중 조건을 통과한 종목만, 하루 최대 3개를 먼저 보여드립니다.</p></div>
+    <div class="page-head"><h1>오늘의 추천</h1><p>${losing ? '과거 검증을 통과한 규칙의 신호를 먼저 보여드립니다. 예전부터 쓰던 추천 규칙은 실제 성적이 나빠 아래로 내렸습니다.' : `미국 주식 약 ${has(latest.candidate_count) ? Number(latest.candidate_count).toLocaleString('ko-KR') : '500'}개 중 조건을 통과한 종목만, 하루 최대 3개를 먼저 보여드립니다.`}</p></div>
     <div class="card market ${m.cls}"><span class="market-dot"></span><div><b>${esc(m.title)}</b><span>${esc(m.text)}</span></div></div>
-    <section class="section"><div class="section-head"><h2>지금 살 만한 종목</h2><span class="muted">${latest.scanned_at ? `${timeLabel(latest.scanned_at)} 기준` : ''}</span></div>${picks}</section>
-    ${experimentSection(track, evo, pit)}
-    ${o.closed ? `<section class="section"><div class="card notice"><div><b>지금까지의 실제 성적</b><span>추천 ${o.closed}건 · 한 건당 평균 <span class="${tone(o.avg_return_pct)}">${pct(o.avg_return_pct, 2)}</span> · 이익으로 끝난 비율 ${share(o.win_rate_pct)}</span></div><a class="btn" href="#/report">성적표 보기</a></div></section>` : ''}
-    <section class="section"><div class="section-head"><h2>최근 추천은 어떻게 됐나</h2><a class="link" href="#/report">전체 성적</a></div>${recent}</section>`;
+    ${losing ? experimentSection(track, evo, pit) : ''}
+    <section class="section"><div class="section-head"><h2>${losing ? '기존 추천 규칙 <span class="tag is-warn">최근 성적 부진</span>' : '지금 살 만한 종목'}</h2><span class="muted">${latest.scanned_at ? `${timeLabel(latest.scanned_at)} 기준` : ''}</span></div>
+    ${losing ? `<p class="muted">이 규칙들이 실제로 추천한 ${o.closed}건은 한 건당 평균 ${pct(o.avg_return_pct, 2)}로 손실이었습니다. 참고용으로만 남겨 둡니다.</p>` : ''}${picks}</section>
+    ${losing ? '' : experimentSection(track, evo, pit)}
+    ${o.closed ? `<section class="section"><div class="card notice"><div><b>기존 추천의 실제 성적</b><span>추천 ${o.closed}건 · 한 건당 평균 <span class="${tone(o.avg_return_pct)}">${pct(o.avg_return_pct, 2)}</span> · 이익으로 끝난 비율 ${share(o.win_rate_pct)}</span></div><a class="btn" href="#/report">성적표 보기</a></div></section>` : ''}
+    <section class="section"><div class="section-head"><h2>${losing ? '기존 추천은 어떻게 됐나' : '최근 추천은 어떻게 됐나'}</h2><a class="link" href="#/report">전체 성적</a></div>${recent}</section>`;
 }
 
 function searchView() {
@@ -421,7 +428,7 @@ function evolutionSection(evo, track, pit) {
     <p>컴퓨터가 지난 10년 데이터에서 “어떤 조건일 때 사서 며칠 들고 있으면 이익인가”를 스스로 조합해 보고, 살아남은 규칙을 탐색에 쓰지 않은 기간과 종목으로 다시 시험합니다. 평일마다 자동으로 반복합니다.</p>
     <p><b>지금까지 ${scored.toLocaleString('ko-KR')}개 규칙을 시험했고, 세 가지 시험을 모두 통과한 것은 ${(evo.champions || []).length}개입니다.</b> 오래 돌릴수록 우연히 맞는 규칙이 나오기 때문에, 시도 횟수가 늘면 통과 기준도 올라갑니다.</p>
     <p>대상은 “신호가 난 날 S&P 500에 들어 있던 회사”입니다. 지금 큰 회사만 보면 살아남은 회사 덕에 성적이 좋게 나오기 때문입니다. 다만 지수에서 빠진 회사 ${cov.former_members_since_2017 || '—'}곳 중 가격 자료가 무료로 남아 있는 곳은 ${cov.former_members_with_prices || '—'}곳뿐이라, 이 문제를 완전히 없애지는 못했습니다.</p>
-    <p>통과한 규칙도 정식 추천에는 넣지 않고, 첫 화면의 “실험 추천”에서 실제 신호를 날마다 기록해 확인합니다.</p></div>${blocks}</section>`;
+    <p>통과한 규칙도 정식 추천에는 넣지 않고, 첫 화면의 “검증을 통과한 규칙의 신호”에서 실제 신호를 날마다 기록해 확인합니다.</p></div>${blocks}</section>`;
 }
 async function reportView() {
   const [d, exit, regime, entry, shadow, feat, evo, evoShadow, pit] = await Promise.all(['forward_diagnostics.json', 'exit_policy_research.json', 'regime_rank_research.json', 'entry_timing_research.json', 'exit_challenger_shadow.json', 'entry_feature_research.json', 'strategy_evolution.json', 'evolution_candidate_shadow.json', 'evolution_pit_lite.json'].map(staticJson));
