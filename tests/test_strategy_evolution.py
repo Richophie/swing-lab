@@ -93,7 +93,7 @@ def test_planted_edge_is_found_and_survives_every_gate():
     assert any(c['feature'] == 'x' and c['op'] == '>=' for c in champion['rule']['conditions'])
     assert champion['lockbox_opened'] is True and champion['lockbox']['avg_return_pct'] > 0
     assert champion['portfolio']['total_return_pct'] > 0
-    assert ledger['validation_looks'] == len(ledger['hall_of_fame'])
+    assert ledger['validation_looks'] == len(ledger['hall_of_fame']) == ledger['validation_families']
     assert ledger['research_only'] is True and ledger['production_rules_mutated'] is False
 
 
@@ -105,16 +105,27 @@ def test_pure_noise_produces_no_champion_and_keeps_lockbox_shut():
     assert ledger['champions'] == []
     assert len(ledger['runs']) == 2 and ledger['validation_looks'] == len(ledger['hall_of_fame'])
     assert ledger['lockbox_looks'] <= 1
-    assert ledger['gates']['next_validation_t_required'] == round(se.required_t(ledger['validation_looks'] + 1), 2)
+    assert ledger['gates']['next_validation_t_required'] == round(se.required_t(ledger['validation_families'] + 1), 2)
 
 
-def test_same_finalist_is_never_judged_twice():
+def test_a_judged_idea_is_never_judged_again_even_in_disguise():
     ctx = se.Context(_panel(edge_pct=1.5))
     ledger = se.run(ctx, {}, seed=1, population=60, generations=4)
-    first = {h['key'] for h in ledger['hall_of_fame']}
+    first = [h['key'] for h in ledger['hall_of_fame']]
+    families = se.judged_families(ctx, ledger)
+    assert ledger['validation_families'] == len(families) == len(first)
     ledger = se.run(ctx, ledger, seed=1, population=60, generations=4)
-    keys = [h['key'] for h in ledger['hall_of_fame']]
-    assert len(keys) == len(set(keys)) and first <= set(keys)
+    assert len(se.judged_families(ctx, ledger)) == len(ledger['hall_of_fame']) == ledger['validation_families']
+    # The same trades dressed up with a condition that never binds are still the same idea.
+    champion = ledger['champions'][0]
+    disguised = {**champion['genome'], 'conditions': [tuple(c) for c in champion['genome']['conditions']] + [('dollar_volume_log', '>=', 0)]}
+    assert se.same_family(se.footprint(ctx.signals(disguised)), families)
+    assert se.genome_key(se.prune(ctx, disguised)) == se.genome_key(se.prune(ctx, {**disguised, 'conditions': disguised['conditions'][:-1]}))
+
+
+def test_neighbour_floor_is_positive_for_a_real_edge():
+    ctx = se.Context(_panel(edge_pct=1.5))
+    assert se.neighbour_floor(ctx, {'conditions': [('x', '>=', 7)], 'hold': 3, 'stop_atr': None, 'target_atr': None}) > 0
 
 
 def test_family_candidate_is_frozen_once_and_tracked_append_only():
@@ -141,6 +152,49 @@ def test_family_candidate_is_frozen_once_and_tracked_append_only():
     old = [x for x in shadow['signals'] if (x['signal_date'], x['symbol']) in recorded]
     assert len(old) == len(recorded) and all(x['status'] == 'CLOSED' for x in old)
     assert shadow['summary']['closed'] == len(recorded)
+
+
+def test_membership_mask_follows_snapshots_and_gates_signals():
+    from datetime import date
+    panel = _panel()
+    snapshots = [{'date': date(2017, 1, 1), 'members': ['S00', 'S01']}, {'date': date(2020, 1, 1), 'members': ['S01', 'S02']}]
+    mask = se.membership_mask(panel['dates'], panel['symbols'], snapshots)
+    before, after = int(np.searchsorted(panel['dates'], '2019-12-31')), int(np.searchsorted(panel['dates'], '2020-01-02'))
+    assert list(mask[before, :3]) == [True, True, False] and list(mask[after, :3]) == [False, True, True]
+    assert not mask[:, 3:].any()
+    ctx = se.Context({**panel, 'member': mask})
+    signals = ctx.signals({'conditions': [('x', '>=', 0)], 'hold': 3, 'stop_atr': None, 'target_atr': None})
+    assert signals.any() and not signals[~mask].any()
+
+
+def test_frozen_signals_use_absolute_thresholds_on_any_panel():
+    ctx = se.Context(_panel())
+    candidate = {'genome': {'conditions': [['x', '>=', 8]], 'hold': 3, 'stop_atr': None, 'target_atr': None},
+                 'rule': {'conditions': [{'feature': 'x', 'op': '>=', 'threshold': 2.5}]}}
+    genome, signals = se.frozen_signals(ctx, candidate)
+    assert genome['conditions'] == [('x', '>=', 8)]
+    both = {'genome': {'conditions': [['x', '>=', 1], ['x', '<=', 7]], 'hold': 3, 'stop_atr': None, 'target_atr': None},
+            'rule': {'conditions': [{'feature': 'x', 'op': '>=', 'threshold': -0.5}, {'feature': 'x', 'op': '<=', 'threshold': 0.5}]}}
+    inside = ctx.features['x'][se.frozen_signals(ctx, both)[1]]
+    assert len(inside) and (inside >= -0.5).all() and (inside <= 0.5).all()
+    assert signals.any() and (ctx.features['x'][signals] >= 2.5).all()
+
+
+def test_pit_lite_separates_current_and_former_members():
+    from datetime import date
+    import evolution_pit_lite as pl
+    panel = _panel(edge_pct=1.5)
+    names = [str(s) for s in panel['symbols']]
+    snapshots = [{'date': date(2017, 1, 1), 'members': names}, {'date': date(2026, 10, 1), 'members': names[:40]}]
+    ledger = {'family_candidates': [{'name': 'demo', 'genome': {'conditions': [['x', '>=', 0]], 'hold': 3, 'stop_atr': None, 'target_atr': None},
+                                     'rule': {'conditions': [{'feature': 'x', 'op': '>=', 'threshold': 0.8}]}}]}
+    report = pl.build_report(panel, snapshots, ledger, requested=70)
+    assert report['survivorship_free'] is False and report['status'] == 'DIAGNOSTIC_ONLY'
+    assert report['coverage'] == {'requested_tickers': 70, 'tickers_with_prices': 60, 'former_members_since_2017': 20,
+                                  'former_members_with_prices': 20, 'former_member_price_coverage_pct': 100.0}
+    whole = report['candidates']['demo']['전체']
+    assert whole['all_members']['trades'] == whole['still_in_index']['trades'] + whole['left_index']['trades']
+    assert whole['left_index']['trades'] > 0 and whole['all_members']['avg_return_pct'] > 0
 
 
 def test_ledger_refuses_a_different_split():

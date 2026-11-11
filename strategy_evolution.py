@@ -37,7 +37,8 @@ TRAIN_FOLDS = (('2017-11-01', '2019-06-30'), ('2019-07-01', '2021-03-31'), ('202
 VALIDATION = ('2023-01-01', '2024-12-31')
 LOCKBOX = ('2025-01-01', '2099-12-31')
 HOLDOUT_SYMBOL_PCT = 30
-SPLIT_VERSION = 'split-v1-2026-11-11'
+# v2: the universe is historical S&P 500 membership on the signal day, not today's large caps.
+SPLIT_VERSION = 'split-v2-pit-lite-2026-11-11'
 
 # ---- search space ----
 # Swing horizon only: three trading days up to about a week and a half.
@@ -45,8 +46,8 @@ HOLDS = (3, 4, 5, 7)
 STOPS_ATR = (None, 2.0, 3.0)
 TARGETS_ATR = (None, 1.5, 3.0)
 QUANTILES = (0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9)
-MIN_CONDITIONS, MAX_CONDITIONS = 1, 4
-MARKET_FEATURES = ('spy_ret5', 'spy_ret20', 'spy_dist_sma200')
+# Up to six conditions at once: a rule is the overlap (intersection) of all of them.
+MIN_CONDITIONS, MAX_CONDITIONS = 1, 6
 
 # ---- always-on tradability filter ----
 MIN_PRICE = 5.0
@@ -68,25 +69,63 @@ POPULATION = 300
 GENERATIONS = 30
 ELITE = 20
 FINALISTS = 5
+# Two rules that pick the same stock in the same week more than half the time are one idea, not two.
+SAME_FAMILY_OVERLAP = 0.5
 
 
 # ---------------------------------------------------------------- panel ----
-def build_panel(symbols: list[str] | None = None) -> dict:
-    """Aligned (day x symbol) arrays of prices and signal-day features."""
-    from entry_feature_pool import download, feature_frame
-    from market_data import indicators, load_price_history, load_us_universe, prefilter_symbols
-    from config import SCAN_CANDIDATE_LIMIT
+def membership_mask(dates: np.ndarray, symbols: np.ndarray, snapshots: list[dict]) -> np.ndarray:
+    """True where the symbol was an index member on that day (latest snapshot on or before it)."""
+    from bisect import bisect_right
+    days = [row['date'].isoformat() for row in snapshots]
+    members = [set(row['members']) for row in snapshots]
+    column = {str(s): j for j, s in enumerate(symbols)}
+    mask = np.zeros((len(dates), len(symbols)), dtype=bool)
+    for i, day in enumerate(dates):
+        k = bisect_right(days, str(day)) - 1
+        for symbol in (members[k] if k >= 0 else ()):
+            j = column.get(symbol)
+            if j is not None:
+                mask[i, j] = True
+    return mask
 
-    symbols = symbols or prefilter_symbols(load_us_universe(), SCAN_CANDIDATE_LIMIT)
-    frames = download(symbols)
-    spy = load_price_history('SPY', 'max')
-    spy_close = spy['Close'].astype(float)
-    market = pd.DataFrame({
-        'spy_ret5': spy_close / spy_close.shift(5) - 1,
-        'spy_ret20': spy_close / spy_close.shift(20) - 1,
-        'spy_dist_sma200': spy_close / spy_close.rolling(200).mean() - 1,
-    })
-    return panel_from_frames(frames, market, feature_frame, indicators)
+
+def evolution_features(d: pd.DataFrame) -> pd.DataFrame:
+    """Everything the search may condition on for one symbol: the entry-pool features plus the indicator library."""
+    from entry_feature_pool import feature_frame
+    from indicator_library import extra_features
+    return pd.concat([feature_frame(d), extra_features(d)], axis=1)
+
+
+def build_panel(frames: dict | None = None) -> dict:
+    """Aligned (day x symbol) arrays of prices and signal-day features.
+
+    Universe: every company that was in the S&P 500 at some point since mid-2016 and whose
+    prices are still published. A day only counts while the company was a member, so a
+    company that later shrank out of the index stays in the test. Companies whose prices
+    are gone (delisted, merged) cannot be included; that part of survivorship bias remains.
+    """
+    from entry_feature_pool import download
+    from indicator_library import add_panel_features, market_features
+    from market_data import indicators, load_price_history
+    from sp500_pit_diagnostic import fetch_snapshots
+
+    snapshots = fetch_snapshots()
+    symbols = sorted(set().union(*[set(r['members']) for r in snapshots if r['date'].isoformat() >= '2016-06-01']))
+    latest = set(snapshots[-1]['members'])
+    frames = download(symbols) if frames is None else frames
+    try:
+        vix = load_price_history('^VIX', 'max')
+    except Exception:
+        vix = None
+    market = market_features(load_price_history('SPY', 'max'), vix)
+    panel = panel_from_frames(frames, market, evolution_features, indicators)
+    panel['member'] = membership_mask(panel['dates'], panel['symbols'], snapshots)
+    add_panel_features(panel['features'], panel['member'])
+    panel['feature_names'] = list(panel['features'])
+    panel['current_member'] = np.array([str(s) in latest for s in panel['symbols']])
+    panel['requested_symbols'] = len(symbols)
+    return panel
 
 
 def panel_from_frames(frames: dict, market: pd.DataFrame, feature_frame, indicators) -> dict:
@@ -101,7 +140,7 @@ def panel_from_frames(frames: dict, market: pd.DataFrame, feature_frame, indicat
     atr = stack({s: indicators(frames[s])['atr14'] for s in names})
     market = market.copy()
     market.index = pd.DatetimeIndex(market.index).tz_localize(None) if getattr(market.index, 'tz', None) is not None else pd.DatetimeIndex(market.index)
-    for f in MARKET_FEATURES:
+    for f in market.columns:
         column = market[f].reindex(index).ffill().to_numpy(dtype=np.float32)
         features[f] = np.repeat(column[:, None], len(names), axis=1)
     return {
@@ -115,6 +154,9 @@ def save_panel(panel: dict, path: Path = PANEL_CACHE) -> None:
     np.savez_compressed(path, dates=panel['dates'], symbols=panel['symbols'], atr=panel['atr'],
                         open=panel['open'], high=panel['high'], low=panel['low'], close=panel['close'],
                         feature_names=np.array(panel['feature_names']),
+                        member=panel.get('member', np.ones_like(panel['close'], dtype=bool)),
+                        current_member=panel.get('current_member', np.ones(len(panel['symbols']), dtype=bool)),
+                        requested_symbols=np.array(panel.get('requested_symbols', len(panel['symbols']))),
                         **{f'f_{k}': v for k, v in panel['features'].items()})
 
 
@@ -125,6 +167,7 @@ def load_panel(path: Path = PANEL_CACHE) -> dict:
         'dates': z['dates'].astype(str), 'symbols': z['symbols'].astype(str), 'atr': z['atr'],
         'open': z['open'], 'high': z['high'], 'low': z['low'], 'close': z['close'],
         'feature_names': names, 'features': {k: z[f'f_{k}'] for k in names},
+        'member': z['member'], 'current_member': z['current_member'], 'requested_symbols': int(z['requested_symbols']),
     }
 
 
@@ -180,6 +223,8 @@ class Context:
         self.features = panel['features']
         self.holdout_symbol = np.array([int(hashlib.sha256(s.encode()).hexdigest(), 16) % 100 < HOLDOUT_SYMBOL_PCT for s in self.symbols])
         self.tradable = (panel['close'] >= MIN_PRICE) & (self.features['dollar_volume_log'] >= MIN_DOLLAR_VOLUME_LOG)
+        if 'member' in panel:
+            self.tradable &= panel['member']
         self._returns = {}
         train_rows = self.rows(TRAIN_FOLDS[0][0], TRAIN_FOLDS[-1][1])
         search = ~self.holdout_symbol
@@ -211,19 +256,53 @@ class Context:
         return self._returns[key]
 
     def signals(self, genome: dict) -> np.ndarray:
+        return self.signals_at([(f, op, self.thresholds[f][q]) for f, op, q in genome['conditions']], genome['hold'])
+
+    def signals_at(self, conditions: list[tuple], hold: int) -> np.ndarray:
+        """Signals for (feature, op, absolute threshold) conditions."""
         mask = self.tradable.copy()
-        for feature, op, q in genome['conditions']:
-            threshold = self.thresholds[feature][q]
+        for feature, op, threshold in conditions:
             values = self.features[feature]
             with np.errstate(invalid='ignore'):
                 mask &= (values >= threshold) if op == '>=' else (values <= threshold)
         # Only a fresh setup counts: the condition must have been off for the whole previous holding
         # window. A condition that stays on for weeks is one trade, not one trade per day.
-        hold = genome['hold']
         counts = np.cumsum(mask, axis=0, dtype=np.int32)
         before = np.zeros_like(counts); before[1:] = counts[:-1]
         window_start = np.zeros_like(counts); window_start[hold + 1:] = counts[:-(hold + 1)]
         return mask & ((before - window_start) == 0)
+
+
+def footprint(signals: np.ndarray) -> np.ndarray:
+    """Which (week, symbol) cells a rule trades. Uses signals only, never outcomes."""
+    days, cols = np.nonzero(signals)
+    return np.unique((days // 5).astype(np.int64) * signals.shape[1] + cols)
+
+
+def overlap(a: np.ndarray, b: np.ndarray) -> float:
+    smaller = min(len(a), len(b))
+    return len(np.intersect1d(a, b, assume_unique=True)) / smaller if smaller else 0.0
+
+
+def same_family(mark: np.ndarray, others: list[np.ndarray]) -> bool:
+    return any(overlap(mark, other) > SAME_FAMILY_OVERLAP for other in others)
+
+
+def entry_footprint(ctx: Context, entry: dict) -> np.ndarray:
+    """Footprint of a rule already in the ledger, from its frozen absolute thresholds."""
+    return footprint(frozen_signals(ctx, entry)[1])
+
+
+def judged_families(ctx: Context, ledger: dict) -> list[np.ndarray]:
+    """One footprint per distinct idea that has already been shown validation data."""
+    families: list[np.ndarray] = []
+    for entry in (ledger.get('family_candidates') or []) + (ledger.get('hall_of_fame') or []):
+        if any(c['feature'] not in ctx.features for c in entry['rule']['conditions']):
+            continue
+        mark = entry_footprint(ctx, entry)
+        if len(mark) and not same_family(mark, families):
+            families.append(mark)
+    return families
 
 
 def segment_stats(returns: np.ndarray, signals: np.ndarray, rows: np.ndarray, cols: np.ndarray, years: float) -> dict:
@@ -267,6 +346,18 @@ def fitness(train: dict, n_conditions: int) -> float:
     if sum(f['trades_per_year'] or 0 for f in folds) / len(folds) < MIN_TRADES_PER_YEAR:
         return float('-inf')
     return min(f['avg_return_pct'] for f in folds) - COMPLEXITY_PENALTY_PCT * n_conditions
+
+
+def climb_score(train: dict, value: float) -> float:
+    """Selection score inside the search. A rule that fails the hard limits still gets a slope to climb:
+    first towards enough trades, then towards evidence in every fold. Never used to judge a rule."""
+    if math.isfinite(value):
+        return value
+    folds = [train[name] for name in TRAIN_NAMES]
+    enough = min(min(f.get('trades', 0) / MIN_FOLD_TRADES, f.get('signal_days', 0) / MIN_FOLD_SIGNAL_DAYS, 1.0) for f in folds)
+    if enough < 1.0:
+        return -2000.0 + 100.0 * enough
+    return -1000.0 + max(-50.0, min(f['t_stat'] for f in folds))
 
 
 # --------------------------------------------------------------- genome ----
@@ -324,8 +415,13 @@ def crossover(rng, a: dict, b: dict) -> dict:
     return normalise({'conditions': pool[:n], 'hold': parent['hold'], 'stop_atr': parent['stop_atr'], 'target_atr': parent['target_atr']})
 
 
-def evolve(ctx: Context, seed: int, seeds: list[dict] | None = None, population: int = POPULATION, generations: int = GENERATIONS) -> tuple[list[dict], int]:
-    """Genetic search on TRAIN folds only. Returns candidates sorted by fitness and how many were scored."""
+def evolve(ctx: Context, seed: int, seeds: list[dict] | None = None, population: int = POPULATION, generations: int = GENERATIONS,
+           taboo: list[np.ndarray] | None = None) -> tuple[list[dict], int]:
+    """Genetic search on TRAIN folds only. Returns candidates sorted by fitness and how many were scored.
+
+    `taboo` holds footprints of ideas that were already judged. A candidate that mostly repeats one
+    of them scores nothing, which pushes the search towards rules it has not tried yet.
+    """
     rng = np.random.default_rng(seed)
     scored: dict[str, dict] = {}
 
@@ -335,19 +431,23 @@ def evolve(ctx: Context, seed: int, seeds: list[dict] | None = None, population:
             train = evaluate(ctx, genome, TRAIN_NAMES)
             # Seeds from an older ledger may use plans that are no longer in the search space.
             in_space = genome['hold'] in HOLDS and genome['stop_atr'] in STOPS_ATR and genome['target_atr'] in TARGETS_ATR
-            scored[key] = {'key': key, 'genome': genome, 'train': train,
-                           'fitness': fitness(train, len(genome['conditions'])) if in_space else float('-inf')}
+            value = fitness(train, len(genome['conditions'])) if in_space else float('-inf')
+            climb = climb_score(train, value)
+            # Checked for every rule with enough trades, so the search is steered away early.
+            if taboo and climb > -1500 and same_family(footprint(ctx.signals(genome)), taboo):
+                value, climb = float('-inf'), -3000.0
+            scored[key] = {'key': key, 'genome': genome, 'train': train, 'fitness': value, 'climb': climb}
         return scored[key]
 
     current = [score(normalise(dict(g, conditions=[tuple(c) for c in g['conditions']]))) for g in (seeds or [])]
     current += [score(random_genome(rng, ctx.feature_names)) for _ in range(population - len(current))]
     for _ in range(generations):
-        current.sort(key=lambda x: x['fitness'], reverse=True)
+        current.sort(key=lambda x: x['climb'], reverse=True)
         elite = current[:ELITE]
         children = []
         while len(children) < population - ELITE:
             contenders = [current[int(rng.integers(len(current)))] for _ in range(4)]
-            a, b = sorted(contenders, key=lambda x: x['fitness'], reverse=True)[:2]
+            a, b = sorted(contenders, key=lambda x: x['climb'], reverse=True)[:2]
             child = crossover(rng, a['genome'], b['genome']) if rng.random() < 0.5 else dict(a['genome'], conditions=list(a['genome']['conditions']))
             children.append(score(mutate(rng, child, ctx.feature_names)))
         current = elite + children
@@ -371,6 +471,69 @@ def distinct_finalists(ranked: list[dict], limit: int = FINALISTS) -> list[dict]
         if len(out) == limit:
             break
     return out
+
+
+def neighbour_floor(ctx: Context, genome: dict) -> float:
+    """Worst TRAIN-fold average return of the rule and of its neighbours (one threshold moved one step).
+
+    A real effect survives a small change of a threshold; a rule fitted to noise often does not.
+    Uses TRAIN folds only, so it costs no validation look.
+    """
+    floor = float('inf')
+    variants = [genome]
+    for i, (f, op, q) in enumerate(genome['conditions']):
+        for step in (-1, 1):
+            if 0 <= q + step < len(QUANTILES):
+                conditions = list(genome['conditions']); conditions[i] = (f, op, q + step)
+                variants.append({**genome, 'conditions': conditions})
+    for variant in variants:
+        folds = list(evaluate(ctx, variant, TRAIN_NAMES).values())
+        # A tighter neighbour may simply trade too rarely to say anything.
+        if any(fold.get('trades', 0) < MIN_FOLD_TRADES // 2 for fold in folds):
+            continue
+        floor = min(floor, min(fold['avg_return_pct'] for fold in folds))
+    return floor if math.isfinite(floor) else float('-inf')
+
+
+def prune(ctx: Context, genome: dict) -> dict:
+    """Drop conditions that do not change which trades the rule takes."""
+    genome = {**genome, 'conditions': list(genome['conditions'])}
+    mark = footprint(ctx.signals(genome))
+    i = 0
+    while len(genome['conditions']) > MIN_CONDITIONS and i < len(genome['conditions']):
+        shorter = {**genome, 'conditions': genome['conditions'][:i] + genome['conditions'][i + 1:]}
+        other = footprint(ctx.signals(shorter))
+        if len(other) <= len(mark) * 1.02 and overlap(mark, other) >= 0.98:
+            genome, mark = shorter, other
+        else:
+            i += 1
+    return genome
+
+
+def pick_finalists(ctx: Context, ranked: list[dict], taboo: list[np.ndarray], limit: int = FINALISTS, scan: int = 60) -> tuple[list[dict], int]:
+    """Best robust candidates, each a different idea from the others and from everything judged before."""
+    chosen, marks, examined, seen = [], list(taboo), 0, set()
+    for item in ranked:
+        if examined >= scan or len(chosen) >= limit:
+            break
+        genome = prune(ctx, item['genome'])
+        key = genome_key(genome)
+        if key in seen:
+            continue
+        seen.add(key)
+        mark = footprint(ctx.signals(genome))
+        if same_family(mark, marks):
+            continue
+        examined += 1
+        train = evaluate(ctx, genome, TRAIN_NAMES)
+        value = fitness(train, len(genome['conditions']))
+        floor = neighbour_floor(ctx, genome)
+        # Only rules that stay profitable when a threshold is nudged may spend a validation look.
+        if not math.isfinite(value) or floor <= 0:
+            continue
+        chosen.append({'key': key, 'genome': genome, 'train': train, 'fitness': value, 'neighbour_floor': floor})
+        marks.append(mark)
+    return chosen, examined
 
 
 def gate(ctx: Context, item: dict, t_required: float) -> dict:
@@ -435,29 +598,36 @@ def describe(genome: dict, ctx: Context, labels: dict) -> dict:
     return {'conditions': conditions, 'hold_days': genome['hold'], 'stop_atr': genome['stop_atr'], 'target_atr': genome['target_atr']}
 
 
-def run(ctx: Context, ledger: dict, seed: int | None = None, population: int = POPULATION, generations: int = GENERATIONS) -> dict:
+def feature_labels() -> dict:
     from entry_feature_pool import FEATURES
-    labels = {**FEATURES, 'spy_dist_sma200': 'SPY의 200일선과의 거리'}
+    from indicator_library import LABELS
+    return {**FEATURES, **LABELS}
+
+
+def run(ctx: Context, ledger: dict, seed: int | None = None, population: int = POPULATION, generations: int = GENERATIONS) -> dict:
+    labels = feature_labels()
     if ledger.get('split_version') not in (None, SPLIT_VERSION):
         raise RuntimeError('Ledger was built with another split; start a new ledger instead of mixing them')
     ledger.setdefault('split_version', SPLIT_VERSION)
     ledger.setdefault('runs', []); ledger.setdefault('hall_of_fame', []); ledger.setdefault('champions', [])
     ledger.setdefault('validation_looks', 0); ledger.setdefault('lockbox_looks', 0)
     seed = len(ledger['runs']) + 1 if seed is None else seed
-    seeds = [h['genome'] for h in ledger['hall_of_fame'][:ELITE]]
-    ranked, scored = evolve(ctx, seed, seeds, population, generations)
-    already_judged = {h['key'] for h in ledger['hall_of_fame']}
-    finalists = [x for x in distinct_finalists(ranked, FINALISTS * 3) if x['key'] not in already_judged][:FINALISTS]
+    taboo = judged_families(ctx, ledger)
+    # The bar counts distinct ideas, not near-copies of one idea.
+    ledger['validation_families'] = max(ledger.get('validation_families', 0), len(taboo))
+    ranked, scored = evolve(ctx, seed, None, population, generations, taboo)
+    finalists, examined = pick_finalists(ctx, ranked, taboo)
 
     judged = []
     for item in finalists:
         ledger['validation_looks'] = ledger.get('validation_looks', 0) + 1
-        t_required = required_t(ledger['validation_looks'])
+        ledger['validation_families'] += 1
+        t_required = required_t(ledger['validation_families'])
         result = gate(ctx, item, t_required)
         ledger['lockbox_looks'] = ledger.get('lockbox_looks', 0) + int(result['lockbox_opened'])
         entry = {
             'key': item['key'], 'genome': {**item['genome'], 'conditions': [list(c) for c in item['genome']['conditions']]},
-            'rule': describe(item['genome'], ctx, labels), 'fitness': round(item['fitness'], 4), 'train': item['train'],
+            'rule': describe(item['genome'], ctx, labels), 'fitness': round(item['fitness'], 4), 'neighbour_floor': round(item['neighbour_floor'], 3), 'train': item['train'],
             'validation_t_required': round(t_required, 2), **result, 'found_in_run': len(ledger['runs']) + 1,
             'passed_all': result['stage_failed'] is None,
         }
@@ -465,28 +635,33 @@ def run(ctx: Context, ledger: dict, seed: int | None = None, population: int = P
             entry['portfolio'] = portfolio(ctx, item['genome'])
             ledger['champions'].append(entry)
         judged.append(entry); ledger['hall_of_fame'].append(entry)
+    track_champions(ledger)
     ledger['hall_of_fame'].sort(key=lambda x: x['fitness'], reverse=True)
     ledger['hall_of_fame'] = ledger['hall_of_fame'][:200]
     ledger['candidates_scored_total'] = ledger.get('candidates_scored_total', 0) + scored
     ledger['runs'].append({
         'run': len(ledger['runs']) + 1, 'seed': seed, 'at': datetime.now(timezone.utc).isoformat(timespec='seconds'),
         'candidates_scored': scored, 'best_train_fitness': round(ranked[0]['fitness'], 4) if ranked else None,
-        'finalists': [x['key'] for x in judged], 'passed': [x['key'] for x in judged if x['passed_all']],
+        'new_ideas_examined': examined, 'finalists': [x['key'] for x in judged], 'passed': [x['key'] for x in judged if x['passed_all']],
         'failed_at': {x['key']: x['stage_failed'] for x in judged if x['stage_failed']},
     })
     ledger.update({
         'version': 1, 'status': 'STRATEGY_EVOLUTION', 'research_only': True, 'production_rules_mutated': False,
         'updated_at': datetime.now(timezone.utc).isoformat(timespec='seconds'),
+        'universe': 'S&P 500 구성 이력(커뮤니티 자료) 기준, 신호일에 지수 구성종목이던 회사만. 가격이 남아 있지 않은 상장폐지·합병 회사는 제외됨',
         'data': {'first_date': str(ctx.dates[0]), 'last_date': str(ctx.dates[-1]), 'symbols': int(len(ctx.symbols)),
+                 'requested_symbols': int(ctx.panel.get('requested_symbols', len(ctx.symbols))),
                  'search_symbols': int((~ctx.holdout_symbol).sum()), 'holdout_symbols': int(ctx.holdout_symbol.sum())},
         'splits': {'train_folds': TRAIN_FOLDS, 'validation': VALIDATION, 'lockbox': LOCKBOX, 'holdout_symbol_pct': HOLDOUT_SYMBOL_PCT},
         'search_space': {'holds': HOLDS, 'stops_atr': STOPS_ATR, 'targets_atr': TARGETS_ATR, 'quantiles': QUANTILES,
                          'max_conditions': MAX_CONDITIONS, 'features': ctx.feature_names},
-        'gates': {'min_fold_trades': MIN_FOLD_TRADES, 'min_fold_signal_days': MIN_FOLD_SIGNAL_DAYS, 'min_fold_t': MIN_FOLD_T, 'min_trades_per_year': MIN_TRADES_PER_YEAR, 'min_validation_trades': MIN_VALIDATION_TRADES,
-                  'validation_alpha': BASE_ALPHA, 'min_lockbox_t': MIN_LOCKBOX_T, 'next_validation_t_required': round(required_t(ledger.get('validation_looks', 0) + 1), 2)},
+        'gates': {'min_fold_trades': MIN_FOLD_TRADES, 'min_fold_signal_days': MIN_FOLD_SIGNAL_DAYS, 'min_fold_t': MIN_FOLD_T, 'neighbour_floor_must_be_positive': True, 'min_trades_per_year': MIN_TRADES_PER_YEAR, 'min_validation_trades': MIN_VALIDATION_TRADES,
+                  'validation_alpha': BASE_ALPHA, 'min_lockbox_t': MIN_LOCKBOX_T, 'same_family_overlap': SAME_FAMILY_OVERLAP,
+                  'next_validation_t_required': round(required_t(ledger.get('validation_families', 0) + 1), 2)},
         'limitations': [
-            '현재 유동성 상위 종목을 과거로 되감은 데이터라 생존편향이 있습니다.',
-            '탐색을 오래 돌릴수록 우연히 좋아 보이는 규칙이 나옵니다. 그래서 검증 기준(t값)이 시도 횟수에 따라 올라갑니다.',
+            '지수에서 빠진 뒤 상장폐지·합병된 회사는 가격이 남아 있지 않아 빠져 있습니다. 생존편향이 일부 남습니다.',
+            '탐색을 오래 돌릴수록 우연히 좋아 보이는 규칙이 나옵니다. 그래서 검증 기준(t값)이 검증에 올린 서로 다른 아이디어 수에 따라 올라갑니다.',
+            '같은 주에 같은 종목을 절반 넘게 겹쳐 고르는 규칙은 하나의 아이디어로 셉니다. 이미 판정한 아이디어와 겹치는 규칙은 다시 검증하지 않습니다.',
             '최종 시험 구간(lockbox)도 여러 번 열면 닳습니다. 연 횟수를 기록합니다.',
             '통과한 규칙도 실전 추천에 넣기 전에 사람이 확인합니다.',
         ],
@@ -501,24 +676,49 @@ def freeze_family_candidate(ctx: Context, ledger: dict, name: str, genome: dict,
     Used when many near-identical finalists fail validation only because each one counted
     as a separate look. The representative must be chosen from TRAIN information alone.
     """
-    from entry_feature_pool import FEATURES
     existing = next((c for c in ledger.setdefault('family_candidates', []) if c['name'] == name), None)
     if existing:
         return existing
     stats = evaluate(ctx, genome, TRAIN_NAMES + ('validation', 'symbol_test', 'lockbox'))
     ledger['validation_looks'] = ledger.get('validation_looks', 0) + 1
+    ledger['validation_families'] = ledger.get('validation_families', 0) + 1
     ledger['lockbox_looks'] = ledger.get('lockbox_looks', 0) + 1
     entry = {
         'name': name, 'status': 'FORWARD_SHADOW', 'frozen_at': datetime.now(timezone.utc).strftime('%Y-%m-%d'),
         'reason': reason, 'key': genome_key(genome),
         'genome': {**genome, 'conditions': [list(c) for c in genome['conditions']]},
-        'rule': describe(genome, ctx, {**FEATURES, 'spy_dist_sma200': 'SPY의 200일선과의 거리'}),
+        'rule': describe(genome, ctx, feature_labels()),
         'stats': stats, 'portfolio': portfolio(ctx, genome),
         'passed_automatic_gate': False,
         'positive_in_every_segment': all((v.get('avg_return_pct') or 0) > 0 for v in stats.values()),
     }
     ledger['family_candidates'].append(entry)
     return entry
+
+
+def track_champions(ledger: dict) -> None:
+    """Every rule that passed all gates gets an append-only forward record from the day it passed."""
+    tracked = {c['key'] for c in ledger.setdefault('family_candidates', [])}
+    for champion in ledger.get('champions') or []:
+        if champion['key'] in tracked:
+            continue
+        number = 1 + sum(1 for c in ledger['family_candidates'] if c.get('passed_automatic_gate'))
+        ledger['family_candidates'].append({
+            'name': f'evolved_champion_v{number}', 'status': 'FORWARD_SHADOW',
+            'frozen_at': datetime.now(timezone.utc).strftime('%Y-%m-%d'),
+            'reason': f"run {champion['found_in_run']}: passed validation, symbol test and lockbox",
+            'key': champion['key'], 'genome': champion['genome'], 'rule': champion['rule'],
+            'stats': {**champion['train'], 'validation': champion['validation'], 'symbol_test': champion['symbol_test'], 'lockbox': champion['lockbox']},
+            'portfolio': champion.get('portfolio'), 'passed_automatic_gate': True, 'positive_in_every_segment': True,
+        })
+        tracked.add(champion['key'])
+
+
+def frozen_signals(ctx: Context, candidate: dict) -> tuple[dict, np.ndarray]:
+    """Signals from the candidate's frozen absolute thresholds, whatever panel is loaded."""
+    genome = {**candidate['genome'], 'conditions': [tuple(c) for c in candidate['genome']['conditions']]}
+    conditions = [(c['feature'], c['op'], c['threshold']) for c in candidate['rule']['conditions']]
+    return genome, ctx.signals_at(conditions, genome['hold'])
 
 
 def track_candidates(ctx: Context, ledger: dict, shadow: dict) -> dict:
@@ -534,8 +734,8 @@ def track_candidates(ctx: Context, ledger: dict, shadow: dict) -> dict:
     symbol_index = {str(s): i for i, s in enumerate(ctx.symbols)}
     last = len(ctx.dates) - 1
     for candidate in ledger.get('family_candidates') or []:
-        genome = dict(candidate['genome'], conditions=[tuple(c) for c in candidate['genome']['conditions']])
-        signals, returns = ctx.signals(genome), ctx.returns(genome)
+        genome, signals = frozen_signals(ctx, candidate)
+        returns = ctx.returns(genome)
         if str(ctx.dates[last]) >= candidate['frozen_at']:
             for j in np.flatnonzero(signals[last]):
                 key = (candidate['name'], str(ctx.dates[last]), str(ctx.symbols[j]))
