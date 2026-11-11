@@ -1,0 +1,65 @@
+name: Strategy Evolution Loop
+
+on:
+  workflow_dispatch:
+    inputs:
+      runs:
+        description: 'Evolution runs in this job'
+        default: '4'
+  pull_request:
+    paths:
+      - 'strategy_evolution.py'
+      - 'tests/test_strategy_evolution.py'
+      - '.github/workflows/strategy-evolution.yml'
+  schedule:
+    # Every weekday after the US close: record candidate signals, then search again.
+    - cron: '10 1 * * 2-6'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: strategy-evolution
+  cancel-in-progress: false
+
+jobs:
+  evolve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: pip install -r requirements.txt
+      - name: Compile
+        run: python -m py_compile strategy_evolution.py
+      - name: Tests on synthetic data (planted edge found, noise rejected)
+        run: PYTHONPATH=. python tests/test_strategy_evolution.py
+      - name: Rebuild price panel, track frozen candidates, run the search
+        if: github.event_name != 'pull_request'
+        run: python strategy_evolution.py --rebuild-panel --runs ${{ github.event.inputs.runs || '4' }}
+      - name: Validate ledger contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('static/strategy_evolution.json').read_text(encoding='utf-8'))
+          assert d['research_only'] is True and d['production_rules_mutated'] is False, d
+          assert d['validation_looks'] >= len(d['champions']), d
+          print({'runs':len(d['runs']),'scored':d['candidates_scored_total'],'looks':d['validation_looks'],'lockbox':d['lockbox_looks'],'champions':len(d['champions'])})
+          PY
+      - name: Commit ledger and candidate record
+        if: github.event_name != 'pull_request'
+        run: |
+          git config user.name "swing-lab-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add static/strategy_evolution.json static/evolution_candidate_shadow.json
+          if git diff --cached --quiet; then
+            echo "No data changes"
+          else
+            git commit -m "data: advance strategy evolution ledger [skip render]"
+            git pull --rebase origin main
+            git push
+          fi
