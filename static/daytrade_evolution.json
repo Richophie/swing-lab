@@ -1,0 +1,376 @@
+{
+ "split_version": "daytrade-v1-pit-lite-2026-11-12",
+ "runs": [
+  {
+   "run": 1,
+   "seed": 1,
+   "at": "2026-11-12T02:33:22+00:00",
+   "candidates_scored": 7327,
+   "best_train_fitness": 0.059,
+   "new_ideas_examined": 42,
+   "finalists": [],
+   "passed": [],
+   "failed_at": {}
+  },
+  {
+   "run": 2,
+   "seed": 2,
+   "at": "2026-11-12T02:37:34+00:00",
+   "candidates_scored": 7333,
+   "best_train_fitness": 0.092,
+   "new_ideas_examined": 3,
+   "finalists": [],
+   "passed": [],
+   "failed_at": {}
+  },
+  {
+   "run": 3,
+   "seed": 3,
+   "at": "2026-11-12T02:41:54+00:00",
+   "candidates_scored": 7267,
+   "best_train_fitness": 0.084,
+   "new_ideas_examined": 18,
+   "finalists": [],
+   "passed": [],
+   "failed_at": {}
+  },
+  {
+   "run": 4,
+   "seed": 4,
+   "at": "2026-11-12T02:46:08+00:00",
+   "candidates_scored": 7351,
+   "best_train_fitness": -0.201,
+   "new_ideas_examined": 9,
+   "finalists": [],
+   "passed": [],
+   "failed_at": {}
+  },
+  {
+   "run": 5,
+   "seed": 5,
+   "at": "2026-11-12T02:50:21+00:00",
+   "candidates_scored": 7361,
+   "best_train_fitness": 0.115,
+   "new_ideas_examined": 1,
+   "finalists": [],
+   "passed": [],
+   "failed_at": {}
+  },
+  {
+   "run": 6,
+   "seed": 6,
+   "at": "2026-11-12T02:54:50+00:00",
+   "candidates_scored": 7364,
+   "best_train_fitness": 0.35,
+   "new_ideas_examined": 1,
+   "finalists": [
+    "mfi14>=2&rel_volume>=4&ret20<=0&up_volume_ratio10>=1&volume_5d_vs_20d<=3|h2|sNone|t2.0"
+   ],
+   "passed": [],
+   "failed_at": {
+    "mfi14>=2&rel_volume>=4&ret20<=0&up_volume_ratio10>=1&volume_5d_vs_20d<=3|h2|sNone|t2.0": "validation"
+   }
+  }
+ ],
+ "hall_of_fame": [
+  {
+   "key": "mfi14>=2&rel_volume>=4&ret20<=0&up_volume_ratio10>=1&volume_5d_vs_20d<=3|h2|sNone|t2.0",
+   "genome": {
+    "conditions": [
+     [
+      "ret20",
+      "<=",
+      0
+     ],
+     [
+      "rel_volume",
+      ">=",
+      4
+     ],
+     [
+      "mfi14",
+      ">=",
+      2
+     ],
+     [
+      "volume_5d_vs_20d",
+      "<=",
+      3
+     ],
+     [
+      "up_volume_ratio10",
+      ">=",
+      1
+     ]
+    ],
+    "hold": 2,
+    "stop_atr": null,
+    "target_atr": 2.0
+   },
+   "rule": {
+    "conditions": [
+     {
+      "feature": "ret20",
+      "label": "최근 20일 수익률",
+      "op": "<=",
+      "quantile": 0.1,
+      "threshold": -0.09997
+     },
+     {
+      "feature": "rel_volume",
+      "label": "당일 거래량 / 20일 평균",
+      "op": ">=",
+      "quantile": 0.5,
+      "threshold": 0.91391
+     },
+     {
+      "feature": "mfi14",
+      "label": "MFI(14)",
+      "op": ">=",
+      "quantile": 0.3,
+      "threshold": 43.71603
+     },
+     {
+      "feature": "volume_5d_vs_20d",
+      "label": "최근 5일 거래량 / 20일 평균",
+      "op": "<=",
+      "quantile": 0.4,
+      "threshold": 0.91309
+     },
+     {
+      "feature": "up_volume_ratio10",
+      "label": "최근 10일 상승일 거래량 비중",
+      "op": ">=",
+      "quantile": 0.2,
+      "threshold": 0.37087
+     }
+    ],
+    "hold_days": 2,
+    "stop_atr": null,
+    "target_atr": 2.0
+   },
+   "fitness": 0.35,
+   "neighbour_floor": 0.072,
+   "train": {
+    "train_1": {
+     "trades": 101,
+     "avg_return_pct": 0.521,
+     "win_rate_pct": 55.4,
+     "profit_factor": 1.63,
+     "signal_days": 72,
+     "t_stat": 1.42,
+     "trades_per_year": 61.1
+    },
+    "train_2": {
+     "trades": 213,
+     "avg_return_pct": 1.118,
+     "win_rate_pct": 55.9,
+     "profit_factor": 1.788,
+     "signal_days": 72,
+     "t_stat": 1.18,
+     "trades_per_year": 121.8
+    },
+    "train_3": {
+     "trades": 186,
+     "avg_return_pct": 0.5,
+     "win_rate_pct": 56.5,
+     "profit_factor": 1.48,
+     "signal_days": 104,
+     "t_stat": 1.26,
+     "trades_per_year": 106.5
+    }
+   },
+   "validation_t_required": 1.64,
+   "stage_failed": "validation",
+   "lockbox_opened": false,
+   "validation": {
+    "trades": 128,
+    "avg_return_pct": -0.419,
+    "win_rate_pct": 38.3,
+    "profit_factor": 0.681,
+    "signal_days": 93,
+    "t_stat": -1.44,
+    "trades_per_year": 64.2
+   },
+   "found_in_run": 6,
+   "passed_all": false
+  }
+ ],
+ "champions": [],
+ "validation_looks": 1,
+ "lockbox_looks": 0,
+ "validation_families": 1,
+ "family_candidates": [],
+ "candidates_scored_total": 44003,
+ "version": 1,
+ "status": "STRATEGY_EVOLUTION",
+ "research_only": true,
+ "production_rules_mutated": false,
+ "updated_at": "2026-11-12T02:54:50+00:00",
+ "universe": "S&P 500 구성 이력(커뮤니티 자료) 기준, 신호일에 지수 구성종목이던 회사만. 가격이 남아 있지 않은 상장폐지·합병 회사는 제외됨",
+ "data": {
+  "first_date": "2016-11-11",
+  "last_date": "2026-11-10",
+  "symbols": 588,
+  "requested_symbols": 714,
+  "search_symbols": 432,
+  "holdout_symbols": 156
+ },
+ "splits": {
+  "train_folds": [
+   [
+    "2017-11-01",
+    "2019-06-30"
+   ],
+   [
+    "2019-07-01",
+    "2021-03-31"
+   ],
+   [
+    "2021-04-01",
+    "2022-12-31"
+   ]
+  ],
+  "validation": [
+   "2023-01-01",
+   "2024-12-31"
+  ],
+  "lockbox": [
+   "2025-01-01",
+   "2099-12-31"
+  ],
+  "holdout_symbol_pct": 30
+ },
+ "search_space": {
+  "holds": [
+   1,
+   2
+  ],
+  "stops_atr": [
+   null,
+   1.0,
+   2.0
+  ],
+  "targets_atr": [
+   null,
+   1.0,
+   2.0
+  ],
+  "quantiles": [
+   0.1,
+   0.2,
+   0.3,
+   0.4,
+   0.5,
+   0.6,
+   0.7,
+   0.8,
+   0.9
+  ],
+  "max_conditions": 6,
+  "features": [
+   "rsi",
+   "rsi2",
+   "bb_pos",
+   "dist_sma20",
+   "dist_sma50",
+   "dist_sma120",
+   "dist_sma200",
+   "slope_sma120",
+   "atr_pct",
+   "ret5",
+   "ret20",
+   "ret60",
+   "drawdown_60d",
+   "drawdown_252d",
+   "rel_volume",
+   "volume_5d_vs_20d",
+   "close_in_range",
+   "body_atr",
+   "gap_pct",
+   "up_days_5",
+   "down_streak",
+   "dollar_volume_log",
+   "macd_hist_atr",
+   "macd_hist_change",
+   "macd_line_atr",
+   "stoch_k",
+   "stoch_k_minus_d",
+   "cci20",
+   "mfi14",
+   "adx14",
+   "di_spread",
+   "obv_slope20",
+   "cmf20",
+   "up_volume_ratio10",
+   "bb_width",
+   "bb_width_rank120",
+   "keltner_pos",
+   "donchian_pos20",
+   "donchian_pos55",
+   "dist_low_252d",
+   "days_since_high20",
+   "days_since_low20",
+   "ret1",
+   "ret3",
+   "ret10",
+   "ret120",
+   "rsi5",
+   "rsi_change3",
+   "dist_ema10",
+   "ema10_vs_ema50",
+   "sma50_vs_sma200",
+   "ichimoku_cloud_dist",
+   "tenkan_vs_kijun",
+   "volatility_ratio",
+   "range_atr",
+   "range_vs_min7",
+   "lower_wick_atr",
+   "upper_wick_atr",
+   "intraday_ret5",
+   "overnight_ret5",
+   "realized_vol20",
+   "efficiency10",
+   "spy_ret1",
+   "spy_ret5",
+   "spy_ret20",
+   "spy_ret60",
+   "spy_dist_sma20",
+   "spy_dist_sma200",
+   "spy_rsi2",
+   "vix",
+   "vix_vs_sma20",
+   "vix_ret5",
+   "rank_ret5",
+   "rank_ret20",
+   "rank_ret60",
+   "rank_rsi2",
+   "rs_spy20",
+   "rs_spy60",
+   "breadth_sma50",
+   "breadth_sma200",
+   "breadth_oversold",
+   "breadth_change5"
+  ]
+ },
+ "gates": {
+  "min_fold_trades": 80,
+  "min_fold_signal_days": 60,
+  "min_fold_t": 1.0,
+  "neighbour_floor_must_be_positive": true,
+  "min_trades_per_year": 40,
+  "min_validation_trades": 100,
+  "validation_alpha": 0.05,
+  "min_lockbox_t": 1.0,
+  "same_family_overlap": 0.5,
+  "next_validation_t_required": 1.96
+ },
+ "limitations": [
+  "지수에서 빠진 뒤 상장폐지·합병된 회사는 가격이 남아 있지 않아 빠져 있습니다. 생존편향이 일부 남습니다.",
+  "탐색을 오래 돌릴수록 우연히 좋아 보이는 규칙이 나옵니다. 그래서 검증 기준(t값)이 검증에 올린 서로 다른 아이디어 수에 따라 올라갑니다.",
+  "같은 주에 같은 종목을 절반 넘게 겹쳐 고르는 규칙은 하나의 아이디어로 셉니다. 이미 판정한 아이디어와 겹치는 규칙은 다시 검증하지 않습니다.",
+  "최종 시험 구간(lockbox)도 여러 번 열면 닳습니다. 연 횟수를 기록합니다.",
+  "통과한 규칙도 실전 추천에 넣기 전에 사람이 확인합니다."
+ ],
+ "horizon": "1~2거래일 보유 (다음 날 시가 매수)"
+}
