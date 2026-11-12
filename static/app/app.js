@@ -209,7 +209,7 @@ function signalCard(x, c, track) {
   const sell = `<div class="card plan-box is-target"><span>파는 가격</span><b>${has(look.median_return_pct) ? `보통 ${usd(at(look.median_return_pct))} 근처` : '날짜에 맞춰 매도'}</b><small>가격을 정해 두지 않고 ${koreaTime(sellDay, 15, 50)} 미국 장 마감 직전에 시장가로 팝니다. ${range}</small></div>`;
   const stop = x.stop_atr || c.rule.stop_atr
     ? `<div class="card plan-box is-stop"><span>손절가</span><b>${usd(base - Number(x.stop_atr || c.rule.stop_atr) * Number(x.atr))}</b><small>${bought ? '' : '산 가격이 정해지면 다시 계산됩니다. '}이 가격 아래로 내려가면 그날 팝니다.</small></div>`
-    : `<div class="card plan-box is-stop"><span>손절가</span><b>없음</b><small>날짜에만 팝니다. ${has(look.big_loss_share_pct) ? `과거 ${Math.round(100 / Math.max(1, look.big_loss_share_pct))}번에 1번은 10% 넘게 잃었으니 한 종목에 몰지 마세요.` : ''}</small></div>`;
+    : `<div class="card plan-box is-stop"><span>손절가</span><b>없음</b><small>날짜에만 팝니다. ${has(look.big_loss_share_pct) ? `과거 ${Math.round(100 / Math.max(1, look.big_loss_share_pct))}번에 1번은 10% 넘게 잃었으니 한 종목에 몰지 마세요. 계좌의 8분의 1까지만 넣으세요.` : ''}</small></div>`;
   return `<div class="signal" data-go="#/stock/${esc(x.symbol)}"><div class="signal-head"><b>${esc(x.symbol)}</b>${tag}<small>${dateLabel(x.signal_date)} 신호</small></div><div class="plan">${buy}${sell}${stop}</div></div>`;
 }
 
@@ -235,7 +235,7 @@ function experimentSection(track, evo, pit) {
       <p class="muted" style="font-size:13.5px">실제 기록(${c.frozen_at}부터): 신호 ${mine.length}건 · 종료 ${closed.length}건${closed.length ? ` · 평균 ${pct(avg, 2)}` : ''}${limitLine(mine)}</p></div>
       ${open.length ? open.slice(0, 10).map(row).join('') : `<p class="muted" style="margin:8px 4px 0;font-size:13.5px">${dateLabel(track.panel_last_date)} 기준 해당 종목 없음</p>`}`;
   }).join('');
-  const sizing = `<div class="card pad prose" style="margin-top:12px"><p><b>한 종목에 몰아 사지 마세요</b></p><p>이 규칙들은 20번에 1번꼴로 10% 넘게 잃습니다. 그런 매매만 미리 골라내는 방법은 찾지 못했습니다. 과거 기록에서 손실 폭을 줄인 방법은 5종목 이상으로 똑같이 나눠 사는 것 하나였습니다(3종목일 때 최대 낙폭 -33%, 5종목일 때 -27%).</p></div>`;
+  const sizing = `<div class="card pad prose" style="margin-top:12px"><p><b>돈을 8칸으로 나눠 한 종목에 한 칸만 쓰세요</b></p><p>이 규칙들은 20번에 1번꼴로 10% 넘게 잃고, 그런 매매만 미리 골라내는 방법은 찾지 못했습니다. 과거 기록에서 손실 폭을 줄인 방법은 여러 종목에 똑같이 나눠 사는 것 하나였습니다. 5칸과 8칸은 한 해 수익이 약 17%로 같았지만, 가장 크게 빠졌을 때가 5칸은 -27%, 8칸은 -22%였습니다(3칸은 -33%). 신호가 없어 남는 칸은 비워 두세요. 약한 신호로 채우면 오히려 손실이 커졌습니다.</p></div>`;
   return `<section class="section"><div class="section-head"><h2>검증을 통과한 규칙의 신호 <span class="tag is-warn">실전 확인 중</span></h2><a class="link" href="#/report">근거 보기</a></div>
     <p class="muted">컴퓨터가 과거 데이터에서 찾아 세 가지 시험을 통과한 규칙입니다. 과거에 통했다는 뜻이지 앞으로의 수익을 보장하지 않으며, 2025년 이후에는 성적이 약해졌습니다. 실제 돈을 넣는다면 잃어도 되는 소액으로만 하세요. 신호는 미국 장 마감 뒤 하루 한 번 갱신됩니다. 시간은 한국 시간입니다.</p>${blocks}${sizing}${limitNote}</section>`;
 }
