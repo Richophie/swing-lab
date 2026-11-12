@@ -87,3 +87,10 @@ def test_signal_card_states_buy_price_sell_time_and_stop_in_plain_words():
     assert "'2026-11-26'" in js and 'US_HOLIDAYS.has' in js
     css = (APP / 'app.css').read_text(encoding='utf-8')
     assert '.signal .plan' in css and '.plan{grid-template-columns:1fr' in css.replace(' ', '')
+
+
+def test_signal_card_warns_when_results_are_due_during_the_hold():
+    js = (APP / 'app.js').read_text(encoding='utf-8')
+    card = js.split('function signalCard')[1].split('function experimentSection')[0]
+    assert 'x.earnings_date >= isoOf(buyDay) && x.earnings_date <= isoOf(sellDay)' in card
+    assert '보유 중 실적 발표' in card and '건너뛰세요' in card

@@ -788,7 +788,18 @@ def outlook(ctx: Context, candidate: dict) -> dict:
             'win_rate_pct': round(float((values > 0).mean() * 100), 1), 'big_loss_share_pct': round(float((values <= -10).mean() * 100), 1)}
 
 
-def track_candidates(ctx: Context, ledger: dict, shadow: dict) -> dict:
+def next_earnings_date(symbol: str, today: str) -> str | None:
+    """Next scheduled earnings day from Yahoo's calendar (free). It is an estimate until the company confirms it."""
+    try:
+        import yfinance as yf
+        days = (yf.Ticker(symbol).calendar or {}).get('Earnings Date') or []
+        upcoming = sorted(d.isoformat() for d in days if d.isoformat() >= today)
+        return upcoming[0] if upcoming else None
+    except Exception:
+        return None
+
+
+def track_candidates(ctx: Context, ledger: dict, shadow: dict, earnings_lookup=None) -> dict:
     """Append today's signals of frozen candidates and fill in outcomes that have matured.
 
     Signals are written on the day they appear and never edited, so this record is free of
@@ -818,6 +829,8 @@ def track_candidates(ctx: Context, ledger: dict, shadow: dict) -> dict:
                     'limit_filled': None, 'limit_return_pct': None,
                     'stop_atr': genome['stop_atr'], 'entry_date': None, 'entry_price': None,
                     'exit_date': None, 'last_close': None, 'days_held': 0,
+                    # So the screen can warn when results come out while the position is held.
+                    'earnings_date': earnings_lookup(key[2], key[1]) if earnings_lookup else None,
                 })
         for row in shadow['signals']:
             if row['candidate'] != candidate['name'] or row['status'] != 'OPEN':
@@ -877,7 +890,7 @@ def main():
                       'symbols': int(len(ctx.symbols))}), flush=True)
     ledger = json.loads(OUT.read_text(encoding='utf-8')) if OUT.exists() else {}
     shadow = json.loads(SHADOW_OUT.read_text(encoding='utf-8')) if SHADOW_OUT.exists() else {}
-    SHADOW_OUT.write_text(json.dumps(track_candidates(ctx, ledger, shadow), ensure_ascii=False, indent=1), encoding='utf-8')
+    SHADOW_OUT.write_text(json.dumps(track_candidates(ctx, ledger, shadow, next_earnings_date), ensure_ascii=False, indent=1), encoding='utf-8')
     for _ in range(args.runs):
         ledger = run(ctx, ledger, population=args.population, generations=args.generations)
         last = ledger['runs'][-1]

@@ -143,7 +143,9 @@ def test_family_candidate_is_frozen_once_and_tracked_append_only():
     early = se.Context({**panel, 'dates': panel['dates'][:cut], **{k: panel[k][:cut] for k in ('open', 'high', 'low', 'close', 'atr')},
                         'features': {k: v[:cut] for k, v in panel['features'].items()}})
     early.thresholds = ctx.thresholds
-    shadow = se.track_candidates(early, ledger, {})
+    asked = []
+    shadow = se.track_candidates(early, ledger, {}, lambda symbol, day: asked.append((symbol, day)) or '2099-01-01')
+    assert asked and all(x['earnings_date'] == '2099-01-01' for x in shadow['signals']) and asked[0][1] == panel['dates'][cut - 1]
     recorded = [(x['signal_date'], x['symbol']) for x in shadow['signals']]
     assert recorded and all(x['status'] == 'OPEN' and x['signal_date'] == panel['dates'][cut - 1] for x in shadow['signals'])
     assert all(x['entry_price'] is None and x['days_held'] == 0 for x in shadow['signals'])

@@ -210,7 +210,10 @@ function signalCard(x, c, track) {
   const stop = x.stop_atr || c.rule.stop_atr
     ? `<div class="card plan-box is-stop"><span>손절가</span><b>${usd(base - Number(x.stop_atr || c.rule.stop_atr) * Number(x.atr))}</b><small>${bought ? '' : '산 가격이 정해지면 다시 계산됩니다. '}이 가격 아래로 내려가면 그날 팝니다.</small></div>`
     : `<div class="card plan-box is-stop"><span>손절가</span><b>없음</b><small>날짜에만 팝니다. ${has(look.big_loss_share_pct) ? `과거 ${Math.round(100 / Math.max(1, look.big_loss_share_pct))}번에 1번은 10% 넘게 잃었으니 한 종목에 몰지 마세요. 계좌의 8분의 1까지만 넣으세요.` : ''}</small></div>`;
-  return `<div class="signal" data-go="#/stock/${esc(x.symbol)}"><div class="signal-head"><b>${esc(x.symbol)}</b>${tag}<small>${dateLabel(x.signal_date)} 신호</small></div><div class="plan">${buy}${sell}${stop}</div></div>`;
+  // Results due while the position is held: these trades swung harder in both directions.
+  const reports = x.earnings_date && x.earnings_date >= isoOf(buyDay) && x.earnings_date <= isoOf(sellDay);
+  const earnings = reports ? `<p class="signal-note"><span class="tag is-warn">보유 중 실적 발표</span> ${dateLabel(x.earnings_date)}쯤 실적 발표가 예정돼 있습니다. 과거에 이런 신호는 10% 넘게 잃는 일이 두 배쯤 잦았고, 평균 수익도 더 컸습니다. 크게 흔들리는 것이 싫다면 이 종목은 건너뛰세요.</p>` : '';
+  return `<div class="signal" data-go="#/stock/${esc(x.symbol)}"><div class="signal-head"><b>${esc(x.symbol)}</b>${tag}<small>${dateLabel(x.signal_date)} 신호</small></div>${earnings}<div class="plan">${buy}${sell}${stop}</div></div>`;
 }
 
 function experimentSection(track, evo, pit) {
