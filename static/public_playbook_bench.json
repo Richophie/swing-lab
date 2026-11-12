@@ -1,0 +1,2241 @@
+{
+ "version": 1,
+ "generated_at": "2026-11-12T03:37:05+00:00",
+ "status": "RESEARCH_ONLY",
+ "production_rules_mutated": false,
+ "frozen_rules_mutated": false,
+ "universe": "신호일에 S&P 500 구성종목이던 회사(가격이 남아 있는 회사만)",
+ "execution": "다음 날 시가 매수, 각 전략의 청산 규칙, 비용 포함",
+ "setups_tested": 20,
+ "t_required": 2.81,
+ "slots": 5,
+ "results": {
+  "connors_rsi2": {
+   "label": "코너스 RSI(2) 과매도",
+   "source": "Larry Connors, 'Short Term Trading Strategies That Work'",
+   "family": "reversion",
+   "exit": {
+    "kind": "rsi2_above",
+    "parameter": 70,
+    "last_day": 5,
+    "stop_atr": null
+   },
+   "all_years": {
+    "trades": 24444,
+    "avg_return_pct": -0.125,
+    "win_rate_pct": 57.6,
+    "big_loss_share_pct": 1.4,
+    "signal_days": 2028,
+    "t_stat": -3.09,
+    "avg_days_held": 3.8
+   },
+   "segments": {
+    "train_1": {
+     "trades": 3692,
+     "avg_return_pct": -0.544,
+     "win_rate_pct": 54.7,
+     "big_loss_share_pct": 1.4,
+     "signal_days": 364,
+     "t_stat": -2.83,
+     "avg_days_held": 3.9
+    },
+    "train_2": {
+     "trades": 4581,
+     "avg_return_pct": -0.078,
+     "win_rate_pct": 60.3,
+     "big_loss_share_pct": 1.6,
+     "signal_days": 361,
+     "t_stat": 0.56,
+     "avg_days_held": 3.8
+    },
+    "train_3": {
+     "trades": 4473,
+     "avg_return_pct": -0.113,
+     "win_rate_pct": 58.4,
+     "big_loss_share_pct": 1.7,
+     "signal_days": 356,
+     "t_stat": -1.94,
+     "avg_days_held": 3.8
+    },
+    "validation": {
+     "trades": 6181,
+     "avg_return_pct": -0.12,
+     "win_rate_pct": 55.7,
+     "big_loss_share_pct": 0.8,
+     "signal_days": 466,
+     "t_stat": -0.68,
+     "avg_days_held": 3.9
+    },
+    "lockbox": {
+     "trades": 5097,
+     "avg_return_pct": 0.116,
+     "win_rate_pct": 59.0,
+     "big_loss_share_pct": 2.0,
+     "signal_days": 438,
+     "t_stat": -2.06,
+     "avg_days_held": 3.8
+    }
+   },
+   "all_years_if_bought_at_signal_close": {
+    "trades": 24444,
+    "avg_return_pct": -0.07,
+    "win_rate_pct": 58.7,
+    "big_loss_share_pct": 1.6,
+    "signal_days": 2028,
+    "t_stat": -1.67,
+    "avg_days_held": 3.8
+   },
+   "accounts": {
+    "train_1": {
+     "trades_taken": 489,
+     "total_return_pct": -15.7,
+     "max_drawdown_pct": -25.7,
+     "avg_return_pct": -0.164
+    },
+    "train_2": {
+     "trades_taken": 493,
+     "total_return_pct": 5.2,
+     "max_drawdown_pct": -18.1,
+     "avg_return_pct": 0.065
+    },
+    "train_3": {
+     "trades_taken": 477,
+     "total_return_pct": -31.2,
+     "max_drawdown_pct": -32.4,
+     "avg_return_pct": -0.377
+    },
+    "validation": {
+     "trades_taken": 616,
+     "total_return_pct": 18.9,
+     "max_drawdown_pct": -16.2,
+     "avg_return_pct": 0.153
+    },
+    "lockbox": {
+     "trades_taken": 572,
+     "total_return_pct": -18.2,
+     "max_drawdown_pct": -33.7,
+     "avg_return_pct": -0.154
+    }
+   },
+   "overlap_with_washout_rules": 0.0,
+   "positive_in_every_period": false,
+   "holds_up": false
+  },
+  "connors_double_7s": {
+   "label": "코너스 더블 세븐",
+   "source": "Larry Connors, 'Short Term Trading Strategies That Work'",
+   "family": "reversion",
+   "exit": {
+    "kind": "close_7d_high",
+    "parameter": null,
+    "last_day": 10,
+    "stop_atr": null
+   },
+   "all_years": {
+    "trades": 21774,
+    "avg_return_pct": -0.165,
+    "win_rate_pct": 62.1,
+    "big_loss_share_pct": 3.8,
+    "signal_days": 2000,
+    "t_stat": -1.1,
+    "avg_days_held": 6.6
+   },
+   "segments": {
+    "train_1": {
+     "trades": 3693,
+     "avg_return_pct": -0.39,
+     "win_rate_pct": 61.4,
+     "big_loss_share_pct": 3.4,
+     "signal_days": 356,
+     "t_stat": -1.53,
+     "avg_days_held": 6.6
+    },
+    "train_2": {
+     "trades": 4232,
+     "avg_return_pct": -0.063,
+     "win_rate_pct": 64.3,
+     "big_loss_share_pct": 4.5,
+     "signal_days": 365,
+     "t_stat": 1.25,
+     "avg_days_held": 6.5
+    },
+    "train_3": {
+     "trades": 3879,
+     "avg_return_pct": -0.413,
+     "win_rate_pct": 60.4,
+     "big_loss_share_pct": 4.7,
+     "signal_days": 355,
+     "t_stat": -0.7,
+     "avg_days_held": 6.8
+    },
+    "validation": {
+     "trades": 5142,
+     "avg_return_pct": -0.179,
+     "win_rate_pct": 60.7,
+     "big_loss_share_pct": 2.5,
+     "signal_days": 452,
+     "t_stat": -1.04,
+     "avg_days_held": 6.8
+    },
+    "lockbox": {
+     "trades": 4327,
+     "avg_return_pct": 0.123,
+     "win_rate_pct": 62.9,
+     "big_loss_share_pct": 4.7,
+     "signal_days": 428,
+     "t_stat": -0.57,
+     "avg_days_held": 6.7
+    }
+   },
+   "all_years_if_bought_at_signal_close": {
+    "trades": 21774,
+    "avg_return_pct": -0.135,
+    "win_rate_pct": 62.2,
+    "big_loss_share_pct": 4.0,
+    "signal_days": 2000,
+    "t_stat": -0.81,
+    "avg_days_held": 6.6
+   },
+   "accounts": {
+    "train_1": {
+     "trades_taken": 291,
+     "total_return_pct": 5.6,
+     "max_drawdown_pct": -17.8,
+     "avg_return_pct": 0.112
+    },
+    "train_2": {
+     "trades_taken": 305,
+     "total_return_pct": 25.8,
+     "max_drawdown_pct": -14.5,
+     "avg_return_pct": 0.397
+    },
+    "train_3": {
+     "trades_taken": 287,
+     "total_return_pct": -34.3,
+     "max_drawdown_pct": -37.2,
+     "avg_return_pct": -0.698
+    },
+    "validation": {
+     "trades_taken": 355,
+     "total_return_pct": -10.2,
+     "max_drawdown_pct": -23.5,
+     "avg_return_pct": -0.125
+    },
+    "lockbox": {
+     "trades_taken": 331,
+     "total_return_pct": -2.1,
+     "max_drawdown_pct": -25.1,
+     "avg_return_pct": 0.004
+    }
+   },
+   "overlap_with_washout_rules": 0.0,
+   "positive_in_every_period": false,
+   "holds_up": false
+  },
+  "three_down_days": {
+   "label": "사흘 연속 하락",
+   "source": "Connors-style streak reversion (many public backtests)",
+   "family": "reversion",
+   "exit": {
+    "kind": "above_sma5",
+    "parameter": null,
+    "last_day": 7,
+    "stop_atr": null
+   },
+   "all_years": {
+    "trades": 23741,
+    "avg_return_pct": -0.156,
+    "win_rate_pct": 59.8,
+    "big_loss_share_pct": 1.6,
+    "signal_days": 2025,
+    "t_stat": -4.48,
+    "avg_days_held": 3.4
+   },
+   "segments": {
+    "train_1": {
+     "trades": 3695,
+     "avg_return_pct": -0.395,
+     "win_rate_pct": 57.2,
+     "big_loss_share_pct": 1.5,
+     "signal_days": 358,
+     "t_stat": -3.72,
+     "avg_days_held": 3.5
+    },
+    "train_2": {
+     "trades": 4533,
+     "avg_return_pct": -0.046,
+     "win_rate_pct": 61.8,
+     "big_loss_share_pct": 1.5,
+     "signal_days": 377,
+     "t_stat": 0.18,
+     "avg_days_held": 3.4
+    },
+    "train_3": {
+     "trades": 4301,
+     "avg_return_pct": -0.187,
+     "win_rate_pct": 60.6,
+     "big_loss_share_pct": 1.9,
+     "signal_days": 363,
+     "t_stat": -2.47,
+     "avg_days_held": 3.4
+    },
+    "validation": {
+     "trades": 5861,
+     "avg_return_pct": -0.164,
+     "win_rate_pct": 57.8,
+     "big_loss_share_pct": 1.1,
+     "signal_days": 451,
+     "t_stat": -2.08,
+     "avg_days_held": 3.5
+    },
+    "lockbox": {
+     "trades": 4911,
+     "avg_return_pct": -0.051,
+     "win_rate_pct": 61.9,
+     "big_loss_share_pct": 2.4,
+     "signal_days": 432,
+     "t_stat": -2.14,
+     "avg_days_held": 3.4
+    }
+   },
+   "all_years_if_bought_at_signal_close": {
+    "trades": 23741,
+    "avg_return_pct": -0.09,
+    "win_rate_pct": 62.6,
+    "big_loss_share_pct": 1.8,
+    "signal_days": 2025,
+    "t_stat": -3.33,
+    "avg_days_held": 3.4
+   },
+   "accounts": {
+    "train_1": {
+     "trades_taken": 518,
+     "total_return_pct": -31.6,
+     "max_drawdown_pct": -38.3,
+     "avg_return_pct": -0.355
+    },
+    "train_2": {
+     "trades_taken": 562,
+     "total_return_pct": 13.7,
+     "max_drawdown_pct": -22.5,
+     "avg_return_pct": 0.124
+    },
+    "train_3": {
+     "trades_taken": 498,
+     "total_return_pct": -37.6,
+     "max_drawdown_pct": -39.1,
+     "avg_return_pct": -0.46
+    },
+    "validation": {
+     "trades_taken": 660,
+     "total_return_pct": -15.8,
+     "max_drawdown_pct": -25.8,
+     "avg_return_pct": -0.119
+    },
+    "lockbox": {
+     "trades_taken": 596,
+     "total_return_pct": -17.6,
+     "max_drawdown_pct": -31.1,
+     "avg_return_pct": -0.144
+    }
+   },
+   "overlap_with_washout_rules": 0.0,
+   "positive_in_every_period": false,
+   "holds_up": false
+  },
+  "ibs_low": {
+   "label": "IBS 저점 마감",
+   "source": "Internal Bar Strength reversion (Quantified Strategies, TradingView scripts)",
+   "family": "reversion",
+   "exit": {
+    "kind": "above_prev_high",
+    "parameter": null,
+    "last_day": 5,
+    "stop_atr": null
+   },
+   "all_years": {
+    "trades": 43432,
+    "avg_return_pct": -0.158,
+    "win_rate_pct": 58.7,
+    "big_loss_share_pct": 1.0,
+    "signal_days": 2132,
+    "t_stat": -3.66,
+    "avg_days_held": 3.4
+   },
+   "segments": {
+    "train_1": {
+     "trades": 7077,
+     "avg_return_pct": -0.3,
+     "win_rate_pct": 57.7,
+     "big_loss_share_pct": 0.7,
+     "signal_days": 383,
+     "t_stat": -1.94,
+     "avg_days_held": 3.4
+    },
+    "train_2": {
+     "trades": 8392,
+     "avg_return_pct": 0.042,
+     "win_rate_pct": 62.1,
+     "big_loss_share_pct": 1.1,
+     "signal_days": 406,
+     "t_stat": -1.28,
+     "avg_days_held": 3.4
+    },
+    "train_3": {
+     "trades": 7869,
+     "avg_return_pct": -0.273,
+     "win_rate_pct": 57.6,
+     "big_loss_share_pct": 1.3,
+     "signal_days": 378,
+     "t_stat": -2.14,
+     "avg_days_held": 3.5
+    },
+    "validation": {
+     "trades": 10377,
+     "avg_return_pct": -0.19,
+     "win_rate_pct": 57.5,
+     "big_loss_share_pct": 0.6,
+     "signal_days": 473,
+     "t_stat": -2.23,
+     "avg_days_held": 3.4
+    },
+    "lockbox": {
+     "trades": 8803,
+     "avg_return_pct": -0.108,
+     "win_rate_pct": 58.7,
+     "big_loss_share_pct": 1.5,
+     "signal_days": 448,
+     "t_stat": -0.88,
+     "avg_days_held": 3.4
+    }
+   },
+   "all_years_if_bought_at_signal_close": {
+    "trades": 43432,
+    "avg_return_pct": -0.096,
+    "win_rate_pct": 58.5,
+    "big_loss_share_pct": 1.2,
+    "signal_days": 2132,
+    "t_stat": -2.46,
+    "avg_days_held": 3.4
+   },
+   "accounts": {
+    "train_1": {
+     "trades_taken": 590,
+     "total_return_pct": -23.5,
+     "max_drawdown_pct": -33.0,
+     "avg_return_pct": -0.217
+    },
+    "train_2": {
+     "trades_taken": 638,
+     "total_return_pct": -10.5,
+     "max_drawdown_pct": -33.0,
+     "avg_return_pct": -0.073
+    },
+    "train_3": {
+     "trades_taken": 583,
+     "total_return_pct": -29.2,
+     "max_drawdown_pct": -30.0,
+     "avg_return_pct": -0.283
+    },
+    "validation": {
+     "trades_taken": 702,
+     "total_return_pct": 1.4,
+     "max_drawdown_pct": -16.2,
+     "avg_return_pct": 0.018
+    },
+    "lockbox": {
+     "trades_taken": 673,
+     "total_return_pct": 6.0,
+     "max_drawdown_pct": -22.2,
+     "avg_return_pct": 0.066
+    }
+   },
+   "overlap_with_washout_rules": 0.0,
+   "positive_in_every_period": false,
+   "holds_up": false
+  },
+  "qs_band_ibs": {
+   "label": "밴드 이탈 + IBS",
+   "source": "Quantified Strategies, '5 swing trading strategies' #1",
+   "family": "reversion",
+   "exit": {
+    "kind": "above_prev_high",
+    "parameter": null,
+    "last_day": 7,
+    "stop_atr": null
+   },
+   "all_years": {
+    "trades": 34352,
+    "avg_return_pct": 0.0,
+    "win_rate_pct": 61.3,
+    "big_loss_share_pct": 1.9,
+    "signal_days": 2291,
+    "t_stat": -2.68,
+    "avg_days_held": 4.0
+   },
+   "segments": {
+    "train_1": {
+     "trades": 4992,
+     "avg_return_pct": -0.515,
+     "win_rate_pct": 57.4,
+     "big_loss_share_pct": 2.1,
+     "signal_days": 380,
+     "t_stat": -2.09,
+     "avg_days_held": 4.2
+    },
+    "train_2": {
+     "trades": 5635,
+     "avg_return_pct": 0.306,
+     "win_rate_pct": 64.4,
+     "big_loss_share_pct": 2.1,
+     "signal_days": 386,
+     "t_stat": 1.17,
+     "avg_days_held": 3.7
+    },
+    "train_3": {
+     "trades": 6185,
+     "avg_return_pct": 0.044,
+     "win_rate_pct": 61.5,
+     "big_loss_share_pct": 2.3,
+     "signal_days": 390,
+     "t_stat": 0.05,
+     "avg_days_held": 3.9
+    },
+    "validation": {
+     "trades": 7677,
+     "avg_return_pct": -0.219,
+     "win_rate_pct": 59.2,
+     "big_loss_share_pct": 1.5,
+     "signal_days": 473,
+     "t_stat": -2.35,
+     "avg_days_held": 4.0
+    },
+    "lockbox": {
+     "trades": 7438,
+     "avg_return_pct": 0.329,
+     "win_rate_pct": 63.7,
+     "big_loss_share_pct": 2.4,
+     "signal_days": 446,
+     "t_stat": -1.55,
+     "avg_days_held": 3.9
+    }
+   },
+   "all_years_if_bought_at_signal_close": {
+    "trades": 34352,
+    "avg_return_pct": 0.016,
+    "win_rate_pct": 60.2,
+    "big_loss_share_pct": 2.1,
+    "signal_days": 2291,
+    "t_stat": -1.68,
+    "avg_days_held": 4.0
+   },
+   "accounts": {
+    "train_1": {
+     "trades_taken": 474,
+     "total_return_pct": -22.9,
+     "max_drawdown_pct": -35.9,
+     "avg_return_pct": -0.253
+    },
+    "train_2": {
+     "trades_taken": 503,
+     "total_return_pct": 25.7,
+     "max_drawdown_pct": -22.5,
+     "avg_return_pct": 0.246
+    },
+    "train_3": {
+     "trades_taken": 488,
+     "total_return_pct": -22.2,
+     "max_drawdown_pct": -37.9,
+     "avg_return_pct": -0.24
+    },
+    "validation": {
+     "trades_taken": 588,
+     "total_return_pct": -13.5,
+     "max_drawdown_pct": -23.5,
+     "avg_return_pct": -0.11
+    },
+    "lockbox": {
+     "trades_taken": 577,
+     "total_return_pct": -28.2,
+     "max_drawdown_pct": -33.0,
+     "avg_return_pct": -0.267
+    }
+   },
+   "overlap_with_washout_rules": 0.13,
+   "positive_in_every_period": false,
+   "holds_up": false
+  },
+  "five_day_low": {
+   "label": "5일 저가 이탈",
+   "source": "Quantified Strategies, '5 swing trading strategies' #3",
+   "family": "reversion",
+   "exit": {
+    "kind": "above_prev_high",
+    "parameter": null,
+    "last_day": 7,
+    "stop_atr": null
+   },
+   "all_years": {
+    "trades": 47595,
+    "avg_return_pct": -0.055,
+    "win_rate_pct": 61.5,
+    "big_loss_share_pct": 1.9,
+    "signal_days": 2344,
+    "t_stat": -2.51,
+    "avg_days_held": 3.9
+   },
+   "segments": {
+    "train_1": {
+     "trades": 7113,
+     "avg_return_pct": -0.564,
+     "win_rate_pct": 56.9,
+     "big_loss_share_pct": 2.1,
+     "signal_days": 389,
+     "t_stat": -3.61,
+     "avg_days_held": 4.1
+    },
+    "train_2": {
+     "trades": 8083,
+     "avg_return_pct": 0.366,
+     "win_rate_pct": 65.8,
+     "big_loss_share_pct": 2.0,
+     "signal_days": 398,
+     "t_stat": 1.41,
+     "avg_days_held": 3.6
+    },
+    "train_3": {
+     "trades": 8371,
+     "avg_return_pct": -0.172,
+     "win_rate_pct": 60.5,
+     "big_loss_share_pct": 2.7,
+     "signal_days": 396,
+     "t_stat": -0.26,
+     "avg_days_held": 3.8
+    },
+    "validation": {
+     "trades": 10267,
+     "avg_return_pct": -0.161,
+     "win_rate_pct": 59.7,
+     "big_loss_share_pct": 1.4,
+     "signal_days": 483,
+     "t_stat": -2.07,
+     "avg_days_held": 3.9
+    },
+    "lockbox": {
+     "trades": 10091,
+     "avg_return_pct": 0.158,
+     "win_rate_pct": 63.8,
+     "big_loss_share_pct": 2.0,
+     "signal_days": 455,
+     "t_stat": -1.04,
+     "avg_days_held": 3.8
+    }
+   },
+   "all_years_if_bought_at_signal_close": {
+    "trades": 47595,
+    "avg_return_pct": -0.032,
+    "win_rate_pct": 60.9,
+    "big_loss_share_pct": 2.2,
+    "signal_days": 2344,
+    "t_stat": -1.61,
+    "avg_days_held": 3.9
+   },
+   "accounts": {
+    "train_1": {
+     "trades_taken": 477,
+     "total_return_pct": -19.6,
+     "max_drawdown_pct": -23.8,
+     "avg_return_pct": -0.217
+    },
+    "train_2": {
+     "trades_taken": 532,
+     "total_return_pct": 10.2,
+     "max_drawdown_pct": -20.5,
+     "avg_return_pct": 0.107
+    },
+    "train_3": {
+     "trades_taken": 501,
+     "total_return_pct": -22.6,
+     "max_drawdown_pct": -28.3,
+     "avg_return_pct": -0.24
+    },
+    "validation": {
+     "trades_taken": 623,
+     "total_return_pct": -7.1,
+     "max_drawdown_pct": -28.3,
+     "avg_return_pct": -0.047
+    },
+    "lockbox": {
+     "trades_taken": 599,
+     "total_return_pct": -40.4,
+     "max_drawdown_pct": -41.0,
+     "avg_return_pct": -0.414
+    }
+   },
+   "overlap_with_washout_rules": 0.23,
+   "positive_in_every_period": false,
+   "holds_up": false
+  },
+  "turnaround_tuesday": {
+   "label": "턴어라운드 화요일",
+   "source": "Quantified Strategies, '5 swing trading strategies' #2",
+   "family": "reversion",
+   "exit": {
+    "kind": "above_prev_high",
+    "parameter": null,
+    "last_day": 5,
+    "stop_atr": null
+   },
+   "all_years": {
+    "trades": 36163,
+    "avg_return_pct": -0.195,
+    "win_rate_pct": 59.7,
+    "big_loss_share_pct": 1.8,
+    "signal_days": 464,
+    "t_stat": -2.89,
+    "avg_days_held": 3.2
+   },
+   "segments": {
+    "train_1": {
+     "trades": 5240,
+     "avg_return_pct": -0.558,
+     "win_rate_pct": 56.6,
+     "big_loss_share_pct": 2.0,
+     "signal_days": 77,
+     "t_stat": -2.06,
+     "avg_days_held": 3.3
+    },
+    "train_2": {
+     "trades": 6413,
+     "avg_return_pct": -0.375,
+     "win_rate_pct": 60.5,
+     "big_loss_share_pct": 3.3,
+     "signal_days": 85,
+     "t_stat": -0.78,
+     "avg_days_held": 3.1
+    },
+    "train_3": {
+     "trades": 7120,
+     "avg_return_pct": 0.031,
+     "win_rate_pct": 63.3,
+     "big_loss_share_pct": 1.5,
+     "signal_days": 81,
+     "t_stat": -1.51,
+     "avg_days_held": 3.1
+    },
+    "validation": {
+     "trades": 7255,
+     "avg_return_pct": -0.256,
+     "win_rate_pct": 56.7,
+     "big_loss_share_pct": 0.8,
+     "signal_days": 93,
+     "t_stat": -0.83,
+     "avg_days_held": 3.3
+    },
+    "lockbox": {
+     "trades": 7584,
+     "avg_return_pct": 0.088,
+     "win_rate_pct": 62.9,
+     "big_loss_share_pct": 1.9,
+     "signal_days": 87,
+     "t_stat": -0.42,
+     "avg_days_held": 3.2
+    }
+   },
+   "all_years_if_bought_at_signal_close": {
+    "trades": 36163,
+    "avg_return_pct": 0.006,
+    "win_rate_pct": 60.5,
+    "big_loss_share_pct": 1.8,
+    "signal_days": 464,
+    "t_stat": -1.6,
+    "avg_days_held": 3.2
+   },
+   "accounts": {
+    "train_1": {
+     "trades_taken": 367,
+     "total_return_pct": -15.4,
+     "max_drawdown_pct": -21.9,
+     "avg_return_pct": -0.217
+    },
+    "train_2": {
+     "trades_taken": 399,
+     "total_return_pct": 2.2,
+     "max_drawdown_pct": -21.6,
+     "avg_return_pct": 0.041
+    },
+    "train_3": {
+     "trades_taken": 396,
+     "total_return_pct": -16.7,
+     "max_drawdown_pct": -19.5,
+     "avg_return_pct": -0.215
+    },
+    "validation": {
+     "trades_taken": 449,
+     "total_return_pct": -2.7,
+     "max_drawdown_pct": -14.0,
+     "avg_return_pct": -0.018
+    },
+    "lockbox": {
+     "trades_taken": 417,
+     "total_return_pct": 10.0,
+     "max_drawdown_pct": -14.5,
+     "avg_return_pct": 0.135
+    }
+   },
+   "overlap_with_washout_rules": 0.2,
+   "positive_in_every_period": false,
+   "holds_up": false
+  },
+  "bollinger_below_band": {
+   "label": "볼린저 하단 이탈",
+   "source": "Bollinger %b reversion in an uptrend (Connors / public backtests)",
+   "family": "reversion",
+   "exit": {
+    "kind": "above_sma5",
+    "parameter": null,
+    "last_day": 7,
+    "stop_atr": null
+   },
+   "all_years": {
+    "trades": 8883,
+    "avg_return_pct": -0.019,
+    "win_rate_pct": 59.9,
+    "big_loss_share_pct": 1.8,
+    "signal_days": 1586,
+    "t_stat": -2.32,
+    "avg_days_held": 3.9
+   },
+   "segments": {
+    "train_1": {
+     "trades": 1386,
+     "avg_return_pct": -0.258,
+     "win_rate_pct": 58.1,
+     "big_loss_share_pct": 1.9,
+     "signal_days": 273,
+     "t_stat": -2.6,
+     "avg_days_held": 4.0
+    },
+    "train_2": {
+     "trades": 1654,
+     "avg_return_pct": 0.334,
+     "win_rate_pct": 65.6,
+     "big_loss_share_pct": 1.8,
+     "signal_days": 270,
+     "t_stat": 0.08,
+     "avg_days_held": 3.7
+    },
+    "train_3": {
+     "trades": 1769,
+     "avg_return_pct": -0.063,
+     "win_rate_pct": 59.8,
+     "big_loss_share_pct": 2.0,
+     "signal_days": 276,
+     "t_stat": -1.26,
+     "avg_days_held": 3.9
+    },
+    "validation": {
+     "trades": 2170,
+     "avg_return_pct": -0.144,
+     "win_rate_pct": 58.0,
+     "big_loss_share_pct": 1.3,
+     "signal_days": 375,
+     "t_stat": -0.58,
+     "avg_days_held": 4.0
+    },
+    "lockbox": {
+     "trades": 1767,
+     "avg_return_pct": 0.048,
+     "win_rate_pct": 58.6,
+     "big_loss_share_pct": 2.2,
+     "signal_days": 357,
+     "t_stat": -1.12,
+     "avg_days_held": 4.0
+    }
+   },
+   "all_years_if_bought_at_signal_close": {
+    "trades": 8883,
+    "avg_return_pct": 0.041,
+    "win_rate_pct": 61.1,
+    "big_loss_share_pct": 2.0,
+    "signal_days": 1586,
+    "t_stat": -1.33,
+    "avg_days_held": 3.9
+   },
+   "accounts": {
+    "train_1": {
+     "trades_taken": 339,
+     "total_return_pct": -24.0,
+     "max_drawdown_pct": -28.9,
+     "avg_return_pct": -0.395
+    },
+    "train_2": {
+     "trades_taken": 362,
+     "total_return_pct": 13.9,
+     "max_drawdown_pct": -20.0,
+     "avg_return_pct": 0.193
+    },
+    "train_3": {
+     "trades_taken": 339,
+     "total_return_pct": -23.5,
+     "max_drawdown_pct": -26.5,
+     "avg_return_pct": -0.381
+    },
+    "validation": {
+     "trades_taken": 461,
+     "total_return_pct": -15.3,
+     "max_drawdown_pct": -17.4,
+     "avg_return_pct": -0.169
+    },
+    "lockbox": {
+     "trades_taken": 465,
+     "total_return_pct": -2.9,
+     "max_drawdown_pct": -17.3,
+     "avg_return_pct": -0.017
+    }
+   },
+   "overlap_with_washout_rules": 0.0,
+   "positive_in_every_period": false,
+   "holds_up": false
+  },
+  "weekly_losers": {
+   "label": "주간 낙폭 하위 10%",
+   "source": "Short-term reversal, Lehmann (1990) / Jegadeesh (1990)",
+   "family": "reversion",
+   "exit": {
+    "kind": "time",
+    "parameter": null,
+    "last_day": 5,
+    "stop_atr": null
+   },
+   "all_years": {
+    "trades": 33066,
+    "avg_return_pct": -0.04,
+    "win_rate_pct": 49.1,
+    "big_loss_share_pct": 2.4,
+    "signal_days": 2487,
+    "t_stat": -0.95,
+    "avg_days_held": 5.0
+   },
+   "segments": {
+    "train_1": {
+     "trades": 4939,
+     "avg_return_pct": -0.22,
+     "win_rate_pct": 50.0,
+     "big_loss_share_pct": 2.1,
+     "signal_days": 416,
+     "t_stat": -1.97,
+     "avg_days_held": 5.0
+    },
+    "train_2": {
+     "trades": 5861,
+     "avg_return_pct": 0.36,
+     "win_rate_pct": 51.2,
+     "big_loss_share_pct": 3.2,
+     "signal_days": 442,
+     "t_stat": 0.86,
+     "avg_days_held": 5.0
+    },
+    "train_3": {
+     "trades": 5881,
+     "avg_return_pct": -0.28,
+     "win_rate_pct": 47.6,
+     "big_loss_share_pct": 2.6,
+     "signal_days": 442,
+     "t_stat": -1.22,
+     "avg_days_held": 5.0
+    },
+    "validation": {
+     "trades": 7177,
+     "avg_return_pct": -0.082,
+     "win_rate_pct": 48.5,
+     "big_loss_share_pct": 1.7,
+     "signal_days": 501,
+     "t_stat": -0.89,
+     "avg_days_held": 5.0
+    },
+    "lockbox": {
+     "trades": 6676,
+     "avg_return_pct": 0.052,
+     "win_rate_pct": 49.0,
+     "big_loss_share_pct": 3.0,
+     "signal_days": 462,
+     "t_stat": 0.19,
+     "avg_days_held": 5.0
+    }
+   },
+   "all_years_if_bought_at_signal_close": {
+    "trades": 33066,
+    "avg_return_pct": 0.016,
+    "win_rate_pct": 49.4,
+    "big_loss_share_pct": 2.6,
+    "signal_days": 2487,
+    "t_stat": -0.28,
+    "avg_days_held": 5.0
+   },
+   "accounts": {
+    "train_1": {
+     "trades_taken": 418,
+     "total_return_pct": -14.6,
+     "max_drawdown_pct": -34.1,
+     "avg_return_pct": -0.163
+    },
+    "train_2": {
+     "trades_taken": 445,
+     "total_return_pct": 13.9,
+     "max_drawdown_pct": -41.8,
+     "avg_return_pct": 0.201
+    },
+    "train_3": {
+     "trades_taken": 445,
+     "total_return_pct": -40.6,
+     "max_drawdown_pct": -44.8,
+     "avg_return_pct": -0.557
+    },
+    "validation": {
+     "trades_taken": 505,
+     "total_return_pct": -3.9,
+     "max_drawdown_pct": -21.3,
+     "avg_return_pct": -0.013
+    },
+    "lockbox": {
+     "trades_taken": 465,
+     "total_return_pct": -16.1,
+     "max_drawdown_pct": -38.3,
+     "avg_return_pct": -0.147
+    }
+   },
+   "overlap_with_washout_rules": 0.21,
+   "positive_in_every_period": false,
+   "holds_up": false
+  },
+  "new_high_low_ibs": {
+   "label": "신고가 날 약한 마감",
+   "source": "Quantified Strategies, '5 swing trading strategies' #5",
+   "family": "reversion",
+   "exit": {
+    "kind": "above_prev_high",
+    "parameter": null,
+    "last_day": 5,
+    "stop_atr": null
+   },
+   "all_years": {
+    "trades": 22294,
+    "avg_return_pct": -0.18,
+    "win_rate_pct": 57.4,
+    "big_loss_share_pct": 1.3,
+    "signal_days": 2091,
+    "t_stat": -5.8,
+    "avg_days_held": 3.5
+   },
+   "segments": {
+    "train_1": {
+     "trades": 3298,
+     "avg_return_pct": -0.432,
+     "win_rate_pct": 53.0,
+     "big_loss_share_pct": 0.9,
+     "signal_days": 343,
+     "t_stat": -3.71,
+     "avg_days_held": 3.6
+    },
+    "train_2": {
+     "trades": 4162,
+     "avg_return_pct": 0.123,
+     "win_rate_pct": 62.3,
+     "big_loss_share_pct": 2.0,
+     "signal_days": 366,
+     "t_stat": -0.84,
+     "avg_days_held": 3.4
+    },
+    "train_3": {
+     "trades": 3985,
+     "avg_return_pct": -0.24,
+     "win_rate_pct": 57.9,
+     "big_loss_share_pct": 1.6,
+     "signal_days": 334,
+     "t_stat": -2.04,
+     "avg_days_held": 3.5
+    },
+    "validation": {
+     "trades": 4936,
+     "avg_return_pct": -0.248,
+     "win_rate_pct": 56.8,
+     "big_loss_share_pct": 0.8,
+     "signal_days": 425,
+     "t_stat": -2.84,
+     "avg_days_held": 3.5
+    },
+    "lockbox": {
+     "trades": 4387,
+     "avg_return_pct": -0.13,
+     "win_rate_pct": 57.4,
+     "big_loss_share_pct": 1.7,
+     "signal_days": 422,
+     "t_stat": -3.2,
+     "avg_days_held": 3.5
+    }
+   },
+   "all_years_if_bought_at_signal_close": {
+    "trades": 22294,
+    "avg_return_pct": -0.087,
+    "win_rate_pct": 57.4,
+    "big_loss_share_pct": 1.4,
+    "signal_days": 2091,
+    "t_stat": -4.02,
+    "avg_days_held": 3.5
+   },
+   "accounts": {
+    "train_1": {
+     "trades_taken": 527,
+     "total_return_pct": -31.2,
+     "max_drawdown_pct": -35.1,
+     "avg_return_pct": -0.346
+    },
+    "train_2": {
+     "trades_taken": 562,
+     "total_return_pct": -33.2,
+     "max_drawdown_pct": -38.9,
+     "avg_return_pct": -0.343
+    },
+    "train_3": {
+     "trades_taken": 510,
+     "total_return_pct": -38.6,
+     "max_drawdown_pct": -46.5,
+     "avg_return_pct": -0.466
+    },
+    "validation": {
+     "trades_taken": 646,
+     "total_return_pct": -23.6,
+     "max_drawdown_pct": -31.3,
+     "avg_return_pct": -0.198
+    },
+    "lockbox": {
+     "trades_taken": 627,
+     "total_return_pct": -32.0,
+     "max_drawdown_pct": -38.7,
+     "avg_return_pct": -0.29
+    }
+   },
+   "overlap_with_washout_rules": 0.05,
+   "positive_in_every_period": false,
+   "holds_up": false
+  },
+  "nr7_strong_trend": {
+   "label": "강한 추세 속 좁은 하루",
+   "source": "Quantified Strategies, '5 swing trading strategies' #4 (ADX + NR)",
+   "family": "breakout",
+   "exit": {
+    "kind": "above_prev_high",
+    "parameter": null,
+    "last_day": 5,
+    "stop_atr": null
+   },
+   "all_years": {
+    "trades": 12615,
+    "avg_return_pct": -0.281,
+    "win_rate_pct": 57.4,
+    "big_loss_share_pct": 1.0,
+    "signal_days": 1960,
+    "t_stat": -5.98,
+    "avg_days_held": 2.9
+   },
+   "segments": {
+    "train_1": {
+     "trades": 2266,
+     "avg_return_pct": -0.151,
+     "win_rate_pct": 59.2,
+     "big_loss_share_pct": 0.8,
+     "signal_days": 351,
+     "t_stat": -3.42,
+     "avg_days_held": 2.7
+    },
+    "train_2": {
+     "trades": 2235,
+     "avg_return_pct": -0.368,
+     "win_rate_pct": 56.2,
+     "big_loss_share_pct": 1.4,
+     "signal_days": 349,
+     "t_stat": -1.0,
+     "avg_days_held": 2.9
+    },
+    "train_3": {
+     "trades": 1934,
+     "avg_return_pct": -0.248,
+     "win_rate_pct": 58.5,
+     "big_loss_share_pct": 0.9,
+     "signal_days": 349,
+     "t_stat": -3.13,
+     "avg_days_held": 2.9
+    },
+    "validation": {
+     "trades": 3556,
+     "avg_return_pct": -0.373,
+     "win_rate_pct": 55.4,
+     "big_loss_share_pct": 0.6,
+     "signal_days": 455,
+     "t_stat": -4.77,
+     "avg_days_held": 2.9
+    },
+    "lockbox": {
+     "trades": 2292,
+     "avg_return_pct": -0.217,
+     "win_rate_pct": 59.2,
+     "big_loss_share_pct": 1.4,
+     "signal_days": 412,
+     "t_stat": -1.49,
+     "avg_days_held": 2.9
+    }
+   },
+   "all_years_if_bought_at_signal_close": {
+    "trades": 12615,
+    "avg_return_pct": -0.25,
+    "win_rate_pct": 60.8,
+    "big_loss_share_pct": 1.1,
+    "signal_days": 1960,
+    "t_stat": -4.24,
+    "avg_days_held": 2.9
+   },
+   "accounts": {
+    "train_1": {
+     "trades_taken": 632,
+     "total_return_pct": -34.2,
+     "max_drawdown_pct": -35.0,
+     "avg_return_pct": -0.325
+    },
+    "train_2": {
+     "trades_taken": 616,
+     "total_return_pct": -30.9,
+     "max_drawdown_pct": -41.4,
+     "avg_return_pct": -0.292
+    },
+    "train_3": {
+     "trades_taken": 627,
+     "total_return_pct": -33.2,
+     "max_drawdown_pct": -36.2,
+     "avg_return_pct": -0.313
+    },
+    "validation": {
+     "trades_taken": 826,
+     "total_return_pct": -42.9,
+     "max_drawdown_pct": -44.0,
+     "avg_return_pct": -0.332
+    },
+    "lockbox": {
+     "trades_taken": 719,
+     "total_return_pct": -29.8,
+     "max_drawdown_pct": -37.9,
+     "avg_return_pct": -0.231
+    }
+   },
+   "overlap_with_washout_rules": 0.0,
+   "positive_in_every_period": false,
+   "holds_up": false
+  },
+  "donchian_20": {
+   "label": "20일 신고가 돌파",
+   "source": "Turtle / Donchian channel breakout",
+   "family": "breakout",
+   "exit": {
+    "kind": "time",
+    "parameter": null,
+    "last_day": 10,
+    "stop_atr": 2.0
+   },
+   "all_years": {
+    "trades": 19281,
+    "avg_return_pct": -0.189,
+    "win_rate_pct": 46.7,
+    "big_loss_share_pct": 1.0,
+    "signal_days": 2088,
+    "t_stat": -3.8,
+    "avg_days_held": 8.4
+   },
+   "segments": {
+    "train_1": {
+     "trades": 3130,
+     "avg_return_pct": -0.128,
+     "win_rate_pct": 48.9,
+     "big_loss_share_pct": 0.4,
+     "signal_days": 379,
+     "t_stat": -0.47,
+     "avg_days_held": 8.4
+    },
+    "train_2": {
+     "trades": 3905,
+     "avg_return_pct": -0.072,
+     "win_rate_pct": 47.6,
+     "big_loss_share_pct": 1.2,
+     "signal_days": 392,
+     "t_stat": -0.59,
+     "avg_days_held": 8.4
+    },
+    "train_3": {
+     "trades": 3235,
+     "avg_return_pct": -0.367,
+     "win_rate_pct": 46.1,
+     "big_loss_share_pct": 0.9,
+     "signal_days": 368,
+     "t_stat": -3.39,
+     "avg_days_held": 8.4
+    },
+    "validation": {
+     "trades": 4568,
+     "avg_return_pct": -0.202,
+     "win_rate_pct": 45.1,
+     "big_loss_share_pct": 0.5,
+     "signal_days": 469,
+     "t_stat": -0.71,
+     "avg_days_held": 8.4
+    },
+    "lockbox": {
+     "trades": 3945,
+     "avg_return_pct": -0.305,
+     "win_rate_pct": 44.8,
+     "big_loss_share_pct": 2.2,
+     "signal_days": 436,
+     "t_stat": -3.64,
+     "avg_days_held": 8.2
+    }
+   },
+   "all_years_if_bought_at_signal_close": {
+    "trades": 19281,
+    "avg_return_pct": -0.14,
+    "win_rate_pct": 47.1,
+    "big_loss_share_pct": 1.0,
+    "signal_days": 2088,
+    "t_stat": -3.08,
+    "avg_days_held": 8.3
+   },
+   "accounts": {
+    "train_1": {
+     "trades_taken": 234,
+     "total_return_pct": -14.5,
+     "max_drawdown_pct": -24.8,
+     "avg_return_pct": -0.316
+    },
+    "train_2": {
+     "trades_taken": 247,
+     "total_return_pct": -15.4,
+     "max_drawdown_pct": -30.2,
+     "avg_return_pct": -0.308
+    },
+    "train_3": {
+     "trades_taken": 243,
+     "total_return_pct": -4.2,
+     "max_drawdown_pct": -28.4,
+     "avg_return_pct": -0.059
+    },
+    "validation": {
+     "trades_taken": 286,
+     "total_return_pct": 7.6,
+     "max_drawdown_pct": -20.2,
+     "avg_return_pct": 0.152
+    },
+    "lockbox": {
+     "trades_taken": 283,
+     "total_return_pct": -22.2,
+     "max_drawdown_pct": -29.5,
+     "avg_return_pct": -0.378
+    }
+   },
+   "overlap_with_washout_rules": 0.0,
+   "positive_in_every_period": false,
+   "holds_up": false
+  },
+  "donchian_55": {
+   "label": "55일 신고가 돌파",
+   "source": "Turtle / Donchian channel breakout",
+   "family": "breakout",
+   "exit": {
+    "kind": "time",
+    "parameter": null,
+    "last_day": 10,
+    "stop_atr": 2.0
+   },
+   "all_years": {
+    "trades": 14239,
+    "avg_return_pct": -0.299,
+    "win_rate_pct": 46.0,
+    "big_loss_share_pct": 1.0,
+    "signal_days": 1992,
+    "t_stat": -4.85,
+    "avg_days_held": 8.4
+   },
+   "segments": {
+    "train_1": {
+     "trades": 2327,
+     "avg_return_pct": -0.15,
+     "win_rate_pct": 48.9,
+     "big_loss_share_pct": 0.4,
+     "signal_days": 357,
+     "t_stat": -2.05,
+     "avg_days_held": 8.4
+    },
+    "train_2": {
+     "trades": 2994,
+     "avg_return_pct": -0.296,
+     "win_rate_pct": 45.9,
+     "big_loss_share_pct": 1.3,
+     "signal_days": 375,
+     "t_stat": -1.89,
+     "avg_days_held": 8.3
+    },
+    "train_3": {
+     "trades": 2347,
+     "avg_return_pct": -0.635,
+     "win_rate_pct": 44.1,
+     "big_loss_share_pct": 0.6,
+     "signal_days": 351,
+     "t_stat": -3.94,
+     "avg_days_held": 8.4
+    },
+    "validation": {
+     "trades": 3422,
+     "avg_return_pct": -0.079,
+     "win_rate_pct": 46.7,
+     "big_loss_share_pct": 0.5,
+     "signal_days": 446,
+     "t_stat": -0.43,
+     "avg_days_held": 8.5
+    },
+    "lockbox": {
+     "trades": 2766,
+     "avg_return_pct": -0.481,
+     "win_rate_pct": 43.6,
+     "big_loss_share_pct": 2.3,
+     "signal_days": 419,
+     "t_stat": -2.79,
+     "avg_days_held": 8.2
+    }
+   },
+   "all_years_if_bought_at_signal_close": {
+    "trades": 14239,
+    "avg_return_pct": -0.241,
+    "win_rate_pct": 46.4,
+    "big_loss_share_pct": 1.0,
+    "signal_days": 1992,
+    "t_stat": -4.01,
+    "avg_days_held": 8.3
+   },
+   "accounts": {
+    "train_1": {
+     "trades_taken": 230,
+     "total_return_pct": -18.0,
+     "max_drawdown_pct": -30.8,
+     "avg_return_pct": -0.415
+    },
+    "train_2": {
+     "trades_taken": 246,
+     "total_return_pct": 6.1,
+     "max_drawdown_pct": -21.4,
+     "avg_return_pct": 0.154
+    },
+    "train_3": {
+     "trades_taken": 247,
+     "total_return_pct": -33.1,
+     "max_drawdown_pct": -37.9,
+     "avg_return_pct": -0.781
+    },
+    "validation": {
+     "trades_taken": 276,
+     "total_return_pct": 18.5,
+     "max_drawdown_pct": -12.8,
+     "avg_return_pct": 0.334
+    },
+    "lockbox": {
+     "trades_taken": 283,
+     "total_return_pct": -38.9,
+     "max_drawdown_pct": -41.3,
+     "avg_return_pct": -0.82
+    }
+   },
+   "overlap_with_washout_rules": 0.0,
+   "positive_in_every_period": false,
+   "holds_up": false
+  },
+  "trend_template": {
+   "label": "추세 템플릿 첫 통과",
+   "source": "Mark Minervini, 'Trade Like a Stock Market Wizard'",
+   "family": "momentum",
+   "exit": {
+    "kind": "time",
+    "parameter": null,
+    "last_day": 10,
+    "stop_atr": 2.0
+   },
+   "all_years": {
+    "trades": 6247,
+    "avg_return_pct": 0.013,
+    "win_rate_pct": 47.8,
+    "big_loss_share_pct": 1.3,
+    "signal_days": 1956,
+    "t_stat": -0.86,
+    "avg_days_held": 8.5
+   },
+   "segments": {
+    "train_1": {
+     "trades": 962,
+     "avg_return_pct": 0.068,
+     "win_rate_pct": 51.2,
+     "big_loss_share_pct": 0.2,
+     "signal_days": 331,
+     "t_stat": -0.63,
+     "avg_days_held": 8.6
+    },
+    "train_2": {
+     "trades": 1270,
+     "avg_return_pct": 0.201,
+     "win_rate_pct": 48.1,
+     "big_loss_share_pct": 1.4,
+     "signal_days": 395,
+     "t_stat": 0.27,
+     "avg_days_held": 8.6
+    },
+    "train_3": {
+     "trades": 1141,
+     "avg_return_pct": -0.402,
+     "win_rate_pct": 47.1,
+     "big_loss_share_pct": 1.2,
+     "signal_days": 359,
+     "t_stat": -2.72,
+     "avg_days_held": 8.4
+    },
+    "validation": {
+     "trades": 1535,
+     "avg_return_pct": 0.18,
+     "win_rate_pct": 48.3,
+     "big_loss_share_pct": 0.6,
+     "signal_days": 458,
+     "t_stat": 1.44,
+     "avg_days_held": 8.5
+    },
+    "lockbox": {
+     "trades": 1339,
+     "avg_return_pct": -0.041,
+     "win_rate_pct": 44.9,
+     "big_loss_share_pct": 2.7,
+     "signal_days": 413,
+     "t_stat": -0.65,
+     "avg_days_held": 8.4
+    }
+   },
+   "all_years_if_bought_at_signal_close": {
+    "trades": 6247,
+    "avg_return_pct": 0.056,
+    "win_rate_pct": 48.1,
+    "big_loss_share_pct": 1.3,
+    "signal_days": 1956,
+    "t_stat": -0.22,
+    "avg_days_held": 8.5
+   },
+   "accounts": {
+    "train_1": {
+     "trades_taken": 226,
+     "total_return_pct": -4.4,
+     "max_drawdown_pct": -22.9,
+     "avg_return_pct": -0.08
+    },
+    "train_2": {
+     "trades_taken": 245,
+     "total_return_pct": 23.8,
+     "max_drawdown_pct": -19.1,
+     "avg_return_pct": 0.472
+    },
+    "train_3": {
+     "trades_taken": 249,
+     "total_return_pct": -15.6,
+     "max_drawdown_pct": -34.5,
+     "avg_return_pct": -0.303
+    },
+    "validation": {
+     "trades_taken": 285,
+     "total_return_pct": 26.9,
+     "max_drawdown_pct": -15.0,
+     "avg_return_pct": 0.445
+    },
+    "lockbox": {
+     "trades_taken": 259,
+     "total_return_pct": -3.9,
+     "max_drawdown_pct": -22.6,
+     "avg_return_pct": -0.037
+    }
+   },
+   "overlap_with_washout_rules": 0.0,
+   "positive_in_every_period": false,
+   "holds_up": false
+  },
+  "vcp_breakout": {
+   "label": "변동성 수축 뒤 돌파(VCP)",
+   "source": "Minervini VCP screeners on GitHub",
+   "family": "breakout",
+   "exit": {
+    "kind": "time",
+    "parameter": null,
+    "last_day": 10,
+    "stop_atr": 2.0
+   },
+   "all_years": {
+    "trades": 1431,
+    "avg_return_pct": -0.181,
+    "win_rate_pct": 45.5,
+    "big_loss_share_pct": 1.3,
+    "signal_days": 790,
+    "t_stat": -0.83,
+    "avg_days_held": 8.2
+   },
+   "segments": {
+    "train_1": {
+     "trades": 212,
+     "avg_return_pct": 0.211,
+     "win_rate_pct": 49.1,
+     "big_loss_share_pct": 0.5,
+     "signal_days": 134,
+     "t_stat": 0.74,
+     "avg_days_held": 8.2
+    },
+    "train_2": {
+     "trades": 329,
+     "avg_return_pct": -0.6,
+     "win_rate_pct": 39.2,
+     "big_loss_share_pct": 0.6,
+     "signal_days": 157,
+     "t_stat": -0.48,
+     "avg_days_held": 7.9
+    },
+    "train_3": {
+     "trades": 199,
+     "avg_return_pct": -0.156,
+     "win_rate_pct": 45.7,
+     "big_loss_share_pct": 0.0,
+     "signal_days": 116,
+     "t_stat": -0.62,
+     "avg_days_held": 8.1
+    },
+    "validation": {
+     "trades": 404,
+     "avg_return_pct": 0.009,
+     "win_rate_pct": 47.5,
+     "big_loss_share_pct": 0.5,
+     "signal_days": 217,
+     "t_stat": 0.17,
+     "avg_days_held": 8.6
+    },
+    "lockbox": {
+     "trades": 287,
+     "avg_return_pct": -0.275,
+     "win_rate_pct": 47.0,
+     "big_loss_share_pct": 4.9,
+     "signal_days": 166,
+     "t_stat": -1.19,
+     "avg_days_held": 8.1
+    }
+   },
+   "all_years_if_bought_at_signal_close": {
+    "trades": 1431,
+    "avg_return_pct": -0.164,
+    "win_rate_pct": 45.2,
+    "big_loss_share_pct": 1.2,
+    "signal_days": 790,
+    "t_stat": -0.63,
+    "avg_days_held": 8.1
+   },
+   "accounts": {
+    "train_1": {
+     "trades_taken": 133,
+     "total_return_pct": 5.9,
+     "max_drawdown_pct": -12.7,
+     "avg_return_pct": 0.234
+    },
+    "train_2": {
+     "trades_taken": 144,
+     "total_return_pct": -7.8,
+     "max_drawdown_pct": -11.6,
+     "avg_return_pct": -0.255
+    },
+    "train_3": {
+     "trades_taken": 120,
+     "total_return_pct": -3.8,
+     "max_drawdown_pct": -17.5,
+     "avg_return_pct": -0.128
+    },
+    "validation": {
+     "trades_taken": 202,
+     "total_return_pct": 25.5,
+     "max_drawdown_pct": -8.9,
+     "avg_return_pct": 0.594
+    },
+    "lockbox": {
+     "trades_taken": 171,
+     "total_return_pct": -30.2,
+     "max_drawdown_pct": -31.1,
+     "avg_return_pct": -1.012
+    }
+   },
+   "overlap_with_washout_rules": 0.0,
+   "positive_in_every_period": false,
+   "holds_up": false
+  },
+  "qullamaggie_breakout": {
+   "label": "급등 뒤 좁은 횡보 돌파",
+   "source": "Qullamaggie breakout scanners (public blog rules)",
+   "family": "breakout",
+   "exit": {
+    "kind": "time",
+    "parameter": null,
+    "last_day": 10,
+    "stop_atr": 2.0
+   },
+   "all_years": {
+    "trades": 144,
+    "avg_return_pct": -0.789,
+    "win_rate_pct": 46.5,
+    "big_loss_share_pct": 6.2,
+    "signal_days": 120,
+    "t_stat": -0.85,
+    "avg_days_held": 8.3
+   },
+   "segments": {
+    "train_1": {
+     "trades": 19,
+     "avg_return_pct": -2.023,
+     "win_rate_pct": 36.8,
+     "big_loss_share_pct": 0.0,
+     "signal_days": 18,
+     "t_stat": -1.48,
+     "avg_days_held": 7.2
+    },
+    "train_2": {
+     "trades": 51,
+     "avg_return_pct": -1.264,
+     "win_rate_pct": 49.0,
+     "big_loss_share_pct": 7.8,
+     "signal_days": 36,
+     "t_stat": -0.37,
+     "avg_days_held": 8.4
+    },
+    "train_3": {
+     "trades": 21,
+     "avg_return_pct": -0.003,
+     "win_rate_pct": 47.6,
+     "big_loss_share_pct": 4.8,
+     "signal_days": 18,
+     "t_stat": -0.14,
+     "avg_days_held": 9.0
+    },
+    "validation": {
+     "trades": 26,
+     "avg_return_pct": -1.176,
+     "win_rate_pct": 42.3,
+     "big_loss_share_pct": 11.5,
+     "signal_days": 23,
+     "t_stat": -1.04,
+     "avg_days_held": 8.2
+    },
+    "lockbox": {
+     "trades": 26,
+     "avg_return_pct": 0.788,
+     "win_rate_pct": 53.8,
+     "big_loss_share_pct": 3.8,
+     "signal_days": 24,
+     "t_stat": 0.58,
+     "avg_days_held": 8.3
+    }
+   },
+   "all_years_if_bought_at_signal_close": {
+    "trades": 144,
+    "avg_return_pct": -0.773,
+    "win_rate_pct": 43.1,
+    "big_loss_share_pct": 5.6,
+    "signal_days": 120,
+    "t_stat": -0.85,
+    "avg_days_held": 8.0
+   },
+   "accounts": {
+    "train_1": {
+     "trades_taken": 19,
+     "total_return_pct": -7.5,
+     "max_drawdown_pct": -8.1,
+     "avg_return_pct": -2.023
+    },
+    "train_2": {
+     "trades_taken": 44,
+     "total_return_pct": -9.5,
+     "max_drawdown_pct": -14.8,
+     "avg_return_pct": -1.085
+    },
+    "train_3": {
+     "trades_taken": 21,
+     "total_return_pct": -0.2,
+     "max_drawdown_pct": -4.8,
+     "avg_return_pct": -0.003
+    },
+    "validation": {
+     "trades_taken": 26,
+     "total_return_pct": -6.1,
+     "max_drawdown_pct": -9.6,
+     "avg_return_pct": -1.176
+    },
+    "lockbox": {
+     "trades_taken": 26,
+     "total_return_pct": 3.8,
+     "max_drawdown_pct": -3.6,
+     "avg_return_pct": 0.788
+    }
+   },
+   "overlap_with_washout_rules": 0.0,
+   "positive_in_every_period": false,
+   "holds_up": false
+  },
+  "power_gap": {
+   "label": "거래량 실린 갭 상승",
+   "source": "Episodic pivot / power earnings gap",
+   "family": "momentum",
+   "exit": {
+    "kind": "time",
+    "parameter": null,
+    "last_day": 10,
+    "stop_atr": 2.0
+   },
+   "all_years": {
+    "trades": 1150,
+    "avg_return_pct": -0.306,
+    "win_rate_pct": 47.7,
+    "big_loss_share_pct": 6.5,
+    "signal_days": 667,
+    "t_stat": 0.05,
+    "avg_days_held": 8.6
+   },
+   "segments": {
+    "train_1": {
+     "trades": 142,
+     "avg_return_pct": 0.54,
+     "win_rate_pct": 53.5,
+     "big_loss_share_pct": 0.7,
+     "signal_days": 102,
+     "t_stat": 0.51,
+     "avg_days_held": 8.9
+    },
+    "train_2": {
+     "trades": 249,
+     "avg_return_pct": -1.858,
+     "win_rate_pct": 44.2,
+     "big_loss_share_pct": 15.3,
+     "signal_days": 113,
+     "t_stat": -2.0,
+     "avg_days_held": 8.1
+    },
+    "train_3": {
+     "trades": 126,
+     "avg_return_pct": -0.333,
+     "win_rate_pct": 50.8,
+     "big_loss_share_pct": 7.9,
+     "signal_days": 83,
+     "t_stat": -0.12,
+     "avg_days_held": 8.5
+    },
+    "validation": {
+     "trades": 293,
+     "avg_return_pct": -0.189,
+     "win_rate_pct": 47.4,
+     "big_loss_share_pct": 2.4,
+     "signal_days": 163,
+     "t_stat": 0.69,
+     "avg_days_held": 8.6
+    },
+    "lockbox": {
+     "trades": 278,
+     "avg_return_pct": 0.485,
+     "win_rate_pct": 47.5,
+     "big_loss_share_pct": 6.5,
+     "signal_days": 155,
+     "t_stat": 0.88,
+     "avg_days_held": 8.7
+    }
+   },
+   "all_years_if_bought_at_signal_close": {
+    "trades": 1150,
+    "avg_return_pct": -0.236,
+    "win_rate_pct": 47.9,
+    "big_loss_share_pct": 7.0,
+    "signal_days": 667,
+    "t_stat": 0.35,
+    "avg_days_held": 8.4
+   },
+   "accounts": {
+    "train_1": {
+     "trades_taken": 109,
+     "total_return_pct": 10.8,
+     "max_drawdown_pct": -10.8,
+     "avg_return_pct": 0.501
+    },
+    "train_2": {
+     "trades_taken": 129,
+     "total_return_pct": -56.7,
+     "max_drawdown_pct": -61.2,
+     "avg_return_pct": -3.133
+    },
+    "train_3": {
+     "trades_taken": 85,
+     "total_return_pct": -1.3,
+     "max_drawdown_pct": -16.8,
+     "avg_return_pct": -0.033
+    },
+    "validation": {
+     "trades_taken": 160,
+     "total_return_pct": 11.9,
+     "max_drawdown_pct": -13.4,
+     "avg_return_pct": 0.41
+    },
+    "lockbox": {
+     "trades_taken": 157,
+     "total_return_pct": 17.8,
+     "max_drawdown_pct": -19.7,
+     "avg_return_pct": 0.599
+    }
+   },
+   "overlap_with_washout_rules": 0.0,
+   "positive_in_every_period": false,
+   "holds_up": false
+  },
+  "ema20_pullback": {
+   "label": "상승 추세 20일선 눌림",
+   "source": "Trend pullback to EMA20 (swing-trading-strategies reference)",
+   "family": "momentum",
+   "exit": {
+    "kind": "time",
+    "parameter": null,
+    "last_day": 7,
+    "stop_atr": 2.0
+   },
+   "all_years": {
+    "trades": 6222,
+    "avg_return_pct": -0.258,
+    "win_rate_pct": 47.6,
+    "big_loss_share_pct": 2.1,
+    "signal_days": 1728,
+    "t_stat": -3.51,
+    "avg_days_held": 6.2
+   },
+   "segments": {
+    "train_1": {
+     "trades": 936,
+     "avg_return_pct": -0.049,
+     "win_rate_pct": 52.9,
+     "big_loss_share_pct": 0.5,
+     "signal_days": 279,
+     "t_stat": -1.57,
+     "avg_days_held": 6.1
+    },
+    "train_2": {
+     "trades": 1114,
+     "avg_return_pct": -0.044,
+     "win_rate_pct": 49.8,
+     "big_loss_share_pct": 3.4,
+     "signal_days": 283,
+     "t_stat": -1.38,
+     "avg_days_held": 6.4
+    },
+    "train_3": {
+     "trades": 1164,
+     "avg_return_pct": -0.99,
+     "win_rate_pct": 39.9,
+     "big_loss_share_pct": 1.9,
+     "signal_days": 304,
+     "t_stat": -3.72,
+     "avg_days_held": 6.0
+    },
+    "validation": {
+     "trades": 1302,
+     "avg_return_pct": -0.013,
+     "win_rate_pct": 49.2,
+     "big_loss_share_pct": 0.9,
+     "signal_days": 360,
+     "t_stat": 0.09,
+     "avg_days_held": 6.3
+    },
+    "lockbox": {
+     "trades": 1344,
+     "avg_return_pct": -0.287,
+     "win_rate_pct": 46.7,
+     "big_loss_share_pct": 4.0,
+     "signal_days": 373,
+     "t_stat": -1.26,
+     "avg_days_held": 6.3
+    }
+   },
+   "all_years_if_bought_at_signal_close": {
+    "trades": 6222,
+    "avg_return_pct": -0.166,
+    "win_rate_pct": 47.9,
+    "big_loss_share_pct": 1.9,
+    "signal_days": 1728,
+    "t_stat": -3.01,
+    "avg_days_held": 6.2
+   },
+   "accounts": {
+    "train_1": {
+     "trades_taken": 288,
+     "total_return_pct": -26.1,
+     "max_drawdown_pct": -32.8,
+     "avg_return_pct": -0.51
+    },
+    "train_2": {
+     "trades_taken": 283,
+     "total_return_pct": -35.8,
+     "max_drawdown_pct": -41.9,
+     "avg_return_pct": -0.749
+    },
+    "train_3": {
+     "trades_taken": 319,
+     "total_return_pct": -38.9,
+     "max_drawdown_pct": -48.0,
+     "avg_return_pct": -0.741
+    },
+    "validation": {
+     "trades_taken": 348,
+     "total_return_pct": 20.4,
+     "max_drawdown_pct": -26.1,
+     "avg_return_pct": 0.293
+    },
+    "lockbox": {
+     "trades_taken": 335,
+     "total_return_pct": -21.9,
+     "max_drawdown_pct": -33.6,
+     "avg_return_pct": -0.325
+    }
+   },
+   "overlap_with_washout_rules": 0.0,
+   "positive_in_every_period": false,
+   "holds_up": false
+  },
+  "adx_trend": {
+   "label": "ADX 추세 시작",
+   "source": "ADX trend momentum (Wilder)",
+   "family": "momentum",
+   "exit": {
+    "kind": "time",
+    "parameter": null,
+    "last_day": 10,
+    "stop_atr": 2.0
+   },
+   "all_years": {
+    "trades": 11106,
+    "avg_return_pct": -0.183,
+    "win_rate_pct": 46.9,
+    "big_loss_share_pct": 1.2,
+    "signal_days": 2108,
+    "t_stat": -2.38,
+    "avg_days_held": 8.5
+   },
+   "segments": {
+    "train_1": {
+     "trades": 1662,
+     "avg_return_pct": -0.023,
+     "win_rate_pct": 49.4,
+     "big_loss_share_pct": 0.1,
+     "signal_days": 345,
+     "t_stat": -1.2,
+     "avg_days_held": 8.6
+    },
+    "train_2": {
+     "trades": 2048,
+     "avg_return_pct": -0.513,
+     "win_rate_pct": 45.8,
+     "big_loss_share_pct": 2.4,
+     "signal_days": 366,
+     "t_stat": -0.6,
+     "avg_days_held": 8.4
+    },
+    "train_3": {
+     "trades": 1615,
+     "avg_return_pct": -0.181,
+     "win_rate_pct": 47.5,
+     "big_loss_share_pct": 0.7,
+     "signal_days": 349,
+     "t_stat": -1.84,
+     "avg_days_held": 8.5
+    },
+    "validation": {
+     "trades": 2568,
+     "avg_return_pct": 0.066,
+     "win_rate_pct": 48.2,
+     "big_loss_share_pct": 0.8,
+     "signal_days": 445,
+     "t_stat": -0.47,
+     "avg_days_held": 8.5
+    },
+    "lockbox": {
+     "trades": 2192,
+     "avg_return_pct": -0.305,
+     "win_rate_pct": 44.0,
+     "big_loss_share_pct": 2.1,
+     "signal_days": 416,
+     "t_stat": -1.15,
+     "avg_days_held": 8.4
+    }
+   },
+   "all_years_if_bought_at_signal_close": {
+    "trades": 11106,
+    "avg_return_pct": -0.179,
+    "win_rate_pct": 46.9,
+    "big_loss_share_pct": 1.1,
+    "signal_days": 2108,
+    "t_stat": -2.39,
+    "avg_days_held": 8.4
+   },
+   "accounts": {
+    "train_1": {
+     "trades_taken": 225,
+     "total_return_pct": -5.7,
+     "max_drawdown_pct": -24.1,
+     "avg_return_pct": -0.113
+    },
+    "train_2": {
+     "trades_taken": 232,
+     "total_return_pct": -11.7,
+     "max_drawdown_pct": -21.1,
+     "avg_return_pct": -0.239
+    },
+    "train_3": {
+     "trades_taken": 235,
+     "total_return_pct": -22.8,
+     "max_drawdown_pct": -40.5,
+     "avg_return_pct": -0.515
+    },
+    "validation": {
+     "trades_taken": 274,
+     "total_return_pct": 15.4,
+     "max_drawdown_pct": -13.7,
+     "avg_return_pct": 0.291
+    },
+    "lockbox": {
+     "trades_taken": 262,
+     "total_return_pct": 18.6,
+     "max_drawdown_pct": -25.4,
+     "avg_return_pct": 0.391
+    }
+   },
+   "overlap_with_washout_rules": 0.0,
+   "positive_in_every_period": false,
+   "holds_up": false
+  },
+  "ma_stack": {
+   "label": "이동평균 정배열",
+   "source": "MA stack confluence (swing-trading-strategies reference)",
+   "family": "momentum",
+   "exit": {
+    "kind": "time",
+    "parameter": null,
+    "last_day": 10,
+    "stop_atr": 2.0
+   },
+   "all_years": {
+    "trades": 10786,
+    "avg_return_pct": -0.038,
+    "win_rate_pct": 47.6,
+    "big_loss_share_pct": 1.1,
+    "signal_days": 2125,
+    "t_stat": -1.35,
+    "avg_days_held": 8.5
+   },
+   "segments": {
+    "train_1": {
+     "trades": 1582,
+     "avg_return_pct": -0.152,
+     "win_rate_pct": 49.4,
+     "big_loss_share_pct": 0.4,
+     "signal_days": 373,
+     "t_stat": -0.76,
+     "avg_days_held": 8.5
+    },
+    "train_2": {
+     "trades": 2115,
+     "avg_return_pct": 0.221,
+     "win_rate_pct": 48.5,
+     "big_loss_share_pct": 0.9,
+     "signal_days": 404,
+     "t_stat": 0.83,
+     "avg_days_held": 8.6
+    },
+    "train_3": {
+     "trades": 1817,
+     "avg_return_pct": -0.296,
+     "win_rate_pct": 46.1,
+     "big_loss_share_pct": 0.6,
+     "signal_days": 391,
+     "t_stat": -2.25,
+     "avg_days_held": 8.5
+    },
+    "validation": {
+     "trades": 2534,
+     "avg_return_pct": -0.106,
+     "win_rate_pct": 46.8,
+     "big_loss_share_pct": 0.8,
+     "signal_days": 475,
+     "t_stat": -0.72,
+     "avg_days_held": 8.5
+    },
+    "lockbox": {
+     "trades": 2380,
+     "avg_return_pct": -0.035,
+     "win_rate_pct": 46.1,
+     "big_loss_share_pct": 2.5,
+     "signal_days": 440,
+     "t_stat": -0.71,
+     "avg_days_held": 8.5
+    }
+   },
+   "all_years_if_bought_at_signal_close": {
+    "trades": 10786,
+    "avg_return_pct": 0.024,
+    "win_rate_pct": 48.1,
+    "big_loss_share_pct": 1.1,
+    "signal_days": 2125,
+    "t_stat": -0.85,
+    "avg_days_held": 8.5
+   },
+   "accounts": {
+    "train_1": {
+     "trades_taken": 242,
+     "total_return_pct": -9.4,
+     "max_drawdown_pct": -25.5,
+     "avg_return_pct": -0.186
+    },
+    "train_2": {
+     "trades_taken": 245,
+     "total_return_pct": 10.3,
+     "max_drawdown_pct": -22.4,
+     "avg_return_pct": 0.238
+    },
+    "train_3": {
+     "trades_taken": 249,
+     "total_return_pct": -16.9,
+     "max_drawdown_pct": -27.7,
+     "avg_return_pct": -0.335
+    },
+    "validation": {
+     "trades_taken": 294,
+     "total_return_pct": -4.4,
+     "max_drawdown_pct": -24.0,
+     "avg_return_pct": -0.043
+    },
+    "lockbox": {
+     "trades_taken": 270,
+     "total_return_pct": -14.1,
+     "max_drawdown_pct": -25.3,
+     "avg_return_pct": -0.227
+    }
+   },
+   "overlap_with_washout_rules": 0.0,
+   "positive_in_every_period": false,
+   "holds_up": false
+  }
+ },
+ "holding_up": [],
+ "limitations": [
+  "공개된 설명을 일봉 지표로 옮긴 것이라 원작자의 재량 판단(차트 모양, 뉴스, 실적)은 빠져 있습니다.",
+  "원래 규칙은 대개 신호일 종가에 삽니다. 여기서는 다음 날 시가에 사므로 원문 성적보다 낮게 나올 수 있습니다.",
+  "실적 발표일 자료가 없어 실적 갭은 \"거래량이 실린 큰 갭\"으로 대신했습니다.",
+  "가격이 남아 있지 않은 상장폐지 회사는 빠져 있습니다."
+ ]
+}

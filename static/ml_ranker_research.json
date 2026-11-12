@@ -1,0 +1,173 @@
+{
+ "version": 1,
+ "generated_at": "2026-11-12T03:38:33+00:00",
+ "status": "RESEARCH_ONLY",
+ "production_rules_mutated": false,
+ "frozen_rules_mutated": false,
+ "recipe": "LightGBM cross-sectional ranker (Qlib benchmark style)",
+ "hold_days": 5,
+ "top_n_per_day": 5,
+ "features": 82,
+ "params": {
+  "objective": "regression",
+  "learning_rate": 0.05,
+  "num_leaves": 31,
+  "min_data_in_leaf": 500,
+  "feature_fraction": 0.7,
+  "bagging_fraction": 0.7,
+  "bagging_freq": 1,
+  "lambda_l2": 10.0,
+  "verbose": -1,
+  "seed": 7,
+  "num_threads": 4
+ },
+ "rounds": 300,
+ "embargo_days": 10,
+ "pass_rule": "두 구간 모두 상위 종목의 비용 차감 평균이 플러스이고, 같은 날 평균 종목 대비 초과수익의 t값이 2 이상",
+ "periods": {
+  "validation": {
+   "train": [
+    "2017-11-01",
+    "2022-12-15"
+   ],
+   "train_rows": 555539,
+   "test": [
+    "2023-01-01",
+    "2024-12-31"
+   ],
+   "days": 502,
+   "picks": 2510,
+   "top_avg_return_pct": 0.083,
+   "top_win_rate_pct": 49.3,
+   "top_big_loss_share_pct": 3.9,
+   "top_t_stat": 0.43,
+   "excess_over_average_member_pct": 0.231,
+   "excess_t_stat": 1.5,
+   "rank_ic": 0.001,
+   "rank_ic_t_stat": 0.18,
+   "account_5_slots": {
+    "trades_taken": 505,
+    "total_return_pct": 45.0,
+    "max_drawdown_pct": -28.2,
+    "avg_return_pct": 0.415
+   },
+   "most_used_features": [
+    {
+     "feature": "spy_ret60",
+     "gain_share_pct": 5.8
+    },
+    {
+     "feature": "vix",
+     "gain_share_pct": 5.2
+    },
+    {
+     "feature": "spy_dist_sma200",
+     "gain_share_pct": 5.2
+    },
+    {
+     "feature": "vix_vs_sma20",
+     "gain_share_pct": 4.5
+    },
+    {
+     "feature": "breadth_sma50",
+     "gain_share_pct": 4.3
+    },
+    {
+     "feature": "breadth_change5",
+     "gain_share_pct": 4.1
+    },
+    {
+     "feature": "breadth_sma200",
+     "gain_share_pct": 3.7
+    },
+    {
+     "feature": "drawdown_252d",
+     "gain_share_pct": 3.4
+    },
+    {
+     "feature": "spy_ret20",
+     "gain_share_pct": 3.2
+    },
+    {
+     "feature": "spy_ret5",
+     "gain_share_pct": 2.9
+    }
+   ]
+  },
+  "lockbox": {
+   "train": [
+    "2017-11-01",
+    "2024-12-16"
+   ],
+   "train_rows": 793457,
+   "test": [
+    "2025-01-01",
+    "2099-12-31"
+   ],
+   "days": 462,
+   "picks": 2310,
+   "top_avg_return_pct": 0.215,
+   "top_win_rate_pct": 50.8,
+   "top_big_loss_share_pct": 8.8,
+   "top_t_stat": 0.87,
+   "excess_over_average_member_pct": 0.342,
+   "excess_t_stat": 1.56,
+   "rank_ic": 0.0221,
+   "rank_ic_t_stat": 3.03,
+   "account_5_slots": {
+    "trades_taken": 465,
+    "total_return_pct": 14.9,
+    "max_drawdown_pct": -28.6,
+    "avg_return_pct": 0.208
+   },
+   "most_used_features": [
+    {
+     "feature": "vix",
+     "gain_share_pct": 6.2
+    },
+    {
+     "feature": "spy_ret60",
+     "gain_share_pct": 5.8
+    },
+    {
+     "feature": "vix_vs_sma20",
+     "gain_share_pct": 5.3
+    },
+    {
+     "feature": "spy_dist_sma200",
+     "gain_share_pct": 4.5
+    },
+    {
+     "feature": "breadth_sma200",
+     "gain_share_pct": 4.3
+    },
+    {
+     "feature": "breadth_change5",
+     "gain_share_pct": 4.1
+    },
+    {
+     "feature": "spy_dist_sma20",
+     "gain_share_pct": 3.6
+    },
+    {
+     "feature": "breadth_sma50",
+     "gain_share_pct": 3.5
+    },
+    {
+     "feature": "spy_ret5",
+     "gain_share_pct": 3.4
+    },
+    {
+     "feature": "spy_ret20",
+     "gain_share_pct": 3.3
+    }
+   ]
+  }
+ },
+ "passes": false,
+ "limitations": [
+  "설정을 한 가지로 고정하고 한 번만 돌렸습니다. 설정을 바꿔 가며 다시 보면 그만큼 우연이 섞입니다.",
+  "기술적 지표만 썼습니다. 뉴스·실적·수급 같은 자료는 없습니다.",
+  "가격이 남아 있지 않은 상장폐지 회사는 빠져 있습니다."
+ ]
+}
