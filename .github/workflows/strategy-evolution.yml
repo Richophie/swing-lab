@@ -15,6 +15,9 @@ on:
   schedule:
     # Every weekday after the US close: record candidate signals, then search again.
     - cron: '10 1 * * 2-6'
+    # Later the same day, record only (no search): the first slot is sometimes skipped by GitHub,
+    # and prices for the last session are not always published by then.
+    - cron: '10 7 * * 2-6'
 
 permissions:
   contents: write
@@ -40,7 +43,7 @@ jobs:
         run: PYTHONPATH=. python tests/test_strategy_evolution.py
       - name: Rebuild price panel, track frozen candidates, run the search
         if: github.event_name != 'pull_request'
-        run: python strategy_evolution.py --rebuild-panel --runs ${{ github.event.inputs.runs || '4' }}
+        run: python strategy_evolution.py --rebuild-panel --runs ${{ github.event.inputs.runs || (github.event.schedule == '10 7 * * 2-6' && '0') || '4' }}
       - name: Free partial survivorship check for frozen candidates
         if: github.event_name != 'pull_request'
         continue-on-error: true
