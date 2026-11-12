@@ -15,7 +15,7 @@ Research only: nothing here changes production recommendations.
 """
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import argparse
 import hashlib
 import json
@@ -99,6 +99,17 @@ def evolution_features(d: pd.DataFrame) -> pd.DataFrame:
     return pd.concat([feature_frame(d), extra_features(d)], axis=1)
 
 
+def last_completed_session(now: datetime | None = None) -> str:
+    """Latest date whose regular US session has certainly closed.
+
+    The data source returns a half-finished bar for today while the market is open. A signal read
+    from it is wrong (volume looks low, the close is not the close), so such a day is never used.
+    21:30 UTC is after the close in both winter and summer time.
+    """
+    now = now or datetime.now(timezone.utc)
+    return (now - timedelta(hours=21, minutes=30)).date().isoformat()
+
+
 def build_panel(frames: dict | None = None) -> dict:
     """Aligned (day x symbol) arrays of prices and signal-day features.
 
@@ -116,6 +127,9 @@ def build_panel(frames: dict | None = None) -> dict:
     symbols = sorted(set().union(*[set(r['members']) for r in snapshots if r['date'].isoformat() >= '2016-06-01']))
     latest = set(snapshots[-1]['members'])
     frames = download(symbols) if frames is None else frames
+    cutoff = last_completed_session()
+    frames = {s: f.loc[:cutoff] for s, f in frames.items()}
+    frames = {s: f for s, f in frames.items() if len(f)}
     try:
         vix = load_price_history('^VIX', 'max')
     except Exception:
@@ -741,6 +755,18 @@ def limit_entry_outcome(panel: dict, day: int, col: int, limit: float, hold: int
     return True, (received / paid - 1.0) * 100.0
 
 
+def outlook(ctx: Context, candidate: dict) -> dict:
+    """How this rule's past trades ended, so a signal can show a realistic range instead of a single target price."""
+    genome, signals = frozen_signals(ctx, candidate)
+    returns = ctx.returns(genome)
+    values = returns[signals & np.isfinite(returns)]
+    if len(values) < 100:
+        return {'trades': int(len(values))}
+    low, middle, high = (round(float(v), 2) for v in np.percentile(values, [25, 50, 75]))
+    return {'trades': int(len(values)), 'p25_return_pct': low, 'median_return_pct': middle, 'p75_return_pct': high,
+            'win_rate_pct': round(float((values > 0).mean() * 100), 1), 'big_loss_share_pct': round(float((values <= -10).mean() * 100), 1)}
+
+
 def track_candidates(ctx: Context, ledger: dict, shadow: dict) -> dict:
     """Append today's signals of frozen candidates and fill in outcomes that have matured.
 
@@ -769,6 +795,8 @@ def track_candidates(ctx: Context, ledger: dict, shadow: dict) -> dict:
                     'status': 'OPEN', 'return_pct': None,
                     'limit_price': round(float(ctx.panel['close'][last, j] - LIMIT_ENTRY_DISCOUNT_ATR * ctx.panel['atr'][last, j]), 4),
                     'limit_filled': None, 'limit_return_pct': None,
+                    'stop_atr': genome['stop_atr'], 'entry_date': None, 'entry_price': None,
+                    'exit_date': None, 'last_close': None, 'days_held': 0,
                 })
         for row in shadow['signals']:
             if row['candidate'] != candidate['name'] or row['status'] != 'OPEN':
@@ -776,6 +804,14 @@ def track_candidates(ctx: Context, ledger: dict, shadow: dict) -> dict:
             i, j = day_index.get(row['signal_date']), symbol_index.get(row['symbol'])
             if i is None or j is None:
                 continue
+            # What a person following the plan needs to see: the price they bought at and where it stands now.
+            hold = row['hold_days']
+            if i + 1 <= last and np.isfinite(ctx.panel['open'][i + 1, j]):
+                row['entry_date'], row['entry_price'] = str(ctx.dates[i + 1]), round(float(ctx.panel['open'][i + 1, j]), 4)
+                row['days_held'] = int(min(last - i, hold))
+                row['last_close'] = round(float(ctx.panel['close'][min(last, i + hold), j]), 4)
+            if i + hold <= last:
+                row['exit_date'] = str(ctx.dates[i + hold])
             value = float(returns[i, j])
             if math.isfinite(value):
                 row['status'], row['return_pct'] = 'CLOSED', round(value, 3)
@@ -784,6 +820,7 @@ def track_candidates(ctx: Context, ledger: dict, shadow: dict) -> dict:
                 if outcome is not None:
                     row['limit_filled'] = outcome[0]
                     row['limit_return_pct'] = round(outcome[1], 3) if outcome[0] else None
+    shadow['outlook'] = {c['name']: outlook(ctx, c) for c in ledger.get('family_candidates') or []}
     closed = [x['return_pct'] for x in shadow['signals'] if x['status'] == 'CLOSED']
     limit = [x['limit_return_pct'] for x in shadow['signals'] if x.get('limit_filled')]
     shadow['limit_entry'] = {

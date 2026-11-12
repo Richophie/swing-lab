@@ -135,11 +135,24 @@ function historyRow(item) {
 }
 
 // ---------- views ----------
-// Weekdays only; exchange holidays are ignored, so the date is a guide, not a promise.
-function addTradingDays(iso, n) {
+// New York Stock Exchange full-day closures. Update once a year.
+const US_HOLIDAYS = new Set(['2026-01-01', '2026-01-19', '2026-02-16', '2026-04-03', '2026-05-25', '2026-06-19', '2026-07-03', '2026-09-07', '2026-11-26', '2026-12-25',
+  '2027-01-01', '2027-01-18', '2027-02-15', '2027-03-26', '2027-05-31', '2027-06-18', '2027-07-05', '2027-09-06', '2027-11-25', '2027-12-24']);
+const isoOf = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+function tradingDate(iso, n) {
   const d = new Date(`${String(iso).slice(0, 10)}T12:00:00`);
-  for (let left = n; left > 0;) { d.setDate(d.getDate() + 1); if (d.getDay() !== 0 && d.getDay() !== 6) left -= 1; }
-  return `${d.getMonth() + 1}월 ${d.getDate()}일`;
+  for (let left = n; left > 0;) { d.setDate(d.getDate() + 1); if (d.getDay() !== 0 && d.getDay() !== 6 && !US_HOLIDAYS.has(isoOf(d))) left -= 1; }
+  return d;
+}
+function addTradingDays(iso, n) { const d = tradingDate(iso, n); return `${d.getMonth() + 1}월 ${d.getDate()}일`; }
+// Korean clock time of a New York clock time on that day (handles US daylight saving).
+function koreaTime(day, hour, minute) {
+  for (const offset of [4, 5]) {
+    const utc = new Date(Date.UTC(day.getFullYear(), day.getMonth(), day.getDate(), hour + offset, minute));
+    const there = Number(new Intl.DateTimeFormat('en-US', {timeZone: 'America/New_York', hour: 'numeric', hour12: false}).format(utc)) % 24;
+    if (there === hour) return new Intl.DateTimeFormat('ko-KR', {timeZone: 'Asia/Seoul', month: 'long', day: 'numeric', weekday: 'short', hour: 'numeric', minute: '2-digit'}).format(utc);
+  }
+  return '';
 }
 // The evolution engine's condition names, in words a trader would use.
 const pctAbs = v => Math.abs(v * 100).toFixed(0);
@@ -176,6 +189,30 @@ const stopWords = c => c.rule.stop_atr
 // Candidates that passed every automatic gate come first.
 const candidatesOf = evo => [...((evo || {}).family_candidates || [])].sort((a, b) => Number(!!b.passed_automatic_gate) - Number(!!a.passed_automatic_gate));
 
+// One live signal as a plain to-do: when and at what price to buy, when to sell, and where it usually ended.
+function signalCard(x, c, track) {
+  const hold = c.rule.hold_days;
+  const bought = has(x.entry_price);
+  const buyDay = x.entry_date ? new Date(`${x.entry_date}T12:00:00`) : tradingDate(x.signal_date, 1);
+  const sellDay = x.exit_date ? new Date(`${x.exit_date}T12:00:00`) : tradingDate(x.signal_date, hold);
+  const base = bought ? Number(x.entry_price) : Number(x.signal_close);
+  const krw = v => { const k = krwOf(v); return k ? ` · 약 ${k}` : ''; };
+  const look = ((track.outlook || {})[c.name]) || {};
+  const at = r => base * (1 + Number(r) / 100);
+  const now = bought && has(x.last_close) ? (Number(x.last_close) / Number(x.entry_price) - 1) * 100 : null;
+  const tag = !bought ? '<span class="tag is-ok">새 신호 · 아직 사기 전</span>' : `<span class="tag is-plain">보유 ${x.days_held}일째 / ${hold}일</span>`;
+  const buy = bought
+    ? `<div class="card plan-box"><span>산 가격</span><b>${usd(x.entry_price)}</b><small>${dateLabel(x.entry_date)} 장 시작 가격${krw(x.entry_price)}${has(now) ? `<br>최근 종가 ${usd(x.last_close)} · <span class="${tone(now)}">${pct(now)}</span>` : ''}</small></div>`
+    : `<div class="card plan-box"><span>사는 가격</span><b>약 ${usd(x.signal_close)}</b><small>${koreaTime(buyDay, 9, 30)} 미국 장이 열릴 때 시장가로 삽니다. 실제 가격은 그때 정해지며, 전날 종가가 ${usd(x.signal_close)}였습니다${krw(x.signal_close)}.${has(x.limit_price) ? `<br>더 싸게 사고 싶다면 지정가 <b style="display:inline;font-size:inherit;margin:0">${usd(x.limit_price)}</b>를 그날만 걸어 두세요. 닿지 않으면 건너뜁니다.` : ''}</small></div>`;
+  const range = has(look.p25_return_pct)
+    ? `과거 같은 매매 ${look.trades}건 중 절반이 ${usd(at(look.p25_return_pct))} ~ ${usd(at(look.p75_return_pct))} (${pct(look.p25_return_pct)} ~ ${pct(look.p75_return_pct)}) 사이에서 끝났습니다.` : '';
+  const sell = `<div class="card plan-box is-target"><span>파는 가격</span><b>${has(look.median_return_pct) ? `보통 ${usd(at(look.median_return_pct))} 근처` : '날짜에 맞춰 매도'}</b><small>가격을 정해 두지 않고 ${koreaTime(sellDay, 15, 50)} 미국 장 마감 직전에 시장가로 팝니다. ${range}</small></div>`;
+  const stop = x.stop_atr || c.rule.stop_atr
+    ? `<div class="card plan-box is-stop"><span>손절가</span><b>${usd(base - Number(x.stop_atr || c.rule.stop_atr) * Number(x.atr))}</b><small>${bought ? '' : '산 가격이 정해지면 다시 계산됩니다. '}이 가격 아래로 내려가면 그날 팝니다.</small></div>`
+    : `<div class="card plan-box is-stop"><span>손절가</span><b>없음</b><small>날짜에만 팝니다. ${has(look.big_loss_share_pct) ? `과거 ${Math.round(100 / Math.max(1, look.big_loss_share_pct))}번에 1번은 10% 넘게 잃었으니 한 종목에 몰지 마세요.` : ''}</small></div>`;
+  return `<div class="signal" data-go="#/stock/${esc(x.symbol)}"><div class="signal-head"><b>${esc(x.symbol)}</b>${tag}<small>${dateLabel(x.signal_date)} 신호</small></div><div class="plan">${buy}${sell}${stop}</div></div>`;
+}
+
 function experimentSection(track, evo, pit) {
   // The home screen only lists rules that passed every test; the rest stay in the report.
   const candidates = candidatesOf(evo).filter(c => c.passed_automatic_gate);
@@ -190,17 +227,17 @@ function experimentSection(track, evo, pit) {
     const avg = closed.length ? closed.reduce((sum, x) => sum + Number(x.return_pct), 0) / closed.length : null;
     const all = (((pit || {}).candidates || {})[c.name] || {})['전체'] || {};
     const left = all.left_index || {}, members = all.all_members || {};
-    const row = x => `<div class="row plan-row" data-go="#/stock/${esc(x.symbol)}"><div class="row-name"><b>${esc(x.symbol)}</b><small>${dateLabel(x.signal_date)} 신호 · 종가 ${usd(x.signal_close)}</small></div><div class="row-mid">${addTradingDays(x.signal_date, 1)} 시가 매수 → ${addTradingDays(x.signal_date, hold)} 종가 매도${x.limit_price ? `<small style="display:block" class="muted">지정가로 살 경우 ${usd(x.limit_price)} (당일만 유효)</small>` : ''}</div><div class="row-end">${x.signal_date === track.panel_last_date ? '<span class="tag is-ok">새 신호</span>' : '<span class="tag is-plain">보유 구간</span>'}</div></div>`;
+    const row = x => signalCard(x, c, track);
     const badge = c.passed_automatic_gate ? '<span class="tag is-ok">과거 검증 통과</span>' : '<span class="tag is-warn">검증 미통과</span>';
     return `<div class="card pad prose" style="margin-top:12px"><p><b>${candidateTitle(c)}</b> ${badge}</p>
       <p>${ruleWords(c)} S&P 500 종목을 다음 날 시가에 사서 <b>${hold}거래일 뒤 종가</b>에 팝니다. ${stopWords(c)}</p>
       ${members.trades ? `<p>과거 성적: 한 건당 평균 ${pct(members.avg_return_pct, 2)} (${members.trades}건, 이익 비율 ${share(members.win_rate_pct)}). 나중에 지수에서 빠진 회사만 보면 ${pct(left.avg_return_pct, 2)}였습니다.${c.passed_automatic_gate ? '' : ' 살아남은 회사 덕을 본 규칙일 가능성이 큽니다.'}</p>` : ''}
       <p class="muted" style="font-size:13.5px">실제 기록(${c.frozen_at}부터): 신호 ${mine.length}건 · 종료 ${closed.length}건${closed.length ? ` · 평균 ${pct(avg, 2)}` : ''}${limitLine(mine)}</p></div>
-      ${open.length ? `<div class="card rows" style="margin-top:8px">${open.slice(0, 10).map(row).join('')}</div>` : `<p class="muted" style="margin:8px 4px 0;font-size:13.5px">${dateLabel(track.panel_last_date)} 기준 해당 종목 없음</p>`}`;
+      ${open.length ? open.slice(0, 10).map(row).join('') : `<p class="muted" style="margin:8px 4px 0;font-size:13.5px">${dateLabel(track.panel_last_date)} 기준 해당 종목 없음</p>`}`;
   }).join('');
   const sizing = `<div class="card pad prose" style="margin-top:12px"><p><b>한 종목에 몰아 사지 마세요</b></p><p>이 규칙들은 20번에 1번꼴로 10% 넘게 잃습니다. 그런 매매만 미리 골라내는 방법은 찾지 못했습니다. 과거 기록에서 손실 폭을 줄인 방법은 5종목 이상으로 똑같이 나눠 사는 것 하나였습니다(3종목일 때 최대 낙폭 -33%, 5종목일 때 -27%).</p></div>`;
   return `<section class="section"><div class="section-head"><h2>검증을 통과한 규칙의 신호 <span class="tag is-warn">실전 확인 중</span></h2><a class="link" href="#/report">근거 보기</a></div>
-    <p class="muted">컴퓨터가 과거 데이터에서 찾아 세 가지 시험을 통과한 규칙입니다. 과거에 통했다는 뜻이지 앞으로의 수익을 보장하지 않으며, 2025년 이후에는 성적이 약해졌습니다. 실제 돈을 넣는다면 잃어도 되는 소액으로만 하세요. 신호는 미국 장 마감 뒤 하루 한 번 갱신되고, 날짜는 휴장일을 반영하지 않은 예상입니다.</p>${blocks}${sizing}${limitNote}</section>`;
+    <p class="muted">컴퓨터가 과거 데이터에서 찾아 세 가지 시험을 통과한 규칙입니다. 과거에 통했다는 뜻이지 앞으로의 수익을 보장하지 않으며, 2025년 이후에는 성적이 약해졌습니다. 실제 돈을 넣는다면 잃어도 되는 소액으로만 하세요. 신호는 미국 장 마감 뒤 하루 한 번 갱신됩니다. 시간은 한국 시간입니다.</p>${blocks}${sizing}${limitNote}</section>`;
 }
 
 async function todayView() {

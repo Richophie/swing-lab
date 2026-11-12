@@ -78,8 +78,12 @@ def test_research_route_prefers_the_newest_remote_copy(monkeypatch):
     assert body == {'from': 'remote', 'name': 'evolution_candidate_shadow.json'}
 
 
-def test_signal_rows_keep_their_buy_and_sell_dates_on_phones():
-    css = (APP / 'app.css').read_text(encoding='utf-8')
+def test_signal_card_states_buy_price_sell_time_and_stop_in_plain_words():
     js = (APP / 'app.js').read_text(encoding='utf-8')
-    assert 'class="row plan-row"' in js
-    assert '.row.plan-row .row-mid{display:block' in css.split('.row-mid{display:none}')[1]
+    card = js.split('function signalCard')[1].split('function experimentSection')[0]
+    for words in ('사는 가격', '산 가격', '파는 가격', '손절가', '지정가', '미국 장이 열릴 때', '미국 장 마감 직전', '한 종목에 몰지 마세요'):
+        assert words in card, words
+    assert 'koreaTime(buyDay, 9, 30)' in card and 'koreaTime(sellDay, 15, 50)' in card
+    assert "'2026-11-26'" in js and 'US_HOLIDAYS.has' in js
+    css = (APP / 'app.css').read_text(encoding='utf-8')
+    assert '.signal .plan' in css and '.plan{grid-template-columns:1fr' in css.replace(' ', '')

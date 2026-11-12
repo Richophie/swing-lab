@@ -146,6 +146,7 @@ def test_family_candidate_is_frozen_once_and_tracked_append_only():
     shadow = se.track_candidates(early, ledger, {})
     recorded = [(x['signal_date'], x['symbol']) for x in shadow['signals']]
     assert recorded and all(x['status'] == 'OPEN' and x['signal_date'] == panel['dates'][cut - 1] for x in shadow['signals'])
+    assert all(x['entry_price'] is None and x['days_held'] == 0 for x in shadow['signals'])
     assert shadow['live_trading_enabled'] is False
 
     shadow = se.track_candidates(ctx, ledger, shadow)   # later panel: outcomes mature, old rows are kept
@@ -156,6 +157,13 @@ def test_family_candidate_is_frozen_once_and_tracked_append_only():
     assert all(x['limit_price'] < x['signal_close'] and x['limit_filled'] in (True, False) for x in old)
     assert all((x['limit_return_pct'] is not None) == x['limit_filled'] for x in old)
     assert shadow['limit_entry']['decided'] == len(old) and shadow['limit_entry']['filled'] == sum(x['limit_filled'] for x in old)
+    # A follower sees the price they bought at, the day it ended and a realistic range of outcomes.
+    row = old[0]
+    i, j = cut - 1, list(panel['symbols']).index(row['symbol'])
+    assert row['entry_date'] == panel['dates'][i + 1] and abs(row['entry_price'] - float(panel['open'][i + 1, j])) < 1e-3
+    assert row['exit_date'] == panel['dates'][i + 3] and row['days_held'] == 3 and abs(row['last_close'] - float(panel['close'][i + 3, j])) < 1e-3
+    look = shadow['outlook']['demo']
+    assert look['trades'] >= 100 and look['p25_return_pct'] < look['median_return_pct'] < look['p75_return_pct']
 
 
 def test_limit_entry_outcome_fills_at_the_limit_or_a_lower_open():
@@ -209,6 +217,16 @@ def test_pit_lite_separates_current_and_former_members():
     whole = report['candidates']['demo']['전체']
     assert whole['all_members']['trades'] == whole['still_in_index']['trades'] + whole['left_index']['trades']
     assert whole['left_index']['trades'] > 0 and whole['all_members']['avg_return_pct'] > 0
+
+
+def test_a_session_counts_only_after_it_has_closed():
+    from datetime import datetime, timezone
+    at = lambda *t: datetime(*t, tzinfo=timezone.utc)
+    assert se.last_completed_session(at(2026, 11, 11, 17, 0)) == '2026-11-10'    # midday in New York
+    assert se.last_completed_session(at(2026, 11, 11, 21, 10)) == '2026-11-10'   # minutes after the bell: not yet trusted
+    assert se.last_completed_session(at(2026, 11, 11, 21, 30)) == '2026-11-11'
+    assert se.last_completed_session(at(2026, 11, 12, 1, 10)) == '2026-11-11'    # the scheduled run
+    assert se.last_completed_session(at(2026, 7, 1, 20, 30)) == '2026-06-30'     # summer close is 20:00 UTC; waiting longer is safe
 
 
 def test_ledger_refuses_a_different_split():
