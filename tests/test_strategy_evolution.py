@@ -229,6 +229,24 @@ def test_a_session_counts_only_after_it_has_closed():
     assert se.last_completed_session(at(2026, 7, 1, 20, 30)) == '2026-06-30'     # summer close is 20:00 UTC; waiting longer is safe
 
 
+def test_account_objective_rewards_a_small_edge_that_fires_often_up_to_capacity():
+    fold = lambda trades, days, total: {'trades': trades, 'signal_days': days, 'day_return_sum_pct': total, 'trades_per_year': trades / 2.0, 't_stat': 2.0, 'avg_return_pct': total / days}
+    rare, frequent = fold(100, 80, 240.0), fold(900, 300, 300.0)          # +3% on 40 days a year vs +1% on 150 days a year
+    assert se.account_return_per_year(frequent, 5) > se.account_return_per_year(rare, 5)
+    # 5 slots held 5 days free up 252 times a year; firing on more days than that earns nothing extra.
+    flooded = fold(2000, 1000, 1000.0)
+    assert math.isclose(se.account_return_per_year(flooded, 5), 1000.0 / 2 * (252 / 500) / 5)
+    saved = se.OBJECTIVE
+    try:
+        train = {name: frequent for name in se.TRAIN_NAMES}
+        se.OBJECTIVE = 'edge'
+        edge = se.fitness(train, 2, 5)
+        se.OBJECTIVE = 'account'
+        assert se.fitness(train, 2, 5) != edge and math.isclose(se.fitness(train, 2, 5), se.account_return_per_year(frequent, 5) - 2 * se.COMPLEXITY_PENALTY_PCT)
+    finally:
+        se.OBJECTIVE = saved
+
+
 def test_ledger_refuses_a_different_split():
     try:
         se.run(se.Context(_panel()), {'split_version': 'other'}, population=20, generations=1)
