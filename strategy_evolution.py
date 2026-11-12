@@ -65,6 +65,12 @@ MIN_VALIDATION_TRADES = 100
 BASE_ALPHA = 0.05
 MIN_LOCKBOX_T = 1.0
 
+# What the search climbs. 'edge' = average return of a trade (rare, large moves win).
+# 'account' = what a small account earns in a year (a smaller edge that fires often can win).
+OBJECTIVE = 'edge'
+ACCOUNT_SLOTS = 5
+TRADING_DAYS_PER_YEAR = 252
+
 POPULATION = 300
 GENERATIONS = 30
 ELITE = 20
@@ -338,7 +344,7 @@ def segment_stats(returns: np.ndarray, signals: np.ndarray, rows: np.ndarray, co
     return {
         'trades': n, 'avg_return_pct': round(float(values.mean()), 3), 'win_rate_pct': round(float(len(wins) / n * 100), 1),
         'profit_factor': round(float(wins.sum() / -losses.sum()), 3) if len(losses) else None,
-        'signal_days': int(len(daily)), 't_stat': round(t, 2), 'trades_per_year': round(n / years, 1) if years > 0 else None,
+        'signal_days': int(len(daily)), 'day_return_sum_pct': round(float(daily.sum()), 3), 't_stat': round(t, 2), 'trades_per_year': round(n / years, 1) if years > 0 else None,
     }
 
 
@@ -354,11 +360,26 @@ def evaluate(ctx: Context, genome: dict, names: tuple[str, ...]) -> dict:
 TRAIN_NAMES = tuple(f'train_{i + 1}' for i in range(len(TRAIN_FOLDS)))
 
 
-def fitness(train: dict, n_conditions: int) -> float:
+def account_return_per_year(stats: dict, hold: int, slots: int = ACCOUNT_SLOTS) -> float:
+    """Rough yearly % return of an account with equal slots that opens one position per signal day.
+
+    A rule cannot be used more often than the slots free up, so signal days beyond that capacity add nothing.
+    """
+    if not stats.get('trades') or not stats.get('trades_per_year'):
+        return float('-inf')
+    years = stats['trades'] / stats['trades_per_year']
+    days_per_year = stats['signal_days'] / years
+    capacity = slots * TRADING_DAYS_PER_YEAR / hold
+    return stats['day_return_sum_pct'] / years * min(1.0, capacity / days_per_year) / slots
+
+
+def fitness(train: dict, n_conditions: int, hold: int | None = None) -> float:
     """Worst TRAIN fold decides. A rule that only worked in one era scores badly."""
     folds = [train[name] for name in TRAIN_NAMES]
     if any(f.get('trades', 0) < MIN_FOLD_TRADES or f['signal_days'] < MIN_FOLD_SIGNAL_DAYS or f['t_stat'] < MIN_FOLD_T for f in folds):
         return float('-inf')
+    if OBJECTIVE == 'account' and hold:
+        return min(account_return_per_year(f, hold) for f in folds) - COMPLEXITY_PENALTY_PCT * n_conditions
     if sum(f['trades_per_year'] or 0 for f in folds) / len(folds) < MIN_TRADES_PER_YEAR:
         return float('-inf')
     return min(f['avg_return_pct'] for f in folds) - COMPLEXITY_PENALTY_PCT * n_conditions
@@ -447,7 +468,7 @@ def evolve(ctx: Context, seed: int, seeds: list[dict] | None = None, population:
             train = evaluate(ctx, genome, TRAIN_NAMES)
             # Seeds from an older ledger may use plans that are no longer in the search space.
             in_space = genome['hold'] in HOLDS and genome['stop_atr'] in STOPS_ATR and genome['target_atr'] in TARGETS_ATR
-            value = fitness(train, len(genome['conditions'])) if in_space else float('-inf')
+            value = fitness(train, len(genome['conditions']), genome['hold']) if in_space else float('-inf')
             climb = climb_score(train, value)
             # Checked for every rule with enough trades, so the search is steered away early.
             if taboo and climb > -1500 and same_family(footprint(ctx.signals(genome)), taboo):
@@ -542,7 +563,7 @@ def pick_finalists(ctx: Context, ranked: list[dict], taboo: list[np.ndarray], li
             continue
         examined += 1
         train = evaluate(ctx, genome, TRAIN_NAMES)
-        value = fitness(train, len(genome['conditions']))
+        value = fitness(train, len(genome['conditions']), genome['hold'])
         floor = neighbour_floor(ctx, genome)
         # Only rules that stay profitable when a threshold is nudged may spend a validation look.
         if not math.isfinite(value) or floor <= 0:
@@ -644,7 +665,7 @@ def run(ctx: Context, ledger: dict, seed: int | None = None, population: int = P
         entry = {
             'key': item['key'], 'genome': {**item['genome'], 'conditions': [list(c) for c in item['genome']['conditions']]},
             'rule': describe(item['genome'], ctx, labels), 'fitness': round(item['fitness'], 4), 'neighbour_floor': round(item['neighbour_floor'], 3), 'train': item['train'],
-            'validation_t_required': round(t_required, 2), **result, 'found_in_run': len(ledger['runs']) + 1,
+            'validation_t_required': round(t_required, 2), **result, 'found_in_run': len(ledger['runs']) + 1, 'objective': OBJECTIVE,
             'passed_all': result['stage_failed'] is None,
         }
         if entry['passed_all']:
@@ -653,10 +674,10 @@ def run(ctx: Context, ledger: dict, seed: int | None = None, population: int = P
         judged.append(entry); ledger['hall_of_fame'].append(entry)
     track_champions(ledger)
     ledger['hall_of_fame'].sort(key=lambda x: x['fitness'], reverse=True)
-    ledger['hall_of_fame'] = ledger['hall_of_fame'][:200]
+    ledger['hall_of_fame'] = ledger['hall_of_fame'][:2000]  # every judged idea must stay, or it could be judged twice
     ledger['candidates_scored_total'] = ledger.get('candidates_scored_total', 0) + scored
     ledger['runs'].append({
-        'run': len(ledger['runs']) + 1, 'seed': seed, 'at': datetime.now(timezone.utc).isoformat(timespec='seconds'),
+        'run': len(ledger['runs']) + 1, 'seed': seed, 'objective': OBJECTIVE, 'at': datetime.now(timezone.utc).isoformat(timespec='seconds'),
         'candidates_scored': scored, 'best_train_fitness': round(ranked[0]['fitness'], 4) if ranked else None,
         'new_ideas_examined': examined, 'finalists': [x['key'] for x in judged], 'passed': [x['key'] for x in judged if x['passed_all']],
         'failed_at': {x['key']: x['stage_failed'] for x in judged if x['stage_failed']},
@@ -846,7 +867,9 @@ def main():
     parser.add_argument('--rebuild-panel', action='store_true')
     parser.add_argument('--population', type=int, default=POPULATION)
     parser.add_argument('--generations', type=int, default=GENERATIONS)
+    parser.add_argument('--objective', choices=('edge', 'account'), default=OBJECTIVE)
     args = parser.parse_args()
+    globals()['OBJECTIVE'] = args.objective
     if args.rebuild_panel or not PANEL_CACHE.exists():
         save_panel(build_panel())
     ctx = Context(load_panel())
