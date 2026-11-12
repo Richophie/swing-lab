@@ -850,6 +850,8 @@ def main():
     if args.rebuild_panel or not PANEL_CACHE.exists():
         save_panel(build_panel())
     ctx = Context(load_panel())
+    print(json.dumps({'panel_first_date': str(ctx.dates[0]), 'panel_last_date': str(ctx.dates[-1]), 'last_completed_session': last_completed_session(),
+                      'symbols': int(len(ctx.symbols))}), flush=True)
     ledger = json.loads(OUT.read_text(encoding='utf-8')) if OUT.exists() else {}
     shadow = json.loads(SHADOW_OUT.read_text(encoding='utf-8')) if SHADOW_OUT.exists() else {}
     SHADOW_OUT.write_text(json.dumps(track_candidates(ctx, ledger, shadow), ensure_ascii=False, indent=1), encoding='utf-8')
