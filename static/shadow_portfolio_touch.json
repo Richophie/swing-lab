@@ -2661,7 +2661,7 @@
       "atr": 3.0,
       "gap_guard": 2.25,
       "max_hold_bars": 10,
-      "held_bars": 4,
+      "held_bars": 5,
       "qty": 4,
       "planned_entry_usd": 65.35,
       "planned_notional_krw": 354709.34,
@@ -2669,7 +2669,7 @@
       "planned_risk_krw": 24425.28,
       "reserved_cash_krw": 0.0,
       "fx_at_submit": 1356.96,
-      "last_processed_date": "2026-11-12",
+      "last_processed_date": "2026-11-13",
       "commission_pct_per_side": 0.1,
       "slippage_bps": 5.0,
       "half_spread_bps": 2.5,
@@ -2708,16 +2708,16 @@
       "entry_commission_krw": 355.04,
       "entry_cost_krw": 355399.12,
       "fx_at_entry": 1362.33,
-      "last_fx": 1335.38,
+      "last_fx": 1336.01,
       "filled_at": "2026-11-06T19:49:41+00:00",
-      "last_close_usd": 63.919998
+      "last_close_usd": 63.23
     },
     {
       "id": "PAPER-5193D845A0BB",
       "symbol": "OXY",
       "strategy_id": "confirmed_pullback",
       "strategy_name": "확인형 눌림반등",
-      "status": "PENDING",
+      "status": "CANCELLED",
       "created_at": "2026-11-13T01:38:54+00:00",
       "submitted_market_date": "2026-11-12",
       "signal_date": "2026-11-12",
@@ -2734,9 +2734,9 @@
       "planned_notional_krw": 382803.37,
       "risk_budget_krw": 27963.19,
       "planned_risk_krw": 24451.24,
-      "reserved_cash_krw": 383186.17,
+      "reserved_cash_krw": 0.0,
       "fx_at_submit": 1330.68,
-      "last_processed_date": "2026-11-12",
+      "last_processed_date": "2026-11-13",
       "commission_pct_per_side": 0.1,
       "slippage_bps": 5.0,
       "half_spread_bps": 2.5,
@@ -2766,14 +2766,17 @@
         "checked_at": "2026-11-13T01:37:52+00:00"
       },
       "atr_source": "derived_from_stop_atr_multiple",
-      "risk_observability_only": true
+      "risk_observability_only": true,
+      "cancel_date": "2026-11-13",
+      "cancel_reason": "다음 거래일 장중 BUY 구간 미도달",
+      "closed_at": "2026-11-13T20:15:05+00:00"
     },
     {
       "id": "PAPER-C201CECC5857",
       "symbol": "UNP",
       "strategy_id": "momentum_pullback",
       "strategy_name": "모멘텀 눌림 지속",
-      "status": "PENDING",
+      "status": "CANCELLED",
       "created_at": "2026-11-13T01:38:54+00:00",
       "submitted_market_date": "2026-11-12",
       "signal_date": "2026-11-12",
@@ -2790,9 +2793,9 @@
       "planned_notional_krw": 790051.33,
       "risk_budget_krw": 27963.19,
       "planned_risk_krw": 27066.03,
-      "reserved_cash_krw": 790841.38,
+      "reserved_cash_krw": 0.0,
       "fx_at_submit": 1330.68,
-      "last_processed_date": "2026-11-12",
+      "last_processed_date": "2026-11-13",
       "commission_pct_per_side": 0.1,
       "slippage_bps": 5.0,
       "half_spread_bps": 2.5,
@@ -2822,7 +2825,10 @@
         "checked_at": "2026-11-13T01:37:52+00:00"
       },
       "atr_source": "derived_from_stop_atr_multiple",
-      "risk_observability_only": true
+      "risk_observability_only": true,
+      "cancel_date": "2026-11-13",
+      "cancel_reason": "다음 거래일 장중 BUY 구간 미도달",
+      "closed_at": "2026-11-13T20:15:05+00:00"
     }
   ],
   "events": [
@@ -3657,6 +3663,22 @@
       "strategy_id": "momentum_pullback",
       "event": "SUBMITTED",
       "detail": "다음 거래일 BUY 구간 터치 대기 · 2주 · BUY 295.57~298.15"
+    },
+    {
+      "at": "2026-11-13T20:15:05+00:00",
+      "order_id": "PAPER-5193D845A0BB",
+      "symbol": "OXY",
+      "strategy_id": "confirmed_pullback",
+      "event": "CANCELLED",
+      "detail": "다음 거래일 장중 BUY 구간 미도달"
+    },
+    {
+      "at": "2026-11-13T20:15:05+00:00",
+      "order_id": "PAPER-C201CECC5857",
+      "symbol": "UNP",
+      "strategy_id": "momentum_pullback",
+      "event": "CANCELLED",
+      "detail": "다음 거래일 장중 BUY 구간 미도달"
     }
   ],
   "shadow_decisions": [
@@ -9015,7 +9037,7 @@
     }
   ],
   "created_at": "2026-08-13T11:20:00+00:00",
-  "updated_at": "2026-11-13T01:38:54+00:00",
+  "updated_at": "2026-11-13T20:15:05+00:00",
   "live_trading_enabled": false,
   "lab_meta": {
     "version": 2,
@@ -9071,9 +9093,9 @@
         "formal_review_target_closed_trades": 50
       }
     },
-    "last_run_at": "2026-11-13T01:38:54+00:00",
+    "last_run_at": "2026-11-13T20:15:05+00:00",
     "last_ingest": {
-      "submitted": 2,
+      "submitted": 0,
       "skipped": 0
     }
   }
