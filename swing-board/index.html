@@ -3,265 +3,403 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#f2f4f6" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#101013" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f4f5f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0c0d10" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="스윙">
 <meta name="robots" content="noindex">
-<title>스윙 현황판</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%233182f6'/><path d='M22 66l18-18 12 12 26-26' stroke='white' stroke-width='9' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+<title>스윙</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23191b22'/%3E%3Cpath d='M14 40c6 0 8-16 18-16s12 16 18 16' stroke='%237c7cff' stroke-width='6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
 :root{
-  --bg:#f2f4f6;--card:#fff;--ink:#191f28;--ink2:#4e5968;--ink3:#8b95a1;--line:#f2f4f6;--chip:#f2f4f6;
-  --blue:#3182f6;--blue-bg:#e8f3ff;--red:#f04452;--red-bg:#ffeeee;--green:#00a661;--green-bg:#e5f8ef;
-  --orange:#f08400;--orange-bg:#fff3e0;--gray-bg:#f2f4f6;--up:#f04452;--down:#3182f6;
-  --shadow:0 1px 2px rgba(0,0,0,.02);
+  --bg:#f4f5f7;--surface:#ffffff;--surface2:#f7f8fa;--fill:#eef0f3;--fill2:#e4e7ec;
+  --t1:#121417;--t2:#4b525c;--t3:#8a919c;--t4:#b4bac3;--hair:rgba(18,20,23,.06);
+  --brand:#5b5bf6;--brand-soft:#eeeeff;
+  --up:#eb3b46;--up-soft:#fdeced;--down:#2f6fe8;--down-soft:#e9f0fd;
+  --ok:#0e9f6e;--ok-soft:#e3f6ee;--amber:#d9820b;--amber-soft:#fdf2e1;
+  --shadow:0 1px 2px rgba(16,18,24,.04),0 4px 16px rgba(16,18,24,.04);
+  --sheet:0 -8px 40px rgba(0,0,0,.18);
+  --r-xl:24px;--r-lg:18px;--r-md:14px;--r-sm:10px;
+  --ease:cubic-bezier(.2,.8,.2,1);
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#101013;--card:#1c1c21;--ink:#f2f4f6;--ink2:#c3c8cf;--ink3:#7e8590;--line:#26262c;--chip:#2a2a31;
-  --blue:#4d94ff;--blue-bg:#1b2a42;--red:#ff5c69;--red-bg:#3a1e22;--green:#2fcf8a;--green-bg:#16332a;
-  --orange:#ffa53d;--orange-bg:#3a2a16;--gray-bg:#2a2a31;--up:#ff5c69;--down:#4d94ff;--shadow:none;
+  --bg:#0c0d10;--surface:#17181d;--surface2:#1d1f25;--fill:#23252c;--fill2:#2d3038;
+  --t1:#f3f4f6;--t2:#c2c7cf;--t3:#878d97;--t4:#5b616b;--hair:rgba(255,255,255,.06);
+  --brand:#8282ff;--brand-soft:#23234a;
+  --up:#ff5d66;--up-soft:#3a1d21;--down:#5a92ff;--down-soft:#1a2740;
+  --ok:#34d39a;--ok-soft:#14302a;--amber:#f5a524;--amber-soft:#36290f;
+  --shadow:none;--sheet:0 -8px 40px rgba(0,0,0,.5);
 }}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html{background:var(--bg)}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;font-size:16px;line-height:1.45;letter-spacing:-.2px;-webkit-font-smoothing:antialiased}
-.num{font-variant-numeric:tabular-nums}
-.wrap{max-width:560px;margin:0 auto;padding:max(12px,env(safe-area-inset-top)) 16px 40px}
-.top{display:flex;justify-content:space-between;align-items:center;padding:8px 4px 14px}
-.top .date{font-size:15px;font-weight:600;color:var(--ink2)}
-.refresh{display:flex;align-items:center;gap:6px;border:0;background:transparent;color:var(--ink3);font:inherit;font-size:13px;padding:6px 4px;cursor:pointer}
-.refresh svg{width:15px;height:15px}
-.refresh.spin svg{animation:spin .8s linear infinite}
+html,body{margin:0;background:var(--bg)}
+body{color:var(--t1);font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;font-size:15px;line-height:1.45;letter-spacing:-.01em;-webkit-font-smoothing:antialiased;overscroll-behavior-y:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+.tnum{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+svg.i{width:22px;height:22px;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.up{color:var(--up)}.down{color:var(--down)}.flat{color:var(--t3)}
+
+/* ── 앱 바 ── */
+.bar{position:sticky;top:0;z-index:20;padding:calc(env(safe-area-inset-top) + 10px) 20px 10px;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:saturate(1.6) blur(18px);-webkit-backdrop-filter:saturate(1.6) blur(18px);transition:box-shadow .2s}
+.bar.scrolled{box-shadow:0 1px 0 var(--hair)}
+.bar-in{max-width:520px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:19px;letter-spacing:-.03em}
+.brand .mark{width:28px;height:28px;border-radius:9px;background:#1a1c24;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06);display:grid;place-items:center}
+.brand .mark svg{width:18px;height:18px;stroke:var(--brand);stroke-width:3;fill:none;stroke-linecap:round}
+.seg{margin-left:auto;display:flex;background:var(--fill);border-radius:999px;padding:3px;position:relative}
+.seg .knob{position:absolute;top:3px;bottom:3px;left:3px;width:calc(50% - 3px);border-radius:999px;background:var(--surface);box-shadow:0 1px 3px rgba(0,0,0,.12);transition:transform .32s var(--ease)}
+.seg[data-v="us"] .knob{transform:translateX(100%)}
+.seg button{position:relative;z-index:1;width:58px;height:32px;border-radius:999px;font-size:14px;font-weight:700;color:var(--t3);transition:color .2s}
+.seg button[aria-selected="true"]{color:var(--t1)}
+.iconbtn{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;color:var(--t2);transition:background .15s,transform .15s}
+.iconbtn:active{background:var(--fill);transform:scale(.92)}
+.iconbtn.spin svg{animation:spin .9s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.seg{display:flex;background:var(--chip);border-radius:14px;padding:4px;margin-bottom:14px}
-.seg button{flex:1;border:0;background:transparent;font:inherit;font-size:15px;font-weight:600;color:var(--ink3);padding:9px 0;border-radius:10px;cursor:pointer;transition:all .15s}
-.seg button[aria-selected="true"]{background:var(--card);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.08)}
-.card{background:var(--card);border-radius:22px;padding:22px 20px;margin-bottom:12px;box-shadow:var(--shadow)}
-.label{font-size:14px;color:var(--ink3);font-weight:500}
-.title{font-size:19px;font-weight:700;margin:0 0 4px;letter-spacing:-.4px}
-.sub{font-size:14px;color:var(--ink3)}
-.hero .big{font-size:34px;font-weight:700;letter-spacing:-1px;margin:4px 0 2px}
-.hero .meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
-.pill{display:inline-flex;align-items:center;gap:4px;background:var(--chip);color:var(--ink2);font-size:13px;font-weight:600;padding:6px 10px;border-radius:999px}
-.pill .dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
-.pill .dot.off{background:var(--ink3)}
-.todo{list-style:none;margin:14px 0 0;padding:0}
-.todo li{display:flex;gap:14px;padding:12px 0;align-items:flex-start}
-.ico{flex:0 0 40px;height:40px;border-radius:14px;display:grid;place-items:center;font-size:19px}
-.i-new{background:var(--green-bg)}.i-win{background:var(--red-bg)}.i-loss{background:var(--blue-bg)}.i-flat{background:var(--gray-bg)}.i-warn{background:var(--orange-bg)}.i-hold{background:var(--gray-bg)}
-.todo .what{font-size:16px;font-weight:700}
-.todo .why{font-size:13.5px;color:var(--ink3);margin-top:1px}
-.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.chip{background:var(--chip);border-radius:10px;padding:6px 10px;font-size:14px;font-weight:600}
-.chip small{font-weight:600;margin-left:4px}
-.nothing{display:flex;gap:14px;align-items:center;padding:8px 0 2px}
-.nothing .ico{background:var(--gray-bg)}
-.hint{margin-top:10px;background:var(--chip);border-radius:14px;padding:12px 14px;font-size:13.5px;color:var(--ink2)}
-.row{display:flex;align-items:center;gap:12px;padding:14px 0;cursor:pointer}
-.logo{flex:0 0 40px;height:40px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:15px;color:#fff}
+
+main{max-width:520px;margin:0 auto;padding:6px 16px calc(env(safe-area-inset-bottom) + 40px)}
+.view{animation:fade .35s var(--ease)}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ── 공통 블록 ── */
+.block{background:var(--surface);border-radius:var(--r-xl);box-shadow:var(--shadow);margin-top:12px;overflow:hidden}
+.pad{padding:22px 22px}
+.h{display:flex;align-items:baseline;justify-content:space-between;gap:8px;padding:22px 22px 6px}
+.h h2{margin:0;font-size:18px;font-weight:700;letter-spacing:-.03em}
+.h .aside{font-size:13px;color:var(--t3);font-weight:500}
+.caption{font-size:13px;color:var(--t3)}
+
+/* ── 요약 ── */
+.hero{padding:24px 22px 20px}
+.hero .k{font-size:14px;color:var(--t2);font-weight:600;display:flex;align-items:center;gap:6px}
+.live{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--t3);background:var(--fill);border-radius:999px;padding:3px 8px 3px 7px;margin-left:auto}
+.live i{width:6px;height:6px;border-radius:50%;background:var(--t4)}
+.live.on i{background:var(--ok);box-shadow:0 0 0 0 var(--ok);animation:ping 1.8s infinite}
+@keyframes ping{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--ok) 60%,transparent)}100%{box-shadow:0 0 0 7px transparent}}
+.hero .amt{font-size:34px;font-weight:800;letter-spacing:-.04em;margin:10px 0 2px;line-height:1.15}
+.hero .rate{font-size:16px;font-weight:700}
+.hero .basis{font-size:12.5px;color:var(--t3);margin-top:2px}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);margin-top:18px;border-top:1px solid var(--hair);padding-top:16px}
+.kpi{padding:0 4px}
+.kpi+.kpi{border-left:1px solid var(--hair);padding-left:14px}
+.kpi b{display:block;font-size:17px;font-weight:700;letter-spacing:-.02em}
+.kpi span{font-size:12.5px;color:var(--t3)}
+
+/* ── 오늘 할 일 ── */
+.notice{margin:6px 22px 4px;display:flex;gap:10px;align-items:flex-start;background:var(--surface2);border-radius:var(--r-md);padding:12px 14px;font-size:13.5px;color:var(--t2)}
+.notice svg{width:18px;height:18px;margin-top:1px;color:var(--t3)}
+.group{padding:14px 22px 6px}
+.group+.group{border-top:1px solid var(--hair)}
+.gh{display:flex;align-items:center;gap:12px}
+.badge{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;flex:none}
+.badge svg{width:21px;height:21px}
+.b-buy{background:var(--ok-soft);color:var(--ok)}
+.b-time{background:var(--brand-soft);color:var(--brand)}
+.b-stop{background:var(--down-soft);color:var(--down)}
+.b-soon{background:var(--amber-soft);color:var(--amber)}
+.b-hold{background:var(--fill);color:var(--t2)}
+.gh .tt{font-size:16px;font-weight:700;letter-spacing:-.02em}
+.gh .ds{font-size:13px;color:var(--t3);margin-top:1px}
+.gh .when{margin-left:auto;font-size:12px;font-weight:700;color:var(--t2);background:var(--fill);border-radius:8px;padding:4px 8px;white-space:nowrap;align-self:flex-start;margin-top:2px}
+.items{margin:10px 0 8px 52px}
+.it{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-radius:10px;transition:background .15s}
+.it+.it{border-top:1px solid var(--hair)}
+.it .n{font-weight:600;font-size:15px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.it .v{display:flex;align-items:center;gap:8px;font-weight:700;font-size:14.5px}
+.res{font-size:11.5px;font-weight:700;border-radius:6px;padding:2px 6px}
+.res.up{background:var(--up-soft)}.res.down{background:var(--down-soft)}.res.flat{background:var(--fill)}
+.empty{padding:26px 22px 28px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
+.empty svg{width:72px;height:72px;margin-bottom:6px}
+.empty b{font-size:16px}
+.empty span{font-size:13.5px;color:var(--t3)}
+
+/* ── 보유 목록 ── */
+.list{padding:4px 10px 10px}
+.row{width:100%;display:flex;align-items:center;gap:14px;padding:12px;border-radius:16px;text-align:left;transition:background .15s,transform .15s var(--ease)}
+.row:active{background:var(--fill);transform:scale(.985)}
+.av{position:relative;width:46px;height:46px;flex:none}
+.av .mono{position:absolute;inset:5px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;font-size:14px;letter-spacing:-.02em}
+.av svg{position:absolute;inset:0;width:46px;height:46px;transform:rotate(-90deg)}
+.av circle{fill:none;stroke-width:3}
+.av .tr{stroke:var(--fill2)}
+.av .pr{stroke:var(--brand);stroke-linecap:round;transition:stroke-dashoffset .8s var(--ease)}
 .row .mid{flex:1;min-width:0}
-.row .nm{font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.row .ds{font-size:13px;color:var(--ink3);margin-top:1px}
-.row .rt{text-align:right}
-.row .p{font-size:16px;font-weight:600}
-.row .r{font-size:13.5px;font-weight:600;margin-top:1px}
-.tag{display:inline-block;font-size:11.5px;font-weight:700;padding:2px 6px;border-radius:6px;margin-right:6px;vertical-align:1px}
-.g-new{background:var(--green-bg);color:var(--green)}.g-win{background:var(--red-bg);color:var(--red)}.g-loss{background:var(--blue-bg);color:var(--blue)}.g-flat,.g-hold{background:var(--gray-bg);color:var(--ink2)}.g-warn{background:var(--orange-bg);color:var(--orange)}
-.detail{display:none;margin:-4px 0 10px 52px;background:var(--chip);border-radius:14px;padding:12px 14px;font-size:13.5px;color:var(--ink2)}
-.detail.open{display:block}
-.detail .l{display:flex;justify-content:space-between;gap:8px;padding:3px 0}
-.bar{height:6px;background:var(--card);border-radius:3px;margin:8px 0 2px;overflow:hidden}
-.bar i{display:block;height:100%;background:var(--blue);border-radius:3px}
-.up{color:var(--up)}.down{color:var(--down)}.zero{color:var(--ink3)}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
-.stat{background:var(--chip);border-radius:16px;padding:12px}
-.stat b{display:block;font-size:19px;font-weight:700}
-.stat span{font-size:12.5px;color:var(--ink3)}
-details{border-top:1px solid var(--line)}
-details:first-of-type{border-top:0}
-summary{list-style:none;display:flex;justify-content:space-between;align-items:center;padding:14px 0;font-size:16px;font-weight:600;cursor:pointer}
-summary::-webkit-details-marker{display:none}
-summary::after{content:"";width:8px;height:8px;border-right:2px solid var(--ink3);border-bottom:2px solid var(--ink3);transform:rotate(45deg);margin-right:4px;transition:transform .2s}
-details[open] summary::after{transform:rotate(-135deg)}
-.rules{margin:0 0 14px;padding:0;list-style:none;font-size:14.5px;color:var(--ink2)}
-.rules li{padding:5px 0 5px 22px;position:relative}
-.rules li::before{content:"";position:absolute;left:6px;top:13px;width:5px;height:5px;border-radius:50%;background:var(--ink3)}
-.past{font-size:14px;color:var(--ink2);white-space:pre-wrap;margin:0 0 14px}
-.foot{text-align:center;font-size:12.5px;color:var(--ink3);margin:20px 12px 0;line-height:1.6}
-.skel{height:16px;border-radius:8px;background:var(--chip);margin:10px 0;animation:pulse 1.2s ease-in-out infinite}
-@keyframes pulse{50%{opacity:.5}}
-.err{color:var(--red);font-weight:600}
+.row .nm{font-size:15.5px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:-.02em}
+.row .sb{font-size:13px;color:var(--t3);margin-top:2px;display:flex;align-items:center;gap:6px;white-space:nowrap;overflow:hidden}
+.chip{font-size:11.5px;font-weight:700;border-radius:6px;padding:2px 6px;flex:none}
+.c-buy{background:var(--ok-soft);color:var(--ok)}.c-time{background:var(--brand-soft);color:var(--brand)}.c-stop{background:var(--down-soft);color:var(--down)}.c-soon{background:var(--amber-soft);color:var(--amber)}.c-hold{background:var(--fill);color:var(--t2)}
+.row .rt{text-align:right;flex:none}
+.row .p{font-size:15.5px;font-weight:700;letter-spacing:-.02em}
+.row .r{font-size:13px;font-weight:600;margin-top:2px}
+
+/* ── 성적 ── */
+.perf{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:8px 22px 22px}
+.pc{background:var(--surface2);border-radius:var(--r-lg);padding:14px 16px}
+.pc span{font-size:12.5px;color:var(--t3);font-weight:500}
+.pc b{display:block;font-size:20px;font-weight:800;letter-spacing:-.03em;margin-top:2px}
+.winbar{grid-column:1/-1;background:var(--surface2);border-radius:var(--r-lg);padding:14px 16px}
+.wb{display:flex;height:8px;border-radius:4px;overflow:hidden;background:var(--fill2);margin:10px 0 6px}
+.wb i{background:var(--up)}.wb em{background:var(--down)}
+.wl{display:flex;justify-content:space-between;font-size:12.5px;color:var(--t3)}
+
+/* ── 접는 칸 ── */
+.acc{border-top:1px solid var(--hair)}
+.acc:first-child{border-top:0}
+.acc>button{width:100%;display:flex;align-items:center;justify-content:space-between;padding:18px 22px;font-size:15.5px;font-weight:700;letter-spacing:-.02em}
+.acc>button svg{width:18px;height:18px;color:var(--t3);transition:transform .3s var(--ease)}
+.acc.open>button svg{transform:rotate(180deg)}
+.acc .body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .32s var(--ease)}
+.acc.open .body{grid-template-rows:1fr}
+.acc .body>div{overflow:hidden}
+.steps{list-style:none;margin:0;padding:0 22px 18px;counter-reset:s}
+.steps li{counter-increment:s;display:flex;gap:12px;padding:7px 0;font-size:14px;color:var(--t2)}
+.steps li::before{content:counter(s);flex:none;width:22px;height:22px;border-radius:50%;background:var(--fill);color:var(--t2);font-size:12px;font-weight:700;display:grid;place-items:center;margin-top:-1px}
+.mini{padding:0 12px 12px}
+.mini .row{cursor:default}.mini .row:active{transform:none;background:none}
+.legacy{white-space:pre-wrap;font-size:13.5px;color:var(--t2);padding:0 22px 18px;margin:0}
+
+.foot{text-align:center;font-size:12px;color:var(--t3);margin:26px 20px 0;line-height:1.7}
+
+/* ── 상세 시트 ── */
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.36);opacity:0;pointer-events:none;transition:opacity .25s;z-index:40}
+.scrim.on{opacity:1;pointer-events:auto}
+.sheet{visibility:hidden;position:fixed;left:0;right:0;bottom:0;z-index:41;max-width:520px;margin:0 auto;background:var(--surface);border-radius:26px 26px 0 0;box-shadow:var(--sheet);transform:translateY(105%);transition:transform .38s var(--ease),visibility 0s .38s;padding:10px 22px calc(env(safe-area-inset-bottom) + 22px);max-height:86vh;overflow:auto}
+.sheet.on{transform:none;visibility:visible;transition:transform .38s var(--ease)}
+.grab{width:38px;height:5px;border-radius:3px;background:var(--fill2);margin:0 auto 16px}
+.sh-top{display:flex;align-items:center;gap:14px}
+.sh-top .nm{font-size:19px;font-weight:800;letter-spacing:-.03em}
+.sh-top .cd{font-size:13px;color:var(--t3)}
+.sh-price{margin:18px 0 4px;font-size:30px;font-weight:800;letter-spacing:-.04em}
+.sh-rate{font-size:15px;font-weight:700}
+.tl{margin:18px 0 6px;background:var(--surface2);border-radius:var(--r-lg);padding:16px}
+.tl-bar{position:relative;height:8px;border-radius:4px;background:var(--fill2);margin:14px 0 8px}
+.tl-bar i{position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:var(--brand);transition:width .6s var(--ease)}
+.tl-dots{display:flex;justify-content:space-between;font-size:12px;color:var(--t3)}
+.kv{display:flex;justify-content:space-between;align-items:center;padding:12px 0;font-size:14.5px}
+.kv+.kv{border-top:1px solid var(--hair)}
+.kv span{color:var(--t2)}
+.kv b{font-weight:700}
+.explain{margin-top:12px;font-size:13.5px;color:var(--t2);background:var(--surface2);border-radius:var(--r-md);padding:12px 14px;display:flex;gap:10px}
+.explain svg{width:18px;height:18px;color:var(--t3);margin-top:1px}
+.closebtn{margin-top:18px;width:100%;height:52px;border-radius:16px;background:var(--fill);font-weight:700;font-size:16px;transition:transform .15s}
+.closebtn:active{transform:scale(.98)}
+
+/* ── 로딩 ── */
+.sk{background:linear-gradient(90deg,var(--fill) 0%,var(--surface2) 40%,var(--fill) 80%);background-size:300% 100%;animation:sh 1.3s linear infinite;border-radius:8px}
+@keyframes sh{from{background-position:100% 0}to{background-position:-200% 0}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="top">
-    <div class="date" id="today"></div>
-    <button class="refresh" id="ref" aria-label="새로고침"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 4v5h-5"/></svg><span id="upd">불러오는 중</span></button>
-  </div>
-  <div class="seg" role="tablist">
-    <button role="tab" data-t="kr" aria-selected="true">한국 주식</button>
-    <button role="tab" data-t="us" aria-selected="false">미국 주식</button>
-  </div>
-  <main id="app">
-    <section class="card"><div class="skel" style="width:40%"></div><div class="skel" style="width:70%;height:30px"></div><div class="skel" style="width:55%"></div></section>
-    <section class="card"><div class="skel" style="width:30%"></div><div class="skel"></div><div class="skel" style="width:80%"></div></section>
-  </main>
-  <p class="foot">모두 연습용 가상매매예요. 실제로 주문이 나가지 않아요.<br>투자 결정과 책임은 본인에게 있어요.</p>
-</div>
+<header class="bar" id="bar"><div class="bar-in">
+  <div class="brand"><span class="mark"><svg viewBox="0 0 24 24"><path d="M3 15c3 0 4-7 9-7s6 7 9 7"/></svg></span>스윙</div>
+  <div class="seg" id="seg" data-v="kr" role="tablist"><span class="knob"></span><button role="tab" data-t="kr" aria-selected="true">한국</button><button role="tab" data-t="us" aria-selected="false">미국</button></div>
+  <button class="iconbtn" id="ref" aria-label="새로고침"><svg class="i" viewBox="0 0 24 24"><path d="M20 11.5A8 8 0 1 0 17.7 17"/><path d="M20 5v6.5h-6.5"/></svg></button>
+</div></header>
+<main id="app"></main>
+<div class="scrim" id="scrim"></div>
+<section class="sheet" id="sheet" role="dialog" aria-modal="true"></section>
+
 <script>
+/* ── 아이콘 (직접 그린 SVG) ── */
+const I={
+  buy:'<svg class="i" viewBox="0 0 24 24"><path d="M4 8h16l-1.4 10.2a2 2 0 0 1-2 1.8H7.4a2 2 0 0 1-2-1.8z"/><path d="M8.5 8V6.5a3.5 3.5 0 0 1 7 0V8"/><path d="M12 11.5v5M9.5 14h5"/></svg>',
+  time:'<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12.5" r="8"/><path d="M12 8.5v4l2.5 1.5"/><path d="M9.5 2.5h5"/></svg>',
+  stop:'<svg class="i" viewBox="0 0 24 24"><path d="M12 3l7.5 3v5.5c0 4.6-3.2 8.3-7.5 9.5-4.3-1.2-7.5-4.9-7.5-9.5V6z"/><path d="M8.5 12.5h7"/></svg>',
+  soon:'<svg class="i" viewBox="0 0 24 24"><path d="M7 3h10M7 21h10"/><path d="M8 3v3.5a4 4 0 0 0 1.6 3.2L12 11.5l2.4-1.8A4 4 0 0 0 16 6.5V3"/><path d="M8 21v-3.5a4 4 0 0 1 1.6-3.2L12 12.5l2.4 1.8a4 4 0 0 1 1.6 3.2V21"/></svg>',
+  hold:'<svg class="i" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/><path d="M9 14.5l2 2 4-4"/></svg>',
+  info:'<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.6v.1"/></svg>',
+  down:'<svg class="i" viewBox="0 0 24 24"><path d="M6 9.5l6 6 6-6"/></svg>',
+  pulse:'<svg class="i" viewBox="0 0 24 24"><path d="M3 12h4l2.5-6 5 12 2.5-6h4"/></svg>',
+};
+const EMPTY_ART=`<svg viewBox="0 0 72 72" fill="none"><rect x="10" y="16" width="52" height="40" rx="10" fill="var(--fill)"/><path d="M20 44c5 0 7-12 16-12s11 12 16 12" stroke="var(--brand)" stroke-width="4" stroke-linecap="round"/><circle cx="55" cy="18" r="9" fill="var(--surface)" stroke="var(--fill2)" stroke-width="3"/><path d="M55 14v4.5l3 1.5" stroke="var(--t3)" stroke-width="2.4" stroke-linecap="round"/></svg>`;
+
+/* ── 도구 ── */
 let DATA=null,TAB="kr";
 try{TAB=localStorage.getItem("tab")||"kr"}catch(e){}
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const sign=v=>v>0?"+":"";
-const pct=(v,d=1)=>v==null||isNaN(v)?"-":sign(v)+(v*100).toFixed(d)+"%";
-const tone=v=>v==null||Math.abs(v)<0.0005?"zero":v>0?"up":"down";
+const cls=v=>v==null||Math.abs(v)<.0005?"flat":v>0?"up":"down";
+const pct=(v,d=2)=>v==null||isNaN(v)?"-":(v>0?"+":"")+(v*100).toFixed(d)+"%";
 const won=v=>v==null?"-":Math.round(v).toLocaleString("ko-KR")+"원";
+const wonS=v=>(v>0?"+":v<0?"−":"")+Math.abs(Math.round(v)).toLocaleString("ko-KR")+"원";
 const usd=v=>v==null?"-":"$"+Number(v).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
-const md=s=>{if(!s)return"";const[,m,d]=s.split("-");return `${+m}/${+d}`};
-const COLORS=["#3182f6","#f04452","#00a661","#8b5cf6","#f08400","#0ea5e9","#e11d48","#14b8a6","#6366f1","#d97706"];
-const color=s=>COLORS[[...String(s)].reduce((a,c)=>a+c.charCodeAt(0),0)%COLORS.length];
-const logo=(name,code)=>`<div class="logo" style="background:${color(code)}">${esc((name||code).replace(/^\(주\)/,"").trim()[0])}</div>`;
+const usdS=v=>(v>0?"+":v<0?"−":"")+"$"+Math.abs(v).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+const md=s=>{if(!s)return"";const[,m,d]=s.split("-");return `${+m}월 ${+d}일`};
+const HUES=[[244,72,62],[204,80,52],[160,64,40],[12,78,58],[280,60,60],[34,86,52],[190,70,42],[330,64,58]];
+const mono=(name,code)=>{const h=HUES[[...String(code)].reduce((a,c)=>a+c.charCodeAt(0),0)%HUES.length];
+  const ch=String(name||code).replace(/^\(주\)/,"").trim();const t=/^[A-Z]{1,5}$/.test(code)?code:ch[0];
+  return {bg:`linear-gradient(140deg,hsl(${h[0]} ${h[1]}% ${h[2]+8}%),hsl(${h[0]+18} ${h[1]}% ${h[2]-6}%))`,t};};
+const UNIT={kr:1000000,us:1000};
 
-const KIND={
-  new:{ico:"🛒",what:"새로 사기"},
-  win:{ico:"💰",what:"팔기 · 수익 챙기기"},
-  loss:{ico:"✂️",what:"팔기 · 손실 끊기"},
-  flat:{ico:"🤝",what:"팔기 · 본전 정리"},
-  warn:{ico:"⏰",what:"곧 팔 예정"},
-  hold:{ico:"🙌",what:"그대로 두기"},
-};
-function kindOf(act){
-  if(act.includes("신규"))return"new";
-  if(act.includes("익절"))return"win";
-  if(act.includes("손절"))return"loss";
-  if(act.includes("보합"))return"flat";
-  if(act.includes("다음")||act.includes("만료분"))return"warn";
+/* 행동 분류: 사기 / 기간 끝나 팔기 / 손절 / 내일 팔기 / 그대로 */
+function kind(act){
+  if(act.includes("신규"))return"buy";
+  if(act.includes("손절(갭")||/손절 -\d/.test(act))return"stop";
+  if(act.includes("익절")||act.includes("손절 매도")||act.includes("보합"))return"time";
+  if(act.includes("다음")||act.includes("만료분")||act.includes("빠짐"))return"soon";
   return"hold";
 }
-const TAG={new:"새로 삼",win:"수익 실현",loss:"손실 정리",flat:"본전 정리",warn:"곧 팔기",hold:"보유 중"};
+const CHIP={buy:"새로 삼",time:"기간 끝",stop:"손절",soon:"곧 매도",hold:"보유"};
+const resTag=r=>{const c=cls(r);return `<span class="res ${c}">${c==="up"?"수익":c==="down"?"손실":"본전"}</span>`};
 
-function todoCard(items,when,emptyText,hint){
-  const g={};for(const it of items)(g[it.k]=g[it.k]||[]).push(it);
-  const order=["new","win","loss","flat","warn","hold"];
-  const why={new:when.buy,win:when.sell,loss:when.sell,flat:when.sell,warn:when.soon,hold:"아직 팔 때가 아니에요"};
-  const rows=order.filter(k=>g[k]).map(k=>`<li><div class="ico i-${k}">${KIND[k].ico}</div><div style="flex:1;min-width:0">
-     <div class="what">${KIND[k].what} <span class="sub" style="font-weight:600">${g[k].length}개</span></div><div class="why">${why[k]}</div>
-     <div class="chips">${g[k].map(it=>`<span class="chip">${esc(it.name)}<small class="${tone(it.ret)} num">${pct(it.ret)}</small></span>`).join("")}</div></div></li>`).join("");
-  return `<section class="card"><h2 class="title">오늘 할 일</h2>${hint?`<div class="hint" style="margin:6px 0 4px">${esc(hint)}</div>`:""}${rows?`<ul class="todo">${rows}</ul>`:
-    `<div class="nothing" style="margin-top:10px"><div class="ico">☕️</div><div><div style="font-weight:700">오늘은 할 일이 없어요</div><div class="sub">${emptyText}</div></div></div>`}</section>`;
+function ring(day,hold){const r=21,C=2*Math.PI*r,p=Math.max(0,Math.min(1,day/hold));
+  return `<svg viewBox="0 0 46 46"><circle class="tr" cx="23" cy="23" r="${r}"/><circle class="pr" cx="23" cy="23" r="${r}" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-p)}"/></svg>`;}
+function avatar(name,code,day,hold){const m=mono(name,code);return `<div class="av">${ring(day,hold)}<div class="mono" style="background:${m.bg};font-size:${m.t.length>3?10.5:m.t.length>2?12:14}px">${esc(m.t)}</div></div>`;}
+
+/* ── 화면 조각 ── */
+function hero(o){
+  const has=o.n>0;
+  return `<section class="block hero">
+    <div class="k">${o.title}<span class="live ${o.open?"on":""}"><i></i>${o.open?"실시간":"장 마감"}</span></div>
+    ${has?`<div class="amt tnum ${cls(o.pnl)}" data-count="${o.pnl}" data-fmt="${o.m}">${o.m==="kr"?wonS(o.pnl):usdS(o.pnl)}</div>
+      <div class="rate tnum ${cls(o.rate)}">${pct(o.rate)}</div>
+      <div class="basis">종목당 ${o.m==="kr"?"100만 원":"1,000달러"}씩 샀다고 할 때 지금 평가 손익</div>`
+     :`<div class="amt" style="font-size:24px;margin-top:12px">아직 들고 있는 종목이 없어요</div><div class="basis">새로 살 종목이 나오면 여기서 바로 보여 드릴게요</div>`}
+    <div class="kpis tnum">
+      <div class="kpi"><b>${o.n}${o.m==="us"?"개":"/"+o.slots}</b><span>보유 종목</span></div>
+      <div class="kpi"><b>${o.todo}건</b><span>오늘 할 일</span></div>
+      <div class="kpi"><b class="${o.realized?cls(o.realized.avg):""}">${o.realized?pct(o.realized.avg,1):"-"}</b><span>판 종목 평균</span></div>
+    </div></section>`;
 }
 
-function heroCard(label,rets,closedStats,status){
-  const n=rets.length;
-  const avg=n?rets.reduce((s,r)=>s+(r||0),0)/n:null;
-  const big=n?`<div class="big num ${tone(avg)}">${pct(avg,2)}</div><div class="sub">갖고 있는 ${n}종목의 평균 수익률</div>`:
-    `<div class="big" style="font-size:26px">갖고 있는 종목이 없어요</div><div class="sub">새 추천이 나오면 여기에 보여 드릴게요</div>`;
-  const pills=[`<span class="pill"><span class="dot ${status.open?"":"off"}"></span>${status.text}</span>`];
-  if(closedStats&&closedStats.n)pills.push(`<span class="pill num">지금까지 ${closedStats.n}번 팔아 평균&nbsp;<span class="${tone(closedStats.avg)}">${pct(closedStats.avg)}</span></span>`);
-  return `<section class="card hero"><div class="label">${label}</div>${big}<div class="meta">${pills.join("")}</div></section>`;
+function todo(m,items,ctx){
+  const G={buy:[],stop:[],time:[],soon:[],hold:[]};
+  items.forEach(x=>G[x.k].push(x));
+  const D={
+    buy:{t:"새로 사기",d:ctx.buyWhy,w:ctx.buyWhen},
+    time:{t:"기간 끝나서 팔기",d:`정해 둔 ${ctx.hold}일을 채워서 파는 거예요. 손절이 아니에요.`,w:ctx.sellWhen},
+    stop:{t:"손절선 닿아서 팔기",d:"산 값보다 7% 넘게 내려가서 손실을 여기서 끊어요",w:ctx.sellWhen},
+    soon:{t:"다음 거래일에 팔기",d:ctx.soonWhy,w:ctx.soonWhen},
+    hold:{t:"그대로 두기",d:"아직 정해 둔 기간이 남았어요",w:""},
+  };
+  const order=["buy","stop","time","soon","hold"].filter(k=>G[k].length);
+  const groups=order.map(k=>`<div class="group"><div class="gh"><span class="badge b-${k}">${I[k]}</span><div><div class="tt">${D[k].t}</div><div class="ds">${D[k].d}</div></div>${D[k].w?`<span class="when">${D[k].w}</span>`:""}</div>
+     <div class="items">${G[k].map(x=>`<div class="it"><span class="n">${esc(x.name)}${x.full?`<span class="caption" style="font-weight:500;margin-left:6px">${esc(x.full)}</span>`:""}</span><span class="v tnum">${k==="time"?resTag(x.ret):""}<span class="${cls(x.ret)}">${pct(x.ret,1)}</span></span></div>`).join("")}</div></div>`).join("");
+  return `<section class="block"><div class="h"><h2>오늘 할 일</h2><span class="aside">${ctx.dateLabel}</span></div>
+    ${ctx.notice?`<div class="notice">${I.info}<span>${ctx.notice}</span></div>`:""}
+    ${groups||`<div class="empty">${EMPTY_ART}<b>오늘은 할 일이 없어요</b><span>${ctx.emptyWhy}</span></div>`}</section>`;
 }
 
-function statsCard(s,costText){
+function holdings(list,m,emptyText){
+  return `<section class="block"><div class="h"><h2>보유 종목</h2><span class="aside">원 둘레 = 보유 기간</span></div>
+   ${list.length?`<div class="list">${list.map((o,i)=>`<button class="row" data-i="${i}">${avatar(o.name,o.code,o.day,o.hold)}
+     <div class="mid"><div class="nm">${esc(o.name)}</div><div class="sb"><span class="chip c-${o.k}">${CHIP[o.k]}</span><span>${o.sub}</span></div></div>
+     <div class="rt tnum"><div class="p">${m==="kr"?won(o.price):usd(o.price)}</div><div class="r ${cls(o.ret)}">${pct(o.ret,1)}</div></div></button>`).join("")}</div>`
+   :`<div class="empty">${EMPTY_ART}<b>보유 종목이 없어요</b><span>${emptyText}</span></div>`}</section>`;
+}
+
+function perf(s,costNote){
   if(!s||!s.n)return"";
-  return `<section class="card"><h2 class="title">지금까지 성적</h2><div class="sub">판 것만 계산했어요 · ${costText}</div>
-   <div class="stats num"><div class="stat"><b>${s.n}번</b><span>판 횟수</span></div><div class="stat"><b>${Math.round(s.win*100)}%</b><span>수익 낸 비율</span></div><div class="stat"><b class="${tone(s.avg)}">${pct(s.avg)}</b><span>한 번 평균</span></div></div></section>`;
+  const w=Math.round(s.win*100);
+  return `<section class="block"><div class="h"><h2>지금까지 성적</h2><span class="aside">${costNote}</span></div>
+   <div class="perf tnum"><div class="pc"><span>판 횟수</span><b>${s.n}번</b></div><div class="pc"><span>한 번 평균</span><b class="${cls(s.avg)}">${pct(s.avg,2)}</b></div>
+   <div class="winbar"><span class="caption">수익 낸 비율</span><div class="wb"><i style="width:${w}%"></i><em style="width:${100-w}%"></em></div><div class="wl"><span class="up">수익 ${w}%</span><span class="down">손실 ${100-w}%</span></div></div></div></section>`;
 }
 
-let uid=0;
-function holdRow(o){
-  const id="d"+(uid++);
-  return `<div class="row" onclick="document.getElementById('${id}').classList.toggle('open')">${logo(o.name,o.code)}
-   <div class="mid"><div class="nm">${esc(o.name)}</div><div class="ds"><span class="tag g-${o.k}">${TAG[o.k]}</span>${o.desc}</div></div>
-   <div class="rt num"><div class="p">${o.price}</div><div class="r ${tone(o.ret)}">${pct(o.ret)}</div></div></div>
-   <div class="detail" id="${id}">${o.detail}</div>`;
-}
+function acc(title,inner,open){return `<div class="acc ${open?"open":""}"><button>${title}${I.down}</button><div class="body"><div>${inner}</div></div></div>`;}
+function soldList(rows,m){return `<div class="mini">${rows.map(r=>`<div class="row">${avatar(r.name,r.code,1,1)}<div class="mid"><div class="nm">${esc(r.name)}</div><div class="sb">${md(r.d0)} → ${md(r.d1)} · ${esc(r.why)}</div></div><div class="rt tnum"><div class="p ${cls(r.ret)}">${pct(r.ret,1)}</div></div></div>`).join("")}</div>`;}
 
-function rulesCard(lines,extra){
-  return `<section class="card" style="padding-top:6px;padding-bottom:6px">${extra||""}
-   <details><summary>이 추천은 이렇게 골라요</summary><ul class="rules">${lines.map(l=>`<li>${l}</li>`).join("")}</ul></details></section>`;
-}
-
-function renderKR(k){
+/* ── 한국 ── */
+let ROWS=[];
+function viewKR(k){
   const open=k.rows.filter(r=>!r.done);
-  const items=open.map(r=>({k:kindOf(r.act),name:r.name,ret:r.ret}));
-  const st={open:k.sessionOpen,text:k.sessionOpen?"장 열림 · 실시간":"장 마감 · 마지막 가격"};
-  let h=heroCard("한국 가상 포트폴리오",open.map(r=>r.ret),k.stats,st);
-  const down=k.regime&&k.regime.includes("하락");
-  h+=todoCard(items,{buy:"오후 3시 20분 전에 지금 가격(종가)으로 사요",sell:"오늘 장 마감 가격(종가)으로 팔아요",soon:"다음 거래일 장 마감 때 팔아요"},
-     down?"코스피가 약해서 오늘은 쉬어요":"평일 오후 3시에 새 추천을 확인해요",
-     k.regime?(down?"📉 코스피가 약한 날이라 새로 사지 않아요":"📈 코스피 흐름이 좋아서 새로 살 수 있는 날이에요"):"");
-  h+=`<section class="card"><h2 class="title">갖고 있는 종목 <span class="sub" style="font-weight:600">${open.length}/${k.slots}</span></h2>`;
-  if(!open.length)h+=`<div class="sub" style="padding:10px 0 2px">아직 없어요. 11월 16일(월) 오후 3시부터 새 방식으로 추천해요.</div>`;
-  for(const r of open){
-    const left=r.hold-r.day;
-    h+=holdRow({name:r.name,code:r.code,k:kindOf(r.act),price:won(r.price),ret:r.ret,
-      desc:`${won(r.entry)}에 삼 · ${r.day}/${r.hold}일째`,
-      detail:`<div class="l"><span>산 가격</span><b class="num">${won(r.entry)}</b></div><div class="l"><span>지금 가격</span><b class="num">${won(r.price)}</b></div>
-        <div class="l"><span>여기까지 떨어지면 팔아요</span><b class="num down">${won(r.stop)}</b></div>
-        <div class="bar"><i style="width:${Math.min(100,r.day/r.hold*100)}%"></i></div><div class="l"><span>${r.day}일 지남</span><span>${left>0?left+"일 뒤 팔기":"오늘 팔기"}</span></div>`});
-  }
-  h+=`</section>`;
-  h+=statsCard(k.stats,"수수료·세금 0.25% 뺀 값");
-  const closed=k.closed||[];
-  let extra="";
-  if(closed.length)extra+=`<details><summary>최근에 판 종목</summary><div style="margin-bottom:10px">${closed.slice(0,15).map(c=>
-    `<div class="row" style="cursor:default">${logo(c.name,c.code)}<div class="mid"><div class="nm">${esc(c.name)}</div><div class="ds">${md(c.date)} 삼 → ${md(c.exit_date)} 팖</div></div><div class="rt num"><div class="r ${tone(c.ret_net)}" style="font-size:15px">${pct(c.ret_net)}</div></div></div>`).join("")}</div></details>`;
-  if(k.legacy_note)extra+=`<details><summary>예전 단타 방식 기록</summary><p class="past">${esc(k.legacy_note)}</p></details>`;
-  h+=rulesCard(["요즘 가장 많이 오른 업종에서, 그 안에서도 제일 센 종목을 골라요","오후 3시 20분 전에 사고, 5거래일째 되는 날 장 마감 때 팔아요","산 가격보다 7% 떨어지면 바로 팔아요","한 번에 최대 10종목까지만 들고 있어요","코스피가 약한 날(20일 평균 아래)은 새로 사지 않고 쉬어요"],extra);
+  const pnl=open.reduce((s,r)=>s+UNIT.kr*(r.ret||0),0), rate=open.length?pnl/(UNIT.kr*open.length):0;
+  const items=open.map(r=>({k:kind(r.act),name:r.name,ret:r.ret}));
+  const down=(k.regime||"").includes("하락");
+  ROWS=open.map(r=>({m:"kr",k:kind(r.act),name:r.name,code:r.code,price:r.price,ret:r.ret,day:r.day,hold:r.hold,
+    sub:`${r.hold}일 중 ${r.day}일째`,entry:r.entry,stop:r.stop,date:r.date,lots:null}));
+  let h=hero({m:"kr",title:"한국 가상 포트폴리오",open:k.sessionOpen,n:open.length,slots:k.slots,pnl,rate,todo:items.filter(x=>x.k!=="hold").length,realized:k.stats});
+  h+=todo("kr",items,{hold:k.hold,dateLabel:k.sessionOpen?"장 열림":"다음 장 기준",
+    buyWhy:"오늘 가격(종가)으로 사요",buyWhen:"15:20 전",sellWhen:"오늘 종가",soonWhy:"보유 기간이 하루 남았어요",soonWhen:"다음 거래일",
+    notice:k.regime?(down?"코스피가 약한 날이라 새로 사지 않고 쉬어요.":"코스피 흐름이 좋아서 새로 살 수 있는 날이에요."):"",
+    emptyWhy:down?"코스피가 약해서 오늘은 쉬어요":"평일 오후 3시에 새 추천이 나와요"});
+  h+=holdings(ROWS,"kr","11월 16일(월) 오후 3시부터 새 방식으로 추천해요");
+  h+=perf(k.stats,"수수료·세금 0.25% 반영");
+  let a="";
+  if((k.closed||[]).length)a+=acc("최근에 판 종목",soldList(k.closed.slice(0,15).map(c=>({name:c.name,code:c.code,d0:c.date,d1:c.exit_date,why:/손절/.test(c.reason||"")?"손절":"기간 끝",ret:c.ret_net})),"kr"));
+  a+=acc("종목은 이렇게 골라요",`<ol class="steps"><li>요즘 가장 강한 업종을 찾고, 그 안에서 제일 센 종목을 골라요</li><li>오후 3시 20분 전에 그날 가격(종가)으로 사요</li><li>5거래일째 되는 날 장 마감 가격으로 팔아요 (기간 끝)</li><li>그 전에 산 값보다 7% 떨어지면 바로 팔아요 (손절)</li><li>한 번에 최대 10종목, 코스피가 약한 날은 쉬어요</li></ol>`);
+  if(k.legacy_note)a+=acc("예전 단타 방식 기록",`<p class="legacy">${esc(k.legacy_note)}</p>`);
+  h+=`<section class="block">${a}</section>`;
   return h;
 }
 
-function renderUS(u){
+/* ── 미국 ── */
+function viewUS(u){
   const live=u.tickers.filter(t=>t.openLots>0).sort((a,b)=>(b.inToday-a.inToday)||((b.avgRet||0)-(a.avgRet||0)));
-  const items=live.map(t=>({k:kindOf(t.act),name:t.code,ret:t.avgRet}));
+  const lotsOpen=u.rows.filter(r=>!r.done);
+  const pnl=lotsOpen.reduce((s,r)=>s+UNIT.us*(r.ret||0),0), rate=lotsOpen.length?pnl/(UNIT.us*lotsOpen.length):0;
   const done=u.rows.filter(r=>r.done);
   const stats=done.length?{n:done.length,avg:done.reduce((s,r)=>s+r.ret,0)/done.length,win:done.filter(r=>r.ret>0).length/done.length}:null;
-  const st={open:u.sessionOpen,text:u.sessionOpen?"장 열림 · 실시간":`장 마감 · ${md(u.asof)} 추천 기준`};
-  let h=heroCard("미국 가상 포트폴리오",live.map(t=>t.avgRet),stats,st);
-  h+=todoCard(items,{buy:"미국 장 마감 직전(한국 새벽 5시 50분 전)에 사요",sell:"미국 장 마감 가격으로 팔아요",soon:"산 지 3일째 되는 날 장 마감 때 팔아요"},"평일 새벽 5시 34분에 새 추천을 확인해요","");
-  h+=`<section class="card"><h2 class="title">갖고 있는 종목 <span class="sub" style="font-weight:600">${live.length}개</span></h2>`;
-  if(!live.length)h+=`<div class="sub" style="padding:10px 0 2px">아직 없어요</div>`;
-  for(const t of live){
-    const lots=t.lots.filter(x=>!x.done).sort((a,b)=>a.date.localeCompare(b.date));
-    const avgEntry=lots.reduce((s,x)=>s+x.entry,0)/lots.length;
-    const desc=lots.length>1?`평균 ${usd(avgEntry)}에 삼`:`${md(lots[0].date)} ${usd(lots[0].entry)}에 삼`;
-    const detail=lots.map(x=>{const left=x.hold-x.day;return `<div class="l"><span>${md(x.date)}에 ${usd(x.entry)}</span><span><b class="${tone(x.ret)} num">${pct(x.ret)}</b> · ${left<=0?"오늘 팔기":left===1?"다음 거래일 팔기":left+"일 뒤 팔기"}</span></div>`}).join("")+
-      (t.inToday?`<div style="margin-top:8px">오늘도 추천 5개에 들어서, 오래된 몫을 팔아도 새로 산 몫은 계속 들고 가요.</div>`:`<div style="margin-top:8px">오늘 추천에서 빠졌어요. 날짜가 되는 대로 팔고 다시 사지 않아요.</div>`);
-    h+=holdRow({name:t.name,code:t.code,k:kindOf(t.act),price:usd(t.price),ret:t.avgRet,desc,detail});
-  }
-  h+=`</section>`;
-  h+=statsCard(stats,"수수료 0.2% 뺀 값");
-  let extra="";
-  if(done.length)extra+=`<details><summary>최근에 판 종목</summary><div style="margin-bottom:10px">${done.sort((a,b)=>(b.exitDate||"").localeCompare(a.exitDate||"")).slice(0,15).map(r=>
-    `<div class="row" style="cursor:default">${logo(r.name,r.code)}<div class="mid"><div class="nm">${esc(r.name)}</div><div class="ds">${md(r.date)} 삼 → ${md(r.exitDate)} 팖</div></div><div class="rt num"><div class="r ${tone(r.ret)}" style="font-size:15px">${pct(r.ret)}</div></div></div>`).join("")}</div></details>`;
-  h+=rulesCard(["지난 1년 동안 가장 많이 오른 종목 5개를 골라요 (최근 한 달은 빼고 봐요)","매일 장 마감 직전에 그날의 5종목을 사요","산 지 3거래일째 되는 날 장 마감 때 팔아요","목표가나 손절 없이 날짜로만 팔아요","오늘도 5개 안에 들면 사실상 계속 들고 가는 셈이에요"],extra);
+  const items=live.map(t=>({k:kind(t.act),name:t.code,full:t.name,ret:t.avgRet}));
+  ROWS=live.map(t=>{const lots=t.lots.filter(x=>!x.done).sort((a,b)=>a.date.localeCompare(b.date));
+    const maxDay=Math.max(...lots.map(x=>x.day));
+    return {m:"us",k:kind(t.act),name:t.name,code:t.code,price:t.price,ret:t.avgRet,day:maxDay,hold:u.hold,
+      sub:lots.length>1?`${lots.length}번 나눠 삼`:`${u.hold}일 중 ${lots[0].day}일째`,lots,inToday:t.inToday};});
+  let h=hero({m:"us",title:"미국 가상 포트폴리오",open:u.sessionOpen,n:live.length,pnl,rate,todo:items.filter(x=>x.k!=="hold").length,realized:stats});
+  h+=todo("us",items,{hold:u.hold,dateLabel:`${md(u.asof)} 추천`,
+    buyWhy:"미국 장 마감 가격으로 사요",buyWhen:"새벽 5:50 전",sellWhen:"장 마감",soonWhy:"추천에서 빠졌거나 기간이 하루 남았어요",soonWhen:"다음 거래일",
+    notice:"매일 상위 5종목을 새로 사고, 산 지 3일째 되는 날 팔아요. 오늘도 5위 안이면 계속 들고 가요.",emptyWhy:"평일 새벽 5시 34분에 새 추천이 나와요"});
+  h+=holdings(ROWS,"us","평일 새벽에 새 추천이 나와요");
+  h+=perf(stats,"수수료 0.2% 반영");
+  let a="";
+  if(done.length)a+=acc("최근에 판 종목",soldList(done.sort((x,y)=>(y.exitDate||"").localeCompare(x.exitDate||"")).slice(0,15).map(r=>({name:r.name,code:r.code,d0:r.date,d1:r.exitDate,why:"기간 끝",ret:r.ret})),"us"));
+  a+=acc("종목은 이렇게 골라요",`<ol class="steps"><li>지난 1년 동안 가장 많이 오른 종목 5개를 골라요 (최근 한 달은 빼고 봐요)</li><li>매일 장 마감 직전에 그날의 5종목을 사요</li><li>산 지 3거래일째 되는 날 장 마감 때 팔아요 (기간 끝)</li><li>목표가나 손절 없이 날짜로만 팔아요</li><li>오늘도 5위 안에 들면 사실상 계속 들고 가는 셈이에요</li></ol>`);
+  h+=`<section class="block">${a}</section>`;
   return h;
 }
 
-function render(){
-  document.querySelectorAll(".seg button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.t===TAB)));
-  if(!DATA)return;
-  uid=0;
-  $("#app").innerHTML=TAB==="kr"?renderKR(DATA.kr):renderUS(DATA.us);
+/* ── 상세 시트 ── */
+function openSheet(o){
+  const isKR=o.m==="kr",P=isKR?won:usd;
+  let body="";
+  if(isKR){
+    const left=o.hold-o.day;
+    body=`<div class="tl"><div class="caption">보유 기간</div><div class="tl-bar"><i style="width:${Math.min(100,o.day/o.hold*100)}%"></i></div>
+      <div class="tl-dots"><span>${md(o.date)} 삼</span><span>${left>0?`${left}거래일 뒤 매도`:"오늘 매도"}</span></div></div>
+      <div class="kv"><span>산 가격</span><b class="tnum">${P(o.entry)}</b></div>
+      <div class="kv"><span>지금 가격</span><b class="tnum">${P(o.price)}</b></div>
+      <div class="kv"><span>100만 원어치였다면</span><b class="tnum ${cls(o.ret)}">${wonS(UNIT.kr*(o.ret||0))}</b></div>
+      <div class="kv"><span>손절선 (−7%)</span><b class="tnum down">${P(o.stop)}</b></div>
+      <div class="explain">${I.info}<span>${o.k==="stop"?"손절선 아래로 내려가서 손실을 끊고 팔아요.":o.k==="time"?"정해 둔 5일을 채워서 오늘 장 마감 가격으로 팔아요. 손절이 아니에요.":"5거래일째 되는 날 장 마감 가격으로 팔아요. 그 전에 손절선에 닿으면 먼저 팔아요."}</span></div>`;
+  }else{
+    body=`<div class="tl"><div class="caption">나눠 산 기록</div>${o.lots.map(x=>{const left=x.hold-x.day;return `<div class="kv"><span>${md(x.date)} · ${usd(x.entry)}</span><b class="tnum"><span class="${cls(x.ret)}">${pct(x.ret,1)}</span> <span class="caption">· ${left<=0?"오늘 매도":left===1?"다음 거래일 매도":left+"거래일 뒤 매도"}</span></b></div>`}).join("")}</div>
+      <div class="kv"><span>1,000달러씩 샀다면</span><b class="tnum ${cls(o.ret)}">${usdS(o.lots.reduce((s,x)=>s+UNIT.us*(x.ret||0),0))}</b></div>
+      <div class="explain">${I.info}<span>${o.inToday?"오늘도 추천 5위 안에 들었어요. 오래된 몫은 날짜가 되면 팔고, 새로 산 몫은 계속 들고 가요.":"오늘 추천 5위에서 빠졌어요. 남은 몫은 날짜가 되는 대로 팔고 다시 사지 않아요."}</span></div>`;
+  }
+  const m=mono(o.name,o.code);
+  $("#sheet").innerHTML=`<div class="grab"></div><div class="sh-top">${avatar(o.name,o.code,o.day,o.hold)}<div><div class="nm">${esc(o.name)}</div><div class="cd">${esc(o.code)} · <span class="chip c-${o.k}">${CHIP[o.k]}</span></div></div></div>
+    <div class="sh-price tnum">${P(o.price)}</div><div class="sh-rate tnum ${cls(o.ret)}">${pct(o.ret,2)} <span class="caption" style="font-weight:500">산 값 대비 · 수수료 반영</span></div>${body}
+    <button class="closebtn" onclick="closeSheet()">닫기</button>`;
+  $("#scrim").classList.add("on");$("#sheet").classList.add("on");
+}
+function closeSheet(){$("#scrim").classList.remove("on");$("#sheet").classList.remove("on");}
+$("#scrim").onclick=closeSheet;
+(()=>{let y0=null;const s=$("#sheet");s.addEventListener("touchstart",e=>{if(s.scrollTop<=0)y0=e.touches[0].clientY},{passive:true});
+ s.addEventListener("touchmove",e=>{if(y0!=null&&e.touches[0].clientY-y0>70){y0=null;closeSheet()}},{passive:true});})();
+
+/* ── 그리기 ── */
+function skeleton(){return `<section class="block hero"><div class="sk" style="width:38%;height:16px"></div><div class="sk" style="width:62%;height:36px;margin-top:14px"></div><div class="sk" style="width:30%;height:16px;margin-top:10px"></div><div class="sk" style="height:46px;margin-top:20px"></div></section>
+  <section class="block pad"><div class="sk" style="width:30%;height:20px"></div>${[1,2,3].map(()=>`<div style="display:flex;gap:12px;margin-top:18px"><div class="sk" style="width:40px;height:40px;border-radius:13px"></div><div style="flex:1"><div class="sk" style="width:50%;height:15px"></div><div class="sk" style="width:80%;height:12px;margin-top:8px"></div></div></div>`).join("")}</section>`;}
+function countUp(){document.querySelectorAll("[data-count]").forEach(el=>{const to=+el.dataset.count,f=el.dataset.fmt==="kr"?wonS:usdS,t0=performance.now();
+  const step=t=>{const p=Math.min(1,(t-t0)/600),e=1-Math.pow(1-p,3);el.textContent=f(to*e);if(p<1)requestAnimationFrame(step)};requestAnimationFrame(step);});}
+function render(anim){
+  const seg=$("#seg");seg.dataset.v=TAB;seg.querySelectorAll("button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.t===TAB)));
+  if(!DATA){$("#app").innerHTML=skeleton();return;}
+  $("#app").innerHTML=`<div class="view">${TAB==="kr"?viewKR(DATA.kr):viewUS(DATA.us)}<p class="foot">연습용 가상매매예요. 실제 주문은 나가지 않아요.<br>시세 ${new Date(DATA.now).toLocaleString("ko-KR",{timeZone:"Asia/Seoul",month:"numeric",day:"numeric",hour:"numeric",minute:"2-digit"})} · 장부 ${esc(DATA.updated_at)}</p></div>`;
+  document.querySelectorAll(".row[data-i]").forEach(b=>b.onclick=()=>openSheet(ROWS[+b.dataset.i]));
+  document.querySelectorAll(".acc>button").forEach(b=>b.onclick=()=>b.parentElement.classList.toggle("open"));
+  if(anim)countUp();
 }
 async function load(){
-  const btn=$("#ref");btn.classList.add("spin");
-  try{
-    const r=await fetch("/api/board",{cache:"no-store"});
-    if(!r.ok)throw new Error(r.status);
-    DATA=await r.json();
-    const t=new Date(DATA.now).toLocaleTimeString("ko-KR",{timeZone:"Asia/Seoul",hour:"numeric",minute:"2-digit"});
-    $("#upd").textContent=`${t} 기준`;
-    render();
-  }catch(e){
-    $("#upd").innerHTML=`<span class="err">불러오기 실패</span>`;
-    if(!DATA)$("#app").innerHTML=`<section class="card"><div class="title">잠깐 연결이 안 돼요</div><div class="sub">조금 뒤에 오른쪽 위 새로고침을 눌러 주세요.</div></section>`;
-  }finally{btn.classList.remove("spin")}
+  const b=$("#ref");b.classList.add("spin");
+  try{const r=await fetch("/api/board",{cache:"no-store"});if(!r.ok)throw 0;DATA=await r.json();render(true);}
+  catch(e){if(!DATA)$("#app").innerHTML=`<section class="block"><div class="empty">${EMPTY_ART}<b>잠깐 연결이 안 돼요</b><span>오른쪽 위 새로고침을 눌러 주세요</span></div></section>`;}
+  finally{b.classList.remove("spin")}
 }
-$("#today").textContent=new Date().toLocaleDateString("ko-KR",{timeZone:"Asia/Seoul",month:"long",day:"numeric",weekday:"long"});
+$("#seg").querySelectorAll("button").forEach(b=>b.onclick=()=>{if(TAB===b.dataset.t)return;TAB=b.dataset.t;try{localStorage.setItem("tab",TAB)}catch(e){};render(true);window.scrollTo({top:0,behavior:"smooth"});});
 $("#ref").onclick=load;
-document.querySelectorAll(".seg button").forEach(b=>b.onclick=()=>{TAB=b.dataset.t;try{localStorage.setItem("tab",TAB)}catch(e){};render();window.scrollTo({top:0,behavior:"smooth"});});
+addEventListener("scroll",()=>$("#bar").classList.toggle("scrolled",scrollY>4),{passive:true});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeSheet()});
 render();load();
 setInterval(()=>{if(document.visibilityState==="visible")load()},120000);
 </script>
