@@ -95,7 +95,9 @@ function exitLabel(ret) {
 function judge(lot, q, hold, cost, today, sessionOpen, stopPct) {
   const after = q.bars.filter((b) => b.date > lot.date);
   const price = q.price;
-  const res = { price, chgPct: q.chgPct, ret: price ? price / lot.entry - 1 - cost : null, day: after.length, hold };
+  const spark = [lot.entry, ...after.map((b) => b.close)];
+  if (price != null && spark[spark.length - 1] !== price && !(after.length && after[after.length - 1].date === today)) spark.push(price);
+  const res = { price, chgPct: q.chgPct, ret: price ? price / lot.entry - 1 - cost : null, day: after.length, hold, spark };
   const stop = lot.stop || (stopPct ? Math.round(lot.entry * (1 - stopPct)) : null);
   res.stop = stop;
   for (let k = 0; k < after.length; k++) {
@@ -124,6 +126,25 @@ function judge(lot, q, hold, cost, today, sessionOpen, stopPct) {
   return { ...res, done: false, act, tone, left };
 }
 
+// 포트폴리오 흐름: 날짜별로 그날 들고 있던 종목들의 평균 수익률
+function curveOf(lots, qs) {
+  const dates = new Set();
+  for (const l of lots) for (const b of (qs[l.code] || { bars: [] }).bars) if (b.date >= l.date) dates.add(b.date);
+  return [...dates].sort().map((d) => {
+    const vals = [];
+    for (const l of lots) {
+      const bars = (qs[l.code] || { bars: [] }).bars;
+      const after = bars.filter((b) => b.date > l.date);
+      const exitIdx = (l.hold || 99) - 1;
+      const exitDate = after[exitIdx] ? after[exitIdx].date : "9999";
+      if (d < l.date || d > exitDate) continue;
+      const b = bars.find((x) => x.date === d);
+      if (b) vals.push(b.close / l.entry - 1);
+    }
+    return vals.length ? { date: d, ret: vals.reduce((a, c) => a + c, 0) / vals.length } : null;
+  }).filter(Boolean);
+}
+
 async function buildKR() {
   const kr = board.kr;
   const now = partsIn("Asia/Seoul");
@@ -132,8 +153,9 @@ async function buildKR() {
   const codes = [...new Set(kr.lots.map((l) => l.code))];
   const since = kr.lots.reduce((m, l) => (l.date < m ? l.date : m), today);
   const qs = Object.fromEntries(await Promise.all(codes.map(async (c) => [c, await krQuote(c, since)])));
+  kr.lots.forEach((l) => (l.hold = l.hold || kr.hold));
   const rows = kr.lots.map((l) => ({ ...l, ...judge(l, qs[l.code], kr.hold, kr.cost, today, sessionOpen, kr.stop_pct) }));
-  return { ...kr, today, sessionOpen, rows };
+  return { ...kr, today, sessionOpen, rows, curve: curveOf(kr.lots, qs) };
 }
 
 async function buildUS() {
@@ -150,6 +172,7 @@ async function buildUS() {
   const byCode = {};
   for (const r of rows) {
     (byCode[r.code] = byCode[r.code] || { code: r.code, name: r.name, lots: [], price: r.price, chgPct: r.chgPct }).lots.push(r);
+    byCode[r.code].spark = (qs[r.code] || { bars: [] }).bars.slice(-8).map((b) => b.close);
   }
   const tickers = Object.values(byCode).map((t) => {
     const open = t.lots.filter((x) => !x.done);
@@ -164,7 +187,7 @@ async function buildUS() {
     else { act = "보유 후 만료분부터 매도"; tone = "warn"; }
     return { ...t, openLots: open.length, avgRet, act, tone, inToday: picksToday.has(t.code) };
   });
-  return { ...us, today, sessionOpen, rows, tickers };
+  return { ...us, today, sessionOpen, rows, tickers, curve: curveOf(us.lots, qs) };
 }
 
 module.exports = async (req, res) => {
