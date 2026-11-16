@@ -171,6 +171,8 @@ main{max-width:520px;margin:0 auto;padding:4px max(16px,env(safe-area-inset-righ
 .steps li::before{content:counter(s);flex:none;width:22px;height:22px;border-radius:50%;background:var(--fill);color:var(--t2);font-size:12px;font-weight:700;display:grid;place-items:center}
 .mini{padding:0 8px 10px}
 .mini .row{cursor:default;min-height:64px}.mini .row:active{transform:none;background:none}
+.x1t{width:calc(100% - 44px);margin:0 22px 18px;border-collapse:collapse;font-size:14px;color:var(--t2)}
+.x1t th,.x1t td{padding:7px 4px;text-align:right;border-bottom:1px solid var(--line)}.x1t th:first-child,.x1t td:first-child{text-align:left}.x1t th{font-size:12.5px;font-weight:600}
 .legacy{white-space:pre-wrap;font-size:13.5px;color:var(--t2);padding:0 22px 18px;margin:0;line-height:1.6}
 
 .foot{text-align:center;font-size:12px;color:var(--t3);margin:26px 20px 0;line-height:1.7}
@@ -400,6 +402,14 @@ function perf(s,costNote){
 const acc=(t,inner)=>`<div class="acc"><button aria-expanded="false">${t}${I.caret}</button><div class="body"><div>${inner}</div></div></div>`;
 const sold=rows=>`<div class="mini">${rows.map(r=>`<div class="row">${avatar(r.name,r.code,1,1)}<div class="mid"><div class="nm">${esc(r.name)}</div><div class="sb">${mdS(r.d0)} → ${mdS(r.d1)} · ${esc(r.why)}</div></div><div class="rt tnum"><div class="p ${cls(r.ret)}">${pct(r.ret,1)}</div></div></div>`).join("")}</div>`;
 
+function x1cmp(x){
+  const col=s=>s&&s.n?[`${s.n}번`,`${Math.round(s.win*100)}%`,`<b class="${cls(s.avg)}">${pct(s.avg,2)}</b>`,`<b class="${cls(s.acct)}">${pct(s.acct,1)}</b>`]:[`${s?s.n:0}번`,"-","-","-"];
+  const b=col(x.base),y=col(x.x1),lab=["판 횟수","수익 낸 비율","한 번 평균","계좌 누적(10종목)"];
+  return `<p class="legacy">실제 추천은 지금 규칙 그대로예요. 같은 날 같은 방식으로 X1안(${esc(x.rule)})도 가상으로 사고팔아 성적만 나란히 비교해요. ${esc(x.since)}부터 기록.</p>
+  <table class="x1t tnum"><thead><tr><th></th><th>지금 규칙</th><th>X1안</th></tr></thead><tbody>${lab.map((l,i)=>`<tr><td>${l}</td><td>${b[i]}</td><td>${y[i]}</td></tr>`).join("")}
+  <tr><td>보유 중</td><td>${x.base.held}종목</td><td>${x.x1.held}종목</td></tr><tr><td>익절 +15%</td><td>-</td><td>${x.x1.tp}번</td></tr></tbody></table>`;
+}
+
 /* ───────── 한국 ───────── */
 function viewKR(k){
   const open=k.rows.filter(r=>!r.done);
@@ -418,6 +428,7 @@ function viewKR(k){
   let a="";
   if((k.closed||[]).length)a+=acc("최근에 판 종목",sold(k.closed.slice(0,15).map(c=>({name:c.name,code:c.code,d0:c.date,d1:c.exit_date,why:/손절/.test(c.reason||"")?"손절":"기간 끝",ret:c.ret_net}))));
   a+=acc("종목은 이렇게 골라요",`<ol class="steps"><li>요즘 가장 강한 업종을 찾고, 그 안에서 제일 센 종목을 골라요</li><li>오후 3시 20분 전에 그날 가격(종가)으로 사요</li><li>5거래일째 되는 날 장 마감 가격으로 팔아요 · 기간 끝</li><li>그 전에 산 값보다 7% 떨어지면 바로 팔아요 · 손절</li><li>한 번에 최대 10종목, 코스피가 약한 날은 쉬어요</li></ol>`);
+  if(k.x1)a+=acc("비교 시험: X1안",x1cmp(k.x1));
   if(k.legacy_note)a+=acc("예전 단타 방식 기록",`<p class="legacy">${esc(k.legacy_note)}</p>`);
   return h+`<section class="block">${a}</section>`;
 }
