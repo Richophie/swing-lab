@@ -98,6 +98,7 @@ main{max-width:520px;margin:0 auto;padding:4px max(16px,env(safe-area-inset-righ
 .chart{margin:16px -6px 0;position:relative}
 .chart svg{display:block;width:100%;height:96px;overflow:visible}
 .chart .ax{display:flex;justify-content:space-between;font-size:var(--fs-micro);color:var(--t3);padding:6px 6px 0}
+.chart .ax .hl b{font-weight:600;font-variant-numeric:tabular-nums}
 .kpis{display:grid;grid-template-columns:repeat(3,1fr);margin-top:16px;border-top:1px solid var(--hair);padding-top:14px}
 .kpi+.kpi{border-left:1px solid var(--hair);padding-left:14px}
 .kpi b{display:block;font-size:17px;font-weight:700;letter-spacing:-.025em}
@@ -362,7 +363,7 @@ function hero(o){
     ${has?`<div class="amt tnum ${cls(s.pnl)}" data-count="${s.pnl}" data-fmt="${o.m}">${o.m==="kr"?wonS(s.pnl):usdS(s.pnl)}</div>
       <div class="rate tnum ${cls(s.rate)}">${I.tri(s.rate)}${pct(s.rate)}</div>
       <div class="basis">종목당 ${o.m==="kr"?"100만 원":"1,000달러"}씩 샀다고 할 때의 평가 손익</div>
-      ${s.curve.length>1?`<div class="chart">${area(s.curve.map(v=>v*100),{label:"보유 종목 평균 수익률 흐름"})}<div class="ax"><span>${mdS(dates[0].date)}</span><span>보유 종목 평균 수익률 흐름</span><span>${mdS(dates[dates.length-1].date)}</span></div></div>`:""}`
+      ${s.curve.length>1?`<div class="chart">${area(s.curve.map(v=>v*100),{label:"보유 종목 평균 수익률 흐름"})}<div class="ax"><span>${mdS(dates[0].date)}</span>${(()=>{const z=v=>Math.abs(v)<5e-4?0:v,hi=z(Math.max(...s.curve)),lo=z(Math.min(...s.curve));return `<span class="hl">최고 <b class="${hi?cls(hi):"flat"}">${hi?pct(hi,1):"0.0%"}</b> · 최저 <b class="${lo?cls(lo):"flat"}">${lo?pct(lo,1):"0.0%"}</b></span>`})()}<span>${mdS(dates[dates.length-1].date)}</span></div></div>`:""}`
      :`<div class="amt" style="font-size:21px;margin-top:10px;letter-spacing:-.035em">아직 들고 있는 종목이 없어요</div><div class="basis">첫 추천이 나오면 바로 여기서 보여 드릴게요</div>${(()=>{const n=nextRun(o.m);return `<div class="next">다음 추천 ${n.label}<small>${n.left}</small></div>`})()}`}
     <div class="kpis tnum">
       <div class="kpi"><b>${o.n}${o.m==="us"?"개":`<span class="caption" style="font-weight:600"> / ${o.slots}</span>`}</b><span>보유 종목</span></div>
