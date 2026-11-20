@@ -170,7 +170,11 @@ async function buildUS() {
   const qs = Object.fromEntries(await Promise.all(syms.map(async (s) => [s, await usQuote(s)])));
   // 분할 전에 산 묶음은 매수가를 분할 비율로 나눠서 시세(분할 반영)와 맞춤
   const lots = us.lots.map((l) => {
-    const f = ((qs[l.code] || {}).splits || []).filter((x) => x.date > l.date).reduce((a, x) => a * x.ratio, 1);
+    // 날짜 대신 "매수가가 그날 조정 종가의 약 N배인가"로 판단 (야후 분할일 표기가 실제 조정 시작일과 다를 수 있음)
+    const q = qs[l.code] || {};
+    const bar = (q.bars || []).find((x) => x.date === l.date);
+    const k = bar && bar.close ? l.entry / bar.close : 1;
+    const f = (q.splits || []).reduce((acc, x) => (Math.abs(k / (acc * x.ratio) - 1) < 0.2 ? acc * x.ratio : acc), 1);
     return f === 1 ? l : { ...l, entry: l.entry / f, splitAdj: f };
   });
   const rows = lots.map((l) => ({ ...l, ...judge(l, qs[l.code], l.hold || us.hold, us.cost, today, sessionOpen, null) }));
