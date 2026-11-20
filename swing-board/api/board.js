@@ -53,10 +53,13 @@ async function krQuote(code, since) {
 }
 
 async function usQuote(sym) {
-  const js = await getJSON(`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(sym)}?range=1mo&interval=1d`);
-  const out = { price: null, chgPct: null, bars: [] };
+  const js = await getJSON(`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(sym)}?range=1mo&interval=1d&events=split`);
+  const out = { price: null, chgPct: null, bars: [], splits: [] };
   const r = js && js.chart && js.chart.result && js.chart.result[0];
   if (!r) return out;
+  // 주식 분할: 분할 전에 산 묶음의 매수가를 분할 기준으로 맞추기 위해 기록
+  const sp = (r.events && r.events.splits) || {};
+  out.splits = Object.values(sp).map((x) => ({ date: partsIn("America/New_York", new Date(x.date * 1000)).date, ratio: x.numerator / x.denominator })).filter((x) => x.ratio > 0 && x.ratio !== 1);
   const m = r.meta || {};
   out.price = m.regularMarketPrice ?? null;
   const prev = m.chartPreviousClose ?? m.previousClose;
@@ -165,7 +168,12 @@ async function buildUS() {
   const sessionOpen = !["Sat", "Sun"].includes(now.wd) && now.hm >= 9 * 60 + 30 && now.hm < 16 * 60;
   const syms = [...new Set(us.lots.map((l) => l.code))];
   const qs = Object.fromEntries(await Promise.all(syms.map(async (s) => [s, await usQuote(s)])));
-  const rows = us.lots.map((l) => ({ ...l, ...judge(l, qs[l.code], l.hold || us.hold, us.cost, today, sessionOpen, null) }));
+  // 분할 전에 산 묶음은 매수가를 분할 비율로 나눠서 시세(분할 반영)와 맞춤
+  const lots = us.lots.map((l) => {
+    const f = ((qs[l.code] || {}).splits || []).filter((x) => x.date > l.date).reduce((a, x) => a * x.ratio, 1);
+    return f === 1 ? l : { ...l, entry: l.entry / f, splitAdj: f };
+  });
+  const rows = lots.map((l) => ({ ...l, ...judge(l, qs[l.code], l.hold || us.hold, us.cost, today, sessionOpen, null) }));
   // 같은 종목 여러 묶음(매일 새로 5종목) → 종목 단위 리딩
   const latest = us.asof;
   const picksToday = new Set(us.lots.filter((l) => l.date === latest).map((l) => l.code));
@@ -187,7 +195,7 @@ async function buildUS() {
     else { act = "보유 후 만료분부터 매도"; tone = "warn"; }
     return { ...t, openLots: open.length, avgRet, act, tone, inToday: picksToday.has(t.code) };
   });
-  return { ...us, today, sessionOpen, rows, tickers, curve: curveOf(us.lots, qs) };
+  return { ...us, today, sessionOpen, rows, tickers, curve: curveOf(lots, qs) };
 }
 
 module.exports = async (req, res) => {
