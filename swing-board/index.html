@@ -192,6 +192,7 @@ main{max-width:520px;margin:0 auto;padding:4px max(16px,env(safe-area-inset-righ
 .sh-chart{margin:14px -4px 4px}
 .sh-chart svg{display:block;width:100%;height:120px;overflow:visible}
 .tipwrap{position:relative}
+.ends .bl{display:inline-flex;align-items:center;gap:5px}.ends .bl i{width:14px;border-top:1.5px dashed var(--t4)}.ends .bl b{font-weight:600;color:var(--t2);font-variant-numeric:tabular-nums}
 .tip{position:absolute;transform:translate(-100%,-150%);margin-left:6px;padding:3px 8px;border-radius:8px;color:#fff;background:var(--c);font-size:var(--fs-micro);font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.15);pointer-events:none;animation:tipin .5s .5s var(--ease) both}
 .tip::after{content:"";position:absolute;right:8px;bottom:-4px;border:4px solid transparent;border-bottom:0;border-top-color:var(--c)}
 .tip.below{transform:translate(-100%,50%);animation-name:tipin2}.tip.below::after{bottom:auto;top:-4px;border-top:0;border-bottom:4px solid var(--c)}
@@ -489,7 +490,7 @@ function openSheet(o){
       <div class="kv"><span>1,000달러씩 샀다면</span><b class="tnum ${cls(o.ret)}">${usdS(o.lots.reduce((s,x)=>s+UNIT.us*(x.ret||0),0))}</b></div></div>
       <div class="explain">${I.info}<span>${o.inToday?"오늘도 추천 5위 안에 들었어요. 오래된 몫은 날짜가 되면 팔고, 새로 산 몫은 계속 들고 가요.":"오늘 추천 5위에서 빠졌어요. 남은 몫은 날짜가 되는 대로 팔고 다시 사지 않아요."}</span></div>`;
   }
-  const chart=(o.spark||[]).length>1?`<div class="sh-chart">${area(o.spark,{w:340,h:120,base:o.base,label:"가격 흐름",tip:(isKR?won:usd)(o.spark[o.spark.length-1])})}<div class="ends" style="padding:6px 4px 0"><span>${isKR?"산 날":"최근 8거래일"}</span><span>점선 = ${isKR?"산 가격":"평균 산 가격"}</span><span>지금</span></div></div>`:"";
+  const chart=(o.spark||[]).length>1?`<div class="sh-chart">${area(o.spark,{w:340,h:120,base:o.base,label:"가격 흐름",tip:(isKR?won:usd)(o.spark[o.spark.length-1])})}<div class="ends" style="padding:6px 4px 0"><span>${isKR?"산 날":"최근 8거래일"}</span><span class="bl"><i></i>${isKR?"산 가격":"평균 산 가격"} <b>${(isKR?won:usd)(o.base)}</b></span><span>지금</span></div></div>`:"";
   $("#sheet").innerHTML=`<div class="grab" aria-hidden="true"></div><div class="sh-top">${avatar(o.name,o.code,o.day,o.hold)}<div style="min-width:0"><div class="nm">${esc(o.name)}</div><div class="cd"><span>${esc(o.code)}</span><span class="chip c-${o.k}">${CHIP[o.k]}</span></div></div></div>
     <div class="sh-price tnum">${P(o.price)}</div><div class="sh-rate tnum ${cls(o.ret)}">${pct(o.ret,2)} <span class="caption" style="font-weight:500">산 값 대비 · 수수료 반영</span></div>${chart}${body}
     <button class="closebtn" id="closeSheet">닫기</button>`;
