@@ -158,6 +158,9 @@ main{max-width:520px;margin:0 auto;padding:4px max(16px,env(safe-area-inset-righ
 .wb{display:flex;gap:3px;height:8px;margin:10px 0 6px}
 .wb i{background:var(--up);border-radius:4px}.wb em{background:var(--down);border-radius:4px}
 .wl{display:flex;justify-content:space-between;font-size:12.5px;font-weight:600}
+.wh{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.wc{font-size:12.5px;color:var(--t3);font-weight:500}.wc b{color:var(--t1);font-weight:700}
+.wb{background:var(--fill);border-radius:4px}
 
 /* ───────── 접는 칸 ───────── */
 .acc+.acc{border-top:1px solid var(--hair)}
@@ -407,10 +410,10 @@ function holdings(m,emptyText){
    :`<div class="empty">${EMPTY_ART}<b>보유 종목이 없어요</b><span>${emptyText}</span></div>`}</section>`;
 }
 function perf(s,costNote){
-  if(!s||!s.n)return"";const w=Math.round(s.win*100);
+  if(!s||!s.n)return"";const wn=Math.round(s.win*s.n),w=Math.round(wn/s.n*100);
   return `<section class="block" aria-label="지금까지 성적"><div class="h"><h2>지금까지 성적</h2><span class="aside">${costNote}</span></div>
    <div class="perf tnum"><div class="pc"><span>판 횟수</span><b>${s.n}번</b></div><div class="pc"><span>한 번 평균</span><b class="${cls(s.avg)}">${pct(s.avg,2)}</b></div>
-   <div class="winbar"><span class="caption" style="font-weight:600">수익 낸 비율</span><div class="wb"><i style="flex:${w||0.001}"></i><em style="flex:${100-w||0.001}"></em></div><div class="wl"><span class="up">수익 ${w}%</span><span class="down">손실 ${100-w}%</span></div></div></div></section>`;
+   <div class="winbar"><div class="wh"><span class="caption" style="font-weight:600">수익 낸 비율</span><span class="wc">${s.n}번 중 <b>${wn}번</b> 수익</span></div><div class="wb">${wn?`<i style="flex:${wn}"></i>`:""}${s.n-wn?`<em style="flex:${s.n-wn}"></em>`:""}</div><div class="wl"><span class="up">▲ 수익 ${wn}번 · ${w}%</span><span class="down">▼ 손실 ${s.n-wn}번 · ${100-w}%</span></div></div></div></section>`;
 }
 const acc=(t,inner)=>`<div class="acc"><button aria-expanded="false">${t}${I.caret}</button><div class="body"><div>${inner}</div></div></div>`;
 const sold=rows=>`<div class="mini">${rows.map(r=>`<div class="row">${avatar(r.name,r.code,1,1)}<div class="mid"><div class="nm">${esc(r.name)}</div><div class="sb">${mdS(r.d0)} → ${mdS(r.d1)} · ${esc(r.why)}</div></div><div class="rt tnum"><div class="p ${cls(r.ret)}">${pct(r.ret,1)}</div></div></div>`).join("")}</div>`;
