@@ -50,10 +50,10 @@
       "entry_fill_usd": 283.502476,
       "notional_krw": 410885.74,
       "risk_fraction": 0.049436,
-      "held_bars": 30,
-      "last_close_processed": "2026-11-23",
+      "held_bars": 31,
+      "last_close_processed": "2026-11-24",
       "opened_at": "2026-10-13T19:43:42+00:00",
-      "last_close_usd": 288.450012
+      "last_close_usd": 300.279999
     },
     {
       "strategy_id": "donchian_55",
@@ -95,10 +95,10 @@
       "entry_fill_usd": 396.206936,
       "notional_krw": 591790.95,
       "risk_fraction": 0.033333,
-      "held_bars": 29,
-      "last_close_processed": "2026-11-23",
+      "held_bars": 30,
+      "last_close_processed": "2026-11-24",
       "opened_at": "2026-10-14T17:45:38+00:00",
-      "last_close_usd": 409.399994
+      "last_close_usd": 416.779999
     },
     {
       "strategy_id": "donchian_55",
@@ -140,10 +140,10 @@
       "entry_fill_usd": 158.443741,
       "notional_krw": 440627.84,
       "risk_fraction": 0.044564,
-      "held_bars": 28,
-      "last_close_processed": "2026-11-23",
+      "held_bars": 29,
+      "last_close_processed": "2026-11-24",
       "opened_at": "2026-10-15T17:34:00+00:00",
-      "last_close_usd": 169.600006
+      "last_close_usd": 172.470001
     },
     {
       "strategy_id": "donchian_55",
@@ -185,10 +185,10 @@
       "entry_fill_usd": 1031.957348,
       "notional_krw": 611298.81,
       "risk_fraction": 0.028086,
-      "held_bars": 15,
-      "last_close_processed": "2026-11-23",
+      "held_bars": 16,
+      "last_close_processed": "2026-11-24",
       "opened_at": "2026-11-03T19:56:55+00:00",
-      "last_close_usd": 1097.910034
+      "last_close_usd": 1091.709961
     }
   ],
   "closed": [
@@ -5050,6 +5050,18 @@
       "date": "2026-11-20",
       "reason": "손절",
       "pnl_krw": -20476.64
+    },
+    {
+      "at": "2026-11-24T22:53:12+00:00",
+      "decision": "REJECT_FROZEN_QUALITY",
+      "signal_key": "2026-11-24|WMT|donchian_55",
+      "signal_date": "2026-11-24",
+      "symbol": "WMT",
+      "strategy_id": "donchian_55",
+      "quality_percentile": 0.45107,
+      "current_priority_percentile": 0.5,
+      "challenger_priority": 0.475535,
+      "passes_frozen_quality": false
     }
   ],
   "seen_signal_keys": [
@@ -5225,9 +5237,44 @@
     "2026-11-13|KO|donchian_55",
     "2026-11-16|COST|donchian_55",
     "2026-11-16|KO|donchian_55",
-    "2026-11-16|PG|donchian_55"
+    "2026-11-16|PG|donchian_55",
+    "2026-11-24|WMT|donchian_55"
   ],
-  "last_candidates": [],
+  "last_candidates": [
+    {
+      "strategy_id": "donchian_55",
+      "strategy_name": "Donchian 55일 돌파",
+      "signal_date": "2026-11-24",
+      "signal_close": 132.309998,
+      "buy_low": 131.772054,
+      "buy_high": 132.847941,
+      "atr": 2.988573,
+      "stop": 126.332851,
+      "target": null,
+      "max_hold": 40,
+      "exit_mode": "donchian20_close",
+      "elite_score": 78.0,
+      "net_risk_reward": 2.0,
+      "market_state": "strategy_only",
+      "quality_features": {
+        "breakout_atr": 0.16395456209783416,
+        "volume_ratio": 0.9632959857974568,
+        "close_position": 0.9589548839645631,
+        "body_atr": 0.8097503016015882,
+        "sma200_slope_20d_pct": 0.00435969339984843,
+        "distance_sma200_pct": 0.11185199196978712,
+        "atr_pct": 0.022587660811464384
+      },
+      "symbol": "WMT",
+      "quality_score": 32.841762,
+      "quality_percentile": 0.45107,
+      "current_priority": 2.0,
+      "current_priority_percentile": 0.5,
+      "challenger_priority": 0.475535,
+      "passes_frozen_quality": false,
+      "signal_key": "2026-11-24|WMT|donchian_55"
+    }
+  ],
   "errors": [],
   "meta": {
     "family": [
@@ -5246,18 +5293,18 @@
     "human_intervention": false,
     "auto_retune": false,
     "last_market_state": "조심",
-    "last_completed_signal_date": "2026-11-23",
+    "last_completed_signal_date": "2026-11-24",
     "risk_budget_pct": 0.75,
     "comparison_baseline": "priority_challenger_v1",
     "ab_only_changed_variable": "risk_budget_pct"
   },
-  "updated_at": "2026-11-24T00:32:51+00:00",
+  "updated_at": "2026-11-24T22:53:12+00:00",
   "summary": {
     "cash_krw": 448559.23,
-    "equity_krw": 2594223.08,
-    "return_pct": -13.526,
+    "equity_krw": 2626611.05,
+    "return_pct": -12.446,
     "realized_pnl_krw": -496837.43,
-    "unrealized_pnl_krw": 91060.51,
+    "unrealized_pnl_krw": 123448.48,
     "pending": 0,
     "open_positions": 4,
     "closed_trades": 31,
