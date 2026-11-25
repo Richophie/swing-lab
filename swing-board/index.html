@@ -129,6 +129,7 @@ main{max-width:520px;margin:0 auto;padding:4px max(16px,env(safe-area-inset-righ
 .empty svg{width:80px;height:80px;margin-bottom:8px}
 .empty b{font-size:16px;letter-spacing:-.02em}
 .empty span{font-size:13.5px;color:var(--t3)}
+.empty.compact{padding:14px 22px 20px}.empty.compact svg{width:56px;height:56px;margin-bottom:4px}.empty.compact b{font-size:15px;color:var(--t2)}
 
 /* ───────── 보유 목록 ───────── */
 .list{padding:2px 8px 8px}
@@ -397,7 +398,7 @@ function todo(items,ctx){
      <div class="items">${G[k].map(x=>`<button class="it" data-c="${esc(x.code)}" aria-label="${esc(x.name)} 상세 보기"><span class="n">${esc(x.name)}${x.full?`<small>${esc(x.full)}</small>`:""}</span><span class="v tnum">${k==="time"?resTag(x.ret):""}<span class="${cls(x.ret)}">${pct(x.ret,1)}</span></span></button>`).join("")}</div></div>`).join("");
   return `<section class="block" aria-label="오늘 할 일"><div class="h"><h2>오늘 할 일</h2><span class="aside">${ctx.dateLabel}</span></div>
     ${ctx.notice?`<div class="notice ${ctx.noticeTone||""}">${ctx.noticeIcon||I.info}<span>${ctx.notice}</span></div>`:""}
-    ${groups||`<div class="empty">${EMPTY_ART}<b>오늘은 할 일이 없어요</b><span>${ctx.emptyWhy}</span></div>`}</section>`;
+    ${groups||`<div class="empty${ctx.emptyWhy?"":" compact"}">${EMPTY_ART}<b>오늘은 할 일이 없어요</b>${ctx.emptyWhy?`<span>${ctx.emptyWhy}</span>`:""}</div>`}</section>`;
 }
 let ROWS=[];
 function holdings(m,emptyText){
@@ -438,7 +439,7 @@ function viewKR(k){
   h+=todo(items,{hold:k.hold,dateLabel:k.sessionOpen?"장 열림":"다음 장 기준",buyWhy:"장 마감 가격(종가)으로 사요",buyWhen:"15:20 전",sellWhen:"오늘 종가",
     soonWhy:"보유 기간이 하루 남았어요",soonWhen:"다음 거래일",
     notice:k.regime?(down?"코스피가 약한 날이라 새로 사지 않고 쉬어요.":"코스피 흐름이 좋아서 새로 살 수 있는 날이에요."):"평일 오후 3시쯤 추천이 나와요. 산 지 5거래일째 팔고, 7% 떨어지면 먼저 팔아요.",noticeTone:k.regime?(down?"bad":"good"):"",noticeIcon:k.regime?(down?I.rain:I.sun):"",
-    emptyWhy:down?"코스피가 약해서 오늘은 쉬어요":"새 추천이 나오면 여기에 할 일이 생겨요"});
+    emptyWhy:down?"":"새 추천이 나오면 여기에 할 일이 생겨요"});
   h+=holdings("kr","11월 16일(월) 오후 3시부터 새 방식으로 추천해요");
   h+=perf(k.stats,"수수료·세금 0.25% 반영");
   let a="";
