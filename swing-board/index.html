@@ -320,13 +320,14 @@ function spark(vals,base,w=52,h=26){
   const c=vals[vals.length-1]>=ref?"var(--up)":"var(--down)";
   return `<svg class="sp" viewBox="0 0 ${w} ${h}" aria-hidden="true"><line x1="0" x2="${w}" y1="${Y(ref).toFixed(1)}" y2="${Y(ref).toFixed(1)}" stroke="var(--fill2)" stroke-width="1" stroke-dasharray="2 3"/><path d="${d}" fill="none" stroke="${c}" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/><circle cx="${X(vals.length-1)}" cy="${Y(vals[vals.length-1])}" r="2.2" fill="${c}"/></svg>`;
 }
-function area(vals,{w=340,h=96,base=0,label=null,tip=null}={}){
+function area(vals,{w=340,h=96,base=0,label=null,tip=null,tone=null}={}){
   if(!vals||vals.length<2)return"";
   const lo=Math.min(...vals,base),hi=Math.max(...vals,base),rg=(hi-lo)||Math.abs(hi)||1,pad=8;
   const X=i=>i/(vals.length-1)*w,Y=v=>pad+(hi-v)/rg*(h-pad*2);
   const pts=vals.map((v,i)=>[X(i),Y(v)]);
   let d=`M${pts[0][0]} ${pts[0][1]}`;for(let i=1;i<pts.length;i++){const[x0,y0]=pts[i-1],[x1,y1]=pts[i],cx=(x0+x1)/2;d+=` C${cx} ${y0},${cx} ${y1},${x1} ${y1}`;}
-  const last=vals[vals.length-1],c=last>=base?"var(--up)":"var(--down)",id="g"+(gid++);
+  /* tone: 색을 정할 수익률(수수료 반영). 없으면 마지막 값과 기준선 비교 */
+  const last=vals[vals.length-1],c=(tone!=null?tone>=0:last>=base)?"var(--up)":"var(--down)",id="g"+(gid++);
   /* 선은 화면 크기로 늘어나 그려지므로(non-scaling-stroke) 최대 2배 늘어난 길이로 잡아 끝까지 그려지게 */
   let len=0;for(let i=1;i<pts.length;i++)len+=Math.hypot((pts[i][0]-pts[i-1][0])*2,(pts[i][1]-pts[i-1][1])*2);len=Math.ceil(len*1.1);
   const lp=pts[pts.length-1];
@@ -494,7 +495,7 @@ function openSheet(o){
       <div class="kv"><span>1,000달러씩 샀다면</span><b class="tnum ${cls(o.ret)}">${usdS(o.lots.reduce((s,x)=>s+UNIT.us*(x.ret||0),0))}</b></div></div>
       <div class="explain">${I.info}<span>${o.inToday?"오늘도 추천 5위 안에 들었어요. 오래된 몫은 날짜가 되면 팔고, 새로 산 몫은 계속 들고 가요.":"오늘 추천 5위에서 빠졌어요. 남은 몫은 날짜가 되는 대로 팔고 다시 사지 않아요."}</span></div>`;
   }
-  const chart=(o.spark||[]).length>1?`<div class="sh-chart">${area(o.spark,{w:340,h:120,base:o.base,label:"가격 흐름",tip:(isKR?won:usd)(o.spark[o.spark.length-1])})}<div class="ends" style="padding:6px 4px 0"><span>${isKR?"산 날":"최근 8거래일"}</span><span class="bl"><i></i>${isKR?"산 가격":"평균 산 가격"} <b>${(isKR?won:usd)(o.base)}</b></span><span>지금</span></div></div>`:"";
+  const chart=(o.spark||[]).length>1?`<div class="sh-chart">${area(o.spark,{w:340,h:120,base:o.base,label:"가격 흐름",tip:(isKR?won:usd)(o.spark[o.spark.length-1]),tone:o.ret})}<div class="ends" style="padding:6px 4px 0"><span>${isKR?"산 날":"최근 8거래일"}</span><span class="bl"><i></i>${isKR?"산 가격":"평균 산 가격"} <b>${(isKR?won:usd)(o.base)}</b></span><span>지금</span></div></div>`:"";
   $("#sheet").innerHTML=`<div class="grab" aria-hidden="true"></div><div class="sh-top">${avatar(o.name,o.code,o.day,o.hold)}<div style="min-width:0"><div class="nm">${esc(o.name)}</div><div class="cd"><span>${esc(o.code)}</span><span class="chip c-${o.k}">${CHIP[o.k]}</span></div></div></div>
     <div class="sh-price tnum">${P(o.price)}</div><div class="sh-rate tnum ${cls(o.ret)}">${pct(o.ret,2)} <span class="caption" style="font-weight:500">산 값 대비 · 수수료 반영</span></div>${chart}${body}
     <button class="closebtn" id="closeSheet">닫기</button>`;
