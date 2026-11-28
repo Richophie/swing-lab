@@ -1,6 +1,21 @@
 // 현황판 API: board.json(가상매매 장부) + 실시간 시세 → 종목별 현재가·수익률·오늘 할 일(리밸런싱 안내)
 // 한국 시세: 네이버 금융, 미국 시세: Yahoo Finance. 실제 주문은 없음.
-const board = require("../board.json");
+const bundled = require("../board.json");
+// 장부는 배포 없이 GitHub에서 바로 읽음(매일 데이터 커밋마다 재배포하지 않도록). 실패하면 배포 때 묶인 파일 사용.
+const RAW = "https://raw.githubusercontent.com/Richophie/swing-lab/main/swing-board/board.json";
+let board = bundled;
+let cache = { at: 0, data: null };
+async function loadBoard() {
+  if (cache.data && Date.now() - cache.at < 60e3) return cache.data;
+  try {
+    const r = await fetch(RAW + "?t=" + Math.floor(Date.now() / 60e3), { signal: AbortSignal.timeout(4000) });
+    if (r.ok) {
+      const d = await r.json();
+      if (d && d.kr && d.us && String(d.updated_at || "") >= String(bundled.updated_at || "")) { cache = { at: Date.now(), data: d }; return d; }
+    }
+  } catch (e) {}
+  return cache.data || bundled;
+}
 
 const UA = { "User-Agent": "Mozilla/5.0 (compatible; swing-board/1.0)" };
 
@@ -203,6 +218,7 @@ async function buildUS() {
 }
 
 module.exports = async (req, res) => {
+  board = JSON.parse(JSON.stringify(await loadBoard()));
   const [kr, us] = await Promise.all([buildKR(), buildUS()]);
   res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=300");
   res.setHeader("Content-Type", "application/json; charset=utf-8");
